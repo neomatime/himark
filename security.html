@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HIMARK · Security</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Roboto:ital,wght@0,300;0,400;1,300&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles/styles.css"/>
+</head>
+<body data-page="security" data-location="root">
+<div id="cd"></div>
+<div id="cr"></div>
+<canvas id="cvs"></canvas>
+
+<!-- HIMARK wordmark — top center, alone -->
+<a href="#" id="brand-mark" data-page="home">
+<span class="brand-wm">HIMARK</span>
+</a>
+
+<!-- Right-edge menu trigger -->
+<div id="menu-trigger" class="mt-trigger">
+<span class="mt-num">[ 01—06 ]</span>
+<div class="mt-line"></div>
+<span class="mt-label">Index ↑</span>
+</div>
+
+<!-- Menu overlay -->
+<div class="menu-overlay" id="menuOverlay"></div>
+<div class="prn-backdrop" id="prnBackdrop"></div>
+
+<!-- PRINCIPAL MODAL -->
+<div class="prn-modal-backdrop" id="prnModalBackdrop"></div>
+<div class="prn-modal" id="prnModal" role="dialog" aria-modal="true" aria-hidden="true">
+<button class="prn-modal-close" id="prnModalClose" aria-label="Close">×</button>
+<div class="prn-modal-image">
+<span class="prn-modal-coord" id="prnModalCoord">[ 05.A.01 ]</span>
+<span class="prn-modal-status">On.Mandate</span>
+<div class="prn-modal-glyph" id="prnModalGlyph">NM</div>
+<span class="prn-modal-image-tag" id="prnModalImageTag">PRINCIPAL · DOSSIER</span>
+</div>
+<div class="prn-modal-body">
+<p class="prn-modal-eyebrow" id="prnModalEyebrow">Principal · Dossier</p>
+<h2 class="prn-modal-name" id="prnModalName">Neo Matime</h2>
+<p class="prn-modal-role" id="prnModalRole">Founder & Chief Executive</p>
+<div class="prn-modal-divider"></div>
+<p class="prn-modal-bio" id="prnModalBio"></p>
+<p class="prn-modal-bio" id="prnModalDoctrine" style="font-style:italic;color:var(--ocean-dk)"></p>
+<div class="prn-modal-tags" id="prnModalTags"></div>
+</div>
+</div>
+
+<!-- COOKIES BANNER -->
+<aside id="cookies-banner" role="region" aria-label="Cookie preferences">
+<span class="cb-coord">[ 09.A · COOKIES ]</span>
+<div class="cb-icon" aria-hidden="true"></div>
+<div class="cb-text">
+<span class="cb-eyebrow">Cookies & Tracking</span>
+<p class="cb-msg">HIMARK uses cookies to operate this site, measure performance, and remember your preferences. See our <a href="#" data-page="cookies">Cookies Policy</a> and <a href="#" data-page="privacy">Privacy Notice</a> for the full schedule.</p>
+</div>
+<div class="cb-actions">
+<button class="cb-btn cb-btn-ghost" id="cb-deny">Deny</button>
+<button class="cb-btn cb-btn-secondary" id="cb-necessary">Necessary Only</button>
+<button class="cb-btn cb-btn-primary" id="cb-accept">Accept All</button>
+</div>
+</aside>
+
+<!-- Side panel menu -->
+<div id="menu-panel">
+<div class="menu-bg-grid"></div>
+<span class="menu-coord-tl">[ INDEX / 06 ]</span>
+<span class="menu-coord-tr" id="menuClose">CLOSE [ × ]</span>
+<ul class="menu-list">
+<li><a href="#" class="menu-item" data-page="home"><span class="mi-num">[ 00 ]</span><span class="mi-name">Origin <em>· home</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="doctrine"><span class="mi-num">[ 01 ]</span><span class="mi-name">Doctrine <em>· about</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="mandates"><span class="mi-num">[ 02 ]</span><span class="mi-name">Mandates <em>· services</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="method"><span class="mi-num">[ 03 ]</span><span class="mi-name">Method <em>· process</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="airass"><span class="mi-num">[ 04 ]</span><span class="mi-name">AIRaaS <em>· product</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="principals"><span class="mi-num">[ 05 ]</span><span class="mi-name">Principals <em>· team</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="intake"><span class="mi-num">[ 06 ]</span><span class="mi-name">Intake <em>· apply</em></span><span class="mi-arrow">→</span></a></li>
+</ul>
+<div class="menu-footer">
+<div class="mf-block">
+<div class="mf-label">[ 01 ]  Direct</div>
+<div class="mf-text"><a class="mf-link" href="mailto:info@himark.co.za">info@himark.co.za</a></div>
+<div class="mf-text" style="margin-top:6px">Randburg · Gauteng · ZA</div>
+</div>
+<div class="mf-block">
+<div class="mf-label">[ 02 ]  Group</div>
+<div class="mf-text">A <a class="mf-link" href="#">Good Global Holdings</a> company.</div>
+<div class="mf-text" style="margin-top:6px">Est. MMXXIV</div>
+</div>
+</div>
+</div>
+<div class="page" id="page-security">
+<div style="padding-top:0">
+
+<section class="lgl-hero">
+<span class="lgl-hero-coord-tl">[ 10.A · SECURITY ]</span>
+<span class="lgl-hero-coord-tr">DOCUMENT · v.MMXXIV.01</span>
+<div class="lgl-hero-content">
+<p class="lgl-hero-eyebrow">Data Security Policy</p>
+<h1 class="lgl-hl">How we secure<br><span>your information.</span></h1>
+<div class="lgl-meta">
+<div><div class="lgl-meta-l">Effective</div><div class="lgl-meta-v">01 January MMXXIV</div></div>
+<div><div class="lgl-meta-l">Reviewed</div><div class="lgl-meta-v">Quarterly</div></div>
+<div><div class="lgl-meta-l">Owner</div><div class="lgl-meta-v">Information Officer</div></div>
+</div>
+</div>
+<div class="lgl-hero-image" style="background-image:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wgARCAFgAnIDASIAAhEBAxEB/8QAGgAAAwADAQAAAAAAAAAAAAAAAAECAwQFBv/EABcBAQEBAQAAAAAAAAAAAAAAAAABAgP/2gAMAwEAAhADEAAAAe4UunKSkSqCFaJVBKpElIkoslUEqgkYIYIpCGCGAMEUhDBFIQ2SUiSglUEq0SUEqglUhKglUhKkSUiSgkoJGElAhghghghskoOqUpZKRKoIKCFaJVBBQQUEq0SrSSUqkpAMJKCWwRQIYIYIoJKCSglUyCkSUiSkSUiVSEqCVQSqCSglWiSglUElAlQS2CGQhhJQdZUmkqSJUhKggpEq0SrRKtEjCSglWklWqkoJKBDBDYlQIoEMhDBFIkoILRBRUq0QUEK0SUEKwgoJKRJQQUEqgkpCG4koJKCRghh1hk1JSJKVSUkkpElIlUElIkoJKRJQQ6EgoJKCSlUugkoENwhsltklBKtEFokoIKCFZWMtEq1EFogtVKtElEQUiRglQSUElBIwkYIYddUTUlIkpElIkpWSrRKtElBIwlUElMlUElBJQkFMh0ElMkoJKBFBJTIKCShYLSSULCsTGWiC0sFohWJKpEq0QWiCgkpElCyNkFBKoRDDrqialUElIkoIKCCglUWSrRKoJKZKoJKCSgkoJKCSmSUElAhskpklBKsILCCwhWEKwxlhjLRCyIhWEK0QrCFYQrRKtElBKoJVokYIYdYZLJQSMJKCVQSqCRhJQSrSIoWCiySgltklBDoIdBJTJKCSmSUElBJTiSglULKtJKsMZaJVFQrRKtEKwhWiC0QUEFIkoIKCCggoJKDqNkqVISoJGCVBKoJGElIQ2SUElBJQS6CSgkoSSmSUElhJdy48G55te8MsQwQwlsJKRJQQrRKtEK0kqggtEFohWEK0QWlgoSC0QWEFBJQdMZNSUiSlUlCSUhKgkYSUElAhsgoEMEUCGySgl0ElURVPOkMlnyPrvI2djp+W9JrOUpCGCVAlQSrRKsIVohWELIiFaJVogoIVhCsIVolWiSggoJKDojJUqCSkSUhDCSgkpElqpKBDEQwQ2IbJbBFBJTlTDOgAAZPkPYePse1qPWfWPl9YkoJKFkoiVQSrRKtJKtEq1UFBCtEqghWiVaJVolWlkYSMJKE6AyVAAMJGCGCVBJQSUEjBDBFBJQJsEVIATQBDABMAAXj/AGHjrG09Zv03l9s9KDllsJKCSglUEqglUEFBBSJVohXIlSJVolUEqglUEqgkoN8YJUEjBDBDBDBDZJSEMENklAikEqZW05QAGAmIYAAC8b67x9luXrNOWdvs+O9TLsFBIyEqKlURKtVKoIKRIwlUiVQSqRJQQUiVaJGEjCSg31RLJSEMJKCRghgAAMEMENiGCm5MDRK6ljAGgAAYaBv8TjaBkMM2dN6m1ZTksybejR7Z8LoTW6ubiOucLEeiXmcJ6yfIYz2i1LjOYQyrGy0gBhKoIKRJSJGEqglUhDDfGCGCVIQwQwkoJbCSgQwQwBgoyQa4nK2mMQMEPFyeCdPkJBj6as5E44jNu80ruGtn1m6x0XBBlIZbxtblKDT2NM9N1PJenmsxJFJIpJDJRkIkzGGTZeoq3noI3zQZummzaNcOyYCMxgRsGuGwawbJrFbJqhtGozaNVG2agbZqBuGjB0cWkzI0Q2mD1vPnZ87qIqb6aaPU2NytfR9FxjzPO6mGzlZDRl3+v5/IeirWy6zkggyPEzI8aXKpmDT2NM2+1wNlfXPWz5tIQ0IAAQhy0IECEAgSaAA2kMBAwAABoGIGJjEFCYAAAO4ozByzpcPi6ZtY9bfMPQ3dyzDt7G0uLYTg4Xd4Vedx3Gs4dDpYo89k6HJl3+/5DfPRRK1nIYwymMXJMzD08+qbGfUznY7vkfQy75LlaENACEAIBAIQJoE0IA2HqlmyaobZqhtGqjbNOTeOfJ03yqOmc/Kbhps2zVDbenkNp42vF4/s2eFXvA870ekGtuQzM8DMzwOM3H6SryWp7fyNzpxv2cjW9JR4pe2a+Z3O2JxDuBxF3HXBXfcec1vWM8tm9I18/vdWjcrScu4ajNpayNpayNk1kbS1Q2VrBsrWDanWDYNYMqFrNOAymEM6wJefr9kTRy7LFmxEud4UbBr1GZ4wyPGGR4wsgLJZSQUSFOWtEhRIUSFEtGJLQgYkUSDEDQkaQrSBiQ0IaJGIQTQISoEAgEIEIYgzqTWaQDQQAlYgpyFiIGmDQMTGADQMAbQMQNyFkhTxoymNraQlEhRLGJFEBZAUSxoQ0ktEpLUsakFQhpAIQJoEAkwQkAIYgsRTYyaENJw3LKSdCCHWN1bhxSQNxQ2gYkVUMZLGIKJDIoZSGAgogKEDTQxAxAAACGhFKQrEshLaGSikgYkMgKJkpJFSIBIokM5JVEhZMGQxhkJRkUuGkxghioBAxIqpCgAaBtBRIUSikAOQokKcBZIWpY3KLIRZDGSylKKxmQEgYgaAE0SNCVIScjEAmhAgGFA6RQTQCbQyaGJiYAJjSUWQFOQsgLICxAMCiUW8YWQFCRRAUCG5CyGUJFEhRIUTgM0qhiCkmAkUkAJFSgaQUhA0hiABDEH/xAApEAACAgEDAwQDAAMBAAAAAAAAAQIRAwQSExAUICEwMUAFUGAiMkGg/9oACAEBAAEFAv8Aw8UYpKcf4uhIZgycc/4qur+DSZLX8Y/gTp4Z8kP4t/HTT5OOf8W/jro8v8W/jrF08OTkh/Ev48NPk45r1/iX8eOhy/u797JOOOPinT0+Tlx/uJfHu6jXxiZMkskoSry0+XiyL1X7eXx7efVQwmfUTzeGOflos6inqsKHrcQ9dEeuY9bkHqso8+Rjm2YsvHnUjcbjcbjcjci1+nn8ezkyRxx1GtlPrL0V9cU78F7LJP8Az0eS4+xZuZvZvOQ5Eb0bl96f+vm2ks+tSJyc2erMeA1cKUltL6WYsm5df+ebJf74Z7XCW6P0LNzN7OVnL9ifx5Z9VDEZs08r6QwuRjxpEYn5CNKSMkGhTLFKniyb17cv9os0mT63LE5YnLE5YnLE5onNE5kcyOVHKjlOY5jmOU5TlOU5Tlkb5Fi8cuWGJZ9XLJ0sjBzMWFIUSGOyMUj8oMaMuM3NG6yE3CUJqcR/Hmx/KIOjDPfD9WvnpKSis+uJScnYrk8eAjAjCyONLr+UGMZlx2O4tSMWXjlGSkn52MfymJmlybZfq4/Jn1kMZmzyyNzN9mPC5GPHRGJDGLw/KD6MZkhZOLi1I0+bY7tebP8AqEJmmybo/TtFotFotFotFotFotFotFotFostFlli9SmeqNT3uUek1g9DrCP47VN4dFLGRwyRHGyKUfC+n5DHPIu1zmxm1m0cSeHcPSTO0ymCOSC8b6M/6hCME9s07+nRRRRtNpRR6FxN8TlxnNjOWBGSl5wltfKcpynKjlRyo5InJE3xN8TfE3I3I3I3I3oc0dtlO1ynZ5Ds5HZHZHZI7JHZI7KJ2aOzidojtEdqjtUdsjtkdujhOM2G0r2LZbLZbLZbNzNzNz6+pbNzRySOVnKajCsuXs4kdLhqGmwRahjFSVoteNlll9L/AIKiij0P8RV+uu/oWX+lv+Xv3bL+pZf17+36nr1vq36pfTorzvxsvwssv6V+zft3u9y+l9b9+/r2X9VsVy+3ZfuenuWuvp52X7zdJL69+FfTvrZZZS92/cbFGvav9N69F4X1svwv33JyFHaX9j//xAAbEQADAAIDAAAAAAAAAAAAAAABEVAAcBAggP/aAAgBAwEBPwHxUsIjLgxF0MgyDqoVnsX/xAAcEQACAgIDAAAAAAAAAAAAAAABEQBQIHAQQID/2gAIAQIBAT8B8ovgUjwFQKF5jT4wHWVMoooth//EADIQAAEDAQQJBAEDBQAAAAAAAAABETECECEyQQMgIjBAYGGBkRJQUaEzE0KiYnBxkqD/2gAIAQEABj8C/wCHl+T+izyh6F7cnug/J/RZ5Q9C9uT3SR8+T3yz5Q/Tq7ckvWrJrOg+efI7aLaX5yHrV113yzHTkT5q+EL1an4TUZdb0aRbslMZ+5S6hS6j7IpMX0Y6i9VEXLP3l61YbR7NP3rss7/0rKbqbYtn2Z1gbRX9R6ldbLh6ik6anXfIqDpwU2QRx7JtVfBtLd8W7VtFj02uh133pXiszMzMyFIIIIIIIIIIIsnX21Gp2abemro+9roX2Og6b5/b3qVkG0P+w6q62XG1ZdqaPvruOkb3p7c1O1UPWtlxtW36uj77j+ku3vXhJJJJJJJJJJJ3sONTomp+PUh+L+SH4/5IbVLJ/kwkF+vR6Ec/Gft8oZedS5iaRqmb2HPcSYkMSeTHT5MdPkxF24ggjXkkkkkkmzD9mXkmkxoY/ox/RjUxKYjEYiSfokkkkklTEpiqMSmJSV3862RCGH7MItW0nYx1eC91HSny5gp8FzE8owXf3Kv5NZJ4G/327zydfcnFzxUcS9Xjh442/iWzHVXX3DLjW0fdS7if/8QAKhAAAwABAgQGAgMBAQAAAAAAAAERECFhIDFBUTBAcYGR8FDRoeHxscH/2gAIAQEAAT8h8WYnhzihCePPBmZ+DhPHmIQhOOE8aeJPwU4J4E/GTgnizx4QmIQniwnFPDmJieHPDmYTwp4k44QhCEIQmITE8jOCcU8KZnizMIQhCZhCEIQmZwT8DMwhCE4ZmcEzCZhCEIQhCEJiEJmcE4J5ucMJwTE4ZxzgmYQhCEITEIQmJwTyc8eYhMQmITEITwJiEJwQhCEIQhCYnBOOeThPBmIQhCYhCEIQhCcEJiExCEIQhCYhMsmIThnBMwhMzxZmExMwhCExCYhCYhCEIQhCEIQhCEIQhCEGiEIQhCExMTE8WE4YTMJmZhMTExCEIQhCcMIQhCEIQhCEIQhCEJiEIQnmphLEzOCEIQhCYhCExMQhCEIQhCEJwQhCEITEIQhPMzEzCcEzCEIQhCEITEIQmJiEIQhMQhCYhCYhCE4YQmIQnl5iEJiEITghCEOVtiWvPquzxOGYhOCYnDCEJmEIQhCEIQhCeYnBMzEIQgqIHIznHaHPVcvEhCExMwhMQhCExCEIQhCeWhPDhCC7s8zGuOq/h4sJiEIQhCYhCExCEIQhCedhCcMJODmCHKZGnUJWvPk1vmcMJwQhCEITExCEJwThmJ5qcUEuLmemYzfaCjVXJ8E8CEJiEIQhCeBPwk8HmcFlfVfS8OYhMTgn4WExOCeHzPTgYpkTVCl+g1v4U44QhCfhZw3w+Z6C4I/V0QhE1qn+cb8XmCws11ProTzUJ556IdZXhvqu8J3lhYQ5TI1yEo6Gib/nReC2kq3EiytfCfstvvFUfIXAhyOrogyQyp8vBqsuvn55TXgWk397XsP58RDGyn/lFxSiY0wpqzodAP0TEeXsI6k+rOiV6hjkj2G+30Q5l7TOdL1Y2lq0FlU9Cu5ZfZHpPWN03EafkGeKf9KVu91foY3BoNrRjNKfVLi4Yb0ZcXQRSlGNAavdgpc3gruQ6jdL7I3fyPUN02RU/wAKMTEk6suLrv5Da8zqxsSbFbZvjFJ+o5qtQqKKNREny/ziiY3qKJlKUTGxhwzpoQjlPFHm+GmXJs3xPqjuJ5nZaarx3PQHT1KraJyGxvtzNa0LsJYkdhDbet/8wdhOwh6cni5TNUIv7kUTG9GUpSlExsbGwpvpPkXyu6/g338Hr/B6+JsDYGzgm8N4T3EdxH+yP9n3p96X/svsL7B7CGzqGz5tnPw3Eey6svezc37lGhypTuOg69yYzVyQh0OT7dMq/RYnYEnIJHOFIkxhSlKUo2NoOXGsmnqhKurqX8UuCYVEc2znK9y/4hpaZzbGFgWnW1MkO5BznV55Pp0yKLW9RNQd0dBquqFF9YbQpSlKXB9Bsq0dvUUvl15Us+zcl7mpj2XRCDUmpmvaV2ErEjoJH9MRJRcuDk+nQYeCi1NREDT3zc0RVqmUpRspSj6DYcfFob5PKbT5Np8m0NoLtjafJtDaG0Np8m0NxG4vk3F8m4vk3ER3RuIjuiO6I7o1NNTaIltPsTRqNjtT+R7kn03Gej6bmk7vSLO/q20f2VFWiI5IilKiClg5tg+4+UNIn/gDbb5GvsMToX6/mJH7WPT36Y+RSlGy4UfQj6GV2eLDFPoLRNdfJyJ3I+sjue74Pd8D9fxho5oS5/KNP6x/giJk1VI/QbO+WxCMj7Mj7MmLzlPvSe4juNhmwzZZsP4PV+D1zdH0o+9G0NobDChev8Gy+BXooTeaPdi63wFF64/yj/ON/wDBuPg33wfSsd9aPvR9KPvRuvgSCUftK/uK/vKG/wDIj7vgr7lfcr7m4zcZuM3GbzN43MDcxX3/AIL3M+mololAkfuNgN7fI5rrNEj/APSn6/7EESM70hBfUOh+H+hlFBdORLp+V+y3J/z/AGa7/Be6/g02++xcPcVhWVsV8NLwXzl7ePfU+czh0x7Fdj2k9SCdghyJengUvBS5uKXju+Ke+aXNLx07HLyE4VYuffN4VmcdPYvqXYuPfF9ClKi4XwtCmuaUpSlw2ktTnz5di8Ty0cubxSlKTMzRsonx1FRc+5740Pfg98U9sTcm4jUrK+xSlKUpqx8nIpcvgpA09+wl1hv/AJwUpeCnue56FRoPFQ8VZqJM+D3Ia9sXcpr3ETEx78FKiC7Guxr3JuUomilQ2XY1NcLFKz1JiCLisbyXCocE9T/wQrur54pcamuKXL4L7sU9GEx7smKUa9iY9h4KylINibPRj3NC7FZSl1z0LtjrmkdNSvZHuaFKXFwpS9ilxrwLqdAkkohwi4NSlZWVnoG8LuXBs1XoVd0XGhDQiORS7lKPucKa9jXgpS4pc68NKikLqX0XyV9X8FPfCxS5qzS74uahCTb5HMI+z3OS0U8HUhrhsqNBzsRERCFKVlZWT2E7l7FPciFp0wsV9jWlRQ2ilKL0Jxa3PUt/YevWehOp31xRsuLg0EUvFSimLsLo76LqOc0X0Dd4LxUuHimhoacD3CudPkr6s96R2XxiemdOG68UPYswpaQtG0bUyn1SKPmfqxJJaRLGwhFKUT4SdxSl4qasa9hZ6h7eg3wvDeVLxUqxcwmPcp7HU5k9BIhMNIT9DnyHp6lNSlKNqVl7JjrqhO7bIXKC5lR1wvUu2KopyLhRPTHLtiieo2X5xp3xSwd/0IpYnv3wvHeOl4dM/wD/2gAMAwEAAgADAAAAEJZadmjpoQWVbRSXRbTZWReWVcSRQRAJOcRcRXeccZZWaciusllxdQdbUffcdQWRZZZHGCHQVcWcUaTw/wBQ0UmVNYY75dXnUHlHU88fuOlSjQhn0WGF0VvfPv8Aumklhhdm+Gqj7CEgVbbrDX/LrB1f31VrvvfjzL/PammmF11xI66e+r7v7D/T7/K3KDvmifP33vHyqqbPS6miqyZVJBdw9++6S+IYIY4gZIoswYMaaGWKcwYMJ5tzbaK6DSJBpNgkZEZR9rDOXLvJVFZFhpNphogAtVRtRZL2a+iSiy/7HTPiOOOqmq2G/fjjzHmLjjLDKikx1RJx1Z9NxK0x5az+5FNdZVRU4QcEq7DWVh5B+Sm2OyG08NNZJhR5evbWd5hQCeWXXBJVJ1xVUIIxDPDvLbzDOem+mVkTXTf6RBOu+ibaKjmCWGWaaKaDNR9VF151NZ1VXjXrv/8A9vXZsT0W8WYSXXTYYVaTcWpjoitjggkgqr503/x1pUpTRGDAEA5zxoiroi21z7QVbQ848w/wy/8A8+MIZVf3HP1EBKkBddMffbQCyTCLbLoAwgTzATAeO9qv3tmnf/P2Ta/TPdPP9OMu/sNo7KI5744LLbZP5qGyvTzO3Zv2hNtNsscPef8APXv/AA7y89/ayWcVbPFBOKewAy83Msma2xoEADDJHGGGPFs4fE2dpN99x38338jiji1goiogymhlkj8xvojvjlUU/hRQ44/w/wDfOMfOdJMcOM8Ntdrdvv8Ab337zv8A8xSYe2wa7b264x4/zx020351z7+x9y2zz94/581+/wBfsW2UN/v+vefef+cMe9vNNuefvtsd+t8//P8AzDvDdNpx5ZxlfH3brjL3LHjjXLPXj/LD3f8A2923x595w//EAB8RAAMAAwADAQEBAAAAAAAAAAABERAgMCFAUDFBUf/aAAgBAwEBPxDu+8+JfgXeE5zlNJ7UJtOL9KZnSazpMQhCE7zSbQmJ609KCoQucIQmJmE9CCQp/dMJzhMTjCE4KhKcM6TSaQnCUSnxcEuVcoTeE1mJlLg0SZpUUomQhOs63Fw1eCe0IQhCel+jXgTw1dFlP3Jh/mE8NZWjfzvSlzS6QWX5Gv8ACM8nkjIyMjIyMhSlKUpSlKUpXhSlKUut6XtCEJ7M2uKUvxp8u/J//8QAHxEBAQACAgMBAQEAAAAAAAAAEQABECAwIUBQMVFg/9oACAECAQE/EPjvqOnvel5PJ5PW9r6z3PQ/KeD3szPFmeb2PF+BnJYy+q82dMzpmbP8dRmZni9D15j8M6Szl9I6dOmdOmZ556jPa+hnoxksZdGiIiZnvZmdvM1jJY55xzZmZ4szM6ejH7ZxZwWMnHOs+9+tZxZsuGd56yIjQiIiIiNmsWM68ZjF4nF4vF4vGiIiIiIiIxCGgjER8BmZn/HM/FeDt+D/AP/EACcQAAMAAQIGAgIDAQAAAAAAAAABESExQRBRYXGBkaGxwdEg4fDx/9oACAEBAAE/EGsjQ1zJ0GtxrkNMa5oaGhohOYxDL8jSGkRE8IhBomNBLwQ5qSaiFqJEKmOBYEVyhpciEypsOb6mxBIa2IQhCEDQ0NZGhoaGiDDSH04J5IQhCIhCDWRLBCYIQnQjHqQg1BjWSDQ1nhMaEGhoaJhjTGHA1zGoyEIQnCXUgl0OgkNFcmT+AoimhOZPRCENRBCDQ0NEITI0NctSYGNXghBojIxroSDRCcicEIQglFwayQg0NDRENDROY1mDXQayNMnQa6DWxOhKNLkQnQhCEJwQgkIdxJEITYhBUJEGiMk1GiEINEGhogkx9OEINZwNDRINEINEITZCRCCRPJOR4HORBoiGhrPA0yY4MQg0NexohMEIQg1wNdCCRCEM3QiIQhCE6GrggnEgg0NDRBog1yJzGskGMdRCZJ6IToPkJgnMg1SEJyEiExwRHMTghknCDWRog1sQfsQkGiDXkaJ0IToQYaGuDoIQhCEIQmTuJnQSIQhCdCEyTNJduCEINDQ1wPgP+APgTyPgQ7CDRBLwQnCeyImRIhBoiImQNDVIMQaZBrmNDEGiDRMaDRPY0QYglwNcJzEiCQkQhCMnMewhIPgbhQdXBOhBh8Qw9nBMkGIQgw0Qa8kGiEJGQSg0TYhCcGiYINDWw1SE5DXsaINDRKTmQ3EJy4HwNRBOhGRk6HYRkFoIuRBJHYToQQghB8nA2xzHlDUNGOOB8gw8NCFGjgaROBpInMaOwhOg0PoIJE5kJxhCEJkg0Qg0NDQ0NEITOg0NcEJ0INcSDXQa4GuBohBLoUJCRBLTEJ2J0EGiEGGiez0GHhP4hoJwPoHQxBoQaGh0QhBpkINEJSEwREQ0REIoNZ4Ghog10GiYJrwhMjXTjDRSGrgnByMm0G3BOBah+Q10IQmCb8JwJcD4DQ10IVwMMUMPgPgNe+CEIx8w1yIQaImJLzwSk4NDVINEGiYGiEINEGho0DYg0SEg0ToRXQgg1nAuI9ihLiILiFs4OwSEicyBdBHxJwNuJoG3EaH0cEGkIMNcDgaGiE4JyRNxo0ExoTH8BCFEIQhCIhBoaIQYaJ04FhyJwQj/AIhq5kK4IdnEhQuI5uBjs/gGgwwwwx2HYPL+APgMdgw+jiQYg8BroaCEIQaGQaITca6EG3BBqkpOBhrOhBDsGickUToTE4OwnBHuJCcC/gC5EULIhCEKHRycD4D/AIA+A+gYYYfAYYa4nYPgQhCDQ0QhBoaIToQhCDRBrJCEIToOCdOA1wQhqJ0ITiNhfwCfwCEHBDmEOo7DsvBq4GGHwGiDQww+IYYg+A+Ig10GiDQ0QhH1IyEJwg0NEGhoaIQgxNuBLBOBiMnkS4IQ6OBcCjsOz+IJdOBcxofBKdhOXA+AwwxB8w+AxM8RiD4DwHBCDXQg+AxB8DsyToQhBqkIQhCDROhCdCdCDRCYGicE4iYnTgcHZwTkQnTgXA7BPoCjc3eCLKbFtDX9oS4EiCQ1wQfAnMg104IMNDV7DRMcD4homBhh0MMPiGNWn8BBoaIQhOhBohORCDQ0QgkQg0QnBCEEIJdCBL+AQc2FO4jQs8z4zGpbvEjlyfj6ooiYmyqzUQhCEIJDROg10Ih8QxBwQa4GGIMMPgMNcHIPgdg+IiJ0GiDRBoaZCEGiDQ0QhCCWBriQhOhBIhCCROImbwsi5WJpNOHwfwLbJtmq733LuiEIQhCQaJzJghOBiDD8v4B8BrgYfAnB2cD4h8CEIQg0NEGiMg0TA0QShMkyQhCCRCEEsk4EEIJEIK9cCRMKcXofBf0JmjZSZm6aIzJey3eN0QnBCEIPgQg0PgOh8B8BoYa4HwGGhonBCDRMcDRRCDRCEIQaGiEITBCEIQSIQmCE4IQSwQguQQuD4Lh8l9cExrS3iFtya6r9jJNTRU06o9IQhOCEINEIQfAYa/gGGNXBCDRCEIMNbQaINDRCcGQhCDUIQhCEIQhCEIQnQhOQkQnQSEIv4zg9UJOy+C1GbXiu+W/hqvJCEIQhCEGhicDE4INDQxGTA0QaGhoaINDRCIaJ0IPhgwQaIQhCEIQnQhCEJxJwQSJwRI+uK4Y4b8PkvoTwux2NkNBMJi1TWjFRiTsk18PYSGhLoNEIQg104IQaGiE4GGGGINDVGiDRCEg0NDRCDRP4wg1SEQ0QhCEIQSIJCEIQwsvQfJhcIIXFiJw/xdBsQRy7CGvG33Qtmuq/YzLSSaadTuU0QhCEIQg0QhCDQ0QaGhoaGiDRCEIQhCDXMaINEGicXwgkThCEJghCEhCEEhIWtMv4G29RD4TPFfx+J+DUL0aiidINQq3b8v8AL304IQhBohCEIQnQaGhoaGhoaINDRBoa4GGiDQ0ToQhCEINEPEGiCRCEIQhCEIQjJo9EOTGFwWhsLxf8VwUeiarZbmiWrfRCkTZNarqXQbI3nhcQy2WqaymhKYpclzdnqvWxBIhCEIQaIQg0QhCDRCEGhoaINDQ0NdCDQ0jA0NEGiEIQhOEIQhCEIQhETJr9y8Ez8OK4acO4h6SQbbbiS3rJCOpvqdN/CDS7MZYS5JaJdEZjz+P6Ie513LoJjalVtw5hdua1QvQkmyeGmqoQhBog0NDRRkSNrlDQ0QaINDQ1gg0NEpCEINDQ0QaIToQfYaIQhEMQmRIhCEIQgkQgkQ1vHBCND6/yohVHlhla7tPL5HTdCok5Xdvv6KycofgTabh4b8MQbwIJDMJ2XMIuZN/XkrJudV+IfjQ/bQsvUC/Y7elUf4Pg7dv7/BbiL0HzKaErzV9CLP71ZfyTRzTnypSKxSTTTxHoJLw32Lmp9zns9oS7/MTFlJ4Qmax3TLafUJto0yEGhqkGhoZCDHwnchCEGiEGiEIQhCEIJEIJE4avjghcFw3Hw5WwWrbklrTJgYy+T6Iybbrby+bECgie0nInOXsQ9B3uVsydNw0b/wAyXAkomZEb1/qLIqPYNzFqhuHlws2uRtwL1Ll4FS14G9Mlg2o31LkbyJGjLy0KppnmiRqj8IW+z2iLkQW6lfhibvT7CZp70jYNPs7wwMfCEGuEIQhCEIQhCEEiEIQSNZ9SiYv4qJpWyJdWyKWVRw7LV938m/R4r7Lp0RuaCv8AES7su03eSmF4/ZICjnTXQfkPc3a/omqOljGSNpp22NF0pIz0c1+RPcXMZsH+jrwdQQQeLKp50MWphOa2GUZa+N0PUqUxPqIMNl6jDZRtReyjY2NjHBvkMsLs2hI0Z3dE9lndISJX8Ha98HxhCE4whP4QhCcIbDzo5tqr6ELgnz4URMLTrhurTwr4L5pM4aeOfeiNENbSps5Fl+hyqctq+7ElNJFYmNvoNZUno7qbvZRNNajh03P9f0Zg+4JthsBOwyExJjlPn2ZqIJ9j4r7F6GCEFmPkMLMZjeTm7gikLa7dy0e68i5iobKUpoIeoxjHwbGyjGPJ6Gr9w6h5D5jjkfE6Xoj/AIP9jp+Nfsez8f7OR6ET/pOV7z/vI5HuR1Aeww/3/wAnbZ5Sh8i8se2jy2MaeBGoZuWBRkc62z6/4LBNxnlOewvyykm3DTYOv4L5IVdErdh1WM3LVdEZNU+rZbFaEL0y6jWfCIpc7vcW94V1KJqGeiOWtmPa3jE38CytftDwYmGtmt70H04eGrlPemTUzvH2cyZ1CxYuo3ixMbI6tjU9CaQ0omJp7iRdKcmIU1HoUTyVDY2N4yOeRmRj4N/Y8D34+eC1yPmIfC6QWdSlKuO5dOFXHsNzPq4IRh6spJeTDEWV/keWMDhWa33YjYpk18LuxdXOpMLx+xC6LA5jPwhRVSvXomJx7HkTJWjMimtMckjTupZTUIjG3F8NftbMS4Qqf76mfGLRkfUfmYjKLylIs6Z/Y0BGMkJ5TTzhPZipVZugthcwbHwZcDY2Ubzngx8GbVjPPDM4U3cJgeBFMiy+CvCitGJnbjYPhTBgtouvd+CHtuXU47CEd0KGjcJJV+iQxsyleX3f6EVNJclCrTDe2NSOcejXyxKQlsEIY3DBreCtwOyaSe2BgSOUdgnUZVb640+aGoUSTTTqaejQg8tRNz3Mo9THiOeHtwjcZGJp6CVvqZ1nMTzqNl14N54MYzHB8H8m64PQenHS/rx/30a/2o0Xzjr+EZ8e1H/XP+uLc9I/6J/2z/lBcKUXSu6Ff8yOR7hf2x/3j/rITA6aXDQv+wbRVJtKG+zbntisfZlDfc8vrsY9Nd4a6oCItUOlvolfsQIjfVbfd34Rqn+XceReqbFyTrNZWxLd/kS9fTFLf0YNX6ZPMQrXXJLJ9MfTbSteX8l6tuzvyL/2/wAm9+BlZL5E5remRm10+br8Dhf4vA7v8s1trtjR9xasjyFjWZDfkaZrGXaKxtbQ7MXC+pjPdMZNGJ2nWHjYcUoiY2sxr2XDLeDNhseqGYgxj47ZH24VjSbwNOy92kO+s7oK+n3RWqmy0w7LsJq2Yao2/THsOc6h6Aeg2ynwDRhqJvR+qxARtbTTFJVw3WWvK/grkp3QnaJs/wCUf8hlLVNEmzEagKazr+BLuC/thb/sP8aFu+tfspr6UX18g6AJu6eGdI8HIb2Fto/Ix49U/AuacMadU+xtSduNLwG7YBazvA4vlh/RfVezv8l9U/3uJE6/B/cW4zxRgzMJP+X2dQK54et9RL0YdSeU5S93qJW4JH6hoSO2BGjxwJWjylfpE/6n+BJ3PH6CVueER82NvSszu3TqPY+YHpV7P+kP+yY+ZeWNX7j/AKw+b9mzY+a+DqyvePwmJKwk7DNn0NCQorOv9itbqqdGTbau5fgzq4v92Kr2Wysg9iQuFLY5chMqo8ASCijZlesTKMZayTno018CKiHgEInhE0S8CU2elhBUvlk6xzL0Z/kaWPnX+hZ5vQ14k6tfoSJ5b8Qd6NI7vPs3HH3b/Y2ajS9mTYXI9ENnJfAm9y9GXsLqeXoXd6KJ8oJncl5G+xeHsbKJplnMbEzOo+5eo2tMDY3jCXsb7Io2YL1G+nyO9h5H2L0Qx05q3xgUXP8AY2N9RvsODc3qKpqMdHboMfgZVzK5wNu6MNub+xr/AFGl2Gl0HLhIXYitc8k6H7FNkNXCYTNgmfIJCrL0Z8554RpOvdU1PYUZbs2zTZv0JvZfInnamecK95S61qndRC5w36G+ZVzI5i66Jvoxc5COZeBchXyM/wCQvJVpWOdKXsdhjbuj9FdUV2ivmvovOe6cmoxatFBtb4HhhN/BU3Xgb5jfRDae8ZbpR3djb6PydS+RQrNc3Pt0E1MYQxsfocfIfgbQ5XIr01Ls9RzbUd5D02HR9fkxyQ4a/Q03o2aJiaxEl3MnYvgbeyVIplr0Rf8ARFtkumEvEE8ion1Z3ReUHd59iW5XyJLoxJTK+UJOSI9MISa3I9m/gj3bfkV0UO8vdi6EJt6N6KmUKmGXk7ILNyl9iS3CaW69mWw8ERuzYVY1W6TP8wxM9mhN9vkr6mrzRa6Rle5c7lF1aKhtNWumSLhP1EN5STyzPMvJJFb/AGPPca82JOfyNvA9SzS7wsIWwk87WyMvq/17GHoYg2tmOc2b4p5EGuTfhlNbzM17J9jb5obbQbXYfR8lchNtPQtMv5MO5/JHO+BJbY8DlwlDsXyM2SXg0OP4Gf5Fe1gk3msk1TR7Ym9lgT5rJm1XvQXMQuRCfb6G8YmBV8nwJPf5QaW7x5E9CdLyCaea2PPM9+R2RILGrQ10bX2KPMEW0XnI27H0dI3ZlYVf2J6KjJtewnap7L3WO4tkaK3q+RLLk1f2NUq2vOBaSy+znh6Fe7Sfaj2teWht7EkJpgVarPcxpGhy7/Z1NmNmZ5wbzMPqTyOgKKKttE1v+3GVSOnLs69fofVKjvQdxljbv4HzfRHIfRKD7Mb5Jkbtjae7gjVbVcv0Jybjb+jLkRMfDL3JWy7DEtV0wU51+S2grxH6MqjU1aET2XuLobfZi1aF3Jjb2dSJ+x44d8DdZb6+TRlu6a0hrNYkrgqYns0VHl5yE1nPydI2hNLTYjkznT3CGzXyJ20k3l4F2PkdbV2SGyy6e+b8CROYb7CTMj+RDViVvXQyCNsHcOafsT3Urz/0TnGdkoibit9Mr3p8iZyXmteP7FZk38GpuJd1kSS2V7D1SmE1vdjeSdBtrT8MW1J1GNElgTwwsdR3f7MNnBI8Oj1X9DanEvRjJYG9YnNvTwhT5Gobfx06Ib6v2xbh9g29pO48tvY+RJndIhawjmp3G80b5UYzrDwxpPSpmLShNpnD7den2NzNO5Fatr4EieUhKtZ6pFrfgcbil4TJry33bG0nUl00LpsKsyS0e0JtdCTWeExuaIxmmEvQsnG35EyXN8i5voSLLSwc+fb9DWfgBO9HXd5FWsxXvRLCvpikt4vmkqJVdTMsRdsiz3WOUPAaZNrHQtVTRXEom3yQ3k2vGrEmU8vo3syZWDaE3Mt0T5tmCzSmh9ib+dBNeiOrr9f2NXV5pEkl+/kTTT3q/YnmWitIa3dNti9zkx+R7CFNUV4ND5DWmPVay5ez9F3Mt8DTg7MbdcDMFu40z3j0/wBuKSFNdct9XqJraVHSRMaW19s9+xtrRtei7mvRfScx9J+Z+B2zH5IbfQ23+BHMfoaPVpd8E8i5ZFqjX2Nt0hLTTSafNYLgVfVlr/f6n/TEjTUx41KsWfdFWicItbi2yTmbz3HDXHoaWqISLpnlgcbGNm8NsrkQWBmZaNvtlezLd5J0pdMmsreOxsVYqWvIaTbAtWYJpr2E+br0FlFXCpXoXGdPRrlfksaLL3Enq0pOotEsc9i50q9mdYYbP0OGcDt4uNR6ZG+Sy/K/ZTEPBfH/AArq9kg0xFW8ZbbFNWLys0Qzayr3dYmoq3gja32Jtszqd9hvOUSceMFVx9De9yNsaGq/sNrGWbG2voqbdz8DauU8D1NORNFJlvkiVsjCfD71y/3dYEhEsJKIb2THbzK08rA5vGNYxSYzUjFw2hp5yRVY2ths9avJhpoNujNGkzYiLsSpV5Rj2Uh8545Nk7N+zy9GrcuSNbLQhq2vsg1Nlvp6HGtv6SG7CZNlG/Wo2aaukx5FyEu7rNGKK7t7S/v5Ka1rq20QjShPkoN7RvzBnrEvsbzFl8txNWI85E9SGBWD3J6E0om+mh2KiSOpevsiYrEbejpzN1aU+RVJTDerMYrMbeBTf0VTea6mghpmLL9CeI07EvWvwf0TPv8Ao1k69dSfWaekKKJXCmkQ4WF+KMuLy5DZZeOY3iuGGVpfAuZqGBrGNcLboJLlrUz0jZl4ULz1G3eiK9a50LHE6yN2qPdIugzZTVWOomt005gjdhiQz0SK22SQzSWoh1Lu931nbQTqaY2sKqM2zCzRJ88jq0xNaOdjbT8jlug83O3IaLDbQ05r2Nu5yu43X4G1Nb5I6Q7CZRMa5vkaWVqbSUi/zN9JVibiX3RY0V88n/vI5VOuyl8ilVzKrMf6M9VVvDfs7tCh4STTAkllwbWzWeonsa+yq4nwPbT3+BNbJuifJJtaaEan+YVZcq7OFSzJehatJ4ElNV6HZh9sQdbuLonSuYadjmJIrx6OZtdBMyspfCey38LU0Vrvhed/gqzscZfv+jWDZoxr1p8EkmwSxB7a5KlleXQqPL5sZWxxdIVeafQbJ6PPUhZa08iGsVvTkN80khJzFV0RjV0hJJaLzGzMjzroYSqasEsbyl3plmyajylT1x/Z4SLVjT2c2lHIPr9Fys/gWSWPG3cUnnO5SLq9l19Feyw4iTkmy05lNXkTfTrmUt3vcbW8gnulZjoM9rgztEM3c3yVpVPHeHwG2rg0eo84z3Eubor2Gm3kcWzJmiFzIxvq38kaP6JyaJ1ZN3eLu52Ei0/6RbtlSjhc9Bo7mv5MSx8tse6qdxp1G2u44iS8mQWW0+Wwv8zf94FHI75YxlpN7XIhaJkK1SX2TTqfsxs3hvrj4G6xXgpvOPOo+Rr+xdiFEYkrq3MiVvK5ORe/0QfRrFjM1MuL0vyaFUT2Sns3mp9jRKlddM3Q0Zx3dv48Cyza/FKlNXksoeCrVZ3SHDzeX9nWPaNQa7tK4WSvQ1nnWPUmnW/9kqxeORSmrevIS8NdButqZHEePISSczzJmH+RFSxYYi1etTU47HMw623OXIbrGVgniJt/sex9l1IyaWPga3JJbNS8lzb/AOmsQ3WzrbdtlptOdBu9FoXESTfcbjyor2EOrRtYzkU1bFyTT3Q2wmtetGlcNfsa3yVwcejj2Lyj+zdRIwqTj1G2jjG7nQbXNCmijOVUHBVzJ0Z//9k=')" data-coord="[ 10.A.IMG ]"></div>
+</section>
+
+<div class="s-num-bar"><span>10.A · DATA SECURITY POLICY</span><span>LEGAL / 04</span><span>10 · ARTICLES</span></div>
+
+<section class="lgl-body">
+
+<aside class="lgl-toc">
+<div class="lgl-toc-l">[ Contents ]</div>
+<ul class="lgl-toc-list" id="securityToc">
+<li><a class="lgl-toc-item" href="#sec-01" data-target="sec-01"><span class="lgl-toc-num">01</span><span class="lgl-toc-t">Commitment</span></a></li>
+<li><a class="lgl-toc-item" href="#sec-02" data-target="sec-02"><span class="lgl-toc-num">02</span><span class="lgl-toc-t">Governance</span></a></li>
+<li><a class="lgl-toc-item" href="#sec-03" data-target="sec-03"><span class="lgl-toc-num">03</span><span class="lgl-toc-t">Access Control</span></a></li>
+<li><a class="lgl-toc-item" href="#sec-04" data-target="sec-04"><span class="lgl-toc-num">04</span><span class="lgl-toc-t">Encryption</span></a></li>
+<li><a class="lgl-toc-item" href="#sec-05" data-target="sec-05"><span class="lgl-toc-num">05</span><span class="lgl-toc-t">Infrastructure</span></a></li>
+<li><a class="lgl-toc-item" href="#sec-06" data-target="sec-06"><span class="lgl-toc-num">06</span><span class="lgl-toc-t">Personnel</span></a></li>
+<li><a class="lgl-toc-item" href="#sec-07" data-target="sec-07"><span class="lgl-toc-num">07</span><span class="lgl-toc-t">Vendor Management</span></a></li>
+<li><a class="lgl-toc-item" href="#sec-08" data-target="sec-08"><span class="lgl-toc-num">08</span><span class="lgl-toc-t">Incident Response</span></a></li>
+<li><a class="lgl-toc-item" href="#sec-09" data-target="sec-09"><span class="lgl-toc-num">09</span><span class="lgl-toc-t">Continuous Review</span></a></li>
+<li><a class="lgl-toc-item" href="#sec-10" data-target="sec-10"><span class="lgl-toc-num">10</span><span class="lgl-toc-t">Reporting</span></a></li>
+</ul>
+</aside>
+
+<div class="lgl-content">
+
+<div class="lgl-section" id="sec-01">
+<div class="lgl-section-coord">Article [ 01 ]</div>
+<h2 class="lgl-section-h">Our <em>commitment.</em></h2>
+<p>HIMARK handles confidential commercial information for clients operating at the premium tier of their markets. The integrity of those engagements depends on the security of the information they entrust to us.</p>
+<p>This Data Security Policy describes the technical, organisational, and procedural controls HIMARK applies to protect personal information and client confidential information against loss, unauthorised access, alteration, disclosure, and destruction. It is reviewed quarterly and operates in conjunction with our <a href="#" data-page="privacy">Privacy Notice</a> and our obligations under POPIA.</p>
+</div>
+
+<div class="lgl-section" id="sec-02">
+<div class="lgl-section-coord">Article [ 02 ]</div>
+<h2 class="lgl-section-h"><em>Governance.</em></h2>
+<p>HIMARK has appointed an Information Officer responsible for security posture, compliance, and incident response. The Information Officer reports directly to the Chief Executive and operates with the authority to halt processing activity that creates unacceptable risk.</p>
+<p>Security responsibilities are formally distributed across the leadership team:</p>
+<ul>
+<li><strong>Information Officer</strong> — overall accountability, policy ownership, regulator liaison</li>
+<li><strong>Chief Operations Officer</strong> — operational protocol, vendor due diligence, personnel access</li>
+<li><strong>Chief Technology Officer</strong> — infrastructure, encryption, monitoring, technical incident response</li>
+</ul>
+</div>
+
+<div class="lgl-section" id="sec-03">
+<div class="lgl-section-coord">Article [ 03 ]</div>
+<h2 class="lgl-section-h">Access <em>control.</em></h2>
+<p>Access to personal information and client confidential information follows the principle of least privilege. No member of HIMARK has access to information they do not require to perform their specific role.</p>
+<ul>
+<li>Role-based access controls on every operational system, with quarterly review of access lists</li>
+<li>Multi-factor authentication required on all systems holding client or personal information</li>
+<li>Single sign-on through a centrally administered identity provider where supported</li>
+<li>Access revoked within twenty-four (24) hours of role change or departure</li>
+<li>Privileged access logged, monitored, and reviewed monthly</li>
+</ul>
+</div>
+
+<div class="lgl-section" id="sec-04">
+<div class="lgl-section-coord">Article [ 04 ]</div>
+<h2 class="lgl-section-h"><em>Encryption.</em></h2>
+<p>HIMARK applies encryption as a baseline control across all systems handling personal information or client confidential information.</p>
+<ul>
+<li><strong>In transit</strong> — TLS 1.2 or higher on all web traffic, including the himark.co.za website, the Atlas assistant, and AIRaaS deployments</li>
+<li><strong>At rest</strong> — AES-256 encryption on all storage systems holding client material, including engagement working files, application records, and operational databases</li>
+<li><strong>Key management</strong> — encryption keys held in a managed key service with rotation on a defined cadence and access restricted to system principals</li>
+<li><strong>Backups</strong> — encrypted at rest, geographically distributed, and validated through periodic restoration tests</li>
+</ul>
+</div>
+
+<div class="lgl-section" id="sec-05">
+<div class="lgl-section-coord">Article [ 05 ]</div>
+<h2 class="lgl-section-h"><em>Infrastructure.</em></h2>
+<p>HIMARK operates on cloud infrastructure provided by reputable, audited providers. The technology platform is designed for resilience, isolation, and observability.</p>
+<ul>
+<li>Network segmentation between public-facing services, internal operational systems, and storage layers</li>
+<li>Web application firewall on all public endpoints with rate limiting and signature-based threat detection</li>
+<li>Continuous logging of access events, with logs retained for security review</li>
+<li>Automated patch management for operating systems and supporting libraries</li>
+<li>Periodic vulnerability scans and remediation of findings within defined service levels</li>
+</ul>
+</div>
+
+<div class="lgl-section" id="sec-06">
+<div class="lgl-section-coord">Article [ 06 ]</div>
+<h2 class="lgl-section-h"><em>Personnel.</em></h2>
+<p>HIMARK is a small firm operating to a high standard of personal accountability. Every member of the firm is treated as a custodian of the information entrusted to us.</p>
+<ul>
+<li>Background verification proportionate to role at the point of engagement</li>
+<li>Confidentiality obligations binding on every member of the firm and continuing beyond departure</li>
+<li>Annual security awareness review, including phishing simulation and incident-response drilling</li>
+<li>Device security policy covering disk encryption, screen lock, and approved applications</li>
+<li>No personal devices used for client work without explicit policy approval and minimum control standards</li>
+</ul>
+</div>
+
+<div class="lgl-section" id="sec-07">
+<div class="lgl-section-coord">Article [ 07 ]</div>
+<h2 class="lgl-section-h">Vendor <em>management.</em></h2>
+<p>Where HIMARK relies on third-party services to deliver client engagements, those vendors are vetted before adoption and reviewed periodically thereafter.</p>
+<ul>
+<li>Documented due diligence covering security posture, certifications, and data residency</li>
+<li>Contractual obligations consistent with this policy and with our POPIA obligations</li>
+<li>Annual vendor review including any newly disclosed incidents, certification changes, or material control changes</li>
+<li>Termination procedures that include verified deletion of HIMARK and client information held by the vendor</li>
+</ul>
+<div class="lgl-callout">
+<div class="lgl-callout-l">[ No Advertising Vendors ]</div>
+<p>HIMARK does not engage advertising networks, retargeting platforms, or marketing data brokers as part of its operational stack.</p>
+</div>
+</div>
+
+<div class="lgl-section" id="sec-08">
+<div class="lgl-section-coord">Article [ 08 ]</div>
+<h2 class="lgl-section-h">Incident <em>response.</em></h2>
+<p>HIMARK maintains a defined incident response process. The objective is rapid containment, transparent communication, and structured remediation.</p>
+<ul>
+<li><strong>Detection</strong> — monitoring across infrastructure with alerts to the Information Officer and Chief Technology Officer</li>
+<li><strong>Containment</strong> — immediate isolation of affected systems and revocation of compromised credentials</li>
+<li><strong>Assessment</strong> — determination of scope, affected data subjects, and likely impact</li>
+<li><strong>Notification</strong> — affected data subjects and the Information Regulator notified in accordance with section 22 of POPIA where the breach creates a reasonable risk of harm</li>
+<li><strong>Remediation</strong> — root-cause analysis, control improvement, and documented closure</li>
+</ul>
+<p>Incident records are retained for review and to inform future control strengthening.</p>
+</div>
+
+<div class="lgl-section" id="sec-09">
+<div class="lgl-section-coord">Article [ 09 ]</div>
+<h2 class="lgl-section-h">Continuous <em>review.</em></h2>
+<p>Security posture is reviewed quarterly. The review covers control effectiveness, vendor changes, personnel changes, incident history, and external threat landscape changes. Findings are documented and translated into remediation actions with defined ownership and target dates.</p>
+<p>The Information Officer presents a summary of the quarterly review to firm leadership. Where required, this Data Security Policy is updated and republished, with material changes communicated to active clients.</p>
+</div>
+
+<div class="lgl-section" id="sec-10">
+<div class="lgl-section-coord">Article [ 10 ]</div>
+<h2 class="lgl-section-h"><em>Reporting.</em></h2>
+<p>If you believe HIMARK has experienced a security incident, has compromised the confidentiality of information you have entrusted to us, or is operating outside the standards described in this policy, please contact the Information Officer directly:</p>
+<div class="lgl-callout">
+<div class="lgl-callout-l">[ Information Officer ]</div>
+<p><strong>HIMARK (Pty) Ltd</strong><br>Attention: The Information Officer<br>Randburg, Gauteng, South Africa<br>Email: <a href="mailto:info@himark.co.za">info@himark.co.za</a></p>
+</div>
+<p>HIMARK acknowledges all credible reports within forty-eight (48) hours and provides a substantive response within seven (7) working days.</p>
+</div>
+
+</div>
+</section>
+
+<footer class="footer">
+<span class="footer-coord-tl">[ END.DOCUMENT ]</span>
+<span class="footer-coord-tr">HIMARK / FOOTER</span>
+<div class="footer-top">
+<div><div class="ft-wm"><svg width="14" height="10" viewBox="0 0 292 200" fill="none"><rect x="0" y="0" width="28" height="200" fill="#5F8190"/><rect x="28" y="88" width="104" height="20" fill="#5F8190"/><rect x="132" y="0" width="28" height="200" fill="#5F8190"/><polygon points="160,0 182,0 212,120 201,120" fill="#5F8190"/><polygon points="242,0 264,0 223,120 212,120" fill="#5F8190"/><rect x="264" y="0" width="28" height="200" fill="#5F8190"/></svg>HIMARK</div><p class="ft-tag">Strategic Growth Consultancy</p><p class="ft-blurb">HIMARK (Pty) Ltd. A Good Global Holdings company.</p></div>
+<div><p class="ft-col-t">[ 01 ] Engagement</p><ul class="ft-links"><li><a href="#" data-page="mandates">Mandates</a></li><li><a href="#" data-page="airass">AIRaaS</a></li><li><a href="#" data-page="method">Method</a></li></ul></div>
+<div><p class="ft-col-t">[ 02 ] Firm</p><ul class="ft-links"><li><a href="#" data-page="doctrine">Doctrine</a></li><li><a href="#" data-page="principals">Principals</a></li><li><a href="#" data-page="home">Origin</a></li></ul></div>
+<div><p class="ft-col-t">[ 03 ] Contact</p><ul class="ft-links"><li><a href="#" data-page="intake">Apply for Engagement</a></li><li><a href="#" data-page="signin">Client Portal</a></li><li><a href="#">info@himark.co.za</a></li></ul></div>
+</div>
+<div class="footer-bottom"><p class="ft-copy">© MMXXIV  ·  HIMARK (PTY) LTD</p><div class="ft-legal"><a href="#" data-page="privacy">Privacy</a><a href="#" data-page="terms">Terms</a><a href="#" data-page="cookies">Cookies</a><a href="#" data-page="security">Security</a></div></div>
+</footer></div></div>
+<!-- Floating widgets -->
+<button id="mute-btn" class="muted"><div class="aw"><span></span><span></span><span></span><span></span><span></span></div></button>
+
+<!-- WhatsApp button moved to Intake page -->
+
+<button class="chat-toggle-btn" id="chatTgl">
+<svg class="ico-ch" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F7F7F5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+<svg class="ico-cl" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#F7F7F5" stroke-width="1.8" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</button>
+
+<div class="chat-win" id="chatWin">
+<div class="ch-hdr">
+<div class="ch-av"><svg width="12" height="9" viewBox="0 0 292 200" fill="none"><rect x="0" y="0" width="28" height="200" fill="#5F8190"/><rect x="28" y="88" width="104" height="20" fill="#5F8190"/><rect x="132" y="0" width="28" height="200" fill="#5F8190"/><polygon points="160,0 182,0 212,120 201,120" fill="#5F8190"/><polygon points="242,0 264,0 223,120 212,120" fill="#5F8190"/><rect x="264" y="0" width="28" height="200" fill="#5F8190"/></svg></div>
+<div><div class="ch-nm">ATLAS · HIMARK</div><div class="ch-st"><span class="ch-st-dot"></span>ONLINE · INSTANT REPLIES</div></div>
+</div>
+<div class="ch-tabs">
+<button class="ch-tab active" id="tChat" onclick="swT('chat')"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>CHAT</button>
+<button class="ch-tab" id="tVoice" onclick="swT('voice')"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>VOICE</button>
+</div>
+<div id="cpanel">
+<div class="ch-msgs" id="chMsgs"></div>
+<div class="qreps" id="qr">
+<button class="qr" onclick="sQ(this)">Mandates</button>
+<button class="qr" onclick="sQ(this)">AIRaaS</button>
+<button class="qr" onclick="sQ(this)">Apply</button>
+<button class="qr" onclick="sQ(this)">Method</button>
+</div>
+<div class="ch-inbar">
+<input class="ch-inp" id="chIn" type="text" placeholder="Ask us anything…" autocomplete="off"/>
+<button class="ch-send" onclick="sM()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+</div>
+</div>
+<div class="vp" id="vpanel">
+<div class="v-orb" id="vOrb"><div class="v-ring"></div><div class="v-ring"></div><div class="v-ring"></div>
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#5F8190" stroke-width="1.4" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+<div class="v-wave" id="vWave"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+<div class="v-stat" id="vStat">TAP TO SPEAK</div>
+<p class="v-hint">Ask about engagement or how to apply.</p>
+<button class="v-btn" id="vMic" onclick="tV()">START SPEAKING</button>
+</div>
+</div>
+<script src="main/main.js"></script>
+</body>
+</html>

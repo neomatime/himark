@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HIMARK · Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Roboto:ital,wght@0,300;0,400;1,300&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../styles/styles.css"/>
+</head>
+<body data-page="signin" data-location="auth">
+<div id="cd"></div>
+<div id="cr"></div>
+<canvas id="cvs"></canvas>
+
+<!-- HIMARK wordmark — top center, alone -->
+<a href="#" id="brand-mark" data-page="home">
+<span class="brand-wm">HIMARK</span>
+</a>
+
+<!-- Right-edge menu trigger -->
+<div id="menu-trigger" class="mt-trigger">
+<span class="mt-num">[ 01—06 ]</span>
+<div class="mt-line"></div>
+<span class="mt-label">Index ↑</span>
+</div>
+
+<!-- Menu overlay -->
+<div class="menu-overlay" id="menuOverlay"></div>
+<div class="prn-backdrop" id="prnBackdrop"></div>
+
+<!-- PRINCIPAL MODAL -->
+<div class="prn-modal-backdrop" id="prnModalBackdrop"></div>
+<div class="prn-modal" id="prnModal" role="dialog" aria-modal="true" aria-hidden="true">
+<button class="prn-modal-close" id="prnModalClose" aria-label="Close">×</button>
+<div class="prn-modal-image">
+<span class="prn-modal-coord" id="prnModalCoord">[ 05.A.01 ]</span>
+<span class="prn-modal-status">On.Mandate</span>
+<div class="prn-modal-glyph" id="prnModalGlyph">NM</div>
+<span class="prn-modal-image-tag" id="prnModalImageTag">PRINCIPAL · DOSSIER</span>
+</div>
+<div class="prn-modal-body">
+<p class="prn-modal-eyebrow" id="prnModalEyebrow">Principal · Dossier</p>
+<h2 class="prn-modal-name" id="prnModalName">Neo Matime</h2>
+<p class="prn-modal-role" id="prnModalRole">Founder & Chief Executive</p>
+<div class="prn-modal-divider"></div>
+<p class="prn-modal-bio" id="prnModalBio"></p>
+<p class="prn-modal-bio" id="prnModalDoctrine" style="font-style:italic;color:var(--ocean-dk)"></p>
+<div class="prn-modal-tags" id="prnModalTags"></div>
+</div>
+</div>
+
+<!-- COOKIES BANNER -->
+<aside id="cookies-banner" role="region" aria-label="Cookie preferences">
+<span class="cb-coord">[ 09.A · COOKIES ]</span>
+<div class="cb-icon" aria-hidden="true"></div>
+<div class="cb-text">
+<span class="cb-eyebrow">Cookies & Tracking</span>
+<p class="cb-msg">HIMARK uses cookies to operate this site, measure performance, and remember your preferences. See our <a href="#" data-page="cookies">Cookies Policy</a> and <a href="#" data-page="privacy">Privacy Notice</a> for the full schedule.</p>
+</div>
+<div class="cb-actions">
+<button class="cb-btn cb-btn-ghost" id="cb-deny">Deny</button>
+<button class="cb-btn cb-btn-secondary" id="cb-necessary">Necessary Only</button>
+<button class="cb-btn cb-btn-primary" id="cb-accept">Accept All</button>
+</div>
+</aside>
+
+<!-- Side panel menu -->
+<div id="menu-panel">
+<div class="menu-bg-grid"></div>
+<span class="menu-coord-tl">[ INDEX / 06 ]</span>
+<span class="menu-coord-tr" id="menuClose">CLOSE [ × ]</span>
+<ul class="menu-list">
+<li><a href="#" class="menu-item" data-page="home"><span class="mi-num">[ 00 ]</span><span class="mi-name">Origin <em>· home</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="doctrine"><span class="mi-num">[ 01 ]</span><span class="mi-name">Doctrine <em>· about</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="mandates"><span class="mi-num">[ 02 ]</span><span class="mi-name">Mandates <em>· services</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="method"><span class="mi-num">[ 03 ]</span><span class="mi-name">Method <em>· process</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="airass"><span class="mi-num">[ 04 ]</span><span class="mi-name">AIRaaS <em>· product</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="principals"><span class="mi-num">[ 05 ]</span><span class="mi-name">Principals <em>· team</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="intake"><span class="mi-num">[ 06 ]</span><span class="mi-name">Intake <em>· apply</em></span><span class="mi-arrow">→</span></a></li>
+</ul>
+<div class="menu-footer">
+<div class="mf-block">
+<div class="mf-label">[ 01 ]  Direct</div>
+<div class="mf-text"><a class="mf-link" href="mailto:info@himark.co.za">info@himark.co.za</a></div>
+<div class="mf-text" style="margin-top:6px">Randburg · Gauteng · ZA</div>
+</div>
+<div class="mf-block">
+<div class="mf-label">[ 02 ]  Group</div>
+<div class="mf-text">A <a class="mf-link" href="#">Good Global Holdings</a> company.</div>
+<div class="mf-text" style="margin-top:6px">Est. MMXXIV</div>
+</div>
+</div>
+</div>
+<div class="page" id="page-signin">
+<div class="auth-shell">
+
+<div class="auth-brand">
+<span class="auth-brand-coord-tl">[ 08.A · SIGN-IN ]</span>
+<div class="auth-brand-mark">HIMARK
+<div class="auth-brand-tag">Strategic Growth Consultancy</div>
+</div>
+
+<div class="auth-brand-glyph"><svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<rect x="60" y="80" width="120" height="280"/>
+<rect x="220" y="40" width="120" height="320"/>
+<line x1="60" y1="20" x2="340" y2="20"/>
+<line x1="60" y1="380" x2="340" y2="380"/>
+<line x1="60" y1="20" x2="60" y2="80"/>
+<line x1="180" y1="20" x2="180" y2="80"/>
+<line x1="220" y1="20" x2="220" y2="40"/>
+<line x1="340" y1="20" x2="340" y2="40"/>
+<polyline points="60,160 180,160 180,260 60,260"/>
+<polyline points="220,140 340,140 340,260 220,260"/>
+<polyline points="220,300 340,300"/>
+<circle cx="60" cy="20" r="3"/>
+<circle cx="180" cy="20" r="3"/>
+<circle cx="220" cy="20" r="3"/>
+<circle cx="340" cy="20" r="3"/>
+<circle cx="120" cy="160" r="3"/>
+<circle cx="280" cy="140" r="3"/>
+</svg></div>
+
+<div class="auth-brand-foot">
+<div class="auth-brand-foot-l">[ Operating Doctrine ]</div>
+<div class="auth-doctrine" data-doctrine-rotator>The architecture of growth.</div>
+</div>
+
+<span class="auth-brand-coord-bl">EST. MMXXIV  ·  RANDBURG · ZA</span>
+<span class="auth-brand-coord-br">SECURE.SESSION</span>
+</div>
+
+<div class="auth-form-pane">
+<span class="auth-form-coord-tl">[ 08.A · SIGN-IN ]</span>
+<a href="#" class="auth-form-back" data-page="home">Return to site</a>
+
+<form class="auth-form" onsubmit="return authSubmit(event,'mfa')">
+<p class="auth-eyebrow">Client Portal</p>
+<h1 class="auth-h">Sign in to<br><em>your portal.</em></h1>
+<p class="auth-sub">Restricted access. HIMARK client portal credentials only. Not yet engaged? <a href="#" class="auth-link" data-page="register" style="text-transform:none;letter-spacing:0;color:var(--ocean);border-bottom:1px solid var(--ocean)">Apply for engagement</a>.</p>
+
+<div class="auth-fields">
+<div class="auth-field">
+<label class="auth-field-l">[ 01 ] Email <em>required</em></label>
+<input class="auth-input" type="email" placeholder="name@company.co.za" autocomplete="email" required/>
+</div>
+<div class="auth-field">
+<label class="auth-field-l">[ 02 ] Password <em>required</em></label>
+<input class="auth-input" type="password" placeholder="••••••••••" autocomplete="current-password" required/>
+</div>
+</div>
+
+<div class="auth-row" style="margin-bottom:24px">
+<label class="auth-checkbox"><input type="checkbox"/>Trust this device for 30 days</label>
+<a href="#" class="auth-link" data-page="reset">Reset password</a>
+</div>
+
+<button type="submit" class="auth-submit">Continue to verification</button>
+
+<div class="auth-demo"><strong>Demo notice:</strong> authentication is non-functional in this preview. Any credentials proceed to the MFA step for demonstration purposes.</div>
+
+<div class="auth-foot">
+<span>Encrypted · Confidential</span>
+<a href="#" data-page="security">Data Security Policy →</a>
+</div>
+</form>
+
+<div class="auth-compliance">
+<span class="auth-compliance-l">TLS 1.3 · AES-256</span>
+<span>POPIA · GDPR · ISO 27001</span>
+</div>
+</div>
+
+</div>
+</div>
+<!-- Floating widgets -->
+<button id="mute-btn" class="muted"><div class="aw"><span></span><span></span><span></span><span></span><span></span></div></button>
+
+<!-- WhatsApp button moved to Intake page -->
+
+<button class="chat-toggle-btn" id="chatTgl">
+<svg class="ico-ch" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F7F7F5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+<svg class="ico-cl" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#F7F7F5" stroke-width="1.8" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</button>
+
+<div class="chat-win" id="chatWin">
+<div class="ch-hdr">
+<div class="ch-av"><svg width="12" height="9" viewBox="0 0 292 200" fill="none"><rect x="0" y="0" width="28" height="200" fill="#5F8190"/><rect x="28" y="88" width="104" height="20" fill="#5F8190"/><rect x="132" y="0" width="28" height="200" fill="#5F8190"/><polygon points="160,0 182,0 212,120 201,120" fill="#5F8190"/><polygon points="242,0 264,0 223,120 212,120" fill="#5F8190"/><rect x="264" y="0" width="28" height="200" fill="#5F8190"/></svg></div>
+<div><div class="ch-nm">ATLAS · HIMARK</div><div class="ch-st"><span class="ch-st-dot"></span>ONLINE · INSTANT REPLIES</div></div>
+</div>
+<div class="ch-tabs">
+<button class="ch-tab active" id="tChat" onclick="swT('chat')"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>CHAT</button>
+<button class="ch-tab" id="tVoice" onclick="swT('voice')"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>VOICE</button>
+</div>
+<div id="cpanel">
+<div class="ch-msgs" id="chMsgs"></div>
+<div class="qreps" id="qr">
+<button class="qr" onclick="sQ(this)">Mandates</button>
+<button class="qr" onclick="sQ(this)">AIRaaS</button>
+<button class="qr" onclick="sQ(this)">Apply</button>
+<button class="qr" onclick="sQ(this)">Method</button>
+</div>
+<div class="ch-inbar">
+<input class="ch-inp" id="chIn" type="text" placeholder="Ask us anything…" autocomplete="off"/>
+<button class="ch-send" onclick="sM()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+</div>
+</div>
+<div class="vp" id="vpanel">
+<div class="v-orb" id="vOrb"><div class="v-ring"></div><div class="v-ring"></div><div class="v-ring"></div>
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#5F8190" stroke-width="1.4" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+<div class="v-wave" id="vWave"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+<div class="v-stat" id="vStat">TAP TO SPEAK</div>
+<p class="v-hint">Ask about engagement or how to apply.</p>
+<button class="v-btn" id="vMic" onclick="tV()">START SPEAKING</button>
+</div>
+</div>
+<script src="../main/main.js"></script>
+</body>
+</html>

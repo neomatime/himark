@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HIMARK · Principals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Roboto:ital,wght@0,300;0,400;1,300&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles/styles.css"/>
+</head>
+<body data-page="principals" data-location="root">
+<div id="cd"></div>
+<div id="cr"></div>
+<canvas id="cvs"></canvas>
+
+<!-- HIMARK wordmark — top center, alone -->
+<a href="#" id="brand-mark" data-page="home">
+<span class="brand-wm">HIMARK</span>
+</a>
+
+<!-- Right-edge menu trigger -->
+<div id="menu-trigger" class="mt-trigger">
+<span class="mt-num">[ 01—06 ]</span>
+<div class="mt-line"></div>
+<span class="mt-label">Index ↑</span>
+</div>
+
+<!-- Menu overlay -->
+<div class="menu-overlay" id="menuOverlay"></div>
+<div class="prn-backdrop" id="prnBackdrop"></div>
+
+<!-- PRINCIPAL MODAL -->
+<div class="prn-modal-backdrop" id="prnModalBackdrop"></div>
+<div class="prn-modal" id="prnModal" role="dialog" aria-modal="true" aria-hidden="true">
+<button class="prn-modal-close" id="prnModalClose" aria-label="Close">×</button>
+<div class="prn-modal-image">
+<span class="prn-modal-coord" id="prnModalCoord">[ 05.A.01 ]</span>
+<span class="prn-modal-status">On.Mandate</span>
+<div class="prn-modal-glyph" id="prnModalGlyph">NM</div>
+<span class="prn-modal-image-tag" id="prnModalImageTag">PRINCIPAL · DOSSIER</span>
+</div>
+<div class="prn-modal-body">
+<p class="prn-modal-eyebrow" id="prnModalEyebrow">Principal · Dossier</p>
+<h2 class="prn-modal-name" id="prnModalName">Neo Matime</h2>
+<p class="prn-modal-role" id="prnModalRole">Founder & Chief Executive</p>
+<div class="prn-modal-divider"></div>
+<p class="prn-modal-bio" id="prnModalBio"></p>
+<p class="prn-modal-bio" id="prnModalDoctrine" style="font-style:italic;color:var(--ocean-dk)"></p>
+<div class="prn-modal-tags" id="prnModalTags"></div>
+</div>
+</div>
+
+<!-- COOKIES BANNER -->
+<aside id="cookies-banner" role="region" aria-label="Cookie preferences">
+<span class="cb-coord">[ 09.A · COOKIES ]</span>
+<div class="cb-icon" aria-hidden="true"></div>
+<div class="cb-text">
+<span class="cb-eyebrow">Cookies & Tracking</span>
+<p class="cb-msg">HIMARK uses cookies to operate this site, measure performance, and remember your preferences. See our <a href="#" data-page="cookies">Cookies Policy</a> and <a href="#" data-page="privacy">Privacy Notice</a> for the full schedule.</p>
+</div>
+<div class="cb-actions">
+<button class="cb-btn cb-btn-ghost" id="cb-deny">Deny</button>
+<button class="cb-btn cb-btn-secondary" id="cb-necessary">Necessary Only</button>
+<button class="cb-btn cb-btn-primary" id="cb-accept">Accept All</button>
+</div>
+</aside>
+
+<!-- Side panel menu -->
+<div id="menu-panel">
+<div class="menu-bg-grid"></div>
+<span class="menu-coord-tl">[ INDEX / 06 ]</span>
+<span class="menu-coord-tr" id="menuClose">CLOSE [ × ]</span>
+<ul class="menu-list">
+<li><a href="#" class="menu-item" data-page="home"><span class="mi-num">[ 00 ]</span><span class="mi-name">Origin <em>· home</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="doctrine"><span class="mi-num">[ 01 ]</span><span class="mi-name">Doctrine <em>· about</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="mandates"><span class="mi-num">[ 02 ]</span><span class="mi-name">Mandates <em>· services</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="method"><span class="mi-num">[ 03 ]</span><span class="mi-name">Method <em>· process</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="airass"><span class="mi-num">[ 04 ]</span><span class="mi-name">AIRaaS <em>· product</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="principals"><span class="mi-num">[ 05 ]</span><span class="mi-name">Principals <em>· team</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="intake"><span class="mi-num">[ 06 ]</span><span class="mi-name">Intake <em>· apply</em></span><span class="mi-arrow">→</span></a></li>
+</ul>
+<div class="menu-footer">
+<div class="mf-block">
+<div class="mf-label">[ 01 ]  Direct</div>
+<div class="mf-text"><a class="mf-link" href="mailto:info@himark.co.za">info@himark.co.za</a></div>
+<div class="mf-text" style="margin-top:6px">Randburg · Gauteng · ZA</div>
+</div>
+<div class="mf-block">
+<div class="mf-label">[ 02 ]  Group</div>
+<div class="mf-text">A <a class="mf-link" href="#">Good Global Holdings</a> company.</div>
+<div class="mf-text" style="margin-top:6px">Est. MMXXIV</div>
+</div>
+</div>
+</div>
+<div class="page" id="page-principals">
+<div style="padding-top:0">
+<section class="prn-hero">
+<div class="prn-hero-bg"></div>
+<div class="page-geometry dk"><svg viewBox="0 0 600 480" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<rect x="120" y="80" width="120" height="320"/>
+<rect x="260" y="180" width="120" height="220"/>
+<rect x="400" y="120" width="120" height="280"/>
+<line x1="60" y1="400" x2="560" y2="400"/>
+<line x1="120" y1="80" x2="120" y2="40"/>
+<line x1="240" y1="80" x2="240" y2="40"/>
+<line x1="260" y1="180" x2="260" y2="40"/>
+<line x1="380" y1="180" x2="380" y2="40"/>
+<line x1="400" y1="120" x2="400" y2="40"/>
+<line x1="520" y1="120" x2="520" y2="40"/>
+<line x1="60" y1="40" x2="560" y2="40"/>
+<circle cx="180" cy="40" r="3"/>
+<circle cx="320" cy="40" r="3"/>
+<circle cx="460" cy="40" r="3"/>
+</svg></div>
+<div class="prn-hero-c">
+<div><p class="eyebrow light">The Principals</p><h1 class="prn-hl">Operators<br><span>not advisors.</span></h1></div>
+<p class="prn-note">Each engagement is anchored by a senior principal. We do not delegate strategic work to juniors. We do not exist.</p>
+</div>
+</section>
+
+<div class="s-num-bar"><span>05.A · LEADERSHIP</span><span>PRINCIPALS / 01</span><span>03 · OPERATORS</span></div>
+
+<section class="prn-section">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:end;margin-bottom:0">
+<div class="r3d-l">
+<p class="eyebrow">The Operators</p>
+<h2 class="svc-hl">The people<br>behind <em>the work.</em></h2>
+</div>
+<div class="r3d-r d1" style="padding-bottom:8px">
+<p class="svc-note">HIMARK is a deliberately small team of operators with deep institutional experience. Every principal has personally led commercial transformations at scale.</p>
+</div>
+</div>
+<div class="prn-grid">
+<div class="principal-card r3d d1" data-bio-full="Founder of HIMARK and Good Global Holdings. Operates across commercial strategy, brand architecture, and AI integration for founder-led businesses pursuing premium-tier market positions. Personally leads Tier 03 Private Client engagements and oversees firm direction across the GGH portfolio." data-bio-extended="Believes that clarity precedes scale. Believes that volume is a tax on quality. Believes that engagements should be earned, not won.">
+<div class="pc-photo" data-idx="[ 01 ]">
+<span class="pc-status">ON.MANDATE</span>
+<span class="pc-photo-glyph" style="left:50%;top:50%;transform:translate(-50%,-50%)">NM</span>
+<div class="pc-line-art">
+<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<polyline points="20,140 60,40 100,140 140,60 180,140"/>
+<line x1="20" y1="140" x2="180" y2="140"/>
+<line x1="60" y1="40" x2="60" y2="20"/>
+<line x1="140" y1="60" x2="140" y2="20"/>
+<line x1="20" y1="20" x2="180" y2="20"/>
+<circle cx="60" cy="20" r="3"/>
+<circle cx="140" cy="20" r="3"/>
+<circle cx="100" cy="140" r="3"/>
+</svg>
+</div>
+</div>
+<div class="pc-meta">
+<div class="pc-name">Neo Matime</div>
+<div class="pc-role">Founder & Chief Executive</div>
+<div class="pc-divider"></div>
+</div>
+<p class="pc-bio">Founder of HIMARK Strategic Growth Consulting. Operates across commercial strategy, brand architecture, and AI integration for founder-led businesses pursuing premium-tier market positions.</p>
+<div class="pc-doctrine">
+<div class="pc-doctrine-l" data-counter="DCT.01"><span>[ Operating Doctrine ]</span></div>
+<div class="pc-doctrine-q" data-quote="Clarity precedes scale. Volume is a tax on quality. Engagements are earned — not won."></div>
+</div>
+<div class="pc-domains">
+<span class="pc-tag">Strategy</span>
+<span class="pc-tag">AI Integration</span>
+<span class="pc-tag">Founder Office</span>
+<span class="pc-tag">Tier 03 Lead</span>
+</div>
+</div>
+<div class="principal-card r3d d2" data-bio-full="Leads brand positioning, market communication, and demand architecture across HIMARK and the GGH portfolio. Specialises in premium-tier market entry and architectural brand systems that hold under scrutiny long after the launch quarter." data-bio-extended="Believes that positioning is destiny. Believes brands earn premium pricing through restraint, not volume of message.">
+<div class="pc-photo" data-idx="[ 02 ]">
+<span class="pc-status">ON.MANDATE</span>
+<span class="pc-photo-glyph" style="left:50%;top:50%;transform:translate(-50%,-50%)">NM</span>
+<div class="pc-line-art">
+<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<rect x="30" y="30" width="60" height="100"/>
+<rect x="110" y="60" width="60" height="70"/>
+<line x1="30" y1="130" x2="170" y2="130"/>
+<line x1="60" y1="30" x2="60" y2="20"/>
+<line x1="140" y1="60" x2="140" y2="20"/>
+<line x1="30" y1="20" x2="170" y2="20"/>
+<polyline points="90,80 110,80 110,100"/>
+<circle cx="60" cy="20" r="3"/>
+<circle cx="140" cy="20" r="3"/>
+</svg>
+</div>
+</div>
+<div class="pc-meta">
+<div class="pc-name">Neo Mokgwadi</div>
+<div class="pc-role">Chief Marketing Officer</div>
+<div class="pc-divider"></div>
+</div>
+<p class="pc-bio">Leads brand positioning, market communication, and demand architecture across HIMARK Strategic Growth Consulting. Specialises in premium-tier market entry.</p>
+<div class="pc-doctrine">
+<div class="pc-doctrine-l" data-counter="DCT.02"><span>[ Operating Doctrine ]</span></div>
+<div class="pc-doctrine-q" data-quote="Positioning is destiny. Premium pricing is earned through restraint — not volume of message."></div>
+</div>
+<div class="pc-domains">
+<span class="pc-tag">Brand</span>
+<span class="pc-tag">Positioning</span>
+<span class="pc-tag">GTM Strategy</span>
+<span class="pc-tag">Demand</span>
+</div>
+</div>
+<div class="principal-card r3d d3" data-bio-full="Architects operational delivery across all engagements. Owns the technology stack, the engagement protocol, the client onboarding rigour, and the institutional standard of HIMARK output. Responsible for the conditions under which precision is repeatable." data-bio-extended="Believes that process is the firm. Believes institutional output is the product of unforgiving operational discipline.">
+<div class="pc-photo" data-idx="[ 03 ]">
+<span class="pc-status">ON.MANDATE</span>
+<span class="pc-photo-glyph" style="left:50%;top:50%;transform:translate(-50%,-50%)">TM</span>
+<div class="pc-line-art">
+<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<polyline points="30,130 30,80 70,80 70,50 130,50 130,30 170,30"/>
+<polyline points="30,130 170,130 170,30"/>
+<line x1="70" y1="80" x2="70" y2="130"/>
+<line x1="130" y1="50" x2="130" y2="130"/>
+<circle cx="30" cy="80" r="3"/>
+<circle cx="70" cy="50" r="3"/>
+<circle cx="130" cy="30" r="3"/>
+<circle cx="170" cy="30" r="3"/>
+</svg>
+</div>
+</div>
+<div class="pc-meta">
+<div class="pc-name">Thelma Mothiba</div>
+<div class="pc-role">Chief Operations Officer</div>
+<div class="pc-divider"></div>
+</div>
+<p class="pc-bio">Architects operational delivery across all engagements. Oversees the technology stack, client onboarding rigour, and the institutional standard of HIMARK output.</p>
+<div class="pc-doctrine">
+<div class="pc-doctrine-l" data-counter="DCT.03"><span>[ Operating Doctrine ]</span></div>
+<div class="pc-doctrine-q" data-quote="Process is the firm. Institutional output is the product of unforgiving operational discipline."></div>
+</div>
+<div class="pc-domains">
+<span class="pc-tag">Operations</span>
+<span class="pc-tag">Tech Stack</span>
+<span class="pc-tag">Onboarding</span>
+<span class="pc-tag">Delivery</span>
+</div>
+</div>
+<div class="principal-card r3d d4" data-bio-full="Owns the firm's technology architecture — from AI infrastructure and the Atlas assistant to the data platforms underpinning every client engagement. Engineers the systems that make precision repeatable, including the LeadSense framework and the AIRaaS product line." data-bio-extended="Believes that infrastructure is intelligence made permanent. Build the system right, the system holds.">
+<div class="pc-photo" data-idx="[ 04 ]">
+<span class="pc-status">ON.MANDATE</span>
+<span class="pc-photo-glyph" style="left:50%;top:50%;transform:translate(-50%,-50%)">NC</span>
+<div class="pc-line-art">
+<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<circle cx="100" cy="80" r="20"/>
+<circle cx="100" cy="80" r="50"/>
+<line x1="100" y1="30" x2="100" y2="50"/>
+<line x1="100" y1="110" x2="100" y2="130"/>
+<line x1="50" y1="80" x2="80" y2="80"/>
+<line x1="120" y1="80" x2="150" y2="80"/>
+<line x1="65" y1="45" x2="80" y2="60"/>
+<line x1="120" y1="100" x2="135" y2="115"/>
+<line x1="65" y1="115" x2="80" y2="100"/>
+<line x1="120" y1="60" x2="135" y2="45"/>
+<circle cx="100" cy="30" r="2"/>
+<circle cx="100" cy="130" r="2"/>
+<circle cx="50" cy="80" r="2"/>
+<circle cx="150" cy="80" r="2"/>
+</svg>
+</div>
+</div>
+<div class="pc-meta">
+<div class="pc-name">Nathanael Cammay</div>
+<div class="pc-role">Chief Technology Officer</div>
+<div class="pc-divider"></div>
+</div>
+<p class="pc-bio">Owns the firm's technology architecture — from AI infrastructure to the data platforms underpinning every client engagement. Engineers the systems that make precision repeatable.</p>
+<div class="pc-doctrine">
+<div class="pc-doctrine-l" data-counter="DCT.04"><span>[ Operating Doctrine ]</span></div>
+<div class="pc-doctrine-q" data-quote="Infrastructure is intelligence made permanent. Build the system, the system holds."></div>
+</div>
+<div class="pc-domains">
+<span class="pc-tag">AI Architecture</span>
+<span class="pc-tag">Data</span>
+<span class="pc-tag">Platforms</span>
+<span class="pc-tag">Atlas</span>
+</div>
+</div>
+</div>
+</section>
+
+<div class="s-num-bar"><span>05.B · STANDARD</span><span>PRINCIPALS / 02</span><span>OPERATING · MANDATE</span></div>
+
+<section class="quote-mono">
+<span class="quote-mono-coord-tl">[ 05.B.01 ]</span>
+<span class="quote-mono-coord-tr">OPERATING DOCTRINE</span>
+<div class="quote-grid">
+<div class="quote-mark r3d">"</div>
+<div class="r3d d1">
+<p class="quote-body" data-typewriter-once>"Every engagement carries a principal's name. There is no team behind the team. The work that leaves this firm is the work the principals signed."</p>
+<div class="quote-attr"><div class="qa-line"></div><div><div class="qa-name">HIMARK Operating Standard</div><div class="qa-role">Internal Doctrine · Article 03</div></div></div>
+</div>
+</div>
+</section>
+<footer class="footer">
+<span class="footer-coord-tl">[ END.DOCUMENT ]</span>
+<span class="footer-coord-tr">HIMARK / FOOTER</span>
+<div class="footer-top">
+<div><div class="ft-wm"><svg width="14" height="10" viewBox="0 0 292 200" fill="none"><rect x="0" y="0" width="28" height="200" fill="#5F8190"/><rect x="28" y="88" width="104" height="20" fill="#5F8190"/><rect x="132" y="0" width="28" height="200" fill="#5F8190"/><polygon points="160,0 182,0 212,120 201,120" fill="#5F8190"/><polygon points="242,0 264,0 223,120 212,120" fill="#5F8190"/><rect x="264" y="0" width="28" height="200" fill="#5F8190"/></svg>HIMARK</div><p class="ft-tag">Strategic Growth Consultancy</p><p class="ft-blurb">HIMARK (Pty) Ltd. A Good Global Holdings company.</p></div>
+<div><p class="ft-col-t">[ 01 ] Engagement</p><ul class="ft-links"><li><a href="#" data-page="mandates">Mandates</a></li><li><a href="#" data-page="airass">AIRaaS</a></li><li><a href="#" data-page="method">Method</a></li></ul></div>
+<div><p class="ft-col-t">[ 02 ] Firm</p><ul class="ft-links"><li><a href="#" data-page="doctrine">Doctrine</a></li><li><a href="#" data-page="principals">Principals</a></li><li><a href="#" data-page="home">Origin</a></li></ul></div>
+<div><p class="ft-col-t">[ 03 ] Contact</p><ul class="ft-links"><li><a href="#" data-page="intake">Apply for Engagement</a></li><li><a href="#" data-page="signin">Client Portal</a></li><li><a href="#">info@himark.co.za</a></li></ul></div>
+</div>
+<div class="footer-bottom"><p class="ft-copy">© MMXXIV  ·  HIMARK (PTY) LTD</p><div class="ft-legal"><a href="#" data-page="privacy">Privacy</a><a href="#" data-page="terms">Terms</a><a href="#" data-page="cookies">Cookies</a><a href="#" data-page="security">Security</a></div></div></footer></div></div>
+<!-- Floating widgets -->
+<button id="mute-btn" class="muted"><div class="aw"><span></span><span></span><span></span><span></span><span></span></div></button>
+
+<!-- WhatsApp button moved to Intake page -->
+
+<button class="chat-toggle-btn" id="chatTgl">
+<svg class="ico-ch" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F7F7F5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+<svg class="ico-cl" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#F7F7F5" stroke-width="1.8" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</button>
+
+<div class="chat-win" id="chatWin">
+<div class="ch-hdr">
+<div class="ch-av"><svg width="12" height="9" viewBox="0 0 292 200" fill="none"><rect x="0" y="0" width="28" height="200" fill="#5F8190"/><rect x="28" y="88" width="104" height="20" fill="#5F8190"/><rect x="132" y="0" width="28" height="200" fill="#5F8190"/><polygon points="160,0 182,0 212,120 201,120" fill="#5F8190"/><polygon points="242,0 264,0 223,120 212,120" fill="#5F8190"/><rect x="264" y="0" width="28" height="200" fill="#5F8190"/></svg></div>
+<div><div class="ch-nm">ATLAS · HIMARK</div><div class="ch-st"><span class="ch-st-dot"></span>ONLINE · INSTANT REPLIES</div></div>
+</div>
+<div class="ch-tabs">
+<button class="ch-tab active" id="tChat" onclick="swT('chat')"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>CHAT</button>
+<button class="ch-tab" id="tVoice" onclick="swT('voice')"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>VOICE</button>
+</div>
+<div id="cpanel">
+<div class="ch-msgs" id="chMsgs"></div>
+<div class="qreps" id="qr">
+<button class="qr" onclick="sQ(this)">Mandates</button>
+<button class="qr" onclick="sQ(this)">AIRaaS</button>
+<button class="qr" onclick="sQ(this)">Apply</button>
+<button class="qr" onclick="sQ(this)">Method</button>
+</div>
+<div class="ch-inbar">
+<input class="ch-inp" id="chIn" type="text" placeholder="Ask us anything…" autocomplete="off"/>
+<button class="ch-send" onclick="sM()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+</div>
+</div>
+<div class="vp" id="vpanel">
+<div class="v-orb" id="vOrb"><div class="v-ring"></div><div class="v-ring"></div><div class="v-ring"></div>
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#5F8190" stroke-width="1.4" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+<div class="v-wave" id="vWave"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+<div class="v-stat" id="vStat">TAP TO SPEAK</div>
+<p class="v-hint">Ask about engagement or how to apply.</p>
+<button class="v-btn" id="vMic" onclick="tV()">START SPEAKING</button>
+</div>
+</div>
+<script src="main/main.js"></script>
+</body>
+</html>

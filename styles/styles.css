@@ -28,39 +28,33 @@ body.ch #cr{width:48px;height:48px;}
 #cvs{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.32;}
 
 /* FIXED HIMARK WORDMARK (top center) */
-/* HIMARK brand mark — image logo replacement.
-   The original text wordmark is visually hidden but kept inside the link
-   so screen readers still announce "HIMARK". On `body.light-nav` scroll,
-   a CSS filter inverts the logo (cream → near-black) so the same effect
-   that swapped the text colour now swaps the logo's tonal value. */
+/* Plain text wordmark — replaces the image logo.
+   Cream-on-dark by default; flips to midnight when `body.light-nav`
+   activates as the page scrolls past the hero. The wordmark sits
+   centered at the top, sized for restrained editorial presence. */
 #brand-mark{
-  position:fixed;top:2px;left:50%;transform:translateX(-50%);
+  position:fixed;top:18px;left:50%;transform:translateX(-50%);
   z-index:1000;
-  /* sized for the supplied logo — tuned for clear-but-restrained presence.
-     background-size 220% zooms past the whitespace baked into the image
-     so the logo content reads at a comfortable size. */
-  width:35px;
-  height:76px;
-  background-image:url('../images/himark-logo.png');
-  background-size:220% auto;
-  background-position:center;
-  background-repeat:no-repeat;
+  font-family:var(--f-disp);
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:.32em;
+  text-transform:uppercase;
+  color:var(--off);
   text-decoration:none;cursor:none;
-  display:block;
-  transition:opacity .4s var(--ease), filter .55s var(--ease);
+  display:inline-block;
+  line-height:1;
+  padding:6px 14px 4px;
+  transition:color .55s var(--ease), opacity .4s var(--ease);
 }
 .brand-svg{display:none;}
 .brand-wm{
-  /* sr-only — visually hidden, available to assistive tech */
-  position:absolute;
-  width:1px;height:1px;
-  margin:-1px;padding:0;
-  overflow:hidden;clip:rect(0,0,0,0);
-  white-space:nowrap;border:0;
+  /* now visible — the wordmark IS the brand mark */
+  display:inline-block;
 }
 body.light-nav #brand-mark{
-  /* cream-on-dark → near-black-on-light when the page scrolls past the hero */
-  filter:invert(1);
+  /* cream-on-dark → midnight-on-light when the page scrolls past the hero */
+  color:var(--midnight);
 }
 
 /* RIGHT-EDGE HOVER MENU TRIGGER */

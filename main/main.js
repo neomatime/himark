@@ -47,6 +47,43 @@ const cur=(document.body.dataset.page||'home');
 const authPages=['signin','mfa','register','reset','dashboard'];
 if(authPages.includes(cur))document.body.classList.add('auth-mode');
 
+/* ACCESSIBILITY — inject skip-to-main link and tag the .page wrapper as
+   the main landmark. Keyboard users can hit Tab once on load to focus the
+   skip link, then Enter to jump straight past the header chrome. */
+(function(){
+  // Prepend skip link to body so it's the first focusable thing
+  if(!document.querySelector('.skip-to-main')){
+    const link=document.createElement('a');
+    link.className='skip-to-main';
+    link.href='#main-content';
+    link.textContent='Skip to content';
+    document.body.insertBefore(link,document.body.firstChild);
+    link.addEventListener('click',e=>{
+      e.preventDefault();
+      const target=document.querySelector('.page.active')||document.querySelector('.page');
+      if(target){
+        if(!target.hasAttribute('tabindex'))target.setAttribute('tabindex','-1');
+        target.focus({preventScroll:true});
+        target.scrollIntoView({behavior:'auto',block:'start'});
+      }
+    });
+  }
+  // Tag the page wrapper as the main landmark (helps screen readers + SEO crawlers)
+  document.querySelectorAll('.page').forEach(p=>{
+    if(!p.hasAttribute('role'))p.setAttribute('role','main');
+  });
+  // Ensure there's an element with id="main-content" so the skip-link anchor resolves
+  const first=document.querySelector('.page');
+  if(first&&!document.getElementById('main-content')){
+    // Use a sentinel rather than overwriting first.id (which the SPA scripts depend on)
+    const sentinel=document.createElement('span');
+    sentinel.id='main-content';
+    sentinel.setAttribute('aria-hidden','true');
+    sentinel.style.cssText='position:absolute;left:-9999px;';
+    first.insertBefore(sentinel,first.firstChild);
+  }
+})();
+
 /* MPA: ensure the page on this document is visible (.active) */
 (function(){
   const p=document.querySelector('.page');
@@ -73,18 +110,32 @@ if(cv){
   (function dp(){cx2.clearRect(0,0,cv.width,cv.height);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=cv.width;if(p.x>cv.width)p.x=0;if(p.y<0)p.y=cv.height;if(p.y>cv.height)p.y=0;cx2.beginPath();cx2.arc(p.x,p.y,p.r,0,Math.PI*2);cx2.fillStyle=`rgba(95,129,144,${p.o})`;cx2.fill();});requestAnimationFrame(dp);})();
 }
 
-/* MENU PANEL */
+/* MENU PANEL — opened by the mobile hamburger in the new top nav.
+   The old right-edge #menu-trigger still wires up (no harm if hidden via CSS). */
 const menuTrigger=document.getElementById('menu-trigger');
+const menuBurger=document.getElementById('topnavBurger');
 const menuPanel=document.getElementById('menu-panel');
 const menuOverlay=document.getElementById('menuOverlay');
 const menuClose=document.getElementById('menuClose');
 let menuOpen=false;
-function openMenu(){if(!menuPanel)return;menuOpen=true;menuPanel.classList.add('open');menuOverlay&&menuOverlay.classList.add('on');}
-function closeMenu(){if(!menuPanel)return;menuOpen=false;menuPanel.classList.remove('open');menuOverlay&&menuOverlay.classList.remove('on');}
+function syncBurger(){if(menuBurger)menuBurger.classList.toggle('is-open',menuOpen);}
+function openMenu(){if(!menuPanel)return;menuOpen=true;menuPanel.classList.add('open');menuOverlay&&menuOverlay.classList.add('on');syncBurger();}
+function closeMenu(){if(!menuPanel)return;menuOpen=false;menuPanel.classList.remove('open');menuOverlay&&menuOverlay.classList.remove('on');syncBurger();}
+function toggleMenu(){menuOpen?closeMenu():openMenu();}
 menuTrigger&&menuTrigger.addEventListener('click',openMenu);
+menuBurger&&menuBurger.addEventListener('click',toggleMenu);
 menuOverlay&&menuOverlay.addEventListener('click',closeMenu);
 menuClose&&menuClose.addEventListener('click',closeMenu);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&menuOpen)closeMenu();});
+
+/* TOP NAV — mark the current page so its link is highlighted */
+(function(){
+  const here=document.body.dataset.page;
+  if(!here)return;
+  document.querySelectorAll('.topnav-list a[data-page]').forEach(a=>{
+    if(a.dataset.page===here)a.classList.add('is-current');
+  });
+})();
 
 /* PAGE THEME — light-nav body class for inverted contrast on light pages */
 const pagesWithDarkHero=['home'];
@@ -264,9 +315,9 @@ window.submitIntake=submitIntake;
 })();
 
 /* HOME HERO — scroll-driven canvas frame-sequence playback.
-   150 sequential JPEGs are preloaded; the user's scroll position through a
+   300 sequential JPEGs are preloaded; the user's scroll position through a
    300vh "spacer" below the sticky hero scrubs the canvas from frame 0 to
-   frame 149. Result: a cinematic film sequence the visitor scrubs by hand.
+   frame 299. Result: a cinematic film sequence the visitor scrubs by hand.
    - Frame index is lerped toward target each RAF tick → buttery smooth
      even when the scroll jumps (mouse-wheel ticks, touch flings, anchor jumps).
    - Frames are preloaded in batches of 12 in priority order so the first
@@ -286,7 +337,7 @@ window.submitIntake=submitIntake;
   const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
   if(reduceMotion)return;  // CSS already collapses spacer + hides canvas
 
-  const FRAME_COUNT=150;
+  const FRAME_COUNT=300;
   const FRAME_PATH=i=>'images/hero-scroll/ezgif-frame-'+String(i).padStart(3,'0')+'.jpg';
 
   const ctx=canvas.getContext('2d',{alpha:false});
@@ -419,11 +470,14 @@ window.submitIntake=submitIntake;
   const cards=Array.from(document.querySelectorAll('.principal-card'));
   if(!cards.length)return;
 
+  // Scattered "explosion" positions, per card index.
+  // Bumped a touch outward (from 340/280 to 400/320) so the reverse-scroll
+  // dispersion reads as a real release rather than a small drift back.
   const scatter=[
-    {x:-340,y:-220,r:-26},
-    {x:-140,y:280, r:-10},
-    {x:140, y:280, r:10},
-    {x:340, y:-220,r:26},
+    {x:-400,y:-260,r:-26},
+    {x:-160,y:320, r:-10},
+    {x:160, y:320, r:10},
+    {x:400, y:-260,r:26},
   ];
 
   cards.forEach(card=>{
@@ -453,30 +507,23 @@ window.submitIntake=submitIntake;
     return section.closest('.page')||document.scrollingElement;
   }
 
+  /* Convergence curve: progress 0 = fully scattered, progress 1 = fully
+     assembled. smoothstep (3t² − 2t³) gives a gentle deceleration both
+     ways — converges naturally to a stop on scroll-down and accelerates
+     gracefully outward as the curve unwinds on scroll-up. */
   function applyScatter(progress){
+    const eased=3*progress*progress-2*progress*progress*progress; // smoothstep
     cards.forEach((card,idx)=>{
       const s=scatter[idx]||scatter[scatter.length-1];
-      let px,py,pr,po,ps;
-      if(progress<=0.5){
-        const t=progress*2;
-        const eased=1-Math.pow(1-t,3);
-        px=s.x*(1-eased);
-        py=s.y*(1-eased);
-        pr=s.r*(1-eased);
-        po=eased;
-        ps=0.92+0.08*eased;
-      } else {
-        const t=(progress-0.5)*2;
-        const eased=Math.pow(t,2);
-        const dx=s.x*1.15;
-        const dy=s.y*1.15;
-        const dr=s.r*1.2;
-        px=dx*eased;
-        py=dy*eased;
-        pr=dr*eased;
-        po=1-eased;
-        ps=1-0.06*eased;
-      }
+      const k=1-eased;        // 1 = scattered, 0 = assembled
+      const px=s.x*k;
+      const py=s.y*k;
+      const pr=s.r*k;
+      // opacity: fade in as cards converge — gives the "deconstruction" feel
+      // on reverse where panels visibly soften as they fly outward
+      const po=0.18+0.82*eased;
+      // scale: subtle shrink-on-scatter for added depth
+      const ps=0.9+0.1*eased;
       card.style.setProperty('--px',px.toFixed(1)+'px');
       card.style.setProperty('--py',py.toFixed(1)+'px');
       card.style.setProperty('--pr',pr.toFixed(2)+'deg');
@@ -485,35 +532,70 @@ window.submitIntake=submitIntake;
     });
   }
 
-  let raf=null;
-  function update(){
-    raf=null;
-    const sc=getScrollContainer();
-    if(!sc)return;
+  /* Raw scroll → animation progress.
+     Section enters viewport at raw 0, leaves at raw 1. We do the entire
+     assembly inside the front half (raw 0 → 0.55) and HOLD assembled past
+     that — so as the user keeps scrolling down through the section, the
+     panels stay together without ever flying off again. */
+  function rawScrollProgress(){
     const rect=section.getBoundingClientRect();
-    const vh=window.innerHeight;
+    const vh=window.innerHeight||document.documentElement.clientHeight;
     const sectionH=rect.height;
     const travel=vh+sectionH;
     const traveled=vh-rect.top;
-    let progress=traveled/travel;
-    progress=Math.max(0,Math.min(1,progress));
-    if(progress>0.18){
-      cards.forEach(c=>c.classList.add('in-view'));
-    }
-    applyScatter(progress);
+    return Math.max(0,Math.min(1,traveled/travel));
+  }
+  function animTarget(){
+    const raw=rawScrollProgress();
+    // raw 0..0.55 → anim 0..1 ; raw > 0.55 → hold at 1
+    return Math.max(0,Math.min(1,raw/0.55));
   }
 
-  function onScroll(){
+  /* Lerp the displayed progress toward the scroll-derived target each
+     RAF tick. The smoothing factor (0.16) dampens jumpy scroll input —
+     wheel ticks, touch flings, anchor jumps all get visually softened.
+     When the gap is tiny we snap and pause RAF for efficiency. */
+  let currentProgress=0;
+  let targetProgress=0;
+  let raf=null;
+  let settled=false;
+
+  function tick(){
+    raf=null;
+    targetProgress=animTarget();
+    const diff=targetProgress-currentProgress;
+    if(Math.abs(diff)<0.0008){
+      currentProgress=targetProgress;
+      applyScatter(currentProgress);
+      // direction-agnostic in-view: panels reveal/un-reveal as the cluster
+      // converges past / disperses below the threshold
+      cards.forEach(c=>c.classList.toggle('in-view',currentProgress>0.25));
+      settled=true;
+      return;
+    }
+    settled=false;
+    currentProgress+=diff*0.16;
+    applyScatter(currentProgress);
+    cards.forEach(c=>c.classList.toggle('in-view',currentProgress>0.25));
+    raf=requestAnimationFrame(tick);
+  }
+
+  function kick(){
+    settled=false;
     if(raf)return;
-    raf=requestAnimationFrame(update);
+    raf=requestAnimationFrame(tick);
   }
 
   function bindScroll(){
     const sc=getScrollContainer();
     if(!sc)return;
-    sc.addEventListener('scroll',onScroll,{passive:true});
-    window.addEventListener('resize',onScroll,{passive:true});
-    update();
+    sc.addEventListener('scroll',kick,{passive:true});
+    window.addEventListener('resize',kick,{passive:true});
+    // initial paint
+    targetProgress=animTarget();
+    currentProgress=targetProgress;
+    applyScatter(currentProgress);
+    cards.forEach(c=>c.classList.toggle('in-view',currentProgress>0.25));
   }
 
   bindScroll();

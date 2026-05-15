@@ -1,0 +1,26 @@
+# robots.txt for HIMARK
+# https://www.himark.co.za
+
+User-agent: *
+Allow: /
+
+# Private / non-public surfaces
+Disallow: /auth/
+Disallow: /dashboard/
+
+# Common AI crawlers — currently allowed; uncomment a Disallow line below if
+# you want to opt-out of training crawls (you'll still appear in search engines).
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Sitemap
+Sitemap: https://www.himark.co.za/sitemap.xml

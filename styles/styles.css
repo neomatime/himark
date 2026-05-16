@@ -63,11 +63,20 @@ body.ch #cr{width:48px;height:48px;}
      V optical centre = (0.09 + 0.75) / 2 ≈ 0.42em → 42%
    Putting the pivot at the V's optical centre means after 180°
    rotation the V's wings land exactly on the baseline with the
-   rest of HIM_RK. */
+   rest of HIM_RK.
+
+   Horizontal spacing fix:
+   Browsers stop applying the parent's letter-spacing at inline-block
+   boundaries, so the rotated V loses tracking on both sides — visibly
+   pinching it against R. Setting letter-spacing:0 inside removes any
+   internal trailing space, and margin-inline:0.32em restores symmetric
+   tracking that matches the .32em letter-spacing on the rest of HIM_RK. */
 .brand-v{
   display:inline-block;
   transform:rotate(180deg);
   transform-origin:50% 42%;
+  letter-spacing:0;
+  margin-inline:.32em;
 }
 body.light-nav #brand-mark{
   /* cream-on-dark → midnight-on-light when the page scrolls past the hero */

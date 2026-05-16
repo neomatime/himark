@@ -8,7 +8,7 @@
 
 /* PAGE URL MAP & RESOLVER */
 const PAGE_URLS={
-  home:'index.html',
+  home:'home.html',
   doctrine:'about.html',
   mandates:'services.html',
   method:'process.html',
@@ -229,7 +229,7 @@ window.tV=function(){};
 
 /*
 // CHAT (home only)
-const SYS=`You are Atlas, the HIMARK assistant. HIMARK is a premium strategic growth consultancy in South Africa under Good Global Holdings. Engagement tiers: Signature Partner, Growth Partner, Private Client (no prices unless asked). AIRaaS product. LeadSense AI qualification. Founder: Neo Matime. Randburg, Gauteng. Introduce yourself as Atlas when asked. Be sophisticated, confident, brief — max 3 sentences unless detail needed.`;
+const SYS=`You are Atlas, the HIMARK assistant. HIMARK is a premium strategic growth consultancy in South Africa under Good Global Holdings. Engagement tiers: Signature Partner, Growth Partner, Private Partner (no prices unless asked). AIRaaS product. LeadSense AI qualification. Founder: Neo Matime. Randburg, Gauteng. Introduce yourself as Atlas when asked. Be sophisticated, confident, brief — max 3 sentences unless detail needed.`;
 let hist=[],busy=false;
 function ts2(){return new Date().toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'});}
 function aM(r,t){const m=document.getElementById('chMsgs');if(!m)return;const d=document.createElement('div');d.className='msg '+r;d.innerHTML=`<div class="msg-b">${t}</div><div class="msg-t">${ts2()}</div>`;m.appendChild(d);m.scrollTop=m.scrollHeight;}

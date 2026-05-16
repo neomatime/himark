@@ -76,7 +76,8 @@ body.ch #cr{width:48px;height:48px;}
   transform:rotate(180deg);
   transform-origin:50% 42%;
   letter-spacing:0;
-  margin-inline:.20em;
+  margin-left:.32em;
+  margin-right:.4em;    /* push it away from R */
 }
 body.light-nav #brand-mark{
   /* cream-on-dark → midnight-on-light when the page scrolls past the hero */

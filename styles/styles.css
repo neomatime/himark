@@ -56,11 +56,18 @@ body.ch #cr{width:48px;height:48px;}
    span, so the upside-down V has identical stroke weight, height,
    and width to the surrounding HIM_RK letters (which the bare Λ
    glyph does not — its cap-height and stroke are off in many fonts).
-   transform-origin tuned so the wings land cleanly on the baseline. */
+
+   transform-origin math for Source Sans 3 with line-height:1:
+     baseline at  0.75em from box top
+     cap-line at  0.09em from box top
+     V optical centre = (0.09 + 0.75) / 2 ≈ 0.42em → 42%
+   Putting the pivot at the V's optical centre means after 180°
+   rotation the V's wings land exactly on the baseline with the
+   rest of HIM_RK. */
 .brand-v{
   display:inline-block;
   transform:rotate(180deg);
-  transform-origin:50% 45%;
+  transform-origin:50% 42%;
 }
 body.light-nav #brand-mark{
   /* cream-on-dark → midnight-on-light when the page scrolls past the hero */

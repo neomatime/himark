@@ -67,10 +67,13 @@ body.light-nav #brand-mark{
    names) so no per-page HTML changes were needed.
    ============================================================ */
 
-/* ---------- TRIGGER: small floating glass pill ---------- */
+/* ---------- TRIGGER: small floating glass pill (bottom-centre) ---------- */
 #menu-trigger{
   position:fixed;
-  top:22px; right:22px;
+  bottom:22px;
+  left:50%;
+  top:auto; right:auto;
+  transform:translateX(-50%);
   z-index:9998;
   height:auto; width:auto;          /* override the old full-height layout */
   display:inline-flex;
@@ -99,7 +102,8 @@ body.light-nav #brand-mark{
 #menu-trigger:hover{
   background:rgba(28,43,58,.62);
   border-color:rgba(255,255,255,.22);
-  transform:translateY(-1px);
+  /* Lift slightly while keeping the horizontal centring */
+  transform:translateX(-50%) translateY(-2px);
   box-shadow:
     0 14px 32px rgba(0,0,0,.30),
     0 1px 0 rgba(255,255,255,.10) inset;
@@ -171,15 +175,17 @@ body.light-nav #menu-trigger:hover .mt-line { background:rgba(28,43,58,.45); }
   pointer-events:all;
 }
 
-/* ---------- PANEL: floating glass card ---------- */
+/* ---------- PANEL: floating glass card (pops up from the trigger) ---------- */
 #menu-panel{
   position:fixed;
-  top:74px;
-  right:22px;
+  /* Sits just above the trigger pill at bottom-centre */
+  bottom:74px;
+  left:50%;
+  top:auto; right:auto;
   width:340px;
   max-width:calc(100vw - 44px);
   height:auto;
-  max-height:calc(100vh - 96px);
+  max-height:calc(100vh - 120px);
   overflow:hidden;
   z-index:9990;
 
@@ -193,9 +199,11 @@ body.light-nav #menu-trigger:hover .mt-line { background:rgba(28,43,58,.45); }
     0 28px 64px rgba(0,0,0,.36),
     0 1px 0 rgba(255,255,255,.08) inset;
 
-  /* Reset old slide-from-right layout */
-  transform:translateY(-10px) scale(.96);
-  transform-origin:top right;
+  /* Hidden state: nudged DOWN + slightly smaller so it grows up
+     from the trigger when .open. translateX(-50%) handles
+     horizontal centring at all times. */
+  transform:translateX(-50%) translateY(10px) scale(.96);
+  transform-origin:bottom center;
   opacity:0;
   pointer-events:none;
   padding:0;
@@ -207,7 +215,7 @@ body.light-nav #menu-trigger:hover .mt-line { background:rgba(28,43,58,.45); }
 }
 #menu-panel.open{
   opacity:1;
-  transform:translateY(0) scale(1);
+  transform:translateX(-50%) translateY(0) scale(1);
   pointer-events:auto;
 }
 body.light-nav #menu-panel{
@@ -3457,13 +3465,12 @@ textarea:focus-visible,
   }
   .footer{ padding:64px 22px 36px; }
 
-  /* Floating glass menu — keep the floating pill, just tighten */
+  /* Floating glass menu (bottom-centre) — keep centred, tighten gutters */
   #menu-panel{
-    width:auto;
-    right:14px;
-    left:14px;
-    max-width:none;
-    top:64px;
+    width:calc(100% - 28px);
+    max-width:360px;
+    bottom:64px;
+    top:auto;
     padding:0;
   }
   .menu-coord-tl{ padding:12px 16px 4px; }
@@ -3496,17 +3503,10 @@ textarea:focus-visible,
   /* Brand mark — slightly smaller on phones */
   #brand-mark{ width:118px; height:48px; top:14px; }
 
-  /* Floating menu pill — tighter on mobile */
-  #menu-trigger{ top:14px; right:14px; padding:9px 14px 10px; gap:8px; }
+  /* Floating menu pill (bottom-centre) — tighter on mobile */
+  #menu-trigger{ bottom:14px; padding:9px 14px 10px; gap:8px; }
   .mt-label{ font-size:10px; letter-spacing:.18em; }
   .mt-num{ font-size:8px; }
-
-  /* On very narrow phones, drop the "01—06" prefix so the pill
-     can't overlap the centred HIMΛRK wordmark in the top nav. */
-  @media (max-width:400px){
-    #menu-trigger .mt-num,
-    #menu-trigger .mt-line{ display:none; }
-  }
 
   /* Mute / chat / floating widgets — pulled in from edges */
   #mute-btn{ left:18px; bottom:18px; width:42px; height:42px; }

@@ -117,9 +117,9 @@ html,body{
 
 .hmark{
   flex-shrink:0;
-  /* Wider clamp to match the more square-ish framed-H aspect ratio
-     in the reference image (~0.7 W:H instead of 0.5). */
-  width:clamp(56px, 8.5vw, 100px);
+  /* Slightly narrower framed-H per latest reference — keeps the
+     ~0.7 aspect ratio but reduces overall display width ~12%. */
+  width:clamp(50px, 7.5vw, 88px);
   /* Initial state: shifted right + faded + lifted.
      Uses transitions (not animations) so the transform isn't
      "locked" by animation-fill-mode when Scene 3 takes over. */
@@ -202,11 +202,11 @@ html,body{
 .inverted-v{
   display:inline-block;
   transform:rotate(180deg);
-  /* Pivot at the V glyph's optical centre — roughly halfway between
-     cap-line (~0.11em from top) and baseline (~0.80em from top),
-     i.e. ~45% from the top of the em-box. With this origin the
-     rotated V's "wings" land exactly on the baseline with IM_RK. */
-  transform-origin:50% 45%;
+  /* Pivot tuned by feedback iteration:
+     - 55% put the V's wings below the baseline
+     - 45% lifted the wings above the baseline
+     - 47% lands the wings on the baseline */
+  transform-origin:50% 47%;
 }
 
 /* Mono caret cursor that lives at the right edge of the wordmark

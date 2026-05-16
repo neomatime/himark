@@ -75,81 +75,6 @@ html,body{
 }
 
 /* ============================================================
-   Ambient geometric shapes — drift slowly across the page
-   behind the wordmark. Hairline outlines in ocean-lt at low
-   opacity so they read as atmosphere, not content.
-   ============================================================ */
-.bg-shapes{
-  position:fixed;
-  inset:0;
-  overflow:hidden;
-  z-index:0;
-  pointer-events:none;
-  opacity:0;
-  animation:shapesIn 1.6s var(--ease-out) .3s forwards;
-}
-@keyframes shapesIn{ to{ opacity:1; } }
-
-.shape{
-  position:absolute;
-  border:1px solid rgba(138,173,184,.22);
-  background:transparent;
-  will-change:transform;
-}
-.shape.sq    { width:80px;  height:80px; }
-.shape.rect  { width:60px;  height:130px; }
-.shape.tall  { width:42px;  height:180px; }
-.shape.line  { width:1px;   height:120px; background:rgba(138,173,184,.22); border:none; }
-.shape.circle{ width:70px;  height:70px; border-radius:50%; }
-.shape.tri{
-  width:0; height:0; border:none;
-  border-left:38px solid transparent;
-  border-right:38px solid transparent;
-  border-bottom:62px solid rgba(138,173,184,.10);
-  background:transparent;
-}
-.shape.dot{
-  width:6px; height:6px;
-  border-radius:50%;
-  background:rgba(138,173,184,.35);
-  border:none;
-}
-
-/* 13 individual placements + assigned drift animations.
-   Negative animation-delay starts each shape mid-cycle so they
-   feel asynchronous instead of all easing in lock-step. */
-.s1  { top: 8%;    left: 4%;   animation: drift1 26s ease-in-out  -2s infinite; }
-.s2  { top: 18%;   right: 9%;  animation: drift2 32s ease-in-out  -8s infinite; }
-.s3  { bottom:12%; left:23%;   animation: drift3 22s ease-in-out  -3s infinite; }
-.s4  { top: 42%;   left: 6%;   animation: drift4 28s ease-in-out -14s infinite; }
-.s5  { bottom:18%; right: 6%;  animation: drift1 30s ease-in-out  -6s infinite; }
-.s6  { top: 28%;   left:38%;   animation: drift2 24s ease-in-out -12s infinite; }
-.s7  { bottom:32%; right:28%;  animation: drift3 27s ease-in-out  -4s infinite; }
-.s8  { top: 14%;   left:58%;   animation: drift4 20s ease-in-out  -9s infinite; }
-.s9  { bottom: 8%; left:48%;   animation: drift1 25s ease-in-out -15s infinite; }
-.s10 { top: 64%;   right:42%;  animation: drift2 29s ease-in-out  -1s infinite; }
-.s11 { top: 24%;   right: 4%;  animation: drift3 23s ease-in-out -11s infinite; }
-.s12 { bottom:38%; left:62%;   animation: drift4 31s ease-in-out  -7s infinite; }
-.s13 { top: 72%;   left: 9%;   animation: drift1 21s ease-in-out -13s infinite; }
-
-@keyframes drift1{
-  0%,100%{ transform:translate(0,0) rotate(0deg); }
-  50%    { transform:translate(70px,-45px) rotate(14deg); }
-}
-@keyframes drift2{
-  0%,100%{ transform:translate(0,0) rotate(0deg); }
-  50%    { transform:translate(-55px,50px) rotate(-11deg); }
-}
-@keyframes drift3{
-  0%,100%{ transform:translate(0,0) rotate(0deg); }
-  50%    { transform:translate(45px,65px) rotate(18deg); }
-}
-@keyframes drift4{
-  0%,100%{ transform:translate(0,0) rotate(0deg); }
-  50%    { transform:translate(-60px,-30px) rotate(-16deg); }
-}
-
-/* ============================================================
    Editorial coordinate stamps — four corners, JetBrains Mono
    ============================================================ */
 .coord{
@@ -524,25 +449,6 @@ html,body{
 </style>
 </head>
 <body>
-
-<!-- ============================================================
-     Ambient drifting geometric shapes (z-index 0, behind all)
-     ============================================================ -->
-<div class="bg-shapes" aria-hidden="true">
-  <span class="shape sq     s1"></span>
-  <span class="shape rect   s2"></span>
-  <span class="shape line   s3"></span>
-  <span class="shape circle s4"></span>
-  <span class="shape tri    s5"></span>
-  <span class="shape sq     s6"></span>
-  <span class="shape tall   s7"></span>
-  <span class="shape line   s8"></span>
-  <span class="shape rect   s9"></span>
-  <span class="shape dot    s10"></span>
-  <span class="shape circle s11"></span>
-  <span class="shape tri    s12"></span>
-  <span class="shape line   s13"></span>
-</div>
 
 <!-- ============================================================
      Corner coordinate stamps

@@ -104,8 +104,8 @@ html,body{
   transform:translate(-50%, -50%);
   display:flex;
   align-items:center;
-  /* Tight gap between framed H and the "I" — matches the reference */
-  gap:6px;
+  /* Tight gap between framed H and "I" — matches the reference */
+  gap:4px;
   text-decoration:none;
   color:inherit;
   z-index:3;
@@ -172,11 +172,10 @@ html,body{
    ============================================================ */
 .imark{
   font-family:var(--f-deja);
-  /* Reduced + DejaVu Sans to match the supplied reference logo.
-     DejaVu Sans 700 reads heavier than Source Sans 800 at the same
-     px, so the visual weight stays right despite the smaller size. */
+  /* Aggressively reduced to match the reference proportions —
+     IMΛRK cap-height now reads ~35% of the H frame height. */
   font-weight:700;
-  font-size:clamp(40px, 7.2vw, 84px);
+  font-size:clamp(24px, 4.5vw, 48px);
   letter-spacing:.01em;
   color:var(--ink-deep);
   line-height:1;
@@ -193,6 +192,21 @@ html,body{
 .letter.show{
   opacity:1;
   transform:translateX(0);
+}
+
+/* Upside-down V — a real "V" character rotated 180° on a nested
+   span so it inherits identical stroke weight, height, and width
+   to the surrounding letters. The outer .letter handles the
+   typewriter transform; the inner .inverted-v handles rotation,
+   so the two transforms don't fight on a single element. */
+.inverted-v{
+  display:inline-block;
+  transform:rotate(180deg);
+  /* Compensate the rotation pivot: CSS rotates around the element
+     box centre, which sits slightly higher than the V's optical
+     centre, so a small downward nudge keeps the inverted V on the
+     baseline with the rest of IMΛRK. */
+  transform-origin:50% 55%;
 }
 
 /* Mono caret cursor that lives at the right edge of the wordmark
@@ -341,42 +355,46 @@ html,body{
 <a href="index.html" class="wordmark" id="wordmark" aria-label="Enter HIMARK">
 
   <!-- HIMARK glyph — H + frame, both animatable.
-       Geometry:
-       - viewBox 140x200 (≈0.70 W:H) matches the reference image
-       - Vertical bars span full height (y=20..180, h=160) — solid
-       - Middle connector is SPLIT into left + right halves with a
-         thin 4-unit vertical gap at x=68..72. The split is visible
-         only where it cuts through the middle bar; above/below it
-         passes through the empty inter-bar space and reads as nothing.
+       Geometry (matches the latest reference image):
+       - viewBox 140x200 (~0.70 W:H)
+       - Frame stroke-width 5 (was 2.5) — noticeably thicker
+       - H bars wider + taller, sitting close to the frame's inner
+         edge (only ~7 units of breathing room each side)
+       - Vertical 4-unit split at x=68..72 cuts ONLY through the
+         middle horizontal connector (above/below it passes through
+         empty inter-bar space and shows as nothing)
        - Frame: x=4 y=4 w=132 h=192, perimeter = 648 -->
   <div class="hmark" id="hmark">
     <svg viewBox="0 0 140 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <g class="h-glyph">
         <!-- Left vertical leg (full height) -->
-        <rect x="28" y="20" width="28" height="160" fill="#0E1822"/>
+        <rect x="14" y="14" width="38" height="170" fill="#0E1822"/>
         <!-- Right vertical leg (full height) -->
-        <rect x="84" y="20" width="28" height="160" fill="#0E1822"/>
+        <rect x="88" y="14" width="38" height="170" fill="#0E1822"/>
         <!-- Middle connector — LEFT half -->
-        <rect x="56" y="85" width="12" height="30" fill="#0E1822"/>
+        <rect x="52" y="85" width="16" height="30" fill="#0E1822"/>
         <!-- 4-unit VERTICAL split at x=68..72 — left empty -->
         <!-- Middle connector — RIGHT half -->
-        <rect x="72" y="85" width="12" height="30" fill="#0E1822"/>
+        <rect x="72" y="85" width="16" height="30" fill="#0E1822"/>
       </g>
-      <!-- Frame: drawn by stroke-dashoffset transition in Scene 2 -->
+      <!-- Frame: drawn by stroke-dashoffset transition in Scene 2.
+           Stroke-width 5 for a heavier draftsman edge. -->
       <rect class="frame"
             x="4" y="4" width="132" height="192"
             fill="none"
             stroke="#0E1822"
-            stroke-width="2.5"
+            stroke-width="5"
             stroke-linecap="square"
             stroke-linejoin="miter"/>
     </svg>
   </div>
 
-  <!-- "IMΛRK" — typewritten in Scene 3.
-       The A is rendered as Greek capital lambda (Λ, U+039B) so it
-       matches the site's top-centre wordmark (HIMΛRK). -->
-  <span class="imark" id="imark" aria-hidden="true"><span class="letter">I</span><span class="letter">M</span><span class="letter">Λ</span><span class="letter">R</span><span class="letter">K</span><span class="caret" id="caret"></span></span>
+  <!-- "IM∧RK" — typewritten in Scene 3.
+       The upside-down V is a real "V" character rotated 180° inside
+       a nested span, so it has identical stroke weight, height, and
+       width to the other letters (unlike Λ which often renders
+       narrower in DejaVu Sans). -->
+  <span class="imark" id="imark" aria-hidden="true"><span class="letter">I</span><span class="letter">M</span><span class="letter"><span class="inverted-v">V</span></span><span class="letter">R</span><span class="letter">K</span><span class="caret" id="caret"></span></span>
 
 </a>
 

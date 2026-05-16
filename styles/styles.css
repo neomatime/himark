@@ -52,6 +52,16 @@ body.ch #cr{width:48px;height:48px;}
   /* now visible — the wordmark IS the brand mark */
   display:inline-block;
 }
+/* Inverted V — a real "V" character rotated 180° inside a nested
+   span, so the upside-down V has identical stroke weight, height,
+   and width to the surrounding HIM_RK letters (which the bare Λ
+   glyph does not — its cap-height and stroke are off in many fonts).
+   transform-origin tuned so the wings land cleanly on the baseline. */
+.brand-v{
+  display:inline-block;
+  transform:rotate(180deg);
+  transform-origin:50% 45%;
+}
 body.light-nav #brand-mark{
   /* cream-on-dark → midnight-on-light when the page scrolls past the hero */
   color:var(--midnight);
@@ -101,9 +111,19 @@ body.light-nav #brand-mark{
     background .35s var(--ease),
     border-color .35s var(--ease),
     transform .35s var(--ease),
+    bottom .4s var(--ease),
     box-shadow .35s var(--ease);
 }
 #menu-trigger::before{ content:none; }   /* kill the old big-pill background */
+
+/* When the cookies banner is visible, lift the trigger above it.
+   :has() is supported in all current evergreen browsers. */
+body:has(#cookies-banner.on) #menu-trigger{ bottom:200px; }
+body:has(#cookies-banner.on) #menu-panel { bottom:252px; }
+@media (max-width:880px){
+  body:has(#cookies-banner.on) #menu-trigger{ bottom:280px; }
+  body:has(#cookies-banner.on) #menu-panel { bottom:332px; }
+}
 
 /* Subtle attention pulse — a hairline ring grows outward from the
    pill boundary and fades, then repeats. Uses ::after with a
@@ -265,7 +285,8 @@ body.light-nav #menu-trigger:hover .mt-line { background:rgba(28,43,58,.45); }
   flex-direction:column;
   transition:
     opacity .35s var(--ease),
-    transform .4s var(--ease);
+    transform .4s var(--ease),
+    bottom .4s var(--ease);
 }
 #menu-panel.open{
   opacity:1;
@@ -3557,8 +3578,10 @@ textarea:focus-visible,
   .cb-actions{ flex-wrap:wrap; gap:10px; width:100%; }
   .cb-btn{ flex:1 1 auto; }
 
-  /* Brand mark — slightly smaller on phones */
-  #brand-mark{ width:118px; height:48px; top:14px; }
+  /* Brand mark — drop down a touch on phones.
+     width/height are no longer forced; the wordmark is text now and
+     auto-sizes to its content. */
+  #brand-mark{ top:14px; padding:4px 12px 3px; font-size:13px; letter-spacing:.30em; }
 
   /* Floating menu pill (bottom-centre) — tighter on mobile.
      Music button on mobile: 42px circle at bottom:18px → centre at 39px
@@ -3686,8 +3709,8 @@ textarea:focus-visible,
   }
   .footer{ padding:48px 18px 32px; }
 
-  /* Brand mark a step smaller */
-  #brand-mark{ width:104px; height:42px; top:12px; }
+  /* Brand mark a step smaller on tiny phones */
+  #brand-mark{ top:12px; font-size:12px; letter-spacing:.28em; padding:4px 10px 3px; }
 
   /* Cookies banner — stack actions vertically */
   .cb-actions{ flex-direction:column; }

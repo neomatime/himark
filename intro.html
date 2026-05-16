@@ -172,9 +172,9 @@ html,body{
    ============================================================ */
 .imark{
   font-family:var(--f-deja);
-  /* Aggressively reduced to match the reference proportions —
-     IMΛRK cap-height now reads ~35% of the H frame height. */
-  font-weight:700;
+  /* Regular weight (400) — the reference reads as normal, not bold.
+     Size kept at the reduced clamp from the previous pass. */
+  font-weight:400;
   font-size:clamp(24px, 4.5vw, 48px);
   letter-spacing:.01em;
   color:var(--ink-deep);
@@ -202,11 +202,11 @@ html,body{
 .inverted-v{
   display:inline-block;
   transform:rotate(180deg);
-  /* Compensate the rotation pivot: CSS rotates around the element
-     box centre, which sits slightly higher than the V's optical
-     centre, so a small downward nudge keeps the inverted V on the
-     baseline with the rest of IMΛRK. */
-  transform-origin:50% 55%;
+  /* Pivot at the V glyph's optical centre — roughly halfway between
+     cap-line (~0.11em from top) and baseline (~0.80em from top),
+     i.e. ~45% from the top of the em-box. With this origin the
+     rotated V's "wings" land exactly on the baseline with IM_RK. */
+  transform-origin:50% 45%;
 }
 
 /* Mono caret cursor that lives at the right edge of the wordmark
@@ -378,12 +378,13 @@ html,body{
         <rect x="72" y="85" width="16" height="30" fill="#0E1822"/>
       </g>
       <!-- Frame: drawn by stroke-dashoffset transition in Scene 2.
-           Stroke-width 5 for a heavier draftsman edge. -->
+           Stroke-width 10 for the heavy architectural border the
+           reference calls for. -->
       <rect class="frame"
             x="4" y="4" width="132" height="192"
             fill="none"
             stroke="#0E1822"
-            stroke-width="5"
+            stroke-width="10"
             stroke-linecap="square"
             stroke-linejoin="miter"/>
     </svg>

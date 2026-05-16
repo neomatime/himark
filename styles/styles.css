@@ -57,127 +57,361 @@ body.light-nav #brand-mark{
   color:var(--midnight);
 }
 
-/* RIGHT-EDGE HOVER MENU TRIGGER */
+/* ============================================================
+   FLOATING GLASS MENU
+   Trigger is a small fixed pill in the top-right; clicking it opens
+   a frosted-glass panel that floats below the trigger with all index
+   links. HIMARK keeps its mono-coord, italic-em, ocean-accent details
+   inside an Apple-style Liquid Glass surface.
+   Backwards-compatible with the existing markup (same IDs / class
+   names) so no per-page HTML changes were needed.
+   ============================================================ */
+
+/* ---------- TRIGGER: small floating glass pill ---------- */
 #menu-trigger{
-  position:fixed;top:0;right:0;height:100vh;width:64px;z-index:998;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:18px;cursor:none;
-  transition:width .35s var(--ease),background .35s;
+  position:fixed;
+  top:22px; right:22px;
+  z-index:9998;
+  height:auto; width:auto;          /* override the old full-height layout */
+  display:inline-flex;
+  flex-direction:row;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:10px 18px 11px;
+  /* Glass */
+  background:rgba(28,43,58,.42);
+  -webkit-backdrop-filter:blur(20px) saturate(140%);
+          backdrop-filter:blur(20px) saturate(140%);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:999px;
+  box-shadow:
+    0 8px 24px rgba(0,0,0,.22),
+    0 1px 0 rgba(255,255,255,.06) inset;
+  cursor:none;
+  transition:
+    background .35s var(--ease),
+    border-color .35s var(--ease),
+    transform .35s var(--ease),
+    box-shadow .35s var(--ease);
 }
-#menu-trigger::before{
-  /* visible vertical pill that anchors the eye */
-  content:'';position:absolute;right:14px;top:50%;transform:translateY(-50%);
-  width:36px;height:120px;
-  background:rgba(28,43,58,.5);
-  border:1px solid rgba(95,129,144,.4);
-  backdrop-filter:blur(10px);
-  border-radius:24px;
-  transition:background .4s,border-color .4s,height .4s var(--ease),width .4s var(--ease);
-  z-index:0;
+#menu-trigger::before{ content:none; }   /* kill the old big-pill background */
+#menu-trigger:hover{
+  background:rgba(28,43,58,.62);
+  border-color:rgba(255,255,255,.22);
+  transform:translateY(-1px);
+  box-shadow:
+    0 14px 32px rgba(0,0,0,.30),
+    0 1px 0 rgba(255,255,255,.10) inset;
 }
-body.light-nav #menu-trigger::before{
-  background:rgba(255,255,255,.85);
-  border-color:rgba(28,43,58,.18);
-  box-shadow:0 4px 18px rgba(28,43,58,.08);
+body.light-nav #menu-trigger{
+  background:rgba(247,247,245,.55);
+  border-color:rgba(28,43,58,.10);
+  box-shadow:
+    0 8px 24px rgba(28,43,58,.10),
+    0 1px 0 rgba(255,255,255,.45) inset;
 }
-#menu-trigger:hover::before{
-  height:160px;width:42px;
-  background:var(--ocean);
-  border-color:var(--ocean);
+body.light-nav #menu-trigger:hover{
+  background:rgba(247,247,245,.78);
+  border-color:rgba(28,43,58,.16);
+  box-shadow:
+    0 14px 32px rgba(28,43,58,.14),
+    0 1px 0 rgba(255,255,255,.55) inset;
 }
-body.light-nav #menu-trigger:hover::before{
-  background:var(--midnight);border-color:var(--midnight);
-}
-.mt-num,.mt-line,.mt-label{position:relative;z-index:1;}
-.mt-label{
-  font-family:var(--f-mono);font-size:9px;font-weight:600;letter-spacing:.28em;
-  color:rgba(247,247,245,.85);text-transform:uppercase;
-  writing-mode:vertical-rl;transform:rotate(180deg);
-  transition:color .4s;
-}
-body.light-nav .mt-label{color:var(--midnight);}
-#menu-trigger:hover .mt-label{color:var(--off);}
-body.light-nav #menu-trigger:hover .mt-label{color:var(--off);}
-.mt-line{
-  width:1px;height:42px;background:rgba(247,247,245,.85);
-  transition:height .4s var(--ease),background .4s;
-}
-body.light-nav .mt-line{background:var(--midnight);}
-#menu-trigger:hover .mt-line{height:64px;background:var(--off);}
-body.light-nav #menu-trigger:hover .mt-line{background:var(--off);}
+
+/* Pieces inside the trigger pill — flip orientation back to horizontal,
+   restyle for a compact mono+sans pairing. */
+.mt-num,
+.mt-line,
+.mt-label{ position:relative; z-index:1; }
+
 .mt-num{
-  font-family:var(--f-mono);font-size:9px;font-weight:600;letter-spacing:.14em;
-  color:rgba(247,247,245,.85);writing-mode:vertical-rl;transform:rotate(180deg);
-  transition:color .4s;
+  font-family:var(--f-mono);
+  font-size:9px; font-weight:500;
+  letter-spacing:.12em;
+  color:rgba(247,247,245,.62);
+  writing-mode:horizontal-tb;
+  transform:none;
+  transition:color .3s;
 }
-body.light-nav .mt-num{color:var(--midnight);}
-#menu-trigger:hover .mt-num{color:var(--off);}
-body.light-nav #menu-trigger:hover .mt-num{color:var(--off);}
+.mt-line{
+  width:1px; height:11px;
+  background:rgba(247,247,245,.32);
+  transition:background .3s, height .3s;
+}
+.mt-label{
+  font-family:var(--f-nav);
+  font-size:11px; font-weight:600;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:rgba(247,247,245,.92);
+  writing-mode:horizontal-tb;
+  transform:none;
+  transition:color .3s;
+}
+body.light-nav .mt-num   { color:rgba(28,43,58,.55); }
+body.light-nav .mt-line  { background:rgba(28,43,58,.30); }
+body.light-nav .mt-label { color:var(--midnight); }
 
-/* FULLSCREEN MENU PANEL */
-#menu-panel{
-  position:fixed;top:0;right:0;width:55%;height:100vh;
-  background:var(--off);z-index:9990;
-  transform:translateX(100%);transition:transform .65s var(--ease);
-  display:flex;flex-direction:column;justify-content:space-between;
-  padding:80px 80px 60px;
-  box-shadow:-30px 0 80px rgba(28,43,58,.18);
-  border-left:1px solid var(--rule);
-}
-#menu-panel.open{transform:translateX(0);}
+#menu-trigger:hover .mt-label{ color:var(--off); }
+#menu-trigger:hover .mt-line { background:rgba(247,247,245,.55); }
+body.light-nav #menu-trigger:hover .mt-label{ color:var(--midnight); }
+body.light-nav #menu-trigger:hover .mt-line { background:rgba(28,43,58,.45); }
+
+/* ---------- OVERLAY: very subtle — just enough to dim, not blackout ---------- */
 .menu-overlay{
-  position:fixed;inset:0;background:rgba(8,15,22,0);z-index:9989;
-  pointer-events:none;transition:background .65s var(--ease);
+  position:fixed; inset:0;
+  background:rgba(8,15,22,0);
+  z-index:9989;
+  pointer-events:none;
+  transition:background .45s var(--ease);
 }
-.menu-overlay.on{background:rgba(8,15,22,.42);pointer-events:all;}
-
-.menu-bg-grid{
-  position:absolute;inset:0;pointer-events:none;
-  background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px);
-  background-size:calc((100% - 0px)/4) 100%;
-  opacity:.7;
+.menu-overlay.on{
+  background:rgba(8,15,22,.22);
+  pointer-events:all;
 }
-.menu-coord-tl{position:absolute;top:32px;left:80px;font-family:var(--f-mono);font-size:9px;color:var(--ocean);letter-spacing:.1em;}
-.menu-coord-tr{position:absolute;top:32px;right:80px;font-family:var(--f-mono);font-size:9px;color:var(--ocean);letter-spacing:.1em;cursor:none;font-weight:600;}
-.menu-coord-tr:hover{color:var(--midnight);}
 
-.menu-list{position:relative;z-index:1;list-style:none;margin-top:60px;}
+/* ---------- PANEL: floating glass card ---------- */
+#menu-panel{
+  position:fixed;
+  top:74px;
+  right:22px;
+  width:340px;
+  max-width:calc(100vw - 44px);
+  height:auto;
+  max-height:calc(100vh - 96px);
+  overflow:hidden;
+  z-index:9990;
+
+  /* Glass surface */
+  background:rgba(20,32,46,.55);
+  -webkit-backdrop-filter:blur(28px) saturate(150%);
+          backdrop-filter:blur(28px) saturate(150%);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:22px;
+  box-shadow:
+    0 28px 64px rgba(0,0,0,.36),
+    0 1px 0 rgba(255,255,255,.08) inset;
+
+  /* Reset old slide-from-right layout */
+  transform:translateY(-10px) scale(.96);
+  transform-origin:top right;
+  opacity:0;
+  pointer-events:none;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  transition:
+    opacity .35s var(--ease),
+    transform .4s var(--ease);
+}
+#menu-panel.open{
+  opacity:1;
+  transform:translateY(0) scale(1);
+  pointer-events:auto;
+}
+body.light-nav #menu-panel{
+  background:rgba(247,247,245,.68);
+  border-color:rgba(28,43,58,.10);
+  box-shadow:
+    0 28px 64px rgba(28,43,58,.18),
+    0 1px 0 rgba(255,255,255,.65) inset;
+}
+
+/* Decorative grid lines from the old fullscreen layout — not needed
+   on a small floating panel. */
+.menu-bg-grid{ display:none; }
+
+/* Panel header: coord on the left, close on the right. */
+.menu-coord-tl{
+  position:static;
+  display:block;
+  padding:14px 18px 4px;
+  font-family:var(--f-mono);
+  font-size:9px; font-weight:500;
+  letter-spacing:.16em;
+  color:rgba(138,173,184,.78);
+  text-transform:uppercase;
+}
+.menu-coord-tr{
+  position:absolute;
+  top:10px; right:10px;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:28px; height:28px;
+  padding:0;
+  font-family:var(--f-mono);
+  font-size:0;                                /* hide the "CLOSE" text */
+  letter-spacing:0;
+  color:rgba(247,247,245,.7);
+  background:transparent;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:999px;
+  cursor:none;
+  transition:background .25s, color .25s, border-color .25s;
+}
+.menu-coord-tr::before{
+  content:'\00d7';                             /* clean × glyph */
+  font-family:var(--f-disp);
+  font-size:18px; font-weight:300;
+  line-height:1;
+}
+.menu-coord-tr:hover{
+  background:rgba(255,255,255,.10);
+  color:var(--off);
+  border-color:rgba(255,255,255,.30);
+}
+body.light-nav .menu-coord-tl{ color:rgba(46,74,90,.78); }
+body.light-nav .menu-coord-tr{
+  color:rgba(28,43,58,.62);
+  border-color:rgba(28,43,58,.16);
+}
+body.light-nav .menu-coord-tr:hover{
+  background:rgba(28,43,58,.08);
+  color:var(--midnight);
+  border-color:rgba(28,43,58,.30);
+}
+
+/* Index list — compact rows inside the glass card. */
+.menu-list{
+  list-style:none;
+  margin:6px 0 0;
+  padding:6px 8px 8px;
+  position:relative; z-index:1;
+  display:flex; flex-direction:column;
+  gap:2px;
+}
+.menu-list li{ margin:0; }
+
 .menu-item{
-  display:grid;grid-template-columns:60px 1fr auto;
-  gap:32px;align-items:center;
-  padding:18px 0;
-  border-bottom:1px solid var(--rule);
-  cursor:none;text-decoration:none;
-  position:relative;overflow:hidden;
-  transition:padding-left .4s var(--ease);
+  display:grid;
+  grid-template-columns:34px 1fr 18px;
+  gap:12px;
+  align-items:center;
+  padding:10px 12px;
+  border:none;
+  border-radius:12px;
+  cursor:none;
+  text-decoration:none;
+  position:relative;
+  overflow:hidden;
+  background:transparent;
+  transition:
+    background .25s ease,
+    transform .35s var(--ease),
+    padding-left .35s var(--ease);
 }
-.menu-item:first-child{border-top:1px solid var(--rule);}
+.menu-item:first-child{ border-top:none; }
 .menu-item::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:0;
-  background:rgba(95,129,144,.07);transition:width .5s var(--ease);
-  z-index:0;
+  content:none;            /* drop the swipe background — using BG only now */
 }
-.menu-item:hover::before{width:100%;}
-.menu-item:hover{padding-left:24px;}
-.menu-item > *{position:relative;z-index:1;}
-.mi-num{font-family:var(--f-mono);font-size:11px;font-weight:600;letter-spacing:.1em;color:rgba(95,129,144,.7);}
-.mi-name{
-  font-family:var(--f-disp);font-size:clamp(40px,4.2vw,68px);font-weight:800;
-  color:var(--ocean);letter-spacing:-.01em;line-height:1;
-  transition:color .3s,transform .4s var(--ease);
-  display:flex;align-items:baseline;gap:18px;
+.menu-item:hover{
+  background:rgba(255,255,255,.08);
+  padding-left:16px;
 }
-.mi-name em{font-style:italic;font-weight:300;color:rgba(95,129,144,.5);font-size:.6em;letter-spacing:.04em;}
-.menu-item:hover .mi-name{color:var(--midnight);}
-.mi-arrow{font-family:var(--f-mono);font-size:18px;color:var(--ocean);opacity:0;transform:translateX(-12px);transition:opacity .3s,transform .4s var(--ease);}
-.menu-item:hover .mi-arrow{opacity:1;transform:translateX(0);color:var(--midnight);}
+body.light-nav .menu-item:hover{
+  background:rgba(28,43,58,.06);
+}
+.menu-item > *{ position:relative; z-index:1; }
 
-.menu-footer{position:relative;z-index:1;padding-top:40px;border-top:1px solid var(--rule);display:grid;grid-template-columns:1fr 1fr;gap:48px;}
-.mf-block{}
-.mf-label{font-family:var(--f-mono);font-size:9px;color:var(--ocean);letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px;font-weight:600;}
-.mf-text{font-family:var(--f-body);font-size:13px;line-height:1.7;color:var(--ink-mut);font-weight:300;}
-.mf-link{color:var(--midnight);text-decoration:none;cursor:none;transition:color .3s;border-bottom:1px solid var(--ocean);}
-.mf-link:hover{color:var(--ocean);}
+.mi-num{
+  font-family:var(--f-mono);
+  font-size:10px; font-weight:500;
+  letter-spacing:.10em;
+  color:rgba(138,173,184,.65);
+  transition:color .3s;
+}
+.mi-name{
+  display:inline-flex;
+  align-items:baseline;
+  gap:8px;
+  font-family:var(--f-disp);
+  font-size:17px;
+  font-weight:600;
+  letter-spacing:-.002em;
+  color:rgba(247,247,245,.95);
+  line-height:1.15;
+  transition:color .3s, transform .35s var(--ease);
+}
+.mi-name em{
+  font-style:italic;
+  font-weight:300;
+  font-size:11px;
+  letter-spacing:.06em;
+  color:rgba(138,173,184,.7);
+}
+.mi-arrow{
+  font-family:var(--f-mono);
+  font-size:13px;
+  color:rgba(138,173,184,.55);
+  opacity:0;
+  transform:translateX(-6px);
+  transition:opacity .25s, transform .35s var(--ease), color .25s;
+}
+.menu-item:hover .mi-name{ color:var(--off); }
+.menu-item:hover .mi-num { color:rgba(226,240,240,.85); }
+.menu-item:hover .mi-arrow{
+  opacity:1;
+  transform:translateX(0);
+  color:var(--off);
+}
+body.light-nav .mi-num   { color:rgba(46,74,90,.7); }
+body.light-nav .mi-name  { color:var(--midnight); }
+body.light-nav .mi-name em{ color:rgba(46,74,90,.55); }
+body.light-nav .mi-arrow { color:rgba(46,74,90,.55); }
+body.light-nav .menu-item:hover .mi-name { color:var(--midnight); }
+body.light-nav .menu-item:hover .mi-num  { color:var(--ocean-dk); }
+body.light-nav .menu-item:hover .mi-arrow{ color:var(--midnight); }
+
+/* Panel footer — compact single row inside the glass card. */
+.menu-footer{
+  position:relative; z-index:1;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px 22px;
+  padding:12px 18px 14px;
+  margin-top:4px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+body.light-nav .menu-footer{ border-top-color:rgba(28,43,58,.08); }
+.mf-block{ min-width:0; }
+.mf-label{
+  font-family:var(--f-mono);
+  font-size:8px; font-weight:600;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:rgba(138,173,184,.75);
+  margin-bottom:4px;
+}
+.mf-text{
+  font-family:var(--f-body);
+  font-size:11px; line-height:1.45;
+  color:rgba(247,247,245,.78);
+  font-weight:400;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.mf-link{
+  color:var(--off);
+  text-decoration:none;
+  cursor:none;
+  border-bottom:1px solid rgba(138,173,184,.5);
+  transition:color .3s, border-color .3s;
+}
+.mf-link:hover{
+  color:var(--ocean-lt);
+  border-bottom-color:var(--ocean-lt);
+}
+body.light-nav .mf-label{ color:rgba(46,74,90,.78); }
+body.light-nav .mf-text { color:rgba(28,43,58,.72); }
+body.light-nav .mf-link {
+  color:var(--midnight);
+  border-bottom-color:var(--ocean);
+}
+body.light-nav .mf-link:hover{
+  color:var(--ocean);
+  border-bottom-color:var(--ocean);
+}
 
 /* PAGE SYSTEM */
 .page{
@@ -3223,13 +3457,25 @@ textarea:focus-visible,
   }
   .footer{ padding:64px 22px 36px; }
 
-  /* Side panel menu — full width */
-  #menu-panel{ width:100%; padding:64px 24px 36px; }
-  .menu-coord-tl{ left:24px; }
-  .menu-coord-tr{ right:24px; }
-  .mi-name{ font-size:clamp(34px,9vw,56px); }
-  .menu-item{ grid-template-columns:48px 1fr auto; gap:18px; padding:14px 0; }
-  .menu-footer{ grid-template-columns:1fr; gap:24px; padding-top:28px; }
+  /* Floating glass menu — keep the floating pill, just tighten */
+  #menu-panel{
+    width:auto;
+    right:14px;
+    left:14px;
+    max-width:none;
+    top:64px;
+    padding:0;
+  }
+  .menu-coord-tl{ padding:12px 16px 4px; }
+  .menu-coord-tr{ top:8px; right:8px; }
+  .menu-list{ padding:6px 6px 8px; }
+  .mi-name{ font-size:16px; }
+  .menu-item{ grid-template-columns:30px 1fr 16px; gap:10px; padding:10px 12px; }
+  .menu-footer{
+    grid-template-columns:1fr;
+    gap:10px;
+    padding:10px 16px 14px;
+  }
 
   /* Footer */
   .footer-top{ grid-template-columns:1fr; gap:32px; padding-bottom:32px; }
@@ -3250,8 +3496,17 @@ textarea:focus-visible,
   /* Brand mark — slightly smaller on phones */
   #brand-mark{ width:118px; height:48px; top:14px; }
 
-  /* Right-edge menu trigger — smaller on mobile */
-  #menu-trigger{ width:48px; }
+  /* Floating menu pill — tighter on mobile */
+  #menu-trigger{ top:14px; right:14px; padding:9px 14px 10px; gap:8px; }
+  .mt-label{ font-size:10px; letter-spacing:.18em; }
+  .mt-num{ font-size:8px; }
+
+  /* On very narrow phones, drop the "01—06" prefix so the pill
+     can't overlap the centred HIMΛRK wordmark in the top nav. */
+  @media (max-width:400px){
+    #menu-trigger .mt-num,
+    #menu-trigger .mt-line{ display:none; }
+  }
 
   /* Mute / chat / floating widgets — pulled in from edges */
   #mute-btn{ left:18px; bottom:18px; width:42px; height:42px; }

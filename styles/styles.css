@@ -1609,6 +1609,11 @@ body.auth-mode #ghost-trail{display:none;}
   /* Soft top edge on the first section that arrives over the hero */
   box-shadow:0 -24px 60px rgba(28,43,58,.10), 0 -1px 0 rgba(28,43,58,.06);
 }
+/* Reduced-motion fallback: drop the sticky-cover so the hero
+   sits as a plain block at the top of the page. */
+@media (prefers-reduced-motion:reduce){
+  .np-hero{position:relative;height:auto;min-height:100vh;}
+}
 .np-hero-bg{
   position:absolute; inset:0;
   background-size:cover;

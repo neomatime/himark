@@ -3694,26 +3694,13 @@ textarea:focus-visible,
 
   /* Chat widget on auth pages already hidden via .auth-mode rules */
 
-  /* Tier flip cards — on touch devices the 3D hover-flip is unusable,
-     and the previously-absolute back face was overflowing onto the
-     next card. Switch to natural document flow: front face only, no
-     min-height, no rotation. */
-  .svc-card{
-    min-height:0;
-    transform:none !important;
-  }
-  .svc-card:hover,
-  .svc-card.flipped{
-    transform:none !important;
-  }
-  .svc-card-face{
-    position:static;
-    padding:40px 28px 32px;
-  }
-  .svc-card-face.back,
-  .svc-flip-hint{
-    display:none;
-  }
+  /* Tier flip cards — keep the 3D flip on mobile (tap-to-flip is
+     wired in main.js). Bump the min-height so the back face content
+     (Cadence / Best Fit / Outcome / Term + CTA) fits within the
+     absolute-positioned face and doesn't overflow onto the next
+     card. Padding tightens to recover space for the content. */
+  .svc-card{ min-height:600px; }
+  .svc-card-face{ padding:40px 28px 32px; }
 
   /* Disable the hero-pin scrub spacer height on mobile so users don't
      have to scroll through 300vh of nothing — frames still play but

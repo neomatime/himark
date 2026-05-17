@@ -122,7 +122,7 @@ function syncBurger(){if(menuBurger)menuBurger.classList.toggle('is-open',menuOp
 function openMenu(){if(!menuPanel)return;menuOpen=true;menuPanel.classList.add('open');menuOverlay&&menuOverlay.classList.add('on');syncBurger();}
 function closeMenu(){if(!menuPanel)return;menuOpen=false;menuPanel.classList.remove('open');menuOverlay&&menuOverlay.classList.remove('on');syncBurger();}
 function toggleMenu(){menuOpen?closeMenu():openMenu();}
-menuTrigger&&menuTrigger.addEventListener('click',openMenu);
+menuTrigger&&menuTrigger.addEventListener('click',toggleMenu);
 menuBurger&&menuBurger.addEventListener('click',toggleMenu);
 menuOverlay&&menuOverlay.addEventListener('click',closeMenu);
 menuClose&&menuClose.addEventListener('click',closeMenu);

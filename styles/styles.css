@@ -1302,33 +1302,9 @@ body.auth-mode #ghost-trail{display:none;}
   background:linear-gradient(180deg,#FAFAF8 0%,var(--off) 60%);
   border-color:rgba(95,129,144,.22);
 }
-.tier-block:hover{
-  background:var(--white);
-  border-color:rgba(95,129,144,.18);
-  box-shadow:
-    0 1px 2px rgba(28,43,58,.04),
-    0 16px 36px rgba(28,43,58,.08),
-    0 48px 84px rgba(28,43,58,.10),
-    0 0 0 1px rgba(95,129,144,.10);
-  z-index:5;
-}
-/* TIER BLOCKS — puzzle detachment in vertical stack. Alternating
-   left/right pulls so consecutive blocks lean away from each other,
-   reading as three layered pieces separating along the column. */
-.tier-deep-dive > .tier-block:nth-of-type(1):hover{
-  transform:translate3d(-10px,-8px,0) rotate(-0.22deg);
-}
-.tier-deep-dive > .tier-block:nth-of-type(2):hover{
-  transform:translate3d(10px,-8px,0) rotate(0.22deg);
-}
-.tier-deep-dive > .tier-block:nth-of-type(3):hover{
-  transform:translate3d(-6px,-10px,0) rotate(-0.18deg);
-}
-.tier-deep-dive > .tier-block.d3:hover{
-  /* T3 keeps its gradient on hover */
-  background:linear-gradient(180deg,#FFFFFF 0%,#FAFAF8 60%);
-  border-color:rgba(95,129,144,.28);
-}
+/* Hover effects on the large .tier-block panels were removed — the
+   pop-up lift now lives only on the smaller .tier-cat cells inside
+   each panel. The base .tier-block style is the resting state. */
 
 .tier-block-head{
   display:grid;
@@ -1565,13 +1541,7 @@ body.auth-mode #ghost-trail{display:none;}
   .tier-clients-ul{grid-template-columns:1fr;}
   .tier-pull{padding:28px 24px;grid-template-columns:1fr;gap:14px;}
   .tier-pull-mark{font-size:60px;}
-  /* Disable puzzle pulls in single-column mobile — keep just the lift */
-  .tier-deep-dive > .tier-block:hover,
-  .tier-deep-dive > .tier-block:nth-of-type(1):hover,
-  .tier-deep-dive > .tier-block:nth-of-type(2):hover,
-  .tier-deep-dive > .tier-block:nth-of-type(3):hover{
-    transform:translate3d(0,-4px,0);
-  }
+  /* Disable puzzle pulls in single-column mobile — keep just the lift on .tier-cat cells */
   .tier-cat-grid > .tier-cat:nth-child(1):hover,
   .tier-cat-grid > .tier-cat:nth-child(2):hover,
   .tier-cat-grid > .tier-cat:nth-child(3):hover,
@@ -1590,10 +1560,6 @@ body.auth-mode #ghost-trail{display:none;}
   .svc-grid-3 > .svc-card:nth-child(3).flipped{
     transform:rotateY(180deg) translateZ(0);
   }
-  .tier-deep-dive > .tier-block:hover,
-  .tier-deep-dive > .tier-block:nth-of-type(1):hover,
-  .tier-deep-dive > .tier-block:nth-of-type(2):hover,
-  .tier-deep-dive > .tier-block:nth-of-type(3):hover{transform:none;}
   .tier-cat-grid > .tier-cat:nth-child(1):hover,
   .tier-cat-grid > .tier-cat:nth-child(2):hover,
   .tier-cat-grid > .tier-cat:nth-child(3):hover,

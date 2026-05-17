@@ -863,7 +863,9 @@ body.auth-mode #ghost-trail{display:none;}
 /* TIER FLIP CARDS — same .svc-card class on Home and Mandates */
 .svc-grid-3{
   display:grid;grid-template-columns:repeat(3,1fr);
-  border-top:1px solid var(--rule);border-left:1px solid var(--rule);
+  /* Each card now stands on its own with a gap between them so the
+     trio reads as three engineered modules instead of one welded slab. */
+  gap:24px;
   /* deeper perspective + isolation prevents stacking-context bleed during flip */
   perspective:2400px;
   perspective-origin:50% 30%;
@@ -871,7 +873,7 @@ body.auth-mode #ghost-trail{display:none;}
 }
 .svc-card{
   position:relative;
-  border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  border:1px solid var(--rule);
   cursor:none;
   background:transparent;
   min-height:560px;
@@ -3709,9 +3711,26 @@ textarea:focus-visible,
 
   /* Chat widget on auth pages already hidden via .auth-mode rules */
 
-  /* Tier flip cards — taller on mobile to fit content */
-  .svc-card{ min-height:480px; }
-  .svc-card-face{ padding:40px 28px 32px; }
+  /* Tier flip cards — on touch devices the 3D hover-flip is unusable,
+     and the previously-absolute back face was overflowing onto the
+     next card. Switch to natural document flow: front face only, no
+     min-height, no rotation. */
+  .svc-card{
+    min-height:0;
+    transform:none !important;
+  }
+  .svc-card:hover,
+  .svc-card.flipped{
+    transform:none !important;
+  }
+  .svc-card-face{
+    position:static;
+    padding:40px 28px 32px;
+  }
+  .svc-card-face.back,
+  .svc-flip-hint{
+    display:none;
+  }
 
   /* Disable the hero-pin scrub spacer height on mobile so users don't
      have to scroll through 300vh of nothing — frames still play but

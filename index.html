@@ -172,49 +172,37 @@ html,body{
 }
 
 /* ============================================================
-   IMARK typewriter (Scene 3b)
-   Each letter is its own span — opacity + slight X-translate
-   reveal, staggered ~110ms by JS.
+   IMARK reveal (Scene 3b) — IMAGE-BASED
+   The IMARK wordmark is now images/IMARK.png (644×106 white-on-
+   transparent, with the inverted V already baked in). A clip-path
+   inset reveals it left-to-right in 5 discrete steps via
+   `steps(5, end)` — five jumps over the reveal duration give a
+   stepped, typewriter-style appearance instead of a smooth wipe.
    ============================================================ */
 .imark{
-  font-family:var(--f-deja);
-  /* Regular weight (400) — the reference reads as normal, not bold.
-     Size kept at the reduced clamp from the previous pass. */
-  font-weight:400;
-  font-size:clamp(24px, 4.5vw, 48px);
-  letter-spacing:.01em;
-  color:var(--off);
-  line-height:1;
+  display:inline-flex;
+  align-items:center;
   white-space:nowrap;
-  display:inline-block;
+  line-height:1;
 }
-.letter{
-  display:inline-block;
-  opacity:0;
-  transform:translateX(10px);
-  transition:opacity .35s var(--ease-out), transform .35s var(--ease-out);
-  will-change:transform, opacity;
+.imark-image{
+  display:block;
+  height:clamp(22px, 4.2vw, 42px);
+  width:auto;
+  /* Lock the rendered width even before the image loads so the
+     wordmark measurement (used to position the H) is stable. */
+  aspect-ratio:644 / 106;
+  user-select:none;
+  -webkit-user-drag:none;
+  /* Hidden state — clipped to zero width from the right. */
+  clip-path:inset(0 100% 0 0);
+  -webkit-clip-path:inset(0 100% 0 0);
+  /* 5 discrete reveal steps — typewriter feel for an image. */
+  transition:clip-path .9s steps(5, end), -webkit-clip-path .9s steps(5, end);
 }
-.letter.show{
-  opacity:1;
-  transform:translateX(0);
-}
-
-/* Upside-down V — a real "V" character rotated 180° on a nested
-   span so it inherits identical stroke weight, height, and width
-   to the surrounding letters. The outer .letter handles the
-   typewriter transform; the inner .inverted-v handles rotation,
-   so the two transforms don't fight on a single element. */
-.inverted-v{
-  display:inline-block;
-  transform:rotate(180deg);
-  /* Pivot tuned by feedback iteration:
-     - 55%  wings below the baseline
-     - 45%  wings above the baseline
-     - 47%  still slightly above
-     - 48%  still slightly above
-     - 49%  one more step down — should now sit cleanly */
-  transform-origin:50% 49%;
+.imark-image.show{
+  clip-path:inset(0 0 0 0);
+  -webkit-clip-path:inset(0 0 0 0);
 }
 
 /* Mono caret cursor that lives at the right edge of the wordmark
@@ -433,7 +421,8 @@ html,body{
     opacity:1 !important;
   }
   .hmark .frame{ stroke-dashoffset:0 !important; }
-  .letter{ opacity:1 !important; transform:translateX(0) !important; }
+  /* IMARK image shown immediately, no stepped reveal */
+  .imark-image{ clip-path:inset(0 0 0 0) !important; -webkit-clip-path:inset(0 0 0 0) !important; transition:none !important; }
   .caret{ display:none !important; }
   .progress-fill{ transition:right 1s linear !important; }
   .coord, .skip-hint{ animation:none !important; opacity:1 !important; }
@@ -500,12 +489,10 @@ html,body{
     </svg>
   </div>
 
-  <!-- "IM∧RK" — typewritten in Scene 3.
-       The upside-down V is a real "V" character rotated 180° inside
-       a nested span, so it has identical stroke weight, height, and
-       width to the other letters (unlike Λ which often renders
-       narrower in DejaVu Sans). -->
-  <span class="imark" id="imark" aria-hidden="true"><span class="letter">I</span><span class="letter">M</span><span class="letter"><span class="inverted-v">V</span></span><span class="letter">R</span><span class="letter">K</span><span class="caret" id="caret"></span></span>
+  <!-- IMARK wordmark — image (images/IMARK.png with inverted V baked in)
+       revealed left-to-right in 5 stepped chunks via clip-path for a
+       typewriter-style appearance. -->
+  <span class="imark" id="imark" aria-hidden="true"><img src="images/IMARK.png" alt="IMARK" class="imark-image" id="imarkImage"/><span class="caret" id="caret"></span></span>
 
 </a>
 
@@ -574,7 +561,7 @@ html,body{
   const wordmark    = document.getElementById('wordmark');
   const hmark       = document.getElementById('hmark');
   const imark       = document.getElementById('imark');
-  const letters     = imark.querySelectorAll('.letter');
+  const imarkImage  = document.getElementById('imarkImage');
   const caret       = document.getElementById('caret');
   const progressFill= document.getElementById('progressFill');
   const curtain     = document.getElementById('curtain');
@@ -631,7 +618,7 @@ html,body{
     if (reducedMotion){
       // Skip all entrances — wordmark is already fully visible by CSS
       hmark.classList.add('scene-1','scene-2','scene-3');
-      letters.forEach(l => l.classList.add('show'));
+      imarkImage.classList.add('show');
       s5Sweeps.classList.add('show');
       s5Bracket.classList.add('show');
       schedule(triggerCurtain, 1200);
@@ -652,18 +639,17 @@ html,body{
       caret.classList.add('active');
     }, 2500);
 
-    // SCENE 3b — IMARK typewriter (3.0s → 3.9s)
-    letters.forEach((letter, i) => {
-      schedule(() => {
-        letter.classList.add('show');
-      }, 3000 + i * 110);
-    });
+    // SCENE 3b — IMARK reveal via stepped clip-path (3.0s → 3.9s)
+    // CSS handles the 5-step typewriter effect; we just toggle the class.
+    schedule(() => {
+      imarkImage.classList.add('show');
+    }, 3000);
 
     // Caret stops blinking, fades out after final letter
     schedule(() => {
       caret.classList.remove('active');
       caret.classList.add('done');
-    }, 3600);
+    }, 3900);
 
     // SCENE 5 — sweep lines + bracket frame draw (4.0s → 5.5s)
     schedule(() => {
@@ -706,7 +692,9 @@ html,body{
     frame.style.strokeDashoffset = '0';
     // Force the full wordmark visible before the curtain sweeps in
     hmark.classList.add('scene-1','scene-2','scene-3');
-    letters.forEach(l => l.classList.add('show'));
+    // Snap the IMARK image to fully revealed instantly
+    imarkImage.style.transition = 'none';
+    imarkImage.classList.add('show');
     caret.classList.remove('active');
     caret.classList.add('done');
     // Snap Scene 5 lines + bracket to drawn state

@@ -1574,14 +1574,40 @@ body.auth-mode #ghost-trail{display:none;}
    for readability. The .np-hero-bg div takes the image via inline style.
    ============================================================ */
 .np-hero{
-  position:relative;
-  min-height:80vh;
+  /* Sticky-cover hero — pins to the top of the viewport while the
+     content below scrolls over it. Matches the pattern already in
+     place on home, about, services, process, product, team, apply. */
+  position:sticky;
+  top:0;
+  height:100vh;
+  min-height:100vh;
   background:var(--midnight);
   overflow:hidden;
   display:flex;
   align-items:center;
   padding:0 var(--gx);
   border-bottom:1px solid var(--rule-dk);
+  z-index:0;
+}
+/* Sections that follow .np-hero need to layer above it so the
+   scroll-cover effect reads cleanly. */
+#page-journal .s-num-bar,
+#page-journal .cap-section,
+#page-journal .footer,
+#page-engagements .s-num-bar,
+#page-engagements .cap-section,
+#page-engagements .footer,
+#page-direct .s-num-bar,
+#page-direct .cap-section,
+#page-direct .footer{
+  position:relative;
+  z-index:1;
+}
+#page-journal .s-num-bar:nth-of-type(1),
+#page-engagements .s-num-bar:nth-of-type(1),
+#page-direct .s-num-bar:nth-of-type(1){
+  /* Soft top edge on the first section that arrives over the hero */
+  box-shadow:0 -24px 60px rgba(28,43,58,.10), 0 -1px 0 rgba(28,43,58,.06);
 }
 .np-hero-bg{
   position:absolute; inset:0;

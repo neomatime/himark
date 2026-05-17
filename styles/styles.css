@@ -1046,8 +1046,8 @@ body.auth-mode #ghost-trail{display:none;}
 
 /* DOCTRINE PAGE (was About) */
 #page-doctrine{background:var(--off);}
-.doc-split{display:grid;grid-template-columns:5fr 4fr;min-height:calc(100vh - 0px);border-bottom:1px solid var(--rule);}
-.doc-left{background:#5F8190;padding:160px var(--gx) 100px;position:relative;overflow:hidden;}
+.doc-split{display:grid;grid-template-columns:5fr 4fr;min-height:65vh;border-bottom:1px solid var(--rule);}
+.doc-left{background:#5F8190;padding:120px var(--gx) 80px;position:relative;overflow:hidden;}
 .doc-left::before{content:'';position:absolute;inset:0;background-image:linear-gradient(to right,var(--grid-dk) 1px,transparent 1px);background-size:calc((100% - 0px)/4) 100%;pointer-events:none;}
 .doc-left-coord{position:absolute;font-family:var(--f-mono);font-size:9px;font-weight:500;letter-spacing:.08em;color:rgba(95,129,144,.55);text-transform:uppercase;}
 .doc-left .tl{top:32px;left:var(--gx);}.doc-left .tr{top:32px;right:32px;}
@@ -1071,14 +1071,14 @@ body.auth-mode #ghost-trail{display:none;}
   transition:transform .12s linear;
 }
 
-/* DOCTRINE PAGE — cinematic sticky hero. The hero stays as a backdrop while
+/* DOCTRINE PAGE — compact sticky split. The hero stays as a backdrop while
    subsequent sections layer over it. Subsequent sections need z-index >= 1
-   so their solid backgrounds occlude the sticky hero as they pass over. */
+   so their solid backgrounds occlude the sticky hero as they pass over.
+   No fixed height so the layout can grow to fit content on narrow viewports. */
 #page-doctrine .doc-split{
   position:sticky;
   top:0;
-  height:100vh;
-  min-height:100vh;
+  min-height:65vh;
   z-index:0;
   overflow:hidden;
 }
@@ -1095,7 +1095,7 @@ body.auth-mode #ghost-trail{display:none;}
   box-shadow:0 -24px 60px rgba(28,43,58,.10), 0 -1px 0 rgba(28,43,58,.06);
 }
 @media (prefers-reduced-motion:reduce){
-  #page-doctrine .doc-split{position:relative;height:auto;min-height:100vh;}
+  #page-doctrine .doc-split{position:relative;height:auto;min-height:65vh;}
   .doc-right-bg{transform:none;transition:none;}
 }
 .doc-right::before{content:'';position:absolute;inset:0;background:rgba(28,43,58,.06);}

@@ -3522,6 +3522,23 @@ textarea:focus-visible,
   .metric-cell{ padding:36px 22px; }
   .metric-n{ font-size:clamp(40px,9vw,64px); }
 
+  /* "Precision. Not. Volume." monolith — stack headline + paragraphs
+     vertically instead of side-by-side so the supporting text appears
+     beneath the headline on phone screens. */
+  .mono-grid{
+    grid-template-columns:1fr;
+    gap:32px;
+    align-items:start;
+  }
+  .r3d-l,
+  .r3d-r{
+    transform:translateY(20px);
+  }
+  .r3d-l.in,
+  .r3d-r.in{
+    transform:none;
+  }
+
   /* Section padding — knock down vertical space */
   .monolith,
   .home-svc-section,

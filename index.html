@@ -194,6 +194,11 @@ html,body{
   aspect-ratio:644 / 106;
   user-select:none;
   -webkit-user-drag:none;
+  /* The supplied IMARK.png has an opaque dark background baked in.
+     mix-blend-mode:lighten makes the dark background blend into the
+     page's dark gradient (becoming invisible), while keeping the
+     white letters fully visible. */
+  mix-blend-mode:lighten;
   /* Hidden state — clipped to zero width from the right. */
   clip-path:inset(0 100% 0 0);
   -webkit-clip-path:inset(0 100% 0 0);

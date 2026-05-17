@@ -52,37 +52,32 @@ body.ch #cr{width:48px;height:48px;}
   /* now visible — the wordmark IS the brand mark */
   display:inline-block;
 }
-/* Inverted V — inline SVG (replaces the previous CSS-rotated <span>V</span>
-   approach, which fought font metrics across browsers and never landed
-   cleanly on the baseline at small sizes).
+/* Inverted V — a real "V" character rotated 180° inside a nested
+   span, so the upside-down V has identical stroke weight, height,
+   and width to the surrounding HIM_RK letters (which the bare Λ
+   glyph does not — its cap-height and stroke are off in many fonts).
 
-   The SVG draws an explicit ∧ shape. viewBox is 12×12, polyline runs
-   from (1,11) → (6,1) → (11,11), so the wings sit at SVG y=11 and the
-   point sits at SVG y=1. With overflow:visible the stroke can extend
-   to the SVG's bottom edge cleanly.
+   transform-origin math for Source Sans 3 with line-height:1:
+     baseline at  0.75em from box top
+     cap-line at  0.09em from box top
+     V optical centre = (0.09 + 0.75) / 2 ≈ 0.42em → 42%
+   Putting the pivot at the V's optical centre means after 180°
+   rotation the V's wings land exactly on the baseline with the
+   rest of HIM_RK.
 
-   Sized: width 0.55em (≈ a capital V's natural width in Source Sans 3),
-   height 0.66em (≈ Source Sans 3 cap-height). vertical-align:baseline
-   pins the SVG's bottom edge to the text baseline, so the wings land
-   on the baseline with the rest of HIM_RK. margin-inline replicates
-   the .32em letter-spacing that browsers don't apply at inline-block
-   boundaries. Stroke uses currentColor so it picks up whatever color
-   the surrounding text has. */
+   Horizontal spacing fix:
+   Browsers stop applying the parent's letter-spacing at inline-block
+   boundaries, so the rotated V loses tracking on both sides — visibly
+   pinching it against R. Setting letter-spacing:0 inside removes any
+   internal trailing space, and margin-inline:0.32em restores symmetric
+   tracking that matches the .32em letter-spacing on the rest of HIM_RK. */
 .brand-v{
   display:inline-block;
-  width:.55em;
-  height:.66em;
-  margin-inline:.32em;
-  overflow:visible;
-  vertical-align:baseline;
-  color:inherit;
-}
-.brand-v polyline{
-  fill:none;
-  stroke:currentColor;
-  stroke-width:2;
-  stroke-linejoin:miter;
-  stroke-linecap:square;
+  transform:rotate(180deg);
+  transform-origin:50% 42%;
+  letter-spacing:0;
+  margin-left:.18em;
+  margin-right:.4em;    /* push it away from R */
 }
 body.light-nav #brand-mark{
   /* cream-on-dark → midnight-on-light when the page scrolls past the hero */

@@ -84,6 +84,21 @@ body.light-nav #brand-mark{
   color:var(--midnight);
 }
 
+/* Image-based brand mark — replaces the text wordmark.
+   The PNG is a white-on-transparent logo, so filter:invert(1) flips
+   it to dark when the page scrolls past the hero (body.light-nav). */
+#brand-mark img{
+  display:block;
+  height:28px;
+  width:auto;
+  user-select:none;
+  -webkit-user-drag:none;
+  transition:filter .55s var(--ease), opacity .4s var(--ease);
+}
+body.light-nav #brand-mark img{
+  filter:invert(1);
+}
+
 /* ============================================================
    FLOATING GLASS MENU
    Trigger is a small fixed pill in the top-right; clicking it opens
@@ -3599,6 +3614,7 @@ textarea:focus-visible,
      width/height are no longer forced; the wordmark is text now and
      auto-sizes to its content. */
   #brand-mark{ top:14px; padding:4px 12px 3px; font-size:13px; letter-spacing:.30em; }
+  #brand-mark img{ height:22px; }
 
   /* Floating menu pill (bottom-centre) — tighter on mobile.
      Music button on mobile: 42px circle at bottom:18px → centre at 39px
@@ -3728,6 +3744,7 @@ textarea:focus-visible,
 
   /* Brand mark a step smaller on tiny phones */
   #brand-mark{ top:12px; font-size:12px; letter-spacing:.28em; padding:4px 10px 3px; }
+  #brand-mark img{ height:18px; }
 
   /* Cookies banner — stack actions vertically */
   .cb-actions{ flex-direction:column; }

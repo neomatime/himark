@@ -111,7 +111,7 @@ html,body{
   display:flex;
   align-items:center;
   /* Tight gap between framed H and "I" — matches the reference */
-  gap:4px;
+  gap:0;
   text-decoration:none;
   color:inherit;
   z-index:3;
@@ -407,7 +407,7 @@ html,body{
   .coord-tl, .coord-bl{ left:18px; }
   .coord-tr, .coord-br{ right:18px; }
   .skip-hint{ bottom:14px; font-size:8px; }
-  .wordmark{ gap:6px; }
+  .wordmark{ gap:0; }
 }
 
 /* Hide coord stamps on very narrow / short viewports so they don't
@@ -604,7 +604,9 @@ html,body{
     const imarkWidth   = imark.offsetWidth;
     const hmarkWidth   = hmark.offsetWidth;
     const styles       = getComputedStyle(wordmark);
-    const gap          = parseFloat(styles.gap) || 10;
+    /* Use Number.isFinite so a real `gap:0` isn't fallen through to 10. */
+    const parsedGap    = parseFloat(styles.gap);
+    const gap          = Number.isFinite(parsedGap) ? parsedGap : 10;
     const shift        = (imarkWidth + gap) / 2;
     const totalWidth   = hmarkWidth + gap + imarkWidth;
     const totalHeight  = Math.max(hmark.offsetHeight, imark.offsetHeight);

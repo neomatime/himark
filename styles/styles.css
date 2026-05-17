@@ -1567,6 +1567,118 @@ body.auth-mode #ghost-trail{display:none;}
   .tier-cat-grid > .tier-cat:nth-child(5):hover{transform:none;}
 }
 
+/* ============================================================
+   NEW-PAGE HERO — used by insights.html, work.html, contact.html
+   Same atmospheric pattern as .itk-hero / .air-hero / .mnd-hero:
+   full-bleed dark background image + tint overlay + bottom gradient
+   for readability. The .np-hero-bg div takes the image via inline style.
+   ============================================================ */
+.np-hero{
+  position:relative;
+  min-height:80vh;
+  background:var(--midnight);
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  padding:0 var(--gx);
+  border-bottom:1px solid var(--rule-dk);
+}
+.np-hero-bg{
+  position:absolute; inset:0;
+  background-size:cover;
+  background-position:center;
+  z-index:0;
+}
+.np-hero::before{
+  content:'';
+  position:absolute; inset:0;
+  background:rgba(8,15,22,.55);
+  z-index:0;
+}
+.np-hero::after{
+  content:'';
+  position:absolute; bottom:0; left:0; right:0;
+  height:60%;
+  background:linear-gradient(to top, rgba(4,9,14,.95) 0%, rgba(4,9,14,.4) 60%, transparent 100%);
+  z-index:0;
+}
+.np-hero-coord-tl{
+  position:absolute; top:108px; left:var(--gx);
+  font-family:var(--f-mono); font-size:9px;
+  letter-spacing:.08em; color:var(--ocean-lt);
+  z-index:2;
+}
+.np-hero-coord-tr{
+  position:absolute; top:108px; right:var(--gx);
+  font-family:var(--f-mono); font-size:9px;
+  letter-spacing:.08em; color:rgba(138,173,184,.5);
+  z-index:2;
+}
+.np-hero-content{
+  position:relative; z-index:2;
+  max-width:900px;
+  width:100%;
+}
+.np-hero-eyebrow{
+  font-family:var(--f-mono);
+  font-size:10px; font-weight:600;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--ocean-lt);
+  margin-bottom:28px;
+  display:flex; align-items:center; gap:14px;
+}
+.np-hero-eyebrow::before{
+  content:''; display:block;
+  width:32px; height:1px; background:var(--ocean-lt);
+}
+.np-hl{
+  font-family:var(--f-disp);
+  font-size:clamp(46px, 6vw, 88px);
+  font-weight:800; line-height:.92;
+  letter-spacing:-.015em;
+  color:var(--off);
+  margin-bottom:32px;
+}
+.np-hl span{
+  display:block;
+  font-style:italic; font-weight:300;
+  color:rgba(226,240,240,.7);
+}
+.np-meta{
+  display:grid;
+  grid-template-columns:repeat(3, auto);
+  column-gap:64px; row-gap:18px;
+  margin-top:36px;
+}
+.np-meta-l{
+  font-family:var(--f-mono);
+  font-size:9px; font-weight:500;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--ocean-lt);
+  margin-bottom:8px;
+}
+.np-meta-v{
+  font-family:var(--f-disp);
+  font-size:15px; font-weight:600;
+  color:var(--off);
+}
+@media (max-width:768px){
+  .np-hero{
+    min-height:70vh;
+    padding:0 22px;
+  }
+  .np-hero-coord-tl,
+  .np-hero-coord-tr{ top:88px; }
+  .np-hero-coord-tl{ left:22px; }
+  .np-hero-coord-tr{ right:22px; }
+  .np-meta{
+    grid-template-columns:1fr;
+    column-gap:0; row-gap:16px;
+  }
+}
+
 /* METHOD PAGE */
 #page-method{background:var(--white);}
 .mth-hero{position:relative;height:100vh;min-height:100vh;background:var(--midnight);overflow:hidden;display:flex;align-items:center;padding:0 var(--gx);}.mth-hero-bg{position:absolute;inset:0;background-image:url('../images/method-hero.jpg');background-size:cover;background-position:center;transform:scale(var(--hero-zoom,1));transform-origin:center;will-change:transform;transition:transform .12s linear;z-index:0;}

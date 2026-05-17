@@ -3560,24 +3560,51 @@ textarea:focus-visible,
   }
   .footer{ padding:64px 22px 36px; }
 
-  /* Floating glass menu (bottom-centre) — keep centred, tighten gutters */
+  /* Floating glass menu (bottom-centre) — smaller + scrollable on
+     phones because the 10-item index would otherwise dominate the
+     screen. The .menu-list takes flex:1 inside the panel's flex
+     column, so the header and footer stay pinned while the list
+     scrolls. */
   #menu-panel{
     width:calc(100% - 28px);
-    max-width:360px;
+    max-width:320px;
     bottom:72px;
     top:auto;
+    /* Hard cap so the panel never eats more than ~65% of the viewport */
+    max-height:65vh;
     padding:0;
   }
-  .menu-coord-tl{ padding:12px 16px 4px; }
-  .menu-coord-tr{ top:8px; right:8px; }
-  .menu-list{ padding:6px 6px 8px; }
-  .mi-name{ font-size:16px; }
-  .menu-item{ grid-template-columns:30px 1fr 16px; gap:10px; padding:10px 12px; }
+  .menu-coord-tl{ padding:10px 14px 4px; font-size:8px; }
+  .menu-coord-tr{ top:6px; right:6px; width:24px; height:24px; }
+  .menu-coord-tr::before{ font-size:16px; }
+  .menu-list{
+    padding:4px 6px;
+    flex:1;
+    min-height:0;            /* required for overflow inside a flex column */
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+  /* Hide the scrollbar for cleaner look but keep functionality */
+  .menu-list::-webkit-scrollbar{ width:0; height:0; }
+  .menu-list{ scrollbar-width:none; }
+  .menu-item{
+    grid-template-columns:26px 1fr 14px;
+    gap:8px;
+    padding:8px 10px;
+  }
+  .mi-num{ font-size:9px; }
+  .mi-name{ font-size:14px; gap:6px; }
+  .mi-name em{ font-size:10px; }
+  .mi-arrow{ font-size:11px; }
   .menu-footer{
     grid-template-columns:1fr;
-    gap:10px;
-    padding:10px 16px 14px;
+    gap:6px;
+    padding:8px 14px 10px;
+    flex-shrink:0;            /* keep footer visible when list scrolls */
   }
+  .mf-label{ font-size:7px; margin-bottom:2px; }
+  .mf-text{ font-size:10px; line-height:1.4; }
 
   /* Footer */
   .footer-top{ grid-template-columns:1fr; gap:32px; padding-bottom:32px; }

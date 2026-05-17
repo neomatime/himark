@@ -187,18 +187,20 @@ html,body{
 }
 .imark-image{
   display:block;
-  height:clamp(22px, 4.2vw, 42px);
+  /* Height tuned to keep the new image's rendered WIDTH similar to
+     the previous version's, so the wordmark composition (H + gap +
+     IMARK) stays balanced. New aspect 367:99 ≈ 3.71, vs prior 6.08
+     — so height bumps up roughly 1.6× to compensate. */
+  height:clamp(36px, 7vw, 68px);
   width:auto;
-  /* Lock the rendered width even before the image loads so the
-     wordmark measurement (used to position the H) is stable. */
-  aspect-ratio:644 / 106;
+  /* Lock rendered width before the image loads so measureAndPosition
+     (which positions the H) is stable. */
+  aspect-ratio:367 / 99;
   user-select:none;
   -webkit-user-drag:none;
-  /* The supplied IMARK.png has an opaque dark background baked in.
-     mix-blend-mode:lighten makes the dark background blend into the
-     page's dark gradient (becoming invisible), while keeping the
-     white letters fully visible. */
-  mix-blend-mode:lighten;
+  /* The new IMARK.png has proper transparency — no blend-mode hack
+     needed. The transparent background lets the page gradient show
+     through cleanly. */
   /* Hidden state — clipped to zero width from the right. */
   clip-path:inset(0 100% 0 0);
   -webkit-clip-path:inset(0 100% 0 0);

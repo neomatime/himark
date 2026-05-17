@@ -33,7 +33,7 @@ body.ch #cr{width:48px;height:48px;}
    activates as the page scrolls past the hero. The wordmark sits
    centered at the top, sized for restrained editorial presence. */
 #brand-mark{
-  position:fixed;top:18px;left:50%;transform:translateX(-50%);
+  position:fixed;top:8px;left:50%;transform:translateX(-50%);
   z-index:1000;
   font-family:var(--f-disp);
   font-size:15px;
@@ -3613,7 +3613,7 @@ textarea:focus-visible,
   /* Brand mark — drop down a touch on phones.
      width/height are no longer forced; the wordmark is text now and
      auto-sizes to its content. */
-  #brand-mark{ top:14px; padding:4px 12px 3px; font-size:13px; letter-spacing:.30em; }
+  #brand-mark{ top:6px; padding:4px 12px 3px; font-size:13px; letter-spacing:.30em; }
   #brand-mark img{ height:22px; }
 
   /* Floating menu pill (bottom-centre) — tighter on mobile.
@@ -3743,7 +3743,7 @@ textarea:focus-visible,
   .footer{ padding:48px 18px 32px; }
 
   /* Brand mark a step smaller on tiny phones */
-  #brand-mark{ top:12px; font-size:12px; letter-spacing:.28em; padding:4px 10px 3px; }
+  #brand-mark{ top:4px; font-size:12px; letter-spacing:.28em; padding:4px 10px 3px; }
   #brand-mark img{ height:18px; }
 
   /* Cookies banner — stack actions vertically */

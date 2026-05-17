@@ -15,6 +15,11 @@ const PAGE_URLS={
   airass:'product.html',
   principals:'team.html',
   intake:'apply.html',
+  /* New surfaces */
+  engagements:'work.html',
+  journal:'insights.html',
+  direct:'contact.html',
+  /* Legal + auth */
   privacy:'privacy.html',
   terms:'terms.html',
   cookies:'cookies.html',

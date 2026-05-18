@@ -48,9 +48,11 @@ function extractLead(text){
   try {
     const parsed = JSON.parse(m[1]);
     if (parsed && typeof parsed === 'object' && parsed.email) {
-      /* Defensive: trim everything, drop nulls */
+      /* Defensive: trim everything, drop nulls. New LeadSense flow
+         emits two extra fields — timeline and budget — captured at
+         Steps 5 and 6 of the mandatory eight-step flow. */
       const clean = {};
-      for (const k of ['name', 'email', 'company', 'role', 'brief', 'tier']) {
+      for (const k of ['name', 'email', 'company', 'role', 'brief', 'tier', 'timeline', 'budget']) {
         const v = parsed[k];
         if (typeof v === 'string') clean[k] = v.trim();
       }
@@ -96,9 +98,11 @@ async function pushToHubSpot(lead){
     /* HIMARK custom properties — create these in HubSpot if you
        want them populated (Settings → Properties → Contacts).
        If they don't exist HubSpot will ignore them silently. */
-    himark_brief: lead.brief || '',
-    himark_tier: lead.tier || 'unsure',
-    himark_source: 'atlas-chat'
+    himark_brief:    lead.brief    || '',
+    himark_tier:     lead.tier     || 'unsure',
+    himark_timeline: lead.timeline || '',
+    himark_budget:   lead.budget   || '',
+    himark_source:   'atlas-chat'
   };
 
   /* Create. */

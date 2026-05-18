@@ -468,16 +468,32 @@ try{
     atlasVoice=pickAtlasVoice();
     window.speechSynthesis.onvoiceschanged=()=>{ atlasVoice=pickAtlasVoice(); };
   }
-  /* Brand pronunciation overrides for text-to-speech only. These
-     rewrites apply only to the spoken stream — the chat log still
-     shows the original spelling. Add more entries here as we
-     discover words the engine mangles. */
+  /* Pronunciation overrides for text-to-speech only. These rewrites
+     apply only to the spoken stream — the chat log still shows the
+     original spelling. Add more entries here as we discover words
+     the engine mangles. */
   function speakable(text){
     return text
       /* HIMARK is read letter-by-letter or as "him-ark" by most
          TTS engines. Force it to "Highmark" so it lands as
          "high-mark" — closer to the intended brand pronunciation. */
-      .replace(/\bHIMARK(s|'s)?\b/g, (m,suf)=>'Highmark'+(suf||''));
+      .replace(/\bHIMARK(s|'s)?\b/g, (m,suf)=>'Highmark'+(suf||''))
+
+      /* Principal name pronunciation — phonetic respellings that
+         English TTS engines render close to the intended SA Sotho
+         pronunciation. Captures possessives ("'s") via the \b
+         boundary so "Matime's" → "Mahteemay's" automatically. */
+      .replace(/\bMatime\b/g,   'Mahteemay')   // CEO  Neo Matime    →  Neo Ma-tih-meh
+      .replace(/\bMothiba\b/g,  'Moteeba')     // COO  Thelma Mothiba →  Thelma Mo-tih-ba
+      .replace(/\bMokgwadi\b/g, 'Mokwadee')    // CMO  Neo Mokgwadi   →  Neo Mo-kgwa-di
+
+      /* South African Rand pricing — TTS reads "R50,000" as
+         letter-by-letter "R fifty thousand" or "are fifty
+         thousand". Strip the R prefix and append " rand" so the
+         engine speaks "fifty thousand rand". Matches grouped
+         (R50,000) and ungrouped (R50000) forms; ignores R&B,
+         R2D2, etc. since they don't fit the digit pattern. */
+      .replace(/\bR(\d[\d,]*)\b/g, (m, num) => num + ' rand');
   }
 
   function speak(text){

@@ -428,7 +428,7 @@ try{
     }catch(_){}
   }
   window.tV=function(){
-    if(!SR){ if(vStat)vStat.textContent='VOICE NOT SUPPORTED'; return; }
+    if(!SR){ if(vStat)vStat.textContent='VOICE NOT SUPPORTED — TRY CHROME'; return; }
     if(lstn&&recog){ recog.stop(); return; }
     recog=new SR(); recog.lang='en-ZA'; recog.interimResults=false; recog.maxAlternatives=1;
     recog.onstart =()=>{ lstn=true;  vOrb&&vOrb.classList.add('on');  vWave&&vWave.classList.add('on');  if(vStat)vStat.textContent='LISTENING…'; };
@@ -440,9 +440,26 @@ try{
       aM('user',t);
       await cC(t);
     };
-    recog.onend  =()=>{ lstn=false; vOrb&&vOrb.classList.remove('on'); vWave&&vWave.classList.remove('on'); if(vStat)vStat.textContent='TAP TO SPEAK'; };
-    recog.onerror=()=>{ if(recog&&recog.onend)recog.onend(); };
-    recog.start();
+    recog.onend  =()=>{ lstn=false; vOrb&&vOrb.classList.remove('on'); vWave&&vWave.classList.remove('on'); /* status text reset by error handler if applicable */ if(vStat&&vStat.textContent==='LISTENING…')vStat.textContent='TAP TO SPEAK'; };
+    /* Surface the actual SR error to the visitor so they know
+       why it's not working. Most common case: 'not-allowed' = user
+       denied microphone permission, or the site isn't on HTTPS. */
+    recog.onerror=e=>{
+      let msg='TAP TO SPEAK';
+      const code=(e&&e.error)||'';
+      if(code==='not-allowed')   msg='MIC ACCESS DENIED — CHECK BROWSER SETTINGS';
+      else if(code==='audio-capture') msg='NO MIC FOUND';
+      else if(code==='no-speech')     msg='NO SPEECH HEARD — TAP AGAIN';
+      else if(code==='network')       msg='NETWORK ERROR';
+      else if(code==='service-not-allowed') msg='VOICE BLOCKED BY BROWSER';
+      else if(code)                   msg='ERROR · '+code.toUpperCase();
+      if(vStat) vStat.textContent=msg;
+      lstn=false;
+      vOrb&&vOrb.classList.remove('on');
+      vWave&&vWave.classList.remove('on');
+    };
+    try{ recog.start(); }
+    catch(err){ if(vStat) vStat.textContent='COULD NOT START — TAP AGAIN'; lstn=false; }
   };
   /* The .v-orb element doesn't carry an inline handler in the markup,
      so bind a click directly. */

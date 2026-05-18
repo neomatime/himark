@@ -442,19 +442,35 @@ try{
     if(!('speechSynthesis'in window)) return null;
     const voices=window.speechSynthesis.getVoices();
     if(!voices||!voices.length) return null;
-    /* Priority order. First match wins. Names vary per OS:
-       - Chrome on macOS exposes "Google …" voices (natural)
-       - Safari/macOS exposes "Samantha", "Daniel", etc.
-       - Windows exposes "Microsoft … Online (Natural)" voices
-       - Android exposes Google's neural voices */
+    /* Picking a SOFT MALE voice for Atlas. The Web Speech API
+       doesn't expose voice gender, so we heuristic on name. The
+       neural / natural variants from Google + Microsoft sound
+       noticeably less robotic than the OS defaults, so we prefer
+       those first. Priority order:
+         1.  en-ZA male (any)              — rare but ideal
+         2.  en-GB male + neural           — Daniel on macOS, MS Ryan/George on Windows, Google UK Male
+         3.  en-GB male (any quality)
+         4.  en-AU male
+         5.  en-US male + neural           — MS Ryan/Guy/Davis Natural
+         6.  en-US male (any quality)
+         7.  en-GB neural any              — fallback to soft tone over gender match
+         8.  any en-GB
+         9.  any en-* */
+    const isMale = v => /\b(daniel|aaron|albert|alex|arthur|bruce|brian|david|fred|george|guy|davis|james|jamie|john|junior|mark|oliver|ralph|reed|ryan|thomas|tom|tony|microsoft (david|mark|george|ryan|guy|davis|brian|tony)|google (uk )?english male)\b/i.test(v.name);
+    const isQuality = v => /natural|neural|wavenet|online|google/i.test(v.name);
     const tests=[
-      v=>v.lang==='en-ZA',
-      v=>v.lang==='en-GB' && /natural|neural|wavenet|online|google/i.test(v.name),
-      v=>v.lang==='en-GB',
-      v=>v.lang==='en-AU' && /natural|neural|wavenet|online|google/i.test(v.name),
-      v=>v.lang==='en-US' && /natural|neural|wavenet|online|google/i.test(v.name),
-      v=>v.lang==='en-US',
-      v=>v.lang && v.lang.startsWith('en-')
+      v => v.lang==='en-ZA' && isMale(v),
+      v => v.lang==='en-ZA',
+      v => v.lang==='en-GB' && isMale(v) && isQuality(v),
+      v => v.lang==='en-GB' && isMale(v),
+      v => v.lang==='en-AU' && isMale(v),
+      v => v.lang==='en-US' && isMale(v) && isQuality(v),
+      v => v.lang==='en-US' && isMale(v),
+      v => v.lang==='en-GB' && isQuality(v),
+      v => v.lang==='en-GB',
+      v => v.lang==='en-US' && isQuality(v),
+      v => v.lang==='en-US',
+      v => v.lang && v.lang.startsWith('en-')
     ];
     for(const t of tests){
       const m=voices.find(t);
@@ -533,43 +549,95 @@ try{
       window.speechSynthesis.speak(u);
     }catch(_){}
   }
+  /* CONTINUOUS LISTENING — the default browser SpeechRecognition
+     ends as soon as it thinks you've stopped, which means a
+     mid-sentence pause-to-think gets read as "end of turn" and the
+     user is cut off. We switch to continuous mode + interim results
+     + a manual silence timer so visitors have a generous pause
+     window before Atlas processes their input:
+       - INITIAL_TIMEOUT_MS  → how long to wait for the first word
+       - SILENCE_AFTER_MS    → how long to wait for the next word
+                              once the user has started speaking */
+  const INITIAL_TIMEOUT_MS = 5000;  // 5s to start talking
+  const SILENCE_AFTER_MS   = 3000;  // 3s of silence after speech = done
+
   window.tV=function(){
     if(!SR){ if(vStat)vStat.textContent='VOICE NOT SUPPORTED — TRY CHROME'; return; }
     /* INTERRUPT — if Atlas is mid-reply when the visitor taps the
-       orb, cut him off and switch to listening. Makes the
-       conversation feel like a real call where you can interject. */
+       orb, cut him off and switch to listening. */
     try{ window.speechSynthesis.cancel(); }catch(_){}
     if(lstn&&recog){ recog.stop(); return; }
-    recog=new SR(); recog.lang='en-ZA'; recog.interimResults=false; recog.maxAlternatives=1;
-    recog.onstart =()=>{ lstn=true;  vOrb&&vOrb.classList.add('on');  vWave&&vWave.classList.add('on');  if(vStat)vStat.textContent='LISTENING…'; };
-    recog.onresult=async e=>{
-      const t=e.results[0][0].transcript;
-      /* Briefly show the transcript, then transition to "thinking"
-         so the visitor knows Atlas has heard them and is working.
-         We intentionally do NOT swT('chat') here — the user is on
-         the voice tab and wants to STAY there. Their transcript and
-         Atlas's reply are still appended to the chat log for later. */
-      if(vStat) vStat.textContent='"'+t+'"';
-      setTimeout(()=>{ if(vStat && vStat.textContent==='"'+t+'"') vStat.textContent='ATLAS THINKING…'; }, 700);
-      if(qrEl) qrEl.style.display='none';
-      aM('user',t);
-      await cC(t);
-      /* After cC, speak() drives v-stat through "ATLAS REPLYING…"
-         then back to "TAP TO SPEAK" via the utterance event hooks. */
+
+    recog=new SR();
+    recog.lang='en-ZA';
+    recog.continuous=true;        // keep listening through natural pauses
+    recog.interimResults=true;    // get partial transcripts so we can track speech activity
+    recog.maxAlternatives=1;
+
+    let finalTranscript='';
+    let hasReceivedSpeech=false;
+    let silenceTimer=null;
+
+    function armSilenceTimer(ms){
+      if(silenceTimer) clearTimeout(silenceTimer);
+      silenceTimer=setTimeout(()=>{
+        if(lstn && recog){ try{ recog.stop(); }catch(_){} }
+      }, ms);
+    }
+
+    recog.onstart=()=>{
+      lstn=true;
+      vOrb&&vOrb.classList.add('on');
+      vWave&&vWave.classList.add('on');
+      if(vStat) vStat.textContent='LISTENING…';
+      finalTranscript='';
+      hasReceivedSpeech=false;
+      armSilenceTimer(INITIAL_TIMEOUT_MS);
     };
-    recog.onend  =()=>{
+
+    recog.onresult=e=>{
+      let interim='';
+      for(let i=e.resultIndex;i<e.results.length;i++){
+        const r=e.results[i];
+        if(r.isFinal) finalTranscript += r[0].transcript;
+        else interim += r[0].transcript;
+      }
+      hasReceivedSpeech = true;
+      /* Reset silence timer every time we hear something — gives
+         the user the full SILENCE_AFTER_MS window between words. */
+      armSilenceTimer(SILENCE_AFTER_MS);
+      /* Live transcript on the voice panel so the user knows the
+         mic is hearing them. */
+      const display=(finalTranscript+interim).trim();
+      if(display && vStat) vStat.textContent='"'+display+'"';
+    };
+
+    recog.onend=()=>{
+      if(silenceTimer){ clearTimeout(silenceTimer); silenceTimer=null; }
       lstn=false;
       vOrb&&vOrb.classList.remove('on');
       vWave&&vWave.classList.remove('on');
-      /* Only reset to idle if we're still in the listening state.
-         If onresult has already advanced the status to a transcript
-         or "ATLAS THINKING…", leave it alone. */
-      if(vStat&&vStat.textContent==='LISTENING…') vStat.textContent='TAP TO SPEAK';
+
+      const said=finalTranscript.trim();
+      if(said){
+        if(vStat) vStat.textContent='ATLAS THINKING…';
+        if(qrEl) qrEl.style.display='none';
+        aM('user',said);
+        cC(said);   /* async — speak() will drive v-stat through ATLAS REPLYING… */
+      } else if(hasReceivedSpeech){
+        /* Mic heard SOMETHING but it didn't finalise. Rare; show
+           a recoverable status. */
+        if(vStat) vStat.textContent='DIDN\'T CATCH THAT — TAP AGAIN';
+      } else {
+        if(vStat) vStat.textContent='NO SPEECH HEARD — TAP AGAIN';
+      }
     };
+
     /* Surface the actual SR error to the visitor so they know
        why it's not working. Most common case: 'not-allowed' = user
        denied microphone permission, or the site isn't on HTTPS. */
     recog.onerror=e=>{
+      if(silenceTimer){ clearTimeout(silenceTimer); silenceTimer=null; }
       let msg='TAP TO SPEAK';
       const code=(e&&e.error)||'';
       if(code==='not-allowed')   msg='MIC ACCESS DENIED — CHECK BROWSER SETTINGS';
@@ -577,12 +645,14 @@ try{
       else if(code==='no-speech')     msg='NO SPEECH HEARD — TAP AGAIN';
       else if(code==='network')       msg='NETWORK ERROR';
       else if(code==='service-not-allowed') msg='VOICE BLOCKED BY BROWSER';
+      else if(code==='aborted')       msg='TAP TO SPEAK'; /* user-initiated stop */
       else if(code)                   msg='ERROR · '+code.toUpperCase();
       if(vStat) vStat.textContent=msg;
       lstn=false;
       vOrb&&vOrb.classList.remove('on');
       vWave&&vWave.classList.remove('on');
     };
+
     try{ recog.start(); }
     catch(err){ if(vStat) vStat.textContent='COULD NOT START — TAP AGAIN'; lstn=false; }
   };

@@ -256,7 +256,11 @@ module.exports = async (req, res) => {
     ? SYSTEM_PROMPT + '\n\n----------------------------------------\nTHIS TURN: VOICE MODE — live phone-call-style conversation\n----------------------------------------\n- This is a LIVE voice call. The visitor speaks, you speak back, the mic re-opens automatically, they speak again. Behave like you would on a real call.\n- Keep replies to 1–2 short sentences. No more. Brevity is the whole point.\n- Write the way you would SPEAK: no URLs, no markdown, no asterisks, no parentheses, no quoted dialogue, no labels like "Q:" or "A:".\n- End with a question or a natural beat that hands the turn back to the visitor. Never end with a monologue.\n- Never refer the visitor to text ("see the chat", "check the text response", "as I wrote above"). They cannot see while in voice mode. Just answer them.\n- If you need to ask for an email or company name, ask once, briefly, the way a person would on a call.\n- Pronunciation hint: the brand "HIMARK" is spoken as "Highmark" — the front-end substitutes it automatically, so write "HIMARK" normally and it will sound right.'
     : SYSTEM_PROMPT;
 
-  const contents = incoming.slice(-20).map(m => ({
+  /* Voice turns: keep less history so the prompt is smaller and
+     Gemini's first-token latency is lower. Text turns: full 20
+     because reads + LeadSense often benefit from longer memory. */
+  const histLimit = mode === 'voice' ? 10 : 20;
+  const contents = incoming.slice(-histLimit).map(m => ({
     role: m && m.role === 'assistant' ? 'model' : 'user',
     parts: [{ text: String((m && m.content) || '').slice(0, 4000) }]
   }));
@@ -273,8 +277,10 @@ module.exports = async (req, res) => {
           generationConfig: {
             temperature: 0.65,
             topP: 0.9,
-            /* Voice replies are short; text replies can be longer. */
-            maxOutputTokens: mode === 'voice' ? 160 : 500
+            /* Voice replies must be SHORT — both for naturalness and
+               for latency. 110 tokens is roughly 2 short sentences,
+               which is the target the system prompt enforces. */
+            maxOutputTokens: mode === 'voice' ? 110 : 500
           },
           safetySettings: [
             { category: 'HARM_CATEGORY_HARASSMENT',       threshold: 'BLOCK_ONLY_HIGH' },

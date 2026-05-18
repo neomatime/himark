@@ -50,13 +50,13 @@ module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
 
   /* DIAGNOSTIC — visit /api/chat in a browser (GET) to see whether
-     the function is deployed and whether GEMINI_API_KEY is reaching
-     the runtime. Returns no key value, only presence + length, so
-     it's safe to leave in production. */
+     the function is deployed, whether GEMINI_API_KEY is reaching
+     the runtime, AND whether a live test call to Gemini succeeds.
+     Returns no key value, only presence + length, so it's safe to
+     leave in production. */
   if (req.method === 'GET') {
     const k = process.env.GEMINI_API_KEY || '';
-    res.statusCode = 200;
-    return res.end(JSON.stringify({
+    const base = {
       ok: true,
       function: 'api/chat',
       method: 'GET',
@@ -64,7 +64,41 @@ module.exports = async (req, res) => {
       keyLength: k.length,
       keyStartsWith: k ? k.slice(0, 4) + '…' : null,
       runtime: process.version || 'unknown'
-    }));
+    };
+    if (!k) {
+      res.statusCode = 200;
+      return res.end(JSON.stringify(base));
+    }
+    /* Test a live Gemini call so we can see the actual error if
+       the model name is wrong, the key is invalid, etc. */
+    try {
+      const probe = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${encodeURIComponent(k)}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ role: 'user', parts: [{ text: 'ping' }] }],
+            generationConfig: { maxOutputTokens: 20 }
+          })
+        }
+      );
+      const text = await probe.text();
+      let parsed;
+      try { parsed = JSON.parse(text); } catch (_) { parsed = null; }
+      base.geminiTest = {
+        model: GEMINI_MODEL,
+        status: probe.status,
+        ok: probe.ok,
+        errorMessage: parsed && parsed.error ? parsed.error.message : null,
+        errorStatus: parsed && parsed.error ? parsed.error.status : null,
+        rawBodyExcerpt: text.slice(0, 500)
+      };
+    } catch (e) {
+      base.geminiTest = { model: GEMINI_MODEL, fetchError: String(e && e.message || e) };
+    }
+    res.statusCode = 200;
+    return res.end(JSON.stringify(base));
   }
 
   if (req.method !== 'POST') {

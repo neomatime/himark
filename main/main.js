@@ -383,6 +383,14 @@ try{
       setTimeout(()=>aM('bot',"I'm Atlas — HIMARK's assistant. Ask about engagement, the four-phase method, or AIRaaS."),380);
     }
     if(willOpen) setTimeout(()=>cIn&&cIn.focus(),260);
+    /* Closing the panel mid-conversation: kill any in-flight
+       speech and recognition so the mic doesn't keep listening
+       and Atlas doesn't keep talking behind a hidden panel. */
+    if(!willOpen){
+      try{ window.speechSynthesis.cancel(); }catch(_){}
+      try{ if(recog && lstn) recog.stop(); }catch(_){}
+      if(vStat) vStat.textContent='TAP TO SPEAK';
+    }
   });
 
   /* SEND — inline onclick="sM()" handler from the markup */
@@ -460,6 +468,18 @@ try{
     atlasVoice=pickAtlasVoice();
     window.speechSynthesis.onvoiceschanged=()=>{ atlasVoice=pickAtlasVoice(); };
   }
+  /* Brand pronunciation overrides for text-to-speech only. These
+     rewrites apply only to the spoken stream — the chat log still
+     shows the original spelling. Add more entries here as we
+     discover words the engine mangles. */
+  function speakable(text){
+    return text
+      /* HIMARK is read letter-by-letter or as "him-ark" by most
+         TTS engines. Force it to "Highmark" so it lands as
+         "high-mark" — closer to the intended brand pronunciation. */
+      .replace(/\bHIMARK(s|'s)?\b/g, (m,suf)=>'Highmark'+(suf||''));
+  }
+
   function speak(text){
     try{
       if(!('speechSynthesis'in window)||!text) return;
@@ -467,20 +487,42 @@ try{
          multiple replies that all play one after the other. */
       window.speechSynthesis.cancel();
       if(!atlasVoice) atlasVoice=pickAtlasVoice();
-      const u=new SpeechSynthesisUtterance(text);
+      const u=new SpeechSynthesisUtterance(speakable(text));
       if(atlasVoice){ u.voice=atlasVoice; u.lang=atlasVoice.lang; }
       else { u.lang='en-ZA'; }
       u.rate=1.0; u.pitch=1.0; u.volume=1.0;
       /* Drive the v-stat status text through the speech lifecycle
          so the visitor sees when Atlas starts and finishes talking. */
       u.onstart=()=>{ if(vStat) vStat.textContent='ATLAS REPLYING…'; };
-      u.onend  =()=>{ if(vStat) vStat.textContent='TAP TO SPEAK'; };
+      u.onend  =()=>{
+        /* CONTINUOUS CONVERSATION — after Atlas finishes speaking,
+           if the visitor is still on the voice tab AND the chat
+           panel is still open, automatically re-open the mic so
+           they can reply without having to tap the orb every turn.
+           Brief 600ms beat lets the listener register the end of
+           Atlas's reply before the mic comes on. The visitor can
+           tap the orb at any time to interrupt the loop. */
+        const stillInVoice = vPan && vPan.classList.contains('on') && cWin && cWin.classList.contains('open');
+        if(stillInVoice && !busy && !lstn){
+          if(vStat) vStat.textContent='…';
+          setTimeout(()=>{
+            const stillInVoiceNow = vPan && vPan.classList.contains('on') && cWin && cWin.classList.contains('open');
+            if(stillInVoiceNow && !busy && !lstn) window.tV();
+          }, 600);
+        } else {
+          if(vStat) vStat.textContent='TAP TO SPEAK';
+        }
+      };
       u.onerror=()=>{ if(vStat) vStat.textContent='TAP TO SPEAK'; };
       window.speechSynthesis.speak(u);
     }catch(_){}
   }
   window.tV=function(){
     if(!SR){ if(vStat)vStat.textContent='VOICE NOT SUPPORTED — TRY CHROME'; return; }
+    /* INTERRUPT — if Atlas is mid-reply when the visitor taps the
+       orb, cut him off and switch to listening. Makes the
+       conversation feel like a real call where you can interject. */
+    try{ window.speechSynthesis.cancel(); }catch(_){}
     if(lstn&&recog){ recog.stop(); return; }
     recog=new SR(); recog.lang='en-ZA'; recog.interimResults=false; recog.maxAlternatives=1;
     recog.onstart =()=>{ lstn=true;  vOrb&&vOrb.classList.add('on');  vWave&&vWave.classList.add('on');  if(vStat)vStat.textContent='LISTENING…'; };

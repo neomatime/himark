@@ -9,7 +9,10 @@
    Free tier: Gemini 1.5 Flash gives 15 RPM / 1,500 RPD / 1M
    TPM at no charge. Well within reach of this site's traffic. */
 
-const GEMINI_MODEL = 'gemini-1.5-flash';
+/* gemini-1.5-flash was deprecated in early 2026 and now returns 404
+   on v1beta. gemini-2.0-flash is the current free-tier successor —
+   higher quality, same free quota (15 RPM / 1,500 RPD). */
+const GEMINI_MODEL = 'gemini-2.0-flash';
 
 const SYSTEM_PROMPT = [
   "You are Atlas, the in-house assistant for HIMARK — a standalone premium strategic growth consultancy headquartered in Randburg, South Africa. HIMARK is a Good Global Holdings (GGH) company.",

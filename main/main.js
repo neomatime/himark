@@ -976,24 +976,30 @@ window.authSubmit=authSubmit;
    — keeps the home page consistent with doctrine/mandates/method/etc. The
    old translate+scale parallax was incompatible with sticky positioning.) */
 
-/* CINEMATIC STICKY HERO — scroll-zoom for doctrine + mandates (and any future
-   page that pairs `[sticky-hero]` + `[sticky-hero-bg]`). As the user scrolls
-   past the hero, the background image scales up subtly (max ~12%) on a
-   quadratic ease-out so most of the zoom happens early, settling toward the
-   end. The hero is held in place by CSS `position:sticky`; we only animate
-   the inner image layer via a CSS variable, so layout never re-flows. */
+/* CINEMATIC STICKY HERO — scroll-zoom for every content page hero. As
+   the user scrolls past the hero, the background image scales up subtly
+   (max ~12%) on a quadratic ease-out so most of the zoom happens early,
+   settling toward the end. The hero is held in place by CSS
+   `position:sticky`; we only animate the inner image layer via a CSS
+   variable, so layout never re-flows. */
 (function(){
   // Each entry: { pageId, heroSelector, bgSelector }.
-  // Add new pages here when you wire up another sticky hero.
+  // page-home is driven by the canvas frame-sequence scrubber instead —
+  // the cinematic film *is* the motion, no extra zoom on the video layer.
+  // page-doctrine kept its bespoke two-column split, so it uses .doc-split /
+  // .doc-right-bg. Every other content page (mandates, method, airass,
+  // principals, intake, plus the three new surfaces journal/engagements/
+  // direct) now shares the unified .np-hero / .np-hero-bg structure.
   const TARGETS=[
-    /* page-home is driven by the canvas frame-sequence scrubber instead —
-       the cinematic film *is* the motion, no extra zoom on the video layer. */
-    {pageId:'page-doctrine',   heroSelector:'.doc-split',  bgSelector:'.doc-right-bg'},
-    {pageId:'page-mandates',   heroSelector:'.mnd-hero',   bgSelector:'.mnd-hero-bg'},
-    {pageId:'page-method',     heroSelector:'.mth-hero',   bgSelector:'.mth-hero-bg'},
-    {pageId:'page-airass',     heroSelector:'.air-hero',   bgSelector:'.air-hero-bg'},
-    {pageId:'page-principals', heroSelector:'.prn-hero',   bgSelector:'.prn-hero-bg'},
-    {pageId:'page-intake',     heroSelector:'.itk-hero',   bgSelector:'.itk-hero-bg'}
+    {pageId:'page-doctrine',    heroSelector:'.doc-split', bgSelector:'.doc-right-bg'},
+    {pageId:'page-mandates',    heroSelector:'.np-hero',   bgSelector:'.np-hero-bg'},
+    {pageId:'page-method',      heroSelector:'.np-hero',   bgSelector:'.np-hero-bg'},
+    {pageId:'page-airass',      heroSelector:'.np-hero',   bgSelector:'.np-hero-bg'},
+    {pageId:'page-principals',  heroSelector:'.np-hero',   bgSelector:'.np-hero-bg'},
+    {pageId:'page-intake',      heroSelector:'.np-hero',   bgSelector:'.np-hero-bg'},
+    {pageId:'page-journal',     heroSelector:'.np-hero',   bgSelector:'.np-hero-bg'},
+    {pageId:'page-engagements', heroSelector:'.np-hero',   bgSelector:'.np-hero-bg'},
+    {pageId:'page-direct',      heroSelector:'.np-hero',   bgSelector:'.np-hero-bg'}
   ];
   const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
   const MAX_ZOOM=0.12;

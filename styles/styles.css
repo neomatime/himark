@@ -1555,6 +1555,13 @@ body.auth-mode #ghost-trail{display:none;}
   background-size:cover;
   background-position:center;
   z-index:0;
+  /* Zoom is driven from JS via this CSS variable as the user scrolls
+     past the hero — see the sticky-hero registry in main.js. Defaults
+     to 1 when JS is off so the image still renders correctly. */
+  transform:scale(var(--hero-zoom,1));
+  transform-origin:center;
+  will-change:transform;
+  transition:transform .12s linear;
 }
 .np-hero::before{
   content:'';

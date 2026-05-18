@@ -9,10 +9,13 @@
    Free tier: Gemini 1.5 Flash gives 15 RPM / 1,500 RPD / 1M
    TPM at no charge. Well within reach of this site's traffic. */
 
-/* gemini-1.5-flash was deprecated in early 2026 and now returns 404
-   on v1beta. gemini-2.0-flash is the current free-tier successor —
-   higher quality, same free quota (15 RPM / 1,500 RPD). */
-const GEMINI_MODEL = 'gemini-2.0-flash';
+/* Model rotation:
+   - gemini-1.5-flash: deprecated, returns 404 on v1beta
+   - gemini-2.0-flash: 404-free but the free-tier quota allowance is
+     0 for some projects/regions
+   - gemini-2.5-flash: the current generation flash model; free tier
+     applies on most projects */
+const GEMINI_MODEL = 'gemini-2.5-flash';
 
 const SYSTEM_PROMPT = [
   "You are Atlas, the in-house assistant for HIMARK — a standalone premium strategic growth consultancy headquartered in Randburg, South Africa. HIMARK is a Good Global Holdings (GGH) company.",
@@ -72,6 +75,27 @@ module.exports = async (req, res) => {
       res.statusCode = 200;
       return res.end(JSON.stringify(base));
     }
+    /* Also list available models so we can see exactly what the
+       key + project combo is permitted to use. Output is a compact
+       array of model IDs that support generateContent. */
+    try {
+      const listRes = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(k)}&pageSize=200`
+      );
+      if (listRes.ok) {
+        const listData = await listRes.json().catch(() => null);
+        const models = (listData && listData.models) || [];
+        base.availableModels = models
+          .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent'))
+          .map(m => (m.name || '').replace(/^models\//, ''))
+          .sort();
+      } else {
+        base.availableModels = { error: listRes.status };
+      }
+    } catch (e) {
+      base.availableModels = { fetchError: String(e && e.message || e) };
+    }
+
     /* Test a live Gemini call so we can see the actual error if
        the model name is wrong, the key is invalid, etc. */
     try {

@@ -233,6 +233,15 @@ module.exports = async (req, res) => {
     return res.end(JSON.stringify({ error: 'messages array required' }));
   }
 
+  /* Per-turn mode signal. Frontend sends 'voice' when the visitor
+     is on the voice tab; we append a focused hint to the system
+     prompt so this specific reply comes back voice-friendly:
+     spoken-natural, short, no URLs, no formatting. */
+  const mode = (body && body.mode === 'voice') ? 'voice' : 'text';
+  const systemForThisTurn = mode === 'voice'
+    ? SYSTEM_PROMPT + '\n\n----------------------------------------\nTHIS TURN: VOICE MODE\n----------------------------------------\nYour reply for this turn will be SPOKEN ALOUD via text-to-speech. Constraints:\n- Keep it to 1–2 sentences. No more.\n- Write it the way you would say it out loud. No URLs, no markdown, no asterisks, no parentheses, no bullet points, no quoted dialogue, no labels like "Q:" or "A:".\n- Never tell the visitor to "see the chat" or "check the text response" — they cannot read while in voice mode. Just answer.\n- If you need to ask for an email or company name, ask once, briefly, like a real person would on a call.'
+    : SYSTEM_PROMPT;
+
   const contents = incoming.slice(-20).map(m => ({
     role: m && m.role === 'assistant' ? 'model' : 'user',
     parts: [{ text: String((m && m.content) || '').slice(0, 4000) }]
@@ -245,12 +254,13 @@ module.exports = async (req, res) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          systemInstruction: { parts: [{ text: systemForThisTurn }] },
           contents,
           generationConfig: {
             temperature: 0.65,
             topP: 0.9,
-            maxOutputTokens: 500           // raised from 350 to leave room for the lead block
+            /* Voice replies are short; text replies can be longer. */
+            maxOutputTokens: mode === 'voice' ? 160 : 500
           },
           safetySettings: [
             { category: 'HARM_CATEGORY_HARASSMENT',       threshold: 'BLOCK_ONLY_HIGH' },

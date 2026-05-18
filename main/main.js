@@ -349,11 +349,14 @@ try{
     busy=true;
     HIST.push({role:'user',content:msg});
     shT();
+    /* Tell the server which mode we're in so it can append a
+       voice-friendly hint to the system prompt for this turn. */
+    const inVoice = !!(vPan&&vPan.classList.contains('on'));
     try{
       const res=await fetch('/api/chat',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({messages:HIST})
+        body:JSON.stringify({messages:HIST, mode: inVoice ? 'voice' : 'text'})
       });
       const data=await res.json().catch(()=>({reply:'Reach us at info@himark.co.za.'}));
       rmT();
@@ -361,7 +364,7 @@ try{
       HIST.push({role:'assistant',content:reply});
       aM('bot',reply);
       /* Read out the reply only when the user is on the voice tab. */
-      if(vPan&&vPan.classList.contains('on')) speak(reply);
+      if(inVoice) speak(reply);
     }catch(_){
       rmT();
       aM('bot','Atlas is offline for a moment. Reach us at info@himark.co.za.');
@@ -468,6 +471,11 @@ try{
       if(atlasVoice){ u.voice=atlasVoice; u.lang=atlasVoice.lang; }
       else { u.lang='en-ZA'; }
       u.rate=1.0; u.pitch=1.0; u.volume=1.0;
+      /* Drive the v-stat status text through the speech lifecycle
+         so the visitor sees when Atlas starts and finishes talking. */
+      u.onstart=()=>{ if(vStat) vStat.textContent='ATLAS REPLYING…'; };
+      u.onend  =()=>{ if(vStat) vStat.textContent='TAP TO SPEAK'; };
+      u.onerror=()=>{ if(vStat) vStat.textContent='TAP TO SPEAK'; };
       window.speechSynthesis.speak(u);
     }catch(_){}
   }
@@ -478,13 +486,28 @@ try{
     recog.onstart =()=>{ lstn=true;  vOrb&&vOrb.classList.add('on');  vWave&&vWave.classList.add('on');  if(vStat)vStat.textContent='LISTENING…'; };
     recog.onresult=async e=>{
       const t=e.results[0][0].transcript;
+      /* Briefly show the transcript, then transition to "thinking"
+         so the visitor knows Atlas has heard them and is working.
+         We intentionally do NOT swT('chat') here — the user is on
+         the voice tab and wants to STAY there. Their transcript and
+         Atlas's reply are still appended to the chat log for later. */
       if(vStat) vStat.textContent='"'+t+'"';
-      window.swT('chat');
+      setTimeout(()=>{ if(vStat && vStat.textContent==='"'+t+'"') vStat.textContent='ATLAS THINKING…'; }, 700);
       if(qrEl) qrEl.style.display='none';
       aM('user',t);
       await cC(t);
+      /* After cC, speak() drives v-stat through "ATLAS REPLYING…"
+         then back to "TAP TO SPEAK" via the utterance event hooks. */
     };
-    recog.onend  =()=>{ lstn=false; vOrb&&vOrb.classList.remove('on'); vWave&&vWave.classList.remove('on'); /* status text reset by error handler if applicable */ if(vStat&&vStat.textContent==='LISTENING…')vStat.textContent='TAP TO SPEAK'; };
+    recog.onend  =()=>{
+      lstn=false;
+      vOrb&&vOrb.classList.remove('on');
+      vWave&&vWave.classList.remove('on');
+      /* Only reset to idle if we're still in the listening state.
+         If onresult has already advanced the status to a transcript
+         or "ATLAS THINKING…", leave it alone. */
+      if(vStat&&vStat.textContent==='LISTENING…') vStat.textContent='TAP TO SPEAK';
+    };
     /* Surface the actual SR error to the visitor so they know
        why it's not working. Most common case: 'not-allowed' = user
        denied microphone permission, or the site isn't on HTTPS. */

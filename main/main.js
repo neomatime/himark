@@ -289,53 +289,165 @@ try{
   }
 }catch(_){}
 
-/* CHAT + VOICE (Atlas assistant) — DISABLED for now, will be wired back later.
-   The chat widget DOM still exists in the page shell; it just won't open or
-   send messages until this block is re-enabled. Stub the global handlers
-   that inline `onclick="..."` attributes call so they don't throw. */
-window.sM=function(){};
-window.sQ=function(){};
-window.swT=function(){};
-window.tV=function(){};
+/* ============================================================
+   ATLAS — chat + voice widget.
+   Sends user messages to /api/chat (Vercel serverless function
+   that proxies to Gemini 1.5 Flash; key stored server-side). The
+   panel DOM and bubble CSS already exist in every page; this
+   block just wires up the toggle, send, tab switch, and voice
+   STT/TTS handlers.
+   ============================================================ */
+(function(){
+  const cTgl   = document.getElementById('chatTgl');
+  const cWin   = document.getElementById('chatWin');
+  const cMsgs  = document.getElementById('chMsgs');
+  const cIn    = document.getElementById('chIn');
+  const qrEl   = document.getElementById('qr');
+  const tChat  = document.getElementById('tChat');
+  const tVoice = document.getElementById('tVoice');
+  const cPan   = document.getElementById('cpanel');
+  const vPan   = document.getElementById('vpanel');
+  const vOrb   = document.getElementById('vOrb');
+  const vWave  = document.getElementById('vWave');
+  const vStat  = document.getElementById('vStat');
+  if(!cTgl||!cWin||!cMsgs) return;
 
-/*
-// CHAT (home only)
-const SYS=`You are Atlas, the HIMARK assistant. HIMARK is a premium strategic growth consultancy in South Africa under Good Global Holdings. Engagement tiers: Signature Partner, Growth Partner, Private Partner (no prices unless asked). AIRaaS product. LeadSense AI qualification. Founder: Neo Matime. Randburg, Gauteng. Introduce yourself as Atlas when asked. Be sophisticated, confident, brief — max 3 sentences unless detail needed.`;
-let hist=[],busy=false;
-function ts2(){return new Date().toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'});}
-function aM(r,t){const m=document.getElementById('chMsgs');if(!m)return;const d=document.createElement('div');d.className='msg '+r;d.innerHTML=`<div class="msg-b">${t}</div><div class="msg-t">${ts2()}</div>`;m.appendChild(d);m.scrollTop=m.scrollHeight;}
-function shT(){const m=document.getElementById('chMsgs');if(!m)return;const d=document.createElement('div');d.className='msg bot typing-i';d.id='ti';d.innerHTML='<div class="typ-d"><span></span><span></span><span></span></div>';m.appendChild(d);m.scrollTop=m.scrollHeight;}
-function rmT(){const e=document.getElementById('ti');if(e)e.remove();}
-async function cC(msg){hist.push({role:'user',content:msg});shT();busy=true;try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,messages:hist})});const d=await res.json();const rep=d.content?.[0]?.text||'Please email us at info@himark.co.za';hist.push({role:'assistant',content:rep});rmT();aM('bot',rep);}catch{rmT();aM('bot','Reach us at <strong>info@himark.co.za</strong>');}busy=false;}
-async function sM(){if(busy)return;const inp=document.getElementById('chIn');if(!inp)return;const t=inp.value.trim();if(!t)return;inp.value='';const qr=document.getElementById('qr');if(qr)qr.style.display='none';aM('user',t);await cC(t);}
-function sQ(b){if(busy)return;const t=b.textContent;const qr=document.getElementById('qr');if(qr)qr.style.display='none';aM('user',t);cC(t);}
-window.sQ=sQ;window.sM=sM;
-const chIn=document.getElementById('chIn');
-chIn&&chIn.addEventListener('keydown',e=>{if(e.key==='Enter')sM();});
+  const HIST = [];   // running conversation history sent to /api/chat
+  let busy = false, greeted = false, lstn = false, recog = null;
 
-const cTgl=document.getElementById('chatTgl'),cWin=document.getElementById('chatWin');
-let cOpen=false,greeted=false;
-cTgl&&cTgl.addEventListener('click',()=>{cOpen=!cOpen;cTgl.classList.toggle('open',cOpen);cWin&&cWin.classList.toggle('open',cOpen);if(cOpen&&!greeted){greeted=true;setTimeout(()=>aM('bot','I’m Atlas — HIMARK’s assistant. How can I help?'),400);}});
+  function ts(){
+    return new Date().toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'});
+  }
 
-function swT(t){const cp=document.getElementById('cpanel'),vp=document.getElementById('vpanel'),tc=document.getElementById('tChat'),tv=document.getElementById('tVoice');if(cp)cp.style.display=t==='chat'?'':'none';vp&&vp.classList.toggle('on',t==='voice');tc&&tc.classList.toggle('active',t==='chat');tv&&tv.classList.toggle('active',t==='voice');}
-window.swT=swT;
+  /* Append a message bubble. role = 'bot' | 'user' (matches existing CSS) */
+  function aM(role,text){
+    const d=document.createElement('div');
+    d.className='msg '+role;
+    const body=document.createElement('div');
+    body.className='msg-b';
+    body.textContent=text;                       // textContent prevents HTML injection
+    const tag=document.createElement('div');
+    tag.className='msg-t';
+    tag.textContent=ts();
+    d.appendChild(body); d.appendChild(tag);
+    cMsgs.appendChild(d);
+    cMsgs.scrollTop=cMsgs.scrollHeight;
+  }
+  function shT(){
+    const d=document.createElement('div');
+    d.className='msg bot typing-i'; d.id='ti';
+    d.innerHTML='<div class="typ-d"><span></span><span></span><span></span></div>';
+    cMsgs.appendChild(d); cMsgs.scrollTop=cMsgs.scrollHeight;
+  }
+  function rmT(){ const e=document.getElementById('ti'); if(e)e.remove(); }
 
-// VOICE (home only)
-let recog=null,lstn=false;
-function tV(){
-  const vStat=document.getElementById('vStat'),vOrb=document.getElementById('vOrb'),vWave=document.getElementById('vWave'),vMic=document.getElementById('vMic'),qr=document.getElementById('qr');
-  if(!('webkitSpeechRecognition'in window)&&!('SpeechRecognition'in window)){if(vStat)vStat.textContent='NOT SUPPORTED';return;}
-  if(lstn){recog.stop();return;}
+  /* Call the chat endpoint. Records turn in HIST so context carries
+     across messages within the same page-load (resets on navigation,
+     which is the right behaviour for a brief contact-style chat). */
+  async function cC(msg){
+    if(busy)return;
+    busy=true;
+    HIST.push({role:'user',content:msg});
+    shT();
+    try{
+      const res=await fetch('/api/chat',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({messages:HIST})
+      });
+      const data=await res.json().catch(()=>({reply:'Reach us at info@himark.co.za.'}));
+      rmT();
+      const reply=(data&&data.reply)||"I'm not able to respond just now. Please email info@himark.co.za.";
+      HIST.push({role:'assistant',content:reply});
+      aM('bot',reply);
+      /* Read out the reply only when the user is on the voice tab. */
+      if(vPan&&vPan.classList.contains('on')) speak(reply);
+    }catch(_){
+      rmT();
+      aM('bot','Atlas is offline for a moment. Reach us at info@himark.co.za.');
+    }finally{
+      busy=false;
+    }
+  }
+
+  /* TOGGLE — open/close the panel. First open auto-greets. */
+  cTgl.addEventListener('click',()=>{
+    const willOpen=!cWin.classList.contains('open');
+    cWin.classList.toggle('open',willOpen);
+    cTgl.classList.toggle('open',willOpen);
+    if(willOpen&&!greeted){
+      greeted=true;
+      setTimeout(()=>aM('bot',"I'm Atlas — HIMARK's assistant. Ask about engagement, the four-phase method, or AIRaaS."),380);
+    }
+    if(willOpen) setTimeout(()=>cIn&&cIn.focus(),260);
+  });
+
+  /* SEND — inline onclick="sM()" handler from the markup */
+  window.sM=function(){
+    if(busy||!cIn) return;
+    const t=cIn.value.trim();
+    if(!t) return;
+    cIn.value='';
+    if(qrEl) qrEl.style.display='none';
+    aM('user',t);
+    cC(t);
+  };
+  /* QUICK REPLY chip — inline onclick="sQ(this)" handler from the markup */
+  window.sQ=function(btn){
+    if(busy) return;
+    const t=(btn&&btn.textContent||'').trim();
+    if(!t) return;
+    if(qrEl) qrEl.style.display='none';
+    aM('user',t);
+    cC(t);
+  };
+  /* TAB SWITCH — inline onclick="swT('chat'|'voice')" from the markup */
+  window.swT=function(tab){
+    const isChat=(tab==='chat');
+    if(cPan)  cPan.style.display=isChat?'':'none';
+    if(vPan)  vPan.classList.toggle('on',!isChat);
+    if(tChat) tChat.classList.toggle('active',isChat);
+    if(tVoice)tVoice.classList.toggle('active',!isChat);
+  };
+
+  /* ENTER to send */
+  cIn&&cIn.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){ e.preventDefault(); window.sM(); }
+  });
+
+  /* VOICE — browser-built-in Web Speech API. STT is free, TTS is
+     free, both work offline-ish. Falls back gracefully on browsers
+     without SpeechRecognition (Firefox desktop, some mobile). */
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  recog=new SR();recog.lang='en-ZA';
-  recog.onstart=()=>{lstn=true;vOrb&&vOrb.classList.add('on');vWave&&vWave.classList.add('on');if(vStat)vStat.textContent='LISTENING…';if(vMic){vMic.textContent='STOP';vMic.classList.add('rec');}};
-  recog.onresult=async e=>{const t=e.results[0][0].transcript;if(vStat)vStat.textContent=`"${t}"`;swT('chat');if(qr)qr.style.display='none';aM('user',t);await cC(t);};
-  recog.onend=()=>{lstn=false;vOrb&&vOrb.classList.remove('on');vWave&&vWave.classList.remove('on');if(vStat)vStat.textContent='TAP TO SPEAK';if(vMic){vMic.textContent='START SPEAKING';vMic.classList.remove('rec');}};
-  recog.onerror=()=>recog.onend();
-  recog.start();
-}
-window.tV=tV;
-*/
+  function speak(text){
+    try{
+      if(!('speechSynthesis'in window)) return;
+      const u=new SpeechSynthesisUtterance(text);
+      u.lang='en-ZA'; u.rate=1.02; u.pitch=1.0;
+      window.speechSynthesis.speak(u);
+    }catch(_){}
+  }
+  window.tV=function(){
+    if(!SR){ if(vStat)vStat.textContent='VOICE NOT SUPPORTED'; return; }
+    if(lstn&&recog){ recog.stop(); return; }
+    recog=new SR(); recog.lang='en-ZA'; recog.interimResults=false; recog.maxAlternatives=1;
+    recog.onstart =()=>{ lstn=true;  vOrb&&vOrb.classList.add('on');  vWave&&vWave.classList.add('on');  if(vStat)vStat.textContent='LISTENING…'; };
+    recog.onresult=async e=>{
+      const t=e.results[0][0].transcript;
+      if(vStat) vStat.textContent='"'+t+'"';
+      window.swT('chat');
+      if(qrEl) qrEl.style.display='none';
+      aM('user',t);
+      await cC(t);
+    };
+    recog.onend  =()=>{ lstn=false; vOrb&&vOrb.classList.remove('on'); vWave&&vWave.classList.remove('on'); if(vStat)vStat.textContent='TAP TO SPEAK'; };
+    recog.onerror=()=>{ if(recog&&recog.onend)recog.onend(); };
+    recog.start();
+  };
+  /* The .v-orb element doesn't carry an inline handler in the markup,
+     so bind a click directly. */
+  vOrb&&vOrb.addEventListener('click',()=>window.tV());
+})();
 
 /* INTAKE FORM */
 function submitIntake(e){

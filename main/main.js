@@ -209,19 +209,48 @@ function aC2(el){const t=parseInt(el.dataset.count),sfx=el.dataset.suffix??'+',d
 const cobs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!e.target.dataset.done){e.target.dataset.done='1';aC2(e.target);}}),{threshold:.5});
 document.querySelectorAll('[data-count]').forEach(el=>cobs.observe(el));
 
-/* AUDIO (home only) */
-let aCtx=null,mGain=null,muted=true;
+/* AMBIENT MUSIC — looping background track behind the mute toggle.
+   Uses HTMLAudioElement (instead of WebAudio synthesis) so we play
+   the licensed Forest Zen score directly. Lazy-instantiated on the
+   first click so we never preload audio for visitors who never
+   unmute, and fades in/out so transitions don't startle. */
+const M_TARGET_VOL=0.55;          // peak playback volume
+const M_FADE_MS=900;               // fade duration on unmute / mute
+const M_SRC='/music/Calima%20-%20Forest%20Zen%20(freetouse.com).mp3';
+let mAudio=null,muted=true,mFadeId=null;
 const mBtn=document.getElementById('mute-btn');
 function iAudio(){
-  if(aCtx)return;
-  aCtx=new(window.AudioContext||window.webkitAudioContext)();
-  mGain=aCtx.createGain();mGain.gain.value=0;mGain.connect(aCtx.destination);
-  [[55,.055],[110,.025],[220,.012]].forEach(([f,g])=>{const o=aCtx.createOscillator(),gn=aCtx.createGain();o.type='sine';o.frequency.value=f;gn.gain.value=g;o.connect(gn);gn.connect(mGain);o.start();});
-  const bl=aCtx.sampleRate*3,buf=aCtx.createBuffer(1,bl,aCtx.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<bl;i++)d[i]=(Math.random()*2-1);
-  const ns=aCtx.createBufferSource();ns.buffer=buf;ns.loop=true;const f=aCtx.createBiquadFilter();f.type='bandpass';f.frequency.value=320;f.Q.value=10;const gn=aCtx.createGain();gn.gain.value=.008;ns.connect(f);f.connect(gn);gn.connect(mGain);ns.start();
-  const lfo=aCtx.createOscillator();const lg=aCtx.createGain();lfo.frequency.value=0.04;lg.gain.value=100;lfo.connect(lg);lg.connect(f.frequency);lfo.start();
+  if(mAudio)return;
+  mAudio=new Audio(M_SRC);
+  mAudio.loop=true;
+  mAudio.preload='auto';
+  mAudio.volume=0;
 }
-mBtn&&mBtn.addEventListener('click',()=>{iAudio();muted=!muted;mGain&&mGain.gain.setTargetAtTime(muted?0:.7,aCtx.currentTime,.35);mBtn.classList.toggle('muted',muted);});
+function mFade(to,done){
+  if(!mAudio)return;
+  if(mFadeId)cancelAnimationFrame(mFadeId);
+  const from=mAudio.volume,start=performance.now();
+  (function tick(now){
+    const t=Math.min(1,(now-start)/M_FADE_MS);
+    if(mAudio)mAudio.volume=Math.max(0,Math.min(1,from+(to-from)*t));
+    if(t<1)mFadeId=requestAnimationFrame(tick); else { mFadeId=null; if(done)done(); }
+  })(performance.now());
+}
+mBtn&&mBtn.addEventListener('click',()=>{
+  iAudio();
+  muted=!muted;
+  mBtn.classList.toggle('muted',muted);
+  if(muted){
+    mFade(0,()=>{ if(mAudio)mAudio.pause(); });
+  } else {
+    /* play() must be called inside the user-gesture handler to satisfy
+       the browser's autoplay policy. The promise it returns rejects on
+       some mobile browsers — swallow the rejection silently. */
+    const p=mAudio.play();
+    if(p&&typeof p.catch==='function')p.catch(()=>{});
+    mFade(M_TARGET_VOL);
+  }
+});
 
 /* CHAT + VOICE (Atlas assistant) — DISABLED for now, will be wired back later.
    The chat widget DOM still exists in the page shell; it just won't open or

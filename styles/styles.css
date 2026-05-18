@@ -3300,12 +3300,8 @@ body.auth-mode #cookies-banner{
 @keyframes awave{0%,100%{transform:scaleY(.4);opacity:.4}50%{transform:scaleY(1);opacity:1}}
 
 
-/* Atlas chat widget — hidden site-wide while the script is disabled.
-   Re-enable by removing this `display:none!important` block AND uncommenting
-   the CHAT/VOICE block in main.js. */
-.chat-toggle-btn,
-.chat-win{display:none!important;}
-
+/* Atlas chat widget. Hidden only on auth/dashboard pages via the
+   body.auth-mode rule above. Otherwise visible site-wide. */
 .chat-toggle-btn{position:fixed;bottom:36px;right:36px;width:54px;height:54px;background:var(--midnight);border:1px solid var(--ocean);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:none;z-index:8000;box-shadow:0 4px 20px rgba(28,43,58,.4);transition:background .3s,transform .3s var(--ease);}
 .chat-toggle-btn:hover{background:var(--ocean);transform:translateY(-2px) scale(1.05);}
 .chat-toggle-btn .ico-ch,.chat-toggle-btn .ico-cl{transition:opacity .2s,transform .2s var(--ease);}

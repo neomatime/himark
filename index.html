@@ -63,15 +63,42 @@ html,body{
   width:100%;height:100%;
   overflow:hidden;
   font-family:var(--f-disp);
-  /* Dark gradient — black w/ subtle ocean glows in opposite corners
-     so the H wordmark and ambient shapes have something to sit on
-     without the field feeling flat. */
+  /* Layered color "orbs" sit on the deep midnight base. These get
+     blurred by the frosted glass pane (body::before) below to give
+     the field a softly-lit pane-of-glass quality without flattening
+     the brand palette. */
   background:
-    radial-gradient(ellipse 70% 55% at 18% 22%, rgba(95,129,144,.18) 0%, transparent 60%),
-    radial-gradient(ellipse 65% 55% at 82% 78%, rgba(138,173,184,.12) 0%, transparent 60%),
+    radial-gradient(circle 520px at 15% 20%, rgba(95,129,144,.72) 0%, transparent 62%),
+    radial-gradient(circle 440px at 85% 80%, rgba(138,173,184,.62) 0%, transparent 62%),
+    radial-gradient(circle 360px at 50% 50%, rgba(226,240,240,.16) 0%, transparent 68%),
     linear-gradient(135deg, #050a12 0%, #1C2B3A 50%, #07101a 100%);
   color:var(--off);
   cursor:default;
+}
+
+/* ============================================================
+   Frosted-glass pane — covers the full viewport and blurs the
+   color orbs painted on the body. Sits at z-index:0 so every
+   foreground element (coord stamps z:5, wordmark z:3, sweep
+   lines / bracket z:2, progress bar z:6, skip hint z:7, curtain
+   z:100) stays crisp and fully visible above it.
+   ============================================================ */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  /* Faint midnight wash unifies the orbs into a single pane and
+     keeps the foreground type readable. */
+  background:rgba(28,43,58,.32);
+  backdrop-filter:blur(60px) saturate(140%);
+  -webkit-backdrop-filter:blur(60px) saturate(140%);
+  /* Lit edge along the top — the "highlight" of a real pane of
+     glass catching the light. */
+  box-shadow:
+    inset 0 1px 0 rgba(247,247,245,.06),
+    inset 0 -1px 0 rgba(8,15,22,.4);
 }
 
 /* ============================================================

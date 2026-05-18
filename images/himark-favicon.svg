@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 200" shape-rendering="crispEdges">
+  <!-- Midnight backdrop so the wordmark reads on both light
+       and dark browser chrome. -->
+  <rect width="140" height="200" fill="#1C2B3A"/>
+  <!-- Framed H — geometry matches the wordmark in index.html.
+       Off-white glyph + frame on midnight ground. -->
+  <g fill="#F7F7F5">
+    <rect x="14" y="14" width="38" height="170"/>
+    <rect x="88" y="14" width="38" height="170"/>
+    <rect x="52" y="85" width="16" height="30"/>
+    <rect x="72" y="85" width="16" height="30"/>
+  </g>
+  <rect x="4" y="4" width="132" height="192"
+        fill="none" stroke="#F7F7F5" stroke-width="10"
+        stroke-linecap="square" stroke-linejoin="miter"/>
+</svg>

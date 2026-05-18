@@ -210,21 +210,63 @@ const cobs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!e.t
 document.querySelectorAll('[data-count]').forEach(el=>cobs.observe(el));
 
 /* AMBIENT MUSIC — looping background track behind the mute toggle.
-   Uses HTMLAudioElement (instead of WebAudio synthesis) so we play
-   the licensed Forest Zen score directly. Lazy-instantiated on the
-   first click so we never preload audio for visitors who never
-   unmute, and fades in/out so transitions don't startle. */
+   The site is multi-page, so the audio element dies on every
+   navigation. We work around that with sessionStorage: as soon as
+   the user clicks "unmute" anywhere, we set himark-music-on=1 and
+   continuously persist the current playback time. On every new
+   page load, if that flag is set, we immediately recreate the
+   audio element, seek to the saved time, and resume playback so
+   the listener perceives one continuous track across the site.
+
+   Browser autoplay policy: after the first user gesture on a
+   page (or via Chrome's Media Engagement Index on subsequent
+   visits), play() resolves without throwing. The promise is
+   .catch()ed defensively for the mobile browsers that still
+   require an explicit gesture — in that case the music silently
+   waits for the user's next click of the mute button. */
 const M_TARGET_VOL=0.55;          // peak playback volume
 const M_FADE_MS=900;               // fade duration on unmute / mute
 const M_SRC='/music/Calima%20-%20Forest%20Zen%20(freetouse.com).mp3';
-let mAudio=null,muted=true,mFadeId=null;
+const M_KEY_ON='himark-music-on';
+const M_KEY_TIME='himark-music-time';
+const M_SAVE_INTERVAL_MS=500;     // throttle for currentTime persistence
+let mAudio=null,muted=true,mFadeId=null,mLastSave=0;
 const mBtn=document.getElementById('mute-btn');
+function mSaveTime(){
+  if(!mAudio)return;
+  const now=performance.now();
+  if(now-mLastSave<M_SAVE_INTERVAL_MS)return;
+  mLastSave=now;
+  try{ sessionStorage.setItem(M_KEY_TIME,String(mAudio.currentTime)); }catch(_){}
+}
 function iAudio(){
   if(mAudio)return;
   mAudio=new Audio(M_SRC);
   mAudio.loop=true;
   mAudio.preload='auto';
   mAudio.volume=0;
+  /* Seek to the saved time so the track feels continuous across
+     page navigations. Browsers may reject the seek before the
+     audio's metadata loads — wrap in try/catch and also listen
+     for loadedmetadata as a second chance. */
+  const seekToSaved=()=>{
+    try{
+      const t=parseFloat(sessionStorage.getItem(M_KEY_TIME)||'0');
+      if(t>0&&isFinite(t))mAudio.currentTime=t;
+    }catch(_){}
+  };
+  seekToSaved();
+  mAudio.addEventListener('loadedmetadata',seekToSaved,{once:true});
+  /* Persist currentTime continuously while playing so the next
+     page can pick up at (or just after) the same position. */
+  mAudio.addEventListener('timeupdate',mSaveTime);
+  /* Also save on tab close / navigate-away in case timeupdate
+     hasn't fired recently. */
+  window.addEventListener('pagehide',()=>{
+    if(!muted&&mAudio){
+      try{ sessionStorage.setItem(M_KEY_TIME,String(mAudio.currentTime)); }catch(_){}
+    }
+  });
 }
 function mFade(to,done){
   if(!mAudio)return;
@@ -236,21 +278,34 @@ function mFade(to,done){
     if(t<1)mFadeId=requestAnimationFrame(tick); else { mFadeId=null; if(done)done(); }
   })(performance.now());
 }
-mBtn&&mBtn.addEventListener('click',()=>{
-  iAudio();
-  muted=!muted;
-  mBtn.classList.toggle('muted',muted);
+function mSetMuted(state,persist){
+  muted=!!state;
+  mBtn&&mBtn.classList.toggle('muted',muted);
+  if(persist!==false){
+    try{
+      if(muted){ sessionStorage.removeItem(M_KEY_ON); }
+      else{ sessionStorage.setItem(M_KEY_ON,'1'); }
+    }catch(_){}
+  }
   if(muted){
     mFade(0,()=>{ if(mAudio)mAudio.pause(); });
-  } else {
-    /* play() must be called inside the user-gesture handler to satisfy
-       the browser's autoplay policy. The promise it returns rejects on
-       some mobile browsers — swallow the rejection silently. */
+  }else{
+    iAudio();
     const p=mAudio.play();
     if(p&&typeof p.catch==='function')p.catch(()=>{});
     mFade(M_TARGET_VOL);
   }
-});
+}
+mBtn&&mBtn.addEventListener('click',()=>mSetMuted(!muted));
+
+/* AUTO-RESUME on this page if the user previously unmuted in
+   this session. We do NOT pass persist:true here because the
+   sessionStorage flag is already set — no need to rewrite it. */
+try{
+  if(sessionStorage.getItem(M_KEY_ON)==='1'){
+    mSetMuted(false,false);
+  }
+}catch(_){}
 
 /* CHAT + VOICE (Atlas assistant) — DISABLED for now, will be wired back later.
    The chat widget DOM still exists in the page shell; it just won't open or

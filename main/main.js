@@ -180,29 +180,11 @@ function tRev(cont){
 }
 tRev(getActivePage());
 
-/* MAGNETIC BUTTONS — gentle, scoped, with reset on leave */
-(function(){
-  const candidates=document.querySelectorAll('.btn-dk, .btn-lt, .btn-ghost');
-  candidates.forEach(b=>{
-    if(b.closest('form, .itk-aside, .chat-win, #mute-btn, .chat-toggle-btn, .hero-meta-r'))return;
-    let raf=null;
-    b.addEventListener('mousemove',e=>{
-      if(raf)cancelAnimationFrame(raf);
-      raf=requestAnimationFrame(()=>{
-        const r=b.getBoundingClientRect();
-        const dx=(e.clientX-r.left-r.width/2)*.10;
-        const dy=(e.clientY-r.top-r.height/2)*.10;
-        b.style.transform=`translate(${dx}px,${dy}px)`;
-        b.style.transition='transform .15s var(--ease)';
-      });
-    });
-    b.addEventListener('mouseleave',()=>{
-      if(raf)cancelAnimationFrame(raf);
-      b.style.transform='';
-      b.style.transition='transform .45s var(--ease)';
-    });
-  });
-})();
+/* Magnetic-button hover effect intentionally removed — the buttons
+   ("View Mandates" on home and the other .btn-dk/.btn-lt/.btn-ghost
+   CTAs) felt unstable as they tracked the cursor. Buttons now hold
+   still on hover; CSS still handles the colour/background hover
+   states defined in styles.css. */
 
 /* COUNTERS */
 function aC2(el){const t=parseInt(el.dataset.count),sfx=el.dataset.suffix??'+',dur=1800,s=performance.now();(function tick(n){const p=Math.min((n-s)/dur,1),e=1-Math.pow(1-p,3);el.textContent=Math.round(e*t)+(p===1?sfx:'');if(p<1)requestAnimationFrame(tick);})(performance.now());}

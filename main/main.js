@@ -417,13 +417,57 @@ try{
 
   /* VOICE — browser-built-in Web Speech API. STT is free, TTS is
      free, both work offline-ish. Falls back gracefully on browsers
-     without SpeechRecognition (Firefox desktop, some mobile). */
+     without SpeechRecognition (Firefox desktop, some mobile).
+
+     Voice selection: most browsers ship multiple TTS voices. The
+     default is usually a low-quality robotic one. We prefer
+     en-ZA where available, then a high-quality en-GB or en-US
+     voice (Google's neural / Microsoft Natural). Voices load
+     asynchronously in some browsers, so we cache on the
+     `voiceschanged` event AND on first speak() call. */
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  let atlasVoice=null;
+  function pickAtlasVoice(){
+    if(!('speechSynthesis'in window)) return null;
+    const voices=window.speechSynthesis.getVoices();
+    if(!voices||!voices.length) return null;
+    /* Priority order. First match wins. Names vary per OS:
+       - Chrome on macOS exposes "Google …" voices (natural)
+       - Safari/macOS exposes "Samantha", "Daniel", etc.
+       - Windows exposes "Microsoft … Online (Natural)" voices
+       - Android exposes Google's neural voices */
+    const tests=[
+      v=>v.lang==='en-ZA',
+      v=>v.lang==='en-GB' && /natural|neural|wavenet|online|google/i.test(v.name),
+      v=>v.lang==='en-GB',
+      v=>v.lang==='en-AU' && /natural|neural|wavenet|online|google/i.test(v.name),
+      v=>v.lang==='en-US' && /natural|neural|wavenet|online|google/i.test(v.name),
+      v=>v.lang==='en-US',
+      v=>v.lang && v.lang.startsWith('en-')
+    ];
+    for(const t of tests){
+      const m=voices.find(t);
+      if(m) return m;
+    }
+    return voices[0];
+  }
+  if('speechSynthesis'in window){
+    /* Some browsers populate getVoices() asynchronously. Register
+       a callback so atlasVoice updates as soon as the list lands. */
+    atlasVoice=pickAtlasVoice();
+    window.speechSynthesis.onvoiceschanged=()=>{ atlasVoice=pickAtlasVoice(); };
+  }
   function speak(text){
     try{
-      if(!('speechSynthesis'in window)) return;
+      if(!('speechSynthesis'in window)||!text) return;
+      /* Cancel anything already speaking so we don't queue up
+         multiple replies that all play one after the other. */
+      window.speechSynthesis.cancel();
+      if(!atlasVoice) atlasVoice=pickAtlasVoice();
       const u=new SpeechSynthesisUtterance(text);
-      u.lang='en-ZA'; u.rate=1.02; u.pitch=1.0;
+      if(atlasVoice){ u.voice=atlasVoice; u.lang=atlasVoice.lang; }
+      else { u.lang='en-ZA'; }
+      u.rate=1.0; u.pitch=1.0; u.volume=1.0;
       window.speechSynthesis.speak(u);
     }catch(_){}
   }

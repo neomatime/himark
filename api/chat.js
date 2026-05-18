@@ -15,7 +15,17 @@
                               to the function output but not sent
                               anywhere. */
 
-const GEMINI_MODEL = 'gemini-2.5-flash';
+/* Model rotation history:
+   - gemini-1.5-flash: deprecated, returns 404 on v1beta
+   - gemini-2.0-flash: 404-free but free-tier quota was 0 for this
+     project
+   - gemini-2.5-flash: worked, but free-tier quota for this project
+     is only 20 requests/day — exhausted under normal testing load
+   - gemini-flash-lite-latest: Google's always-latest lite alias.
+     Lite models have a separate, larger free-tier pool (typically
+     1,500 RPD) and are fast + perfectly capable for a chat widget
+     answering FAQs and running LeadSense. */
+const GEMINI_MODEL = 'gemini-flash-lite-latest';
 
 /* ATLAS SYSTEM PROMPT — extracted to its own file so you can edit
    the knowledge base, voice rules, and qualification flow without

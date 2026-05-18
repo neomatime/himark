@@ -824,42 +824,6 @@ body.light-nav .mf-link:hover{
 }
 body.auth-mode #ghost-trail{display:none;}
 .svc-note{font-family:var(--f-body);font-weight:400;font-size:14px;line-height:1.8;color:var(--ink-mut);max-width:420px;}
-/* PER-PAGE GEOMETRIC WATERMARKS — large architectural line drawings behind hero content */
-.page-geometry{
-  position:absolute;top:0;right:0;bottom:0;
-  width:50%;
-  pointer-events:none;
-  z-index:1;
-  opacity:.7;
-  display:flex;align-items:center;justify-content:flex-end;
-  padding-right:var(--gx);
-  overflow:hidden;
-}
-.page-geometry svg{
-  width:100%;max-width:540px;height:auto;
-  overflow:visible;
-}
-.page-geometry svg path,
-.page-geometry svg line,
-.page-geometry svg polyline,
-.page-geometry svg circle,
-.page-geometry svg rect{
-  stroke:rgba(95,129,144,.22);
-  stroke-width:1;fill:none;
-  stroke-dasharray:2400;stroke-dashoffset:2400;
-  animation:pgDraw 2.4s var(--ease) .2s forwards;
-}
-@keyframes pgDraw{to{stroke-dashoffset:0;}}
-/* On dark heroes, lighten the lines so they show through */
-.page-geometry.dk svg path,
-.page-geometry.dk svg line,
-.page-geometry.dk svg polyline,
-.page-geometry.dk svg circle,
-.page-geometry.dk svg rect{stroke:rgba(95,129,144,.32);}
-
-/* Each hero needs to host the geometry */
-.mnd-hero,.mth-hero,.air-hero,.prn-hero,.itk-hero{position:relative;}
-
 /* TIER FLIP CARDS — same .svc-card class on Home and Mandates */
 .svc-grid-3{
   display:grid;grid-template-columns:repeat(3,1fr);
@@ -1163,23 +1127,6 @@ body.auth-mode #ghost-trail{display:none;}
 
 /* MANDATES PAGE (was Services) */
 #page-mandates{background:var(--off);}
-.mnd-hero{
-  position:relative;
-  min-height:100vh;height:100vh;
-  background:var(--midnight);
-  overflow:hidden;
-  /* vertically centre the headline block — left-aligned, mid-height */
-  display:flex;
-  align-items:center;
-  padding:0 var(--gx);
-}
-.mnd-hero-bg{position:absolute;inset:0;background-image:url('../images/mandates-hero.jpg');background-size:cover;background-position:center;transform:scale(var(--hero-zoom,1));transform-origin:center;will-change:transform;transition:transform .12s linear;z-index:0;}
-.mnd-hero::before{content:'';position:absolute;inset:0;background:rgba(8,12,16,.55);z-index:0;}
-.mnd-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60%;background:linear-gradient(to top,rgba(4,9,14,.97),transparent);z-index:0;}
-.mnd-hero-c{position:relative;z-index:2;width:100%;display:flex;justify-content:space-between;align-items:flex-end;}
-.mnd-hl{font-family:var(--f-disp);font-size:clamp(54px,7vw,108px);font-weight:800;line-height:.92;color:var(--off);letter-spacing:-.015em;}
-.mnd-hl span{font-style:italic;font-weight:300;color:rgba(247,247,245,.72);}
-.mnd-note{font-family:var(--f-body);font-weight:300;font-size:13px;line-height:1.75;color:rgba(247,247,245,.82);max-width:300px;text-align:right;}
 .mnd-cards{background:var(--white);padding:120px var(--gx);border-bottom:1px solid var(--rule);}
 .cap-section{background:var(--off);padding:100px var(--gx);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);}
 .cap-grid{
@@ -1227,16 +1174,8 @@ body.auth-mode #ghost-trail{display:none;}
 .cap-t{font-family:var(--f-nav);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--midnight);margin-bottom:14px;}
 .cap-d{font-family:var(--f-body);font-weight:400;font-size:14px;line-height:1.8;color:var(--ink-mut);}
 
-/* MANDATES PAGE — cinematic sticky hero. The hero stays as a backdrop
-   while the engagement cards and capability matrix layer over it on scroll. */
-#page-mandates .mnd-hero{
-  position:sticky;
-  top:0;
-  height:100vh;
-  min-height:100vh;
-  z-index:0;
-  overflow:hidden;
-}
+/* MANDATES PAGE — section layering for sections following the
+   .np-hero so their solid backgrounds occlude the sticky hero. */
 #page-mandates .s-num-bar,
 #page-mandates .mnd-cards,
 #page-mandates .cap-section,
@@ -1247,10 +1186,6 @@ body.auth-mode #ghost-trail{display:none;}
 #page-mandates .mnd-cards{
   /* first section to arrive over the hero — soft top edge for "lift" */
   box-shadow:0 -24px 60px rgba(28,43,58,.10), 0 -1px 0 rgba(28,43,58,.06);
-}
-@media (prefers-reduced-motion:reduce){
-  #page-mandates .mnd-hero{position:relative;height:auto;min-height:100vh;}
-  .mnd-hero-bg{transform:none;transition:none;}
 }
 
 /* ===== TIER DEEP DIVE — detailed tier architecture, services.html ===== */
@@ -1568,9 +1503,8 @@ body.auth-mode #ghost-trail{display:none;}
 }
 
 /* ============================================================
-   NEW-PAGE HERO — used by insights.html, work.html, contact.html
-   Same atmospheric pattern as .itk-hero / .air-hero / .mnd-hero:
-   full-bleed dark background image + tint overlay + bottom gradient
+   NEW-PAGE HERO — used across every content page except home.
+   Full-bleed dark background image + tint overlay + bottom gradient
    for readability. The .np-hero-bg div takes the image via inline style.
    ============================================================ */
 .np-hero{
@@ -1714,12 +1648,6 @@ body.auth-mode #ghost-trail{display:none;}
 
 /* METHOD PAGE */
 #page-method{background:var(--white);}
-.mth-hero{position:relative;height:100vh;min-height:100vh;background:var(--midnight);overflow:hidden;display:flex;align-items:center;padding:0 var(--gx);}.mth-hero-bg{position:absolute;inset:0;background-image:url('../images/method-hero.jpg');background-size:cover;background-position:center;transform:scale(var(--hero-zoom,1));transform-origin:center;will-change:transform;transition:transform .12s linear;z-index:0;}
-.mth-hero::before{content:'';position:absolute;inset:0;background:rgba(28,43,58,.55);z-index:0;}
-.mth-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(to top,rgba(28,43,58,.95),transparent);z-index:0;}
-.mth-hero-c{position:relative;z-index:2;}
-.mth-hl{font-family:var(--f-disp);font-size:clamp(54px,7vw,108px);font-weight:800;line-height:.92;color:var(--off);letter-spacing:-.015em;}
-.mth-hl span{font-style:italic;font-weight:300;color:rgba(226,240,240,.6);}
 .mth-intro{background:var(--white);padding:140px var(--gx);display:grid;grid-template-columns:1fr 1fr;gap:96px;align-items:start;border-bottom:1px solid var(--rule);position:relative;}
 .mth-intro-coord-l{position:absolute;top:48px;left:var(--gx);font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;color:var(--ocean);}
 .mth-intro-hl{font-family:var(--f-disp);font-size:clamp(40px,4.5vw,68px);font-weight:800;line-height:1.0;color:var(--midnight);letter-spacing:-.01em;}
@@ -1745,16 +1673,8 @@ body.auth-mode #ghost-trail{display:none;}
 .mth-cta-hl{font-family:var(--f-disp);font-size:clamp(36px,3.5vw,60px);font-weight:800;line-height:.95;color:var(--off);letter-spacing:-.01em;}
 .mth-cta-hl em{font-style:italic;font-weight:300;color:var(--ocean-lt);}
 
-/* METHOD PAGE — cinematic sticky hero. The hero stays as a backdrop while
-   the intro, the four-step sequence, and the dark CTA layer over it. */
-#page-method .mth-hero{
-  position:sticky;
-  top:0;
-  height:100vh;
-  min-height:100vh;
-  z-index:0;
-  overflow:hidden;
-}
+/* METHOD PAGE — section layering for sections following the
+   .np-hero so their solid backgrounds occlude the sticky hero. */
 #page-method .s-num-bar,
 #page-method .mth-intro,
 #page-method .mth-steps,
@@ -1766,10 +1686,6 @@ body.auth-mode #ghost-trail{display:none;}
 #page-method .mth-intro{
   /* first section to arrive over the hero — soft top edge for "lift" */
   box-shadow:0 -24px 60px rgba(28,43,58,.10), 0 -1px 0 rgba(28,43,58,.06);
-}
-@media (prefers-reduced-motion:reduce){
-  #page-method .mth-hero{position:relative;height:auto;min-height:100vh;}
-  .mth-hero-bg{transform:none;transition:none;}
 }
 
 /* THE FOUR-STEP SEQUENCE — alternating directional reveal.
@@ -1798,13 +1714,6 @@ body.auth-mode #ghost-trail{display:none;}
 
 /* AIRASS */
 #page-airass{background:var(--white);}
-.air-hero{position:relative;height:100vh;min-height:100vh;background:var(--midnight);overflow:hidden;display:flex;align-items:center;padding:0 var(--gx);}.air-hero-bg{position:absolute;inset:0;background-image:url('../images/airass-hero.jpg');background-size:cover;background-position:center;transform:scale(var(--hero-zoom,1));transform-origin:center;will-change:transform;transition:transform .12s linear;z-index:0;}
-.air-hero::before{content:'';position:absolute;inset:0;background:rgba(4,10,20,.6);z-index:0;}
-.air-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:65%;background:linear-gradient(to top,rgba(4,9,14,.98),transparent);z-index:0;}
-.air-hero-c{position:relative;z-index:2;width:100%;display:flex;justify-content:space-between;align-items:flex-end;}
-.air-hl-hero{font-family:var(--f-disp);font-size:clamp(48px,6.5vw,100px);font-weight:800;line-height:.92;color:var(--off);max-width:700px;letter-spacing:-.015em;}
-.air-hl-hero span{font-style:italic;font-weight:300;color:rgba(226,240,240,.6);}
-.air-badge{font-family:var(--f-mono);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ocean);border:1px solid rgba(95,129,144,.4);padding:10px 18px;}
 .air-body{background:var(--white);padding:140px var(--gx);display:grid;grid-template-columns:1fr 1fr;gap:96px;align-items:start;border-bottom:1px solid var(--rule);position:relative;}
 .air-body-coord{position:absolute;top:48px;left:var(--gx);font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;color:var(--ocean);}
 .air-hl{font-family:var(--f-disp);font-size:clamp(40px,4.5vw,64px);font-weight:800;line-height:1.0;color:var(--midnight);margin-bottom:28px;letter-spacing:-.01em;}
@@ -1897,16 +1806,8 @@ body.auth-mode #ghost-trail{display:none;}
 .af-title{font-family:var(--f-nav);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--midnight);margin-bottom:14px;}
 .af-desc{font-family:var(--f-body);font-weight:400;font-size:14px;line-height:1.8;color:var(--ink-mut);}
 
-/* PRODUCT (AIRaaS) PAGE — cinematic sticky hero. The hero stays as a
-   backdrop while the body, channels, and capability matrix layer over it. */
-#page-airass .air-hero{
-  position:sticky;
-  top:0;
-  height:100vh;
-  min-height:100vh;
-  z-index:0;
-  overflow:hidden;
-}
+/* PRODUCT (AIRaaS) PAGE — section layering for sections following the
+   .np-hero so their solid backgrounds occlude the sticky hero. */
 #page-airass .s-num-bar,
 #page-airass .air-body,
 #page-airass .air-features,
@@ -1917,20 +1818,6 @@ body.auth-mode #ghost-trail{display:none;}
 #page-airass .air-body{
   /* first section to arrive over the hero — soft top edge for "lift" */
   box-shadow:0 -24px 60px rgba(28,43,58,.10), 0 -1px 0 rgba(28,43,58,.06);
-}
-@media (prefers-reduced-motion:reduce){
-  #page-airass .air-hero{position:relative;height:auto;min-height:100vh;}
-  .air-hero-bg{transform:none;transition:none;}
-}
-
-/* PRINCIPALS PAGE — sticky hero (no frame-scrub here; that lives on home). */
-#page-principals .prn-hero{
-  position:sticky;
-  top:0;
-  height:100vh;
-  min-height:100vh;
-  z-index:0;
-  overflow:hidden;
 }
 
 /* HOME PAGE — cinematic sticky hero with scroll-scrubbed canvas frame-
@@ -1971,6 +1858,9 @@ body.auth-mode #ghost-trail{display:none;}
   .hero-spacer{height:0;}
   .hero-canvas{display:none;}
 }
+/* PRINCIPALS PAGE — section layering for sections following the
+   .np-hero so their solid backgrounds occlude the sticky hero. */
+#page-principals{background:var(--off);}
 #page-principals .s-num-bar,
 #page-principals .prn-section,
 #page-principals .quote-mono,
@@ -1982,20 +1872,6 @@ body.auth-mode #ghost-trail{display:none;}
   /* first section to arrive over the hero — soft top edge for "lift" */
   box-shadow:0 -24px 60px rgba(28,43,58,.10), 0 -1px 0 rgba(28,43,58,.06);
 }
-@media (prefers-reduced-motion:reduce){
-  #page-principals .prn-hero{position:relative;height:auto;min-height:100vh;}
-  .prn-hero-bg{transform:none;transition:none;}
-}
-
-/* PRINCIPALS PAGE */
-#page-principals{background:var(--off);}
-.prn-hero{position:relative;height:100vh;min-height:100vh;background:var(--midnight);overflow:hidden;display:flex;align-items:center;padding:0 var(--gx);}.prn-hero-bg{position:absolute;inset:0;background-image:url('../images/team-hero.jpg');background-size:cover;background-position:center;transform:scale(var(--hero-zoom,1));transform-origin:center;will-change:transform;transition:transform .12s linear;z-index:0;}
-.prn-hero::before{content:'';position:absolute;inset:0;background:rgba(28,43,58,.5);z-index:0;}
-.prn-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:55%;background:linear-gradient(to top,rgba(4,9,14,.92),transparent);z-index:0;}
-.prn-hero-c{position:relative;z-index:2;width:100%;display:flex;justify-content:space-between;align-items:flex-end;}
-.prn-hl{font-family:var(--f-disp);font-size:clamp(54px,7vw,108px);font-weight:800;line-height:.92;color:var(--off);letter-spacing:-.015em;}
-.prn-hl span{font-style:italic;font-weight:300;color:rgba(226,240,240,.6);}
-.prn-note{font-family:var(--f-body);font-weight:300;font-size:13px;line-height:1.75;color:rgba(247,247,245,.82);max-width:300px;text-align:right;}
 
 .prn-section{background:var(--white);padding:140px var(--gx);border-bottom:1px solid var(--rule);position:relative;overflow:hidden;}
 /* Subtle architectural pattern in section background */
@@ -2347,13 +2223,6 @@ body.auth-mode #ghost-trail{display:none;}
 
 /* INTAKE PAGE (contact reimagined) */
 #page-intake{background:var(--off);}
-.itk-hero{position:relative;height:100vh;min-height:100vh;background:var(--midnight);overflow:hidden;display:flex;align-items:center;padding:0 var(--gx);}.itk-hero-bg{position:absolute;inset:0;background-image:url('../images/apply-hero.jpg');background-size:cover;background-position:center;transform:scale(var(--hero-zoom,1));transform-origin:center;will-change:transform;transition:transform .12s linear;z-index:0;}
-.itk-hero::before{content:'';position:absolute;inset:0;background:rgba(20,28,40,.5);z-index:0;}
-.itk-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60%;background:linear-gradient(to top,rgba(4,9,14,.95),transparent);z-index:0;}
-.itk-hero-c{position:relative;z-index:2;}
-.itk-hl{font-family:var(--f-disp);font-size:clamp(54px,7vw,108px);font-weight:800;line-height:.92;color:var(--off);letter-spacing:-.015em;}
-.itk-hl span{font-style:italic;font-weight:300;color:rgba(226,240,240,.6);}
-
 .itk-body{background:var(--white);padding:120px var(--gx) 160px;border-bottom:1px solid var(--rule);position:relative;}
 .itk-body-coord{position:absolute;top:48px;left:var(--gx);font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;color:var(--ocean);}
 .itk-body-coord-r{position:absolute;top:48px;right:var(--gx);font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;color:rgba(95,129,144,.5);}
@@ -2363,16 +2232,8 @@ body.auth-mode #ghost-trail{display:none;}
 .itk-intro-hl em{font-style:italic;font-weight:300;color:var(--ocean);}
 .itk-intro-body{font-family:var(--f-body);font-weight:400;font-size:16px;line-height:1.85;color:var(--ink);}
 
-/* INTAKE PAGE — cinematic sticky hero. Hero stays as a backdrop while
-   the application body and aside layer over it on scroll. */
-#page-intake .itk-hero{
-  position:sticky;
-  top:0;
-  height:100vh;
-  min-height:100vh;
-  z-index:0;
-  overflow:hidden;
-}
+/* INTAKE PAGE — section layering for sections following the
+   .np-hero so their solid backgrounds occlude the sticky hero. */
 #page-intake .s-num-bar,
 #page-intake .itk-body,
 #page-intake .footer{
@@ -2382,10 +2243,6 @@ body.auth-mode #ghost-trail{display:none;}
 #page-intake .itk-body{
   /* first section to arrive over the hero — soft top edge for "lift" */
   box-shadow:0 -24px 60px rgba(28,43,58,.10), 0 -1px 0 rgba(28,43,58,.06);
-}
-@media (prefers-reduced-motion:reduce){
-  #page-intake .itk-hero{position:relative;height:auto;min-height:100vh;}
-  .itk-hero-bg{transform:none;transition:none;}
 }
 
 .itk-form{
@@ -3609,9 +3466,6 @@ textarea:focus-visible,
   /* Quote — keep both columns but tighter */
   .quote-grid{ gap:36px; }
 
-  /* Page geometry SVG — reduce visual weight */
-  .page-geometry{ width:40%; opacity:.45; }
-
   /* Doctrine declaration paragraph */
   .docl-text{ font-size:clamp(22px,3.6vw,42px); }
 
@@ -3643,15 +3497,6 @@ textarea:focus-visible,
   .hero-coord-line{ display:none; }
   .hero-meta-row{ flex-direction:column; align-items:flex-start; gap:24px; }
   .hero-meta-l{ max-width:none; }
-
-  /* Page heroes — stack title and note */
-  .mnd-hero-c, .prn-hero-c{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:24px;
-    width:100%;
-  }
-  .mnd-note, .prn-note{ text-align:left; max-width:none; }
 
   /* Doctrine */
   .doc-meta{ grid-template-columns:1fr 1fr; gap:18px 24px; }
@@ -3792,7 +3637,7 @@ textarea:focus-visible,
   .quote-body{ font-size:clamp(20px,4.6vw,30px); }
 
   /* Headlines tighten across all heroes */
-  .hero-hl, .doc-hl, .mnd-hl, .mth-hl, .air-hl-hero, .prn-hl, .itk-hl{
+  .hero-hl, .doc-hl, .np-hl{
     font-size:clamp(40px,10vw,72px);
   }
   .svc-hl, .docl-text, .mnd-intro-hl, .air-hl, .mth-intro-hl, .itk-intro-hl{
@@ -3816,9 +3661,6 @@ textarea:focus-visible,
 
   /* AIRaaS channels list */
   .air-ch{ padding:18px 0; }
-
-  /* Page-geometry decorative SVG — heavily reduce on mobile */
-  .page-geometry{ width:55%; opacity:.32; padding-right:22px; }
 
   /* Auth pages — single column */
   .auth-grid,
@@ -3889,7 +3731,7 @@ textarea:focus-visible,
   .hero-coords-top, .hero-coords-bottom{ padding:0 18px; }
 
   /* Headlines a touch smaller */
-  .hero-hl, .doc-hl, .mnd-hl, .mth-hl, .air-hl-hero, .prn-hl, .itk-hl{
+  .hero-hl, .doc-hl, .np-hl{
     font-size:clamp(34px,11vw,56px);
   }
   .mono-word{ font-size:clamp(44px,15vw,84px); }

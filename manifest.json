@@ -1,0 +1,27 @@
+{
+  "name": "HIMARK — Strategic Growth Consultancy",
+  "short_name": "HIMARK",
+  "description": "A standalone premium strategic growth consultancy operating with the rigour of a management firm and the agility of a founder's office.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#1C2B3A",
+  "background_color": "#1C2B3A",
+  "lang": "en-ZA",
+  "dir": "ltr",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "images/himark-favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/himark-favicon.ico",
+      "sizes": "48x48 32x32 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

@@ -47,8 +47,26 @@ const SYSTEM_PROMPT = [
 ].join('\n');
 
 module.exports = async (req, res) => {
-  // CORS hardening — only allow same-origin POSTs from the HIMARK domain.
   res.setHeader('Content-Type', 'application/json');
+
+  /* DIAGNOSTIC — visit /api/chat in a browser (GET) to see whether
+     the function is deployed and whether GEMINI_API_KEY is reaching
+     the runtime. Returns no key value, only presence + length, so
+     it's safe to leave in production. */
+  if (req.method === 'GET') {
+    const k = process.env.GEMINI_API_KEY || '';
+    res.statusCode = 200;
+    return res.end(JSON.stringify({
+      ok: true,
+      function: 'api/chat',
+      method: 'GET',
+      keyPresent: k.length > 0,
+      keyLength: k.length,
+      keyStartsWith: k ? k.slice(0, 4) + '…' : null,
+      runtime: process.version || 'unknown'
+    }));
+  }
+
   if (req.method !== 'POST') {
     res.statusCode = 405;
     return res.end(JSON.stringify({ error: 'Method not allowed' }));

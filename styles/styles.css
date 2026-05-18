@@ -3302,28 +3302,80 @@ body.auth-mode #cookies-banner{
 
 /* Atlas chat widget. Hidden only on auth/dashboard pages via the
    body.auth-mode rule above. Otherwise visible site-wide. */
-.chat-toggle-btn{position:fixed;bottom:36px;right:36px;width:54px;height:54px;background:var(--midnight);border:1px solid var(--ocean);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:none;z-index:8000;box-shadow:0 4px 20px rgba(28,43,58,.4);transition:background .3s,transform .3s var(--ease);}
-.chat-toggle-btn:hover{background:var(--ocean);transform:translateY(-2px) scale(1.05);}
+/* Floating toggle — glass surface matching #menu-panel. */
+.chat-toggle-btn{
+  position:fixed;
+  bottom:36px;right:36px;
+  width:54px;height:54px;
+  background:rgba(20,32,46,.55);
+  -webkit-backdrop-filter:blur(20px) saturate(140%);
+          backdrop-filter:blur(20px) saturate(140%);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:none;
+  z-index:8000;
+  box-shadow:
+    0 12px 28px rgba(0,0,0,.36),
+    0 1px 0 rgba(255,255,255,.08) inset;
+  transition:background .3s, border-color .3s, transform .3s var(--ease), box-shadow .3s;
+}
+.chat-toggle-btn:hover{
+  background:rgba(95,129,144,.45);
+  border-color:rgba(255,255,255,.22);
+  transform:translateY(-2px) scale(1.05);
+  box-shadow:
+    0 18px 36px rgba(0,0,0,.42),
+    0 1px 0 rgba(255,255,255,.12) inset;
+}
 .chat-toggle-btn .ico-ch,.chat-toggle-btn .ico-cl{transition:opacity .2s,transform .2s var(--ease);}
 .chat-toggle-btn .ico-cl{position:absolute;opacity:0;transform:rotate(-90deg);}
 .chat-toggle-btn.open .ico-ch{opacity:0;transform:rotate(90deg);}
 .chat-toggle-btn.open .ico-cl{opacity:1;transform:none;}
 
-/* Definite height (not just max-height) so the inner flex chain
-   has something to grow into. min() caps at 570px on large
-   viewports and falls back to viewport-minus-chrome on short
-   ones so the panel never overflows the screen. */
-.chat-win{position:fixed;bottom:102px;right:36px;width:372px;height:min(570px,calc(100vh - 140px));background:var(--ink-deep);border:1px solid rgba(95,129,144,.18);box-shadow:0 28px 80px rgba(0,0,0,.55);display:flex;flex-direction:column;overflow:hidden;z-index:7999;transform:translateY(18px);transform-origin:bottom right;opacity:0;pointer-events:none;transition:transform .4s var(--ease),opacity .3s;}
+/* Chat panel — glass surface matching #menu-panel. Same blur,
+   tint, border, inset highlight, and rounded corners. Definite
+   height (not just max-height) so the inner flex chain has
+   something to grow into. */
+.chat-win{
+  position:fixed;
+  bottom:102px;right:36px;
+  width:372px;
+  height:min(570px,calc(100vh - 140px));
+  background:rgba(20,32,46,.55);
+  -webkit-backdrop-filter:blur(28px) saturate(150%);
+          backdrop-filter:blur(28px) saturate(150%);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:22px;
+  box-shadow:
+    0 28px 64px rgba(0,0,0,.36),
+    0 1px 0 rgba(255,255,255,.08) inset;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  z-index:7999;
+  transform:translateY(18px);
+  transform-origin:bottom right;
+  opacity:0;
+  pointer-events:none;
+  transition:transform .4s var(--ease), opacity .3s;
+}
 .chat-win.open{transform:none;opacity:1;pointer-events:all;}
-.ch-hdr{background:var(--midnight);padding:15px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(95,129,144,.12);flex-shrink:0;}
-.ch-av{width:32px;height:32px;background:var(--ocean-dk);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ch-hdr{
+  background:rgba(28,43,58,.35);
+  padding:15px 18px;
+  display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  flex-shrink:0;
+}
+.ch-av{width:32px;height:32px;background:rgba(95,129,144,.55);display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:8px;}
 .ch-nm{font-family:var(--f-mono);font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--off);}
-.ch-st{display:flex;align-items:center;gap:5px;font-family:var(--f-body);font-size:10px;color:var(--ocean);margin-top:2px;}
+.ch-st{display:flex;align-items:center;gap:5px;font-family:var(--f-body);font-size:10px;color:var(--ocean-lt);margin-top:2px;}
 .ch-st-dot{width:5px;height:5px;background:#4ade80;border-radius:50%;animation:bl 2s ease-in-out infinite;}
 @keyframes bl{0%,100%{opacity:1}50%{opacity:.4}}
-.ch-tabs{display:flex;border-bottom:1px solid rgba(95,129,144,.1);flex-shrink:0;}
-.ch-tab{flex:1;padding:9px;font-family:var(--f-mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:rgba(247,247,245,.32);background:none;border:none;display:flex;align-items:center;justify-content:center;gap:6px;cursor:none;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;}
-.ch-tab.active{color:var(--ocean);border-bottom-color:var(--ocean);background:rgba(95,129,144,.04);}
+.ch-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;background:rgba(0,0,0,.10);}
+.ch-tab{flex:1;padding:10px;font-family:var(--f-mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:rgba(247,247,245,.42);background:none;border:none;display:flex;align-items:center;justify-content:center;gap:6px;cursor:none;border-bottom:2px solid transparent;transition:color .2s,border-color .2s,background .2s;}
+.ch-tab:hover{color:rgba(247,247,245,.78);}
+.ch-tab.active{color:var(--ocean-lt);border-bottom-color:var(--ocean-lt);background:rgba(255,255,255,.05);}
 /* cpanel is the chat column that wraps the message list + quick
    replies + input bar. It needs explicit flex layout so its
    children (ch-msgs / qreps / ch-inbar) size correctly inside the
@@ -3336,27 +3388,27 @@ body.auth-mode #cookies-banner{
 .ch-msgs::-webkit-scrollbar-thumb{background:rgba(95,129,144,.25);}
 .msg{max-width:83%;animation:mIn .3s var(--ease);}
 @keyframes mIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
-.msg-b{padding:10px 13px;font-family:var(--f-body);font-weight:300;font-size:13px;line-height:1.6;}
+.msg-b{padding:10px 14px;font-family:var(--f-body);font-weight:300;font-size:13px;line-height:1.6;border-radius:14px;}
 .msg.bot{align-self:flex-start;}
-.msg.bot .msg-b{background:rgba(95,129,144,.1);color:rgba(247,247,245,.82);border-left:2px solid var(--ocean);}
+.msg.bot .msg-b{background:rgba(255,255,255,.07);color:rgba(247,247,245,.92);border:1px solid rgba(255,255,255,.10);border-top-left-radius:4px;}
 .msg.user{align-self:flex-end;}
-.msg.user .msg-b{background:var(--ocean-dk);color:var(--off);}
-.msg-t{font-family:var(--f-mono);font-size:9px;color:rgba(247,247,245,.18);margin-top:4px;letter-spacing:.06em;}
+.msg.user .msg-b{background:rgba(95,129,144,.55);color:var(--off);border:1px solid rgba(255,255,255,.10);border-top-right-radius:4px;}
+.msg-t{font-family:var(--f-mono);font-size:9px;color:rgba(247,247,245,.32);margin-top:5px;letter-spacing:.06em;padding:0 4px;}
 .msg.user .msg-t{text-align:right;}
 .typing-i{align-self:flex-start;}
-.typ-d{display:flex;gap:3px;padding:10px 13px;background:rgba(95,129,144,.1);border-left:2px solid var(--ocean);width:fit-content;}
+.typ-d{display:flex;gap:3px;padding:12px 14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);border-radius:14px;border-top-left-radius:4px;width:fit-content;}
 .typ-d span{width:4px;height:4px;background:var(--ocean);border-radius:50%;animation:tb 1.2s ease-in-out infinite;}
 .typ-d span:nth-child(2){animation-delay:.15s}.typ-d span:nth-child(3){animation-delay:.3s}
 @keyframes tb{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-5px);opacity:1}}
-.qreps{display:flex;flex-wrap:wrap;gap:5px;padding:0 13px 9px;flex-shrink:0;}
-.qr{font-family:var(--f-mono);font-size:9px;font-weight:500;letter-spacing:.08em;color:var(--ocean);border:1px solid rgba(95,129,144,.28);padding:5px 10px;background:none;cursor:none;transition:background .2s,color .2s;text-transform:uppercase;}
-.qr:hover{background:var(--ocean);color:var(--off);}
-.ch-inbar{display:flex;gap:7px;padding:10px 13px;border-top:1px solid rgba(95,129,144,.1);background:rgba(0,0,0,.2);flex-shrink:0;}
-.ch-inp{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(95,129,144,.15);padding:9px 12px;font-family:var(--f-body);font-size:13px;font-weight:300;color:var(--off);outline:none;cursor:none;transition:border-color .2s;}
-.ch-inp::placeholder{color:rgba(247,247,245,.22);}
-.ch-inp:focus{border-color:rgba(95,129,144,.4);}
-.ch-send{width:33px;height:33px;background:var(--ocean);border:none;display:flex;align-items:center;justify-content:center;cursor:none;transition:background .2s;}
-.ch-send:hover{background:#7CA0AE;}
+.qreps{display:flex;flex-wrap:wrap;gap:6px;padding:0 13px 10px;flex-shrink:0;}
+.qr{font-family:var(--f-mono);font-size:9px;font-weight:500;letter-spacing:.08em;color:var(--ocean-lt);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:5px 11px;background:rgba(255,255,255,.04);cursor:none;transition:background .2s,color .2s,border-color .2s;text-transform:uppercase;}
+.qr:hover{background:rgba(95,129,144,.55);border-color:rgba(255,255,255,.28);color:var(--off);}
+.ch-inbar{display:flex;gap:8px;padding:11px 13px;border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.18);flex-shrink:0;}
+.ch-inp{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:9px 13px;font-family:var(--f-body);font-size:13px;font-weight:300;color:var(--off);outline:none;cursor:none;transition:border-color .2s,background .2s;}
+.ch-inp::placeholder{color:rgba(247,247,245,.32);}
+.ch-inp:focus{border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.09);}
+.ch-send{width:36px;height:36px;background:var(--ocean);border:none;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:none;transition:background .2s,transform .15s var(--ease);}
+.ch-send:hover{background:var(--ocean-lt);transform:scale(1.04);}
 .vp{display:none;flex-direction:column;align-items:center;justify-content:center;padding:36px 20px;flex:1;gap:20px;}
 .vp.on{display:flex;}
 .v-orb{width:84px;height:84px;border-radius:50%;background:radial-gradient(circle,rgba(95,129,144,.25) 0%,rgba(95,129,144,.04) 70%);border:1px solid rgba(95,129,144,.2);display:flex;align-items:center;justify-content:center;cursor:none;position:relative;transition:transform .3s var(--ease);}

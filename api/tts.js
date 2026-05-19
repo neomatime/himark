@@ -36,6 +36,25 @@
 const DEFAULT_VOICE_ID = 'JBFqnCBsd6RMkjVDRZzb'; // George — HIMARK's chosen Atlas voice
 
 module.exports = async (req, res) => {
+  /* DIAGNOSTIC GET — hit /api/tts in a browser to confirm the
+     function is actually deployed and reachable. If you get a
+     404, Vercel didn't deploy it; if you get this JSON, the
+     function is live and the 404 you saw on POST is something
+     else entirely. */
+  if (req.method === 'GET') {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    return res.end(JSON.stringify({
+      ok: true,
+      function: 'api/tts',
+      method: 'GET',
+      keyPresent: !!process.env.ELEVENLABS_API_KEY,
+      voiceId: process.env.ELEVENLABS_VOICE_ID || 'JBFqnCBsd6RMkjVDRZzb (George — code default)',
+      runtime: process.version || 'unknown',
+      note: 'POST { text: "..." } to this endpoint to generate audio.'
+    }));
+  }
+
   if (req.method !== 'POST') {
     res.statusCode = 405;
     res.setHeader('Content-Type', 'application/json');

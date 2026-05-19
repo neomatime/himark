@@ -439,6 +439,60 @@ try{
      `voiceschanged` event AND on first speak() call. */
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   let atlasVoice=null;
+
+  /* MOBILE AUDIO UNLOCK
+     iOS Safari (and Chrome on iOS, which uses the same WebKit
+     audio backend) requires audio playback to originate inside
+     a user-gesture handler synchronously. Our TTS flow:
+       tap orb → recog → /api/chat → /api/voice → audio.play()
+     hops through several async awaits, so by the time we call
+     play() iOS has considered the gesture "spent" and blocks
+     audio with a quiet rejection.
+
+     Canonical fix: on the very first user interaction with the
+     page, play a 1-sample silent AudioContext buffer. That
+     unlocks the audio session for the rest of the page lifetime
+     so subsequent HTMLAudio plays work after async hops.
+
+     Listener is attached with `once:true` + capture-phase so it
+     fires before any other handlers and self-removes — no
+     ongoing cost. Catches click AND touchstart because some iOS
+     versions need the touch event specifically. */
+  let mobileAudioUnlocked = false;
+  function unlockMobileAudio(){
+    if(mobileAudioUnlocked) return;
+    try{
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if(!Ctx) return;
+      const ctx = new Ctx();
+      if(ctx.state === 'suspended' && typeof ctx.resume === 'function'){
+        ctx.resume().catch(()=>{});
+      }
+      const buf = ctx.createBuffer(1, 1, 22050);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(ctx.destination);
+      src.start(0);
+      mobileAudioUnlocked = true;
+      /* Close after a short delay so we don't keep the context
+         open for the rest of the page lifetime. */
+      setTimeout(()=>{ try{ ctx.close && ctx.close(); }catch(_){} }, 250);
+    }catch(_){}
+  }
+  ['click','touchstart'].forEach(ev=>{
+    document.addEventListener(ev, unlockMobileAudio, { once:true, capture:true, passive:true });
+  });
+
+  /* HIDE VOICE TAB ON BROWSERS WITHOUT SR
+     iOS Safari and Chrome-on-iOS don't ship SpeechRecognition.
+     Showing the voice tab and then erroring on tap is a worse
+     UX than just not offering it. Hide the button entirely;
+     the chat tab's flex:1 expands to fill the row. */
+  if(!SR){
+    if(tVoice) tVoice.style.display='none';
+    if(vPan)   vPan.style.display='none';
+  }
+
   function pickAtlasVoice(){
     if(!('speechSynthesis'in window)) return null;
     const voices=window.speechSynthesis.getVoices();
@@ -616,6 +670,11 @@ try{
       }
       const url = URL.createObjectURL(blob);
       atlasAudio = new Audio(url);
+      /* iOS: keep audio inline (don't hand off to the OS media
+         controller, don't trigger fullscreen on tap). preload
+         'auto' tells the browser it can buffer immediately. */
+      atlasAudio.playsInline = true;
+      atlasAudio.preload = 'auto';
       atlasAudio.onplay  = ()=>{ ttsLog('audio onplay (ElevenLabs is being heard)'); onAtlasSpeechStart(); };
       atlasAudio.onended = ()=>{
         ttsLog('audio onended');

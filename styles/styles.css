@@ -4125,7 +4125,18 @@ textarea:focus-visible,
   /* Mute / chat / floating widgets — pulled in from edges */
   #mute-btn{ left:18px; bottom:18px; width:42px; height:42px; }
   .chat-toggle-btn{ right:18px; bottom:18px; width:48px; height:48px; }
-  .chat-win{ right:8px; bottom:78px; left:8px; width:auto; height:min(570px,calc(100vh - 100px)); }
+  /* Chat panel on mobile:
+     - 100vh as a fallback for older browsers
+     - 100dvh (dynamic viewport height) for browsers that support
+       it — the panel shrinks correctly when the iOS / Android
+       soft keyboard slides up, so the input stays in view
+     - bottom offset slightly higher than the toggle */
+  .chat-win{ right:8px; bottom:78px; left:8px; width:auto; height:min(570px, calc(100vh  - 100px)); }
+  .chat-win{ height:min(570px, calc(100dvh - 100px)); }
+  /* Inputs must be at least 16px on iOS or Safari zooms the
+     page when the user focuses them. Bumping the chat input
+     keeps the layout stable when typing. */
+  .ch-inp{ font-size:16px; }
 
   /* Quote section */
   .quote-grid{ grid-template-columns:48px 1fr; gap:24px; }

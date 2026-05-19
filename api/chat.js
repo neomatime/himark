@@ -175,7 +175,7 @@ module.exports = async (req, res) => {
       keyStartsWith: k ? k.slice(0, 4) + '…' : null,
       hubspotConfigured: !!process.env.HUBSPOT_ACCESS_TOKEN,
       ttsConfigured: !!process.env.ELEVENLABS_API_KEY,
-      ttsVoiceId: process.env.ELEVENLABS_VOICE_ID || 'sLfduly0sixkh8riDzed (Atlas — code default)',
+      ttsVoiceId: process.env.ELEVENLABS_VOICE_ID || 'JBFqnCBsd6RMkjVDRZzb (George — code default)',
       runtime: process.version || 'unknown'
     };
     if (!k) {
@@ -230,7 +230,7 @@ module.exports = async (req, res) => {
             access on the free tier, so step 1 passes while step
             2 fails with the plan-limit error. */
     const elKey = process.env.ELEVENLABS_API_KEY;
-    const voiceId = process.env.ELEVENLABS_VOICE_ID || 'sLfduly0sixkh8riDzed';
+    const voiceId = process.env.ELEVENLABS_VOICE_ID || 'JBFqnCBsd6RMkjVDRZzb';
     if (elKey) {
       /* Step 1 — metadata */
       try {

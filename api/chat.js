@@ -220,6 +220,35 @@ module.exports = async (req, res) => {
     } catch (e) {
       base.geminiTest = { model: GEMINI_MODEL, fetchError: String(e && e.message || e) };
     }
+
+    /* Probe ElevenLabs with the configured voice ID. Returns the
+       voice metadata if accessible; otherwise the exact error so
+       we can see why the frontend keeps falling back to browser
+       TTS. Costs no characters — just metadata, no audio. */
+    const elKey = process.env.ELEVENLABS_API_KEY;
+    const voiceId = process.env.ELEVENLABS_VOICE_ID || 'sLfduly0sixkh8riDzed';
+    if (elKey) {
+      try {
+        const probe = await fetch(
+          `https://api.elevenlabs.io/v1/voices/${encodeURIComponent(voiceId)}`,
+          { headers: { 'xi-api-key': elKey } }
+        );
+        const text = await probe.text();
+        let parsed;
+        try { parsed = JSON.parse(text); } catch (_) { parsed = null; }
+        base.ttsTest = {
+          voiceId,
+          status: probe.status,
+          ok: probe.ok,
+          voiceName: parsed && parsed.name ? parsed.name : null,
+          voiceCategory: parsed && parsed.category ? parsed.category : null,
+          errorDetail: parsed && parsed.detail ? (parsed.detail.message || parsed.detail.status || JSON.stringify(parsed.detail).slice(0,200)) : null,
+          rawExcerpt: text.slice(0, 280)
+        };
+      } catch (e) {
+        base.ttsTest = { voiceId, fetchError: String(e && e.message || e) };
+      }
+    }
     res.statusCode = 200;
     return res.end(JSON.stringify(base));
   }

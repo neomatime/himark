@@ -207,10 +207,63 @@
 </div>
 </section>
 
-<div class="s-num-bar"><span>08.A · APPLICATION</span><span>INTAKE / 01</span><span>VETTED · ADMITTED</span></div>
+<div class="s-num-bar"><span>08.A · BEFORE YOU APPLY</span><span>INTAKE / 01</span><span>CONVERSATION · PREFERRED</span></div>
 
-<section class="itk-body">
-<span class="itk-body-coord">[ 08.A.01 ]</span>
+<!-- BEFORE-THE-FORM ATLAS PROMPT — nudges visitors to begin with a
+     short conversation before committing to the formal intake. Mirror
+     image of the chat panel sits on the right with a scripted demo
+     conversation that animates in as the section enters the viewport.
+     The "Talk to Atlas" CTA opens the floating chat AND seeds the
+     LeadSense flow by sending "I'd like to apply" as the first turn. -->
+<section class="ap-atlas" id="ap-atlas">
+<span class="ap-atlas-coord-tl">[ 08.A.01 ]</span>
+<span class="ap-atlas-coord-tr">BEGIN · CONVERSATION</span>
+<div class="ap-atlas-inner">
+<div class="ap-atlas-text">
+<p class="ap-atlas-eyebrow">Before the form</p>
+<h2 class="ap-atlas-hl">Begin with<span>a conversation.</span></h2>
+<p class="ap-atlas-body">Atlas — HIMARK's principal-trained assistant — knows the firm intimately. Five minutes here often saves twenty in the form, and gives you a clearer picture of fit before you commit to the formal application.</p>
+<ul class="ap-atlas-points">
+<li><span class="ap-atlas-arrow">→</span>Immediate clarity on tier alignment</li>
+<li><span class="ap-atlas-arrow">→</span>Most pricing and timing questions answered live</li>
+<li><span class="ap-atlas-arrow">→</span>Pre-qualified before a principal reads your brief</li>
+</ul>
+<div class="ap-atlas-ctas">
+<button class="ap-atlas-cta" id="ap-launch-atlas" type="button">
+<span class="ap-atlas-cta-dot"></span>
+<span class="ap-atlas-cta-label">Talk to Atlas</span>
+<span class="ap-atlas-cta-arrow">↗</span>
+</button>
+<a class="ap-atlas-skip" href="#ap-form">Skip to the form <span>↓</span></a>
+</div>
+</div>
+<!-- Demo panel — visually mirrors the real Atlas chat window
+     (glass surface, identical bubble styling) so visitors recognise
+     it from the floating widget. Bubbles fade up in sequence when
+     the section scrolls into view. -->
+<div class="ap-atlas-demo" aria-hidden="true">
+<div class="ap-atlas-demo-frame">
+<div class="ap-atlas-demo-hdr">
+<span class="ap-atlas-demo-av"><svg viewBox="0 0 292 200" width="11" height="8" fill="none"><rect x="0" y="0" width="28" height="200" fill="#8AADB8"/><rect x="28" y="88" width="104" height="20" fill="#8AADB8"/><rect x="132" y="0" width="28" height="200" fill="#8AADB8"/><polygon points="160,0 182,0 212,120 201,120" fill="#8AADB8"/><polygon points="242,0 264,0 223,120 212,120" fill="#8AADB8"/><rect x="264" y="0" width="28" height="200" fill="#8AADB8"/></svg></span>
+<span class="ap-atlas-demo-name">ATLAS · HIMARK</span>
+<span class="ap-atlas-demo-st"><span class="ap-atlas-demo-st-dot"></span>ONLINE</span>
+</div>
+<div class="ap-atlas-demo-msgs">
+<div class="ap-atlas-demo-msg bot"><div class="ap-atlas-demo-b">What's the commercial outcome you're trying to land?</div></div>
+<div class="ap-atlas-demo-msg user"><div class="ap-atlas-demo-b">Repositioning our agency upmarket.</div></div>
+<div class="ap-atlas-demo-msg bot"><div class="ap-atlas-demo-b">Sounds like a Growth Partner mandate. Timeline?</div></div>
+<div class="ap-atlas-demo-msg user"><div class="ap-atlas-demo-b">Six months.</div></div>
+<div class="ap-atlas-demo-msg bot typing"><div class="ap-atlas-demo-b"><span></span><span></span><span></span></div></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<div class="s-num-bar"><span>08.B · APPLICATION</span><span>INTAKE / 02</span><span>VETTED · ADMITTED</span></div>
+
+<section class="itk-body" id="ap-form">
+<span class="itk-body-coord">[ 08.B.01 ]</span>
 <span class="itk-body-coord-r">SUBMISSION FORM · v.MMXXVI</span>
 
 <div class="itk-intro">
@@ -275,7 +328,7 @@
 
 <aside class="itk-aside r3d d2">
 <div class="itk-aside-card">
-<span class="itk-aside-coord">[ 08.B.01 ]</span>
+<span class="itk-aside-coord">[ 08.B.02 ]</span>
 <p class="itk-aside-eyebrow">Talk to Atlas</p>
 <h3 class="itk-aside-hl">Prefer<br>WhatsApp?<em>So do we.</em></h3>
 <p class="itk-aside-text">Reach Atlas — HIMARK's assistant — directly on WhatsApp. Get an immediate response, walked through your mandate, or pre-qualified before you complete the formal application.</p>

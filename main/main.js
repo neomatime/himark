@@ -1874,4 +1874,80 @@ window.authSubmit=authSubmit;
   update();
 })();
 
+/* ============================================================
+   APPLY PAGE · BEFORE-THE-FORM ATLAS PROMPT
+   - Triggers staggered fade-up of copy + demo conversation when
+     the section scrolls into view (plays once)
+   - Wires the "Talk to Atlas" CTA to open the floating chat
+     panel and auto-seed the LeadSense flow by sending
+     "I'd like to apply" as the first user turn
+   No-op on every page that doesn't have an #ap-atlas section.
+   ============================================================ */
+(function(){
+  const section = document.getElementById('ap-atlas');
+  if(!section) return;
+
+  /* Trigger animations on first viewport entry. The CSS does the
+     work — we just toggle .is-in on the section and .in on each
+     demo bubble in sequence so they appear like a live chat. */
+  const demoMsgs = section.querySelectorAll('.ap-atlas-demo-msg');
+  let played = false;
+  const playDemo = ()=>{
+    if(played) return;
+    played = true;
+    section.classList.add('is-in');
+    /* Stagger the demo bubbles. Reduced-motion mode skips the
+       per-bubble delays and shows everything immediately. */
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduce){
+      demoMsgs.forEach(m => m.classList.add('in'));
+      return;
+    }
+    /* First bubble appears after the panel itself slides in
+       (~700ms), then each subsequent bubble follows. */
+    const base = 700;
+    const gap  = 850;
+    demoMsgs.forEach((m, i) => setTimeout(() => m.classList.add('in'), base + i * gap));
+  };
+
+  if('IntersectionObserver' in window){
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if(e.isIntersecting) playDemo(); });
+    }, { threshold: 0.35 });
+    io.observe(section);
+  } else {
+    /* Old browser fallback: just play it on load. */
+    playDemo();
+  }
+
+  /* "Talk to Atlas" CTA — open the chat panel (which lives in
+     the floating widget at bottom-right) and seed the
+     conversation with "I'd like to apply" so the LeadSense
+     flow begins immediately. Falls back gracefully if any
+     handles aren't wired (e.g. on a page where the chat isn't
+     mounted). */
+  const launchBtn = document.getElementById('ap-launch-atlas');
+  if(launchBtn){
+    launchBtn.addEventListener('click', () => {
+      const cTgl = document.getElementById('chatTgl');
+      const cWin = document.getElementById('chatWin');
+      const willOpen = cWin && !cWin.classList.contains('open');
+      if(willOpen && cTgl){
+        cTgl.click();
+      }
+      /* Wait for the panel to open + auto-greet, then send the
+         intent message so Atlas begins LeadSense. The 1.1s
+         delay leaves room for the greeting bubble's 380ms
+         delay plus a beat for the visitor to register it. */
+      setTimeout(() => {
+        if(typeof window.sQ === 'function'){
+          /* sQ expects an element with textContent — supply a
+             plain object that looks enough like one. */
+          window.sQ({ textContent: "I'd like to apply" });
+        }
+      }, 1100);
+    });
+  }
+})();
+
 })();

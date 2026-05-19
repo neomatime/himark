@@ -2262,29 +2262,33 @@ body.auth-mode #ghost-trail{display:none;}
    demo conversation when the section scrolls into view.
    ============================================================ */
 .ap-atlas{
-  background:var(--midnight);
+  /* Misty-blue surface — sits between mist (#E2F0F0) and
+     ocean-lt (#8AADB8) on the brand palette. Soft top-to-bottom
+     gradient gives the field depth without going dark. */
+  background:linear-gradient(160deg, #D5E3E7 0%, #B6CAD1 100%);
   padding:130px var(--gx) 140px;
   position:relative;
   overflow:hidden;
-  border-bottom:1px solid rgba(95,129,144,.18);
+  border-bottom:1px solid rgba(28,43,58,.10);
 }
 .ap-atlas::before{
-  /* Soft brand-tinted glow in the top-left corner so the dark
-     surface doesn't feel flat behind the headline. */
+  /* Soft white wash in the top-left so the headline lifts off
+     the surface without the field feeling flat. */
   content:'';
   position:absolute;
   top:-30%; left:-15%;
   width:60%; height:90%;
-  background:radial-gradient(ellipse at center, rgba(95,129,144,.16) 0%, transparent 65%);
+  background:radial-gradient(ellipse at center, rgba(255,255,255,.45) 0%, transparent 65%);
   pointer-events:none;
 }
 .ap-atlas::after{
-  /* Mirror glow in the opposite corner, smaller / cooler. */
+  /* Deeper ocean wash in the opposite corner — keeps the gradient
+     from reading as flat pastel. */
   content:'';
   position:absolute;
   bottom:-30%; right:-15%;
   width:55%; height:80%;
-  background:radial-gradient(ellipse at center, rgba(138,173,184,.12) 0%, transparent 65%);
+  background:radial-gradient(ellipse at center, rgba(95,129,144,.16) 0%, transparent 65%);
   pointer-events:none;
 }
 .ap-atlas-coord-tl{
@@ -2294,7 +2298,7 @@ body.auth-mode #ghost-trail{display:none;}
   font-size:9px; font-weight:500;
   letter-spacing:.14em;
   text-transform:uppercase;
-  color:var(--ocean-lt);
+  color:var(--ocean);
   z-index:2;
   opacity:0;
   animation:apCoordIn .8s var(--ease) .2s forwards;
@@ -2306,7 +2310,7 @@ body.auth-mode #ghost-trail{display:none;}
   font-size:9px; font-weight:500;
   letter-spacing:.14em;
   text-transform:uppercase;
-  color:rgba(138,173,184,.5);
+  color:rgba(95,129,144,.55);
   z-index:2;
   opacity:0;
   animation:apCoordIn .8s var(--ease) .35s forwards;
@@ -2337,14 +2341,14 @@ body.auth-mode #ghost-trail{display:none;}
   font-size:10px; font-weight:600;
   letter-spacing:.22em;
   text-transform:uppercase;
-  color:var(--ocean-lt);
+  color:var(--ocean);
   margin-bottom:32px;
   display:flex; align-items:center; gap:14px;
 }
 .ap-atlas-eyebrow::before{
   content:''; display:block;
   width:32px; height:1px;
-  background:var(--ocean-lt);
+  background:var(--ocean);
 }
 
 .ap-atlas-hl{
@@ -2353,14 +2357,14 @@ body.auth-mode #ghost-trail{display:none;}
   font-weight:800;
   line-height:.92;
   letter-spacing:-.015em;
-  color:var(--off);
+  color:var(--midnight);
   margin-bottom:34px;
 }
 .ap-atlas-hl span{
   display:block;
   font-style:italic;
   font-weight:300;
-  color:rgba(226,240,240,.72);
+  color:rgba(28,43,58,.55);
 }
 
 .ap-atlas-body{
@@ -2368,7 +2372,7 @@ body.auth-mode #ghost-trail{display:none;}
   font-weight:300;
   font-size:16px;
   line-height:1.85;
-  color:rgba(247,247,245,.82);
+  color:rgba(28,43,58,.82);
   margin-bottom:38px;
   max-width:480px;
 }
@@ -2390,7 +2394,7 @@ body.auth-mode #ghost-trail{display:none;}
   font-weight:300;
   font-size:14px;
   line-height:1.7;
-  color:rgba(247,247,245,.78);
+  color:rgba(28,43,58,.78);
   opacity:0;
   transform:translateX(-12px);
   transition:opacity .55s var(--ease), transform .55s var(--ease);
@@ -2400,7 +2404,7 @@ body.auth-mode #ghost-trail{display:none;}
 .ap-atlas.is-in .ap-atlas-points li:nth-child(2){ transition-delay:.70s; }
 .ap-atlas.is-in .ap-atlas-points li:nth-child(3){ transition-delay:.85s; }
 .ap-atlas-arrow{
-  color:var(--ocean-lt);
+  color:var(--ocean);
   font-family:var(--f-mono);
   font-size:13px;
   flex-shrink:0;
@@ -2415,8 +2419,8 @@ body.auth-mode #ghost-trail{display:none;}
   flex-wrap:wrap;
 }
 .ap-atlas-cta{
-  background:var(--ocean);
-  border:1px solid rgba(255,255,255,.18);
+  background:var(--midnight);
+  border:1px solid rgba(28,43,58,.85);
   padding:17px 28px;
   display:inline-flex;
   align-items:center;
@@ -2434,12 +2438,13 @@ body.auth-mode #ghost-trail{display:none;}
 }
 .ap-atlas-cta::before{
   /* Subtle shimmer that sweeps across the button every few
-     seconds — calls attention without flashing. */
+     seconds — calls attention without flashing. Light shimmer
+     on the dark button reads cleanly against the misty surface. */
   content:'';
   position:absolute;
   top:0; left:-100%;
   width:60%; height:100%;
-  background:linear-gradient(90deg, transparent, rgba(247,247,245,.18), transparent);
+  background:linear-gradient(90deg, transparent, rgba(247,247,245,.22), transparent);
   animation:apShimmer 4.5s ease-in-out infinite;
 }
 @keyframes apShimmer{
@@ -2448,10 +2453,10 @@ body.auth-mode #ghost-trail{display:none;}
   100% { left:120%; }
 }
 .ap-atlas-cta:hover{
-  background:var(--ocean-lt);
-  border-color:rgba(255,255,255,.32);
+  background:#243749;
+  border-color:#3a4f63;
   transform:translateY(-2px);
-  box-shadow:0 18px 36px rgba(95,129,144,.32), 0 1px 0 rgba(255,255,255,.16) inset;
+  box-shadow:0 18px 36px rgba(28,43,58,.28), 0 1px 0 rgba(247,247,245,.12) inset;
 }
 .ap-atlas-cta-dot{
   width:7px; height:7px;
@@ -2480,7 +2485,7 @@ body.auth-mode #ghost-trail{display:none;}
   font-weight:500;
   letter-spacing:.18em;
   text-transform:uppercase;
-  color:rgba(247,247,245,.45);
+  color:rgba(28,43,58,.55);
   text-decoration:none;
   cursor:none;
   display:inline-flex;
@@ -2492,7 +2497,7 @@ body.auth-mode #ghost-trail{display:none;}
   display:inline-block;
   transition:transform .3s var(--ease);
 }
-.ap-atlas-skip:hover{ color:var(--off); }
+.ap-atlas-skip:hover{ color:var(--midnight); }
 .ap-atlas-skip:hover span{ transform:translateY(3px); }
 
 /* ---------- Right column: scripted Atlas demo ---------- */

@@ -1948,6 +1948,46 @@ window.authSubmit=authSubmit;
       }, 1100);
     });
   }
+
+  /* Skip-to-form link — smooth-scroll into the form section
+     instead of jumping. The actual scroller on this site is the
+     .page element (each route scrolls independently), so we
+     compute the offset against that container and animate it
+     manually for consistent behaviour across browsers. */
+  const skipLink = section.querySelector('.ap-atlas-skip');
+  if(skipLink){
+    skipLink.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.getElementById('ap-form');
+      if(!target) return;
+      /* The scrollable container is the .page wrapper for this
+         route. Fall back to documentElement if .page isn't found
+         (e.g. if the markup moves to a different shell). */
+      const scroller = target.closest('.page') || document.scrollingElement || document.documentElement;
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      /* Compute target Y inside the scroller. getBoundingClientRect
+         returns viewport-relative coords; add the current scrollTop
+         to convert to scroller-relative. */
+      const targetY = target.getBoundingClientRect().top
+                    - scroller.getBoundingClientRect().top
+                    + scroller.scrollTop;
+      /* Land a touch above the s-num-bar that sits just above the
+         form, so the visitor sees the section heading too. */
+      const offsetY = Math.max(0, targetY - 32);
+      if(reduce){
+        scroller.scrollTop = offsetY;
+        return;
+      }
+      /* Most modern browsers (incl. Chrome / Edge / Safari / FF)
+         honour scrollTo({behavior:'smooth'}) on scrollable
+         elements, not just window. */
+      if(typeof scroller.scrollTo === 'function'){
+        scroller.scrollTo({ top: offsetY, behavior: 'smooth' });
+      } else {
+        scroller.scrollTop = offsetY;
+      }
+    });
+  }
 })();
 
 })();

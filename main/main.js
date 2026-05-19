@@ -384,10 +384,11 @@ try{
     }
     if(willOpen) setTimeout(()=>cIn&&cIn.focus(),260);
     /* Closing the panel mid-conversation: kill any in-flight
-       speech and recognition so the mic doesn't keep listening
-       and Atlas doesn't keep talking behind a hidden panel. */
+       speech (premium or browser) and recognition so nothing
+       keeps running behind a hidden panel. */
     if(!willOpen){
       try{ window.speechSynthesis.cancel(); }catch(_){}
+      if(atlasAudio){ try{ atlasAudio.pause(); }catch(_){} atlasAudio=null; }
       try{ if(recog && lstn) recog.stop(); }catch(_){}
       if(vStat) vStat.textContent='TAP TO SPEAK';
     }
@@ -512,42 +513,103 @@ try{
       .replace(/\bR(\d[\d,]*)\b/g, (m, num) => num + ' rand');
   }
 
-  function speak(text){
+  /* Single audio element reused across turns so each new reply
+     replaces the previous one cleanly. */
+  let atlasAudio=null;
+  /* Once we've discovered there's no premium TTS configured, stop
+     hitting /api/tts on every reply — saves a wasted round-trip. */
+  let premiumTtsDisabled=false;
+
+  /* Shared handlers for both premium-audio and browser-TTS playback
+     so the v-stat lifecycle + continuous-conversation loop work the
+     same way regardless of which engine produced the audio. */
+  function onAtlasSpeechStart(){ if(vStat) vStat.textContent='ATLAS REPLYING…'; }
+  function onAtlasSpeechEnd(){
+    /* CONTINUOUS CONVERSATION — after Atlas finishes, auto-reopen
+       the mic so the visitor can reply without tapping. */
+    const stillInVoice = vPan && vPan.classList.contains('on') && cWin && cWin.classList.contains('open');
+    if(stillInVoice && !busy && !lstn){
+      if(vStat) vStat.textContent='…';
+      setTimeout(()=>{
+        const stillInVoiceNow = vPan && vPan.classList.contains('on') && cWin && cWin.classList.contains('open');
+        if(stillInVoiceNow && !busy && !lstn) window.tV();
+      }, 600);
+    } else {
+      if(vStat) vStat.textContent='TAP TO SPEAK';
+    }
+  }
+  function onAtlasSpeechError(){ if(vStat) vStat.textContent='TAP TO SPEAK'; }
+
+  /* Browser built-in TTS — used as fallback when ElevenLabs isn't
+     configured, the API call fails, or audio playback is blocked
+     by browser autoplay policy. */
+  function speakBrowser(text){
     try{
       if(!('speechSynthesis'in window)||!text) return;
-      /* Cancel anything already speaking so we don't queue up
-         multiple replies that all play one after the other. */
       window.speechSynthesis.cancel();
       if(!atlasVoice) atlasVoice=pickAtlasVoice();
       const u=new SpeechSynthesisUtterance(speakable(text));
       if(atlasVoice){ u.voice=atlasVoice; u.lang=atlasVoice.lang; }
       else { u.lang='en-ZA'; }
       u.rate=1.0; u.pitch=1.0; u.volume=1.0;
-      /* Drive the v-stat status text through the speech lifecycle
-         so the visitor sees when Atlas starts and finishes talking. */
-      u.onstart=()=>{ if(vStat) vStat.textContent='ATLAS REPLYING…'; };
-      u.onend  =()=>{
-        /* CONTINUOUS CONVERSATION — after Atlas finishes speaking,
-           if the visitor is still on the voice tab AND the chat
-           panel is still open, automatically re-open the mic so
-           they can reply without having to tap the orb every turn.
-           Brief 600ms beat lets the listener register the end of
-           Atlas's reply before the mic comes on. The visitor can
-           tap the orb at any time to interrupt the loop. */
-        const stillInVoice = vPan && vPan.classList.contains('on') && cWin && cWin.classList.contains('open');
-        if(stillInVoice && !busy && !lstn){
-          if(vStat) vStat.textContent='…';
-          setTimeout(()=>{
-            const stillInVoiceNow = vPan && vPan.classList.contains('on') && cWin && cWin.classList.contains('open');
-            if(stillInVoiceNow && !busy && !lstn) window.tV();
-          }, 600);
-        } else {
-          if(vStat) vStat.textContent='TAP TO SPEAK';
-        }
-      };
-      u.onerror=()=>{ if(vStat) vStat.textContent='TAP TO SPEAK'; };
+      u.onstart = onAtlasSpeechStart;
+      u.onend   = onAtlasSpeechEnd;
+      u.onerror = onAtlasSpeechError;
       window.speechSynthesis.speak(u);
     }catch(_){}
+  }
+
+  /* Premium TTS — POST the reply to /api/tts, which proxies to
+     ElevenLabs (server-side, key never exposed) and returns an
+     MP3. We play the MP3 through a single Audio element so each
+     reply replaces the prior one cleanly. Falls back to the
+     browser TTS if the endpoint isn't configured or returns an
+     error. */
+  async function speak(text){
+    if(!text) return;
+    const spoken = speakable(text);
+    /* Kill any in-flight playback before starting a new turn. */
+    try{ window.speechSynthesis.cancel(); }catch(_){}
+    if(atlasAudio){ try{ atlasAudio.pause(); }catch(_){} atlasAudio=null; }
+
+    if(premiumTtsDisabled){ speakBrowser(text); return; }
+
+    try{
+      const res = await fetch('/api/tts',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ text: spoken })
+      });
+      if(!res.ok){
+        if(res.status === 503){
+          /* No ELEVENLABS_API_KEY configured. Remember this for the
+             rest of the session so we don't keep retrying. */
+          premiumTtsDisabled = true;
+        }
+        speakBrowser(text);
+        return;
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      atlasAudio = new Audio(url);
+      atlasAudio.onplay  = onAtlasSpeechStart;
+      atlasAudio.onended = ()=>{
+        try{ URL.revokeObjectURL(url); }catch(_){}
+        onAtlasSpeechEnd();
+      };
+      atlasAudio.onerror = ()=>{
+        try{ URL.revokeObjectURL(url); }catch(_){}
+        /* Audio decode/playback failed — fall back to browser TTS
+           for this turn so the visitor still hears Atlas. */
+        speakBrowser(text);
+      };
+      const playPromise = atlasAudio.play();
+      if(playPromise && typeof playPromise.catch === 'function'){
+        playPromise.catch(()=>{ speakBrowser(text); });
+      }
+    }catch(_){
+      speakBrowser(text);
+    }
   }
   /* CONTINUOUS LISTENING — the default browser SpeechRecognition
      ends as soon as it thinks you've stopped, which means a
@@ -564,8 +626,11 @@ try{
   window.tV=function(){
     if(!SR){ if(vStat)vStat.textContent='VOICE NOT SUPPORTED — TRY CHROME'; return; }
     /* INTERRUPT — if Atlas is mid-reply when the visitor taps the
-       orb, cut him off and switch to listening. */
+       orb, cut him off and switch to listening. Kills BOTH the
+       premium audio element and the browser speech-synthesis
+       queue in case the reply is running through either path. */
     try{ window.speechSynthesis.cancel(); }catch(_){}
+    if(atlasAudio){ try{ atlasAudio.pause(); }catch(_){} atlasAudio=null; }
     if(lstn&&recog){ recog.stop(); return; }
 
     recog=new SR();

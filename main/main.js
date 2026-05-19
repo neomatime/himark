@@ -313,7 +313,7 @@ try{
   if(!cTgl||!cWin||!cMsgs) return;
 
   const HIST = [];   // running conversation history sent to /api/chat
-  let busy = false, greeted = false, lstn = false, recog = null;
+  let busy = false, lstn = false, recog = null;
 
   function ts(){
     return new Date().toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'});
@@ -373,15 +373,15 @@ try{
     }
   }
 
-  /* TOGGLE — open/close the panel. First open auto-greets. */
+  /* TOGGLE — open/close the panel. The chat opens empty by design;
+     Atlas only speaks once the visitor initiates by sending the
+     first message (typed, or via a quick-reply chip). His first
+     reply naturally includes a brief self-introduction — handled
+     server-side via a per-turn instruction in /api/chat. */
   cTgl.addEventListener('click',()=>{
     const willOpen=!cWin.classList.contains('open');
     cWin.classList.toggle('open',willOpen);
     cTgl.classList.toggle('open',willOpen);
-    if(willOpen&&!greeted){
-      greeted=true;
-      setTimeout(()=>aM('bot',"I'm Atlas — HIMARK's assistant. Ask about engagement, the four-phase method, or AIRaaS."),380);
-    }
     if(willOpen) setTimeout(()=>cIn&&cIn.focus(),260);
     /* Closing the panel mid-conversation: kill any in-flight
        speech (premium or browser) and recognition so nothing

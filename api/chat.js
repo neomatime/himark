@@ -314,14 +314,21 @@ module.exports = async (req, res) => {
     return res.end(JSON.stringify({ error: 'messages array required' }));
   }
 
-  /* Per-turn mode signal. Frontend sends 'voice' when the visitor
-     is on the voice tab; we append a focused hint to the system
-     prompt so this specific reply comes back voice-friendly:
-     spoken-natural, short, no URLs, no formatting. */
+  /* Per-turn instructions are appended cumulatively to the base
+     SYSTEM_PROMPT depending on (a) which mode the visitor is in
+     and (b) whether this is the very first message in the
+     conversation. */
   const mode = (body && body.mode === 'voice') ? 'voice' : 'text';
-  const systemForThisTurn = mode === 'voice'
-    ? SYSTEM_PROMPT + '\n\n----------------------------------------\nTHIS TURN: VOICE MODE — live phone-call-style conversation\n----------------------------------------\n- This is a LIVE voice call. The visitor speaks, you speak back, the mic re-opens automatically, they speak again. Behave like you would on a real call.\n- Keep replies to 1–2 short sentences. No more. Brevity is the whole point.\n- Write the way you would SPEAK: no URLs, no markdown, no asterisks, no parentheses, no quoted dialogue, no labels like "Q:" or "A:".\n- End with a question or a natural beat that hands the turn back to the visitor. Never end with a monologue.\n- Never refer the visitor to text ("see the chat", "check the text response", "as I wrote above"). They cannot see while in voice mode. Just answer them.\n- If you need to ask for an email or company name, ask once, briefly, the way a person would on a call.\n- Pronunciation hint: the brand "HIMARK" is spoken as "Highmark" — the front-end substitutes it automatically, so write "HIMARK" normally and it will sound right.'
-    : SYSTEM_PROMPT;
+  const isFirstTurn = incoming.length === 1;     // only one message present = the visitor's opener
+  let systemForThisTurn = SYSTEM_PROMPT;
+
+  if (mode === 'voice') {
+    systemForThisTurn += '\n\n----------------------------------------\nTHIS TURN: VOICE MODE — live phone-call-style conversation\n----------------------------------------\n- This is a LIVE voice call. The visitor speaks, you speak back, the mic re-opens automatically, they speak again. Behave like you would on a real call.\n- Keep replies to 1–2 short sentences. No more. Brevity is the whole point.\n- Write the way you would SPEAK: no URLs, no markdown, no asterisks, no parentheses, no quoted dialogue, no labels like "Q:" or "A:".\n- End with a question or a natural beat that hands the turn back to the visitor. Never end with a monologue.\n- Never refer the visitor to text ("see the chat", "check the text response", "as I wrote above"). They cannot see while in voice mode. Just answer them.\n- If you need to ask for an email or company name, ask once, briefly, the way a person would on a call.\n- Pronunciation hint: the brand "HIMARK" is spoken as "Highmark" — the front-end substitutes it automatically, so write "HIMARK" normally and it will sound right.';
+  }
+
+  if (isFirstTurn) {
+    systemForThisTurn += '\n\n----------------------------------------\nFIRST TURN — this is the visitor\'s opening message to you\n----------------------------------------\n- The chat panel opened empty. The visitor has now sent their FIRST message of the conversation. Open your reply with one short, warm self-introduction line (e.g. "Atlas here — HIMARK\'s in-house assistant.") and then ask, in your own words, how you can help — UNLESS their first message is already a clear question or request, in which case introduce yourself in one short sentence and then answer it directly.\n- Keep the introduction lean. Do not recite the firm\'s history, the tiers, the four-phase method, or any other long content from the system prompt unless the visitor explicitly asks for it.\n- Do NOT say "Welcome to HIMARK" or "Hello there" — those are filler. Lead with "Atlas here." or "I\'m Atlas, HIMARK\'s assistant."\n- Do NOT mention that you\'re an AI / model / language model. You are simply Atlas.';
+  }
 
   /* Voice turns: keep less history so the prompt is smaller and
      Gemini's first-token latency is lower. Text turns: full 20

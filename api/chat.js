@@ -221,13 +221,18 @@ module.exports = async (req, res) => {
       base.geminiTest = { model: GEMINI_MODEL, fetchError: String(e && e.message || e) };
     }
 
-    /* Probe ElevenLabs with the configured voice ID. Returns the
-       voice metadata if accessible; otherwise the exact error so
-       we can see why the frontend keeps falling back to browser
-       TTS. Costs no characters — just metadata, no audio. */
+    /* Probe ElevenLabs in two steps:
+         1. Voice metadata fetch — confirms the voice exists and
+            the API key can SEE it
+         2. Actual TTS generation (2 chars: "ok") — confirms the
+            key can USE the voice for audio. Voices in the
+            "professional" category often have view-but-not-use
+            access on the free tier, so step 1 passes while step
+            2 fails with the plan-limit error. */
     const elKey = process.env.ELEVENLABS_API_KEY;
     const voiceId = process.env.ELEVENLABS_VOICE_ID || 'sLfduly0sixkh8riDzed';
     if (elKey) {
+      /* Step 1 — metadata */
       try {
         const probe = await fetch(
           `https://api.elevenlabs.io/v1/voices/${encodeURIComponent(voiceId)}`,
@@ -242,11 +247,42 @@ module.exports = async (req, res) => {
           ok: probe.ok,
           voiceName: parsed && parsed.name ? parsed.name : null,
           voiceCategory: parsed && parsed.category ? parsed.category : null,
-          errorDetail: parsed && parsed.detail ? (parsed.detail.message || parsed.detail.status || JSON.stringify(parsed.detail).slice(0,200)) : null,
-          rawExcerpt: text.slice(0, 280)
+          errorDetail: parsed && parsed.detail ? (parsed.detail.message || parsed.detail.status || JSON.stringify(parsed.detail).slice(0,200)) : null
         };
       } catch (e) {
         base.ttsTest = { voiceId, fetchError: String(e && e.message || e) };
+      }
+      /* Step 2 — actual TTS generation. Costs 2 characters. */
+      try {
+        const gen = await fetch(
+          `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voiceId)}`,
+          {
+            method: 'POST',
+            headers: {
+              'xi-api-key': elKey,
+              'Content-Type': 'application/json',
+              'Accept': 'audio/mpeg'
+            },
+            body: JSON.stringify({ text: 'ok', model_id: 'eleven_turbo_v2_5' })
+          }
+        );
+        if (gen.ok) {
+          base.ttsGeneration = { ok: true, status: 200, note: 'voice IS usable for TTS' };
+        } else {
+          const errText = await gen.text().catch(() => '');
+          let errParsed;
+          try { errParsed = JSON.parse(errText); } catch (_) { errParsed = null; }
+          base.ttsGeneration = {
+            ok: false,
+            status: gen.status,
+            errorDetail: errParsed && errParsed.detail
+              ? (errParsed.detail.message || errParsed.detail.status || JSON.stringify(errParsed.detail).slice(0,300))
+              : null,
+            rawExcerpt: errText.slice(0, 300)
+          };
+        }
+      } catch (e) {
+        base.ttsGeneration = { fetchError: String(e && e.message || e) };
       }
     }
     res.statusCode = 200;

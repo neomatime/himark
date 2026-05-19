@@ -22,7 +22,8 @@
    $5/month for 30k chars (Starter plan).
 
    Common ElevenLabs voice IDs you can swap in via the env var:
-     JBFqnCBsd6RMkjVDRZzb   George    British male, mature, warm   [default — closest to Jarvis]
+     sLfduly0sixkh8riDzed   Atlas     [HIMARK's chosen voice — current default]
+     JBFqnCBsd6RMkjVDRZzb   George    British male, mature, warm
      onwK4e9ZLuTAKqWW03F9   Daniel    British male, deep, calm
      N2lVS1w4EtoT3dr4eOWO   Callum    Scottish male, low, smooth
      CwhRBWXzGAHq8TQ4Fs17   Roger     American male, mature, confident
@@ -30,7 +31,7 @@
      bIHbv24MWmeRgasZH58o   Will      American male, soft, friendly
    Find more at https://elevenlabs.io/app/voice-library */
 
-const DEFAULT_VOICE_ID = 'JBFqnCBsd6RMkjVDRZzb'; // George
+const DEFAULT_VOICE_ID = 'sLfduly0sixkh8riDzed'; // HIMARK's chosen Atlas voice
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {

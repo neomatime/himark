@@ -175,7 +175,7 @@ module.exports = async (req, res) => {
       keyStartsWith: k ? k.slice(0, 4) + '…' : null,
       hubspotConfigured: !!process.env.HUBSPOT_ACCESS_TOKEN,
       ttsConfigured: !!process.env.ELEVENLABS_API_KEY,
-      ttsVoiceId: process.env.ELEVENLABS_VOICE_ID || 'JBFqnCBsd6RMkjVDRZzb (George — default)',
+      ttsVoiceId: process.env.ELEVENLABS_VOICE_ID || 'sLfduly0sixkh8riDzed (Atlas — code default)',
       runtime: process.version || 'unknown'
     };
     if (!k) {

@@ -564,50 +564,83 @@ try{
      MP3. We play the MP3 through a single Audio element so each
      reply replaces the prior one cleanly. Falls back to the
      browser TTS if the endpoint isn't configured or returns an
-     error. */
+     error.
+
+     Verbose console logging is on this path so we can diagnose
+     why a particular turn fell back. Open DevTools → Console
+     while testing voice mode to see which branch fired. */
+  function ttsLog(stage, info){
+    try{ console.log('[atlas tts]', stage, info||''); }catch(_){}
+  }
+
   async function speak(text){
     if(!text) return;
     const spoken = speakable(text);
+    ttsLog('speak called', { textPreview: text.slice(0,60), len: text.length });
+
     /* Kill any in-flight playback before starting a new turn. */
     try{ window.speechSynthesis.cancel(); }catch(_){}
     if(atlasAudio){ try{ atlasAudio.pause(); }catch(_){} atlasAudio=null; }
 
-    if(premiumTtsDisabled){ speakBrowser(text); return; }
+    if(premiumTtsDisabled){
+      ttsLog('premium-disabled-for-session — using browser TTS');
+      speakBrowser(text); return;
+    }
 
     try{
+      ttsLog('fetching /api/tts');
       const res = await fetch('/api/tts',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({ text: spoken })
       });
+      ttsLog('/api/tts response', { status: res.status, contentType: res.headers.get('content-type') });
       if(!res.ok){
         if(res.status === 503){
           /* No ELEVENLABS_API_KEY configured. Remember this for the
              rest of the session so we don't keep retrying. */
           premiumTtsDisabled = true;
+          ttsLog('503 — disabling premium TTS for session');
+        } else {
+          ttsLog('non-200 — falling back to browser', { status: res.status });
         }
         speakBrowser(text);
         return;
       }
       const blob = await res.blob();
+      ttsLog('blob received', { size: blob.size, type: blob.type });
+      if(!blob.size){
+        ttsLog('empty blob — falling back');
+        speakBrowser(text);
+        return;
+      }
       const url = URL.createObjectURL(blob);
       atlasAudio = new Audio(url);
-      atlasAudio.onplay  = onAtlasSpeechStart;
+      atlasAudio.onplay  = ()=>{ ttsLog('audio onplay (ElevenLabs is being heard)'); onAtlasSpeechStart(); };
       atlasAudio.onended = ()=>{
+        ttsLog('audio onended');
         try{ URL.revokeObjectURL(url); }catch(_){}
         onAtlasSpeechEnd();
       };
-      atlasAudio.onerror = ()=>{
+      atlasAudio.onerror = (e)=>{
+        ttsLog('audio onerror', { error: (atlasAudio && atlasAudio.error && atlasAudio.error.code) || String(e) });
         try{ URL.revokeObjectURL(url); }catch(_){}
         /* Audio decode/playback failed — fall back to browser TTS
            for this turn so the visitor still hears Atlas. */
         speakBrowser(text);
       };
+      ttsLog('calling audio.play()');
       const playPromise = atlasAudio.play();
       if(playPromise && typeof playPromise.catch === 'function'){
-        playPromise.catch(()=>{ speakBrowser(text); });
+        playPromise
+          .then(()=>{ ttsLog('audio.play() resolved'); })
+          .catch((e)=>{
+            ttsLog('audio.play() REJECTED — fallback', { name: e && e.name, message: e && e.message });
+            speakBrowser(text);
+          });
       }
-    }catch(_){
+    }catch(e){
+      ttsLog('speak() threw — fallback', { message: e && e.message });
       speakBrowser(text);
     }
   }

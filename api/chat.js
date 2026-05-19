@@ -34,25 +34,25 @@ const GEMINI_MODEL = 'gemini-flash-lite-latest';
 const SYSTEM_PROMPT = require('./atlas-knowledge');
 
 /* ============================================================
-   LEAD EXTRACTION
-   Atlas may append `<lead>{...json...}</lead>` to its reply when a
-   visitor is qualified. We pull the JSON, strip the marker from
-   the user-facing reply, and forward the data to HubSpot.
+   LEAD + SESSION EXTRACTION
+   Atlas may append one of two hidden blocks at the end of a reply:
+     <lead>{...}</lead>     — qualified for full engagement (LeadSense)
+     <session>{...}</session> — booking a Strategic Advisory Session
+   We pull whichever is present, strip it from the visitor-facing
+   reply, and forward to HubSpot with a tag indicating which path.
    ============================================================ */
-const LEAD_RE = /<lead>\s*([\s\S]*?)\s*<\/lead>/i;
+const LEAD_RE    = /<lead>\s*([\s\S]*?)\s*<\/lead>/i;
+const SESSION_RE = /<session>\s*([\s\S]*?)\s*<\/session>/i;
 
-function extractLead(text){
+function parseBlock(text, regex, fields){
   if (!text || typeof text !== 'string') return null;
-  const m = text.match(LEAD_RE);
+  const m = text.match(regex);
   if (!m) return null;
   try {
     const parsed = JSON.parse(m[1]);
     if (parsed && typeof parsed === 'object' && parsed.email) {
-      /* Defensive: trim everything, drop nulls. New LeadSense flow
-         emits two extra fields — timeline and budget — captured at
-         Steps 5 and 6 of the mandatory eight-step flow. */
       const clean = {};
-      for (const k of ['name', 'email', 'company', 'role', 'brief', 'tier', 'timeline', 'budget']) {
+      for (const k of fields) {
         const v = parsed[k];
         if (typeof v === 'string') clean[k] = v.trim();
       }
@@ -64,9 +64,19 @@ function extractLead(text){
   return null;
 }
 
+function extractLead(text){
+  return parseBlock(text, LEAD_RE,
+    ['name', 'email', 'company', 'role', 'brief', 'tier', 'timeline', 'budget']);
+}
+
+function extractSession(text){
+  return parseBlock(text, SESSION_RE,
+    ['name', 'email', 'company', 'role', 'brief', 'window']);
+}
+
 function stripLeadBlock(text){
   if (!text || typeof text !== 'string') return text;
-  return text.replace(LEAD_RE, '').trim();
+  return text.replace(LEAD_RE, '').replace(SESSION_RE, '').trim();
 }
 
 /* ============================================================
@@ -78,31 +88,36 @@ function stripLeadBlock(text){
    409 (contact already exists), parse the existing-contact id from
    the error body and issue a PATCH to update the record instead.
    ============================================================ */
-async function pushToHubSpot(lead){
+async function pushToHubSpot(record, kind){
+  /* `kind` is 'lead' (full LeadSense application) or 'session'
+     (Strategic Advisory Session booking). Both flow into HubSpot
+     contacts; the `himark_source` and additional custom properties
+     distinguish them so the team can triage in the CRM. */
   const token = process.env.HUBSPOT_ACCESS_TOKEN;
   if (!token) {
-    console.log('[atlas] HUBSPOT_ACCESS_TOKEN not set — lead captured but not forwarded:', lead.email);
+    console.log('[atlas] HUBSPOT_ACCESS_TOKEN not set — ' + kind + ' captured but not forwarded:', record.email);
     return { skipped: 'no-token' };
   }
 
-  const [firstname, ...rest] = (lead.name || '').trim().split(/\s+/);
+  const [firstname, ...rest] = (record.name || '').trim().split(/\s+/);
   const lastname = rest.join(' ');
+  const isSession = kind === 'session';
   const properties = {
-    email: lead.email,
+    email: record.email,
     firstname: firstname || '',
     lastname: lastname || '',
-    company: lead.company || '',
-    jobtitle: lead.role || '',
+    company: record.company || '',
+    jobtitle: record.role || '',
     hs_lead_status: 'NEW',
     lifecyclestage: 'lead',
     /* HIMARK custom properties — create these in HubSpot if you
        want them populated (Settings → Properties → Contacts).
        If they don't exist HubSpot will ignore them silently. */
-    himark_brief:    lead.brief    || '',
-    himark_tier:     lead.tier     || 'unsure',
-    himark_timeline: lead.timeline || '',
-    himark_budget:   lead.budget   || '',
-    himark_source:   'atlas-chat'
+    himark_brief:    record.brief    || '',
+    himark_tier:     record.tier     || (isSession ? 'session' : 'unsure'),
+    himark_timeline: record.timeline || record.window || '',
+    himark_budget:   record.budget   || '',
+    himark_source:   isSession ? 'atlas-chat-session-booking' : 'atlas-chat'
   };
 
   /* Create. */
@@ -116,7 +131,7 @@ async function pushToHubSpot(lead){
   });
 
   if (res.ok) {
-    console.log('[atlas] hubspot: contact created for', lead.email);
+    console.log('[atlas] hubspot: contact created for ' + kind + ':', record.email);
     return { created: true };
   }
 
@@ -139,7 +154,7 @@ async function pushToHubSpot(lead){
         body: JSON.stringify({ properties })
       });
       if (patch.ok) {
-        console.log('[atlas] hubspot: contact updated for', lead.email);
+        console.log('[atlas] hubspot: contact updated for ' + kind + ':', record.email);
         return { updated: true };
       }
       const t = await patch.text().catch(() => '');
@@ -382,20 +397,28 @@ module.exports = async (req, res) => {
                       && data.candidates[0].content.parts[0]
                       && data.candidates[0].content.parts[0].text || '').trim();
 
-    /* Extract any lead block Atlas chose to emit. Fire-and-forget
-       the HubSpot push so we don't block the visitor on it. The
-       visitor sees the lead-block stripped reply either way. */
-    const lead = extractLead(rawReply);
+    /* Extract any hidden block Atlas chose to emit:
+         <lead>     — full LeadSense qualified application
+         <session>  — Strategic Advisory Session booking
+       Each goes to HubSpot via pushToHubSpot with its own `kind`
+       tag so the team can triage in the CRM by himark_source. The
+       visitor's reply has either block stripped. */
+    const lead    = extractLead(rawReply);
+    const session = extractSession(rawReply);
     const visibleReply = stripLeadBlock(rawReply);
 
     if (lead) {
-      pushToHubSpot(lead).catch(e => console.error('[atlas] hubspot push exception', e && e.message));
+      pushToHubSpot(lead, 'lead').catch(e => console.error('[atlas] hubspot push exception (lead)', e && e.message));
+    }
+    if (session) {
+      pushToHubSpot(session, 'session').catch(e => console.error('[atlas] hubspot push exception (session)', e && e.message));
     }
 
     res.statusCode = 200;
     return res.end(JSON.stringify({
-      reply: visibleReply || "I'm not able to respond on that just now. Please reach us at info@himark.co.za or via the Intake form at /apply.html.",
-      leadCaptured: !!lead
+      reply: visibleReply || "I'm not able to respond on that just now. Please reach us at info@himark.co.za.",
+      leadCaptured: !!lead,
+      sessionBooked: !!session
     }));
   } catch (err) {
     console.error('[atlas] handler error', err && err.message);

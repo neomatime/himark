@@ -200,11 +200,10 @@ body::before{
 
 /* ============================================================
    IMARK reveal (Scene 3b) — IMAGE-BASED
-   The IMARK wordmark is now images/IMARK.png (644×106 white-on-
+   The IMARK wordmark is images/IMARK.png (644×106 white-on-
    transparent, with the inverted V already baked in). A clip-path
-   inset reveals it left-to-right in 5 discrete steps via
-   `steps(5, end)` — five jumps over the reveal duration give a
-   stepped, typewriter-style appearance instead of a smooth wipe.
+   inset reveals it left-to-right in one smooth wipe — premium,
+   confident, no stepped typewriter feel. Caret is retired.
    ============================================================ */
 .imark{
   display:inline-flex;
@@ -225,43 +224,32 @@ body::before{
   aspect-ratio:367 / 99;
   user-select:none;
   -webkit-user-drag:none;
-  /* The new IMARK.png has proper transparency — no blend-mode hack
-     needed. The transparent background lets the page gradient show
-     through cleanly. */
   /* Hidden state — clipped to zero width from the right. */
   clip-path:inset(0 100% 0 0);
   -webkit-clip-path:inset(0 100% 0 0);
-  /* 5 discrete reveal steps — typewriter feel for an image. */
-  transition:clip-path .9s steps(5, end), -webkit-clip-path .9s steps(5, end);
+  /* Smooth left-to-right reveal with the brand's editorial ease.
+     1.1s lets the reveal breathe; the curve front-loads the
+     motion so the wordmark lands confidently. */
+  transition:clip-path 1.1s var(--ease-out), -webkit-clip-path 1.1s var(--ease-out);
 }
 .imark-image.show{
   clip-path:inset(0 0 0 0);
   -webkit-clip-path:inset(0 0 0 0);
 }
 
-/* Mono caret cursor that lives at the right edge of the wordmark
-   during the typewriter, then fades out */
+/* Caret retained as an element (the JS still references it) but
+   permanently hidden — the smooth reveal makes the typewriter
+   cursor incongruous. Setting opacity to 0 with no transitions
+   keeps the JS happy without showing anything. */
 .caret{
   display:inline-block;
-  width:3px;
-  height:.78em;
-  margin-left:6px;
-  background:var(--off);
+  width:0;
+  height:0;
   opacity:0;
-  vertical-align:baseline;
-  transform:translateY(.04em);
-  animation: caretBlink 1s steps(2,end) infinite;
+  visibility:hidden;
 }
-.caret.active{ opacity:.9; }
-.caret.done{
-  animation:none;
-  opacity:0;
-  transition:opacity .4s ease-out;
-}
-@keyframes caretBlink{
-  0%,49%   { opacity:.85; }
-  50%,100% { opacity:0;   }
-}
+.caret.active,
+.caret.done{ opacity:0; }
 
 /* ============================================================
    SCENE 5 — random geometric lines crossing the page and

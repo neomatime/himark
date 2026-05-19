@@ -2507,14 +2507,18 @@ body.auth-mode #ghost-trail{display:none;}
   transition:opacity 1s var(--ease) .2s, transform 1s var(--ease) .2s;
 }
 .ap-atlas-demo-frame{
-  background:rgba(20,32,46,.55);
-  -webkit-backdrop-filter:blur(28px) saturate(150%);
-          backdrop-filter:blur(28px) saturate(150%);
-  border:1px solid rgba(255,255,255,.12);
+  /* Crisp, solid chat-panel mock-up. The live floating chat
+     widget uses backdrop-filter because it floats over varied
+     page content — but THIS demo is a static UI inside a
+     section, so a solid surface reads as a real panel. The
+     thin top-to-bottom gradient gives subtle depth. */
+  background:linear-gradient(180deg, #1C2B3A 0%, #0E1822 100%);
+  border:1px solid rgba(255,255,255,.10);
   border-radius:22px;
   padding:20px 22px 24px;
   box-shadow:
-    0 28px 64px rgba(0,0,0,.36),
+    0 28px 60px rgba(28,43,58,.28),
+    0 8px 18px rgba(28,43,58,.14),
     0 1px 0 rgba(255,255,255,.08) inset;
   position:relative;
   max-width:420px;

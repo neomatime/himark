@@ -588,13 +588,13 @@ try{
     }
 
     try{
-      ttsLog('fetching /api/tts');
-      const res = await fetch('/api/tts',{
+      ttsLog('fetching /api/voice');
+      const res = await fetch('/api/voice',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({ text: spoken })
       });
-      ttsLog('/api/tts response', { status: res.status, contentType: res.headers.get('content-type') });
+      ttsLog('/api/voice response', { status: res.status, contentType: res.headers.get('content-type') });
       if(!res.ok){
         if(res.status === 503){
           /* No ELEVENLABS_API_KEY configured. Remember this for the

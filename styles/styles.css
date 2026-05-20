@@ -477,6 +477,91 @@ body.light-nav .menu-item:hover .mi-name { color:var(--midnight); }
 body.light-nav .menu-item:hover .mi-num  { color:var(--ocean-dk); }
 body.light-nav .menu-item:hover .mi-arrow{ color:var(--midnight); }
 
+/* SUB-ITEMS — indented under a parent menu item. Used for Counsel
+   sitting under Intake. Hidden by default; revealed when the user
+   hovers the parent (Intake) <li> or the sub <li> itself. On touch
+   devices (no :hover capability) the sub stays visible permanently.
+   When the user is ON the sessions page (body[data-page="sessions"])
+   Counsel stays visible so the menu reflects current location. */
+
+/* Hidden state */
+.menu-item-sub{
+  padding-left:48px;
+  grid-template-columns:48px 1fr 18px;
+  opacity:0;
+  max-height:0;
+  padding-top:0;
+  padding-bottom:0;
+  margin:0;
+  pointer-events:none;
+  transform:translateX(-10px);
+  overflow:hidden;
+  transition:
+    opacity .35s var(--ease),
+    max-height .4s var(--ease),
+    transform .4s var(--ease),
+    padding .3s var(--ease);
+}
+/* Reveal — when the previous <li> (containing Intake) is hovered,
+   or when the user is hovering the Counsel <li> itself. Uses :has()
+   to walk up to the parent <li> from the .menu-item child. */
+li:has(> .menu-item[data-page="intake"]):hover + li > .menu-item-sub,
+li:has(> .menu-item-sub):hover > .menu-item-sub,
+li:has(> .menu-item-sub):focus-within > .menu-item-sub{
+  opacity:1;
+  max-height:64px;
+  padding-top:10px;
+  padding-bottom:10px;
+  pointer-events:auto;
+  transform:translateX(0);
+}
+/* Touch / no-hover devices — keep Counsel visible permanently */
+@media (hover:none){
+  .menu-item-sub{
+    opacity:1;
+    max-height:64px;
+    padding-top:10px;
+    padding-bottom:10px;
+    pointer-events:auto;
+    transform:translateX(0);
+  }
+}
+/* On the sessions page itself, Counsel always shows */
+body[data-page="sessions"] .menu-item-sub{
+  opacity:1;
+  max-height:64px;
+  padding-top:10px;
+  padding-bottom:10px;
+  pointer-events:auto;
+  transform:translateX(0);
+}
+
+/* The hairline tie-line connecting Counsel to Intake */
+.menu-item-sub::after{
+  content:'';
+  position:absolute;
+  left:24px; top:50%;
+  width:16px; height:1px;
+  background:rgba(138,173,184,.3);
+  z-index:0;
+}
+.menu-item-sub .mi-num{
+  font-size:9px;
+  color:rgba(138,173,184,.5);
+}
+.menu-item-sub .mi-name{
+  font-size:14px;
+  color:rgba(247,247,245,.78);
+}
+.menu-item-sub .mi-name em{
+  font-size:10px;
+  color:rgba(138,173,184,.55);
+}
+.menu-item-sub:hover{padding-left:54px;}
+body.light-nav .menu-item-sub::after{background:rgba(46,74,90,.28);}
+body.light-nav .menu-item-sub .mi-name{color:rgba(28,43,58,.72);}
+body.light-nav .menu-item-sub .mi-name em{color:rgba(46,74,90,.5);}
+
 /* Panel footer — compact single row inside the glass card. */
 .menu-footer{
   position:relative; z-index:1;

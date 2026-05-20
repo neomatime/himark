@@ -71,7 +71,7 @@ function extractLead(text){
 
 function extractSession(text){
   return parseBlock(text, SESSION_RE,
-    ['name', 'email', 'company', 'role', 'brief', 'window']);
+    ['name', 'email', 'company', 'role', 'brief', 'window', 'format']);
 }
 
 function stripLeadBlock(text){
@@ -102,6 +102,18 @@ async function pushToHubSpot(record, kind){
   const [firstname, ...rest] = (record.name || '').trim().split(/\s+/);
   const lastname = rest.join(' ');
   const isSession = kind === 'session';
+
+  /* For session bookings, fold the format choice (video / in-person)
+     into the timeline string so principals see both timing and venue
+     together when triaging in HubSpot. Avoids requiring a new custom
+     property to exist in the CRM. */
+  let timelineStr = record.timeline || record.window || '';
+  if (isSession && record.format) {
+    const fmt = String(record.format).toLowerCase().trim();
+    const fmtLabel = fmt === 'in-person' ? 'In person · Randburg' : 'Video call';
+    timelineStr = timelineStr ? `${timelineStr} · ${fmtLabel}` : fmtLabel;
+  }
+
   const properties = {
     email: record.email,
     firstname: firstname || '',
@@ -115,7 +127,7 @@ async function pushToHubSpot(record, kind){
        If they don't exist HubSpot will ignore them silently. */
     himark_brief:    record.brief    || '',
     himark_tier:     record.tier     || (isSession ? 'session' : 'unsure'),
-    himark_timeline: record.timeline || record.window || '',
+    himark_timeline: timelineStr,
     himark_budget:   record.budget   || '',
     himark_source:   isSession ? 'atlas-chat-session-booking' : 'atlas-chat'
   };

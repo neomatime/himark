@@ -14,6 +14,7 @@ const PAGE_URLS={
   method:'process.html',
   airass:'product.html',
   principals:'team.html',
+  sessions:'sessions.html',
   intake:'apply.html',
   /* New surfaces */
   engagements:'work.html',
@@ -1459,6 +1460,7 @@ window.authSubmit=authSubmit;
     {pageId:'page-method',      heroSelector:'.np-hero',   bgSelector:'.np-hero-bg'},
     {pageId:'page-airass',      heroSelector:'.np-hero',   bgSelector:'.np-hero-bg'},
     {pageId:'page-principals',  heroSelector:'.np-hero',   bgSelector:'.np-hero-bg'},
+    {pageId:'page-sessions',    heroSelector:'.np-hero',   bgSelector:'.np-hero-bg'},
     {pageId:'page-intake',      heroSelector:'.np-hero',   bgSelector:'.np-hero-bg'},
     {pageId:'page-journal',     heroSelector:'.np-hero',   bgSelector:'.np-hero-bg'},
     {pageId:'page-engagements', heroSelector:'.np-hero',   bgSelector:'.np-hero-bg'},

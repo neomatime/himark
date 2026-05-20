@@ -1,0 +1,39 @@
+# ============================================================
+# HIMARK site — version control hygiene
+# ============================================================
+
+# Editor / AI agent configs
+.claude/
+.cursor/
+.sixth/
+.vscode/
+
+# Local-only tooling scripts (not part of the site itself)
+_build-new-pages.js
+_update-menus.js
+_inject-counsel.js
+
+# Environment / secrets — NEVER commit
+.env
+.env.local
+.env.development
+.env.production
+.env.*.local
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Vercel local
+.vercel/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log

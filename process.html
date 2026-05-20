@@ -97,6 +97,234 @@
     }
   ]
 }</script>
+
+<!-- ==========================================================
+     METHOD ENGINE — interactive 4-node SVG diagram. Inlined while
+     in prototype; lift into styles.css once the diagram kit is
+     used on more pages.
+     ========================================================== */ -->
+<style>
+  .mth-engine{
+    background:var(--midnight);
+    color:var(--off);
+    padding:120px var(--gx) 100px;
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid var(--rule-dk);
+  }
+  .mth-engine::before{
+    content:'';position:absolute;inset:0;
+    background-image:linear-gradient(to right,var(--grid-dk) 1px,transparent 1px);
+    background-size:calc((100vw - 128px)/6) 100%;
+    background-position:64px 0;
+    pointer-events:none;opacity:.5;
+  }
+  .mth-engine > *{position:relative;z-index:1;}
+
+  .mth-engine-coord-l{
+    position:absolute;top:48px;left:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:var(--ocean-lt);z-index:2;
+  }
+  .mth-engine-coord-r{
+    position:absolute;top:48px;right:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:rgba(138,173,184,.5);z-index:2;
+  }
+  .mth-engine-eyebrow{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ocean-lt);margin-bottom:18px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .mth-engine-eyebrow::before{
+    content:'';display:block;width:24px;height:1px;background:var(--ocean-lt);
+  }
+  .mth-engine-hl{
+    font-family:var(--f-disp);font-size:clamp(34px,3.6vw,52px);
+    font-weight:800;line-height:1.05;color:var(--off);
+    letter-spacing:-.01em;margin-bottom:14px;
+  }
+  .mth-engine-hl em{font-style:italic;font-weight:300;color:var(--ocean-lt);}
+  .mth-engine-sub{
+    font-family:var(--f-body);font-weight:300;
+    font-size:14px;color:rgba(226,240,240,.6);
+    max-width:520px;margin-bottom:56px;line-height:1.7;
+  }
+
+  /* Stage — SVG canvas wrapper */
+  .mth-engine-stage{
+    position:relative;
+    width:100%;
+    max-width:980px;
+    margin:0 auto;
+  }
+  .mth-engine-svg{
+    display:block;width:100%;height:auto;
+    user-select:none;-webkit-user-select:none;
+  }
+
+  /* Connecting dashed track with flowing animation */
+  .mth-engine-track{
+    stroke:rgba(138,173,184,.32);
+    stroke-dasharray:4 4;
+    animation:mth-track-flow 1.6s linear infinite;
+  }
+  @keyframes mth-track-flow{ to{ stroke-dashoffset:-16; } }
+
+  /* Flow dots — ride along the path */
+  .mth-flow-dot{
+    fill:var(--ocean-lt);
+    offset-path:path('M 110 130 L 770 130');
+    -webkit-offset-path:path('M 110 130 L 770 130');
+    animation:mth-flow 4.5s linear infinite;
+    opacity:0;
+  }
+  .mth-flow-dot-2{ animation-delay:1.5s; }
+  .mth-flow-dot-3{ animation-delay:3s; }
+  @keyframes mth-flow{
+    0%{ offset-distance:0%; opacity:0; }
+    10%, 90%{ opacity:1; }
+    100%{ offset-distance:100%; opacity:0; }
+  }
+
+  /* Nodes — interactive groups */
+  .mth-engine-node{ cursor:none; outline:none; }
+  .mth-engine-node .node-ring{
+    fill:none;
+    stroke:rgba(138,173,184,.4);
+    stroke-width:1;
+    transition:stroke .35s var(--ease), stroke-width .35s var(--ease);
+  }
+  .mth-engine-node .node-fill{
+    fill:var(--midnight);
+    stroke:rgba(138,173,184,.55);
+    stroke-width:1;
+    transition:fill .35s var(--ease), stroke .35s var(--ease);
+  }
+  .mth-engine-node .node-num{
+    font-family:var(--f-mono);
+    font-size:14px;font-weight:700;
+    fill:rgba(226,240,240,.7);
+    letter-spacing:.05em;
+    pointer-events:none;
+    transition:fill .35s var(--ease);
+  }
+  .mth-engine-node:hover .node-ring{stroke:var(--ocean-lt);stroke-width:1.5;}
+  .mth-engine-node:hover .node-fill{stroke:var(--ocean-lt);}
+  .mth-engine-node:hover .node-num{fill:var(--off);}
+  .mth-engine-node:focus-visible .node-ring{stroke:var(--off);stroke-width:2;}
+
+  /* Active node */
+  .mth-engine-node.active .node-ring{
+    stroke:var(--off);stroke-width:1.5;
+  }
+  .mth-engine-node.active .node-fill{
+    fill:var(--ocean);stroke:var(--off);
+  }
+  .mth-engine-node.active .node-num{fill:var(--off);}
+  /* Active pulse — animated outer ring */
+  .mth-engine-node .node-pulse{
+    fill:none;stroke:var(--ocean-lt);stroke-width:1;
+    opacity:0;
+    transform-origin:center;transform-box:fill-box;
+  }
+  .mth-engine-node.active .node-pulse{
+    animation:mth-pulse 2.4s ease-out infinite;
+  }
+  @keyframes mth-pulse{
+    0%   { opacity:.6; transform:scale(1); }
+    100% { opacity:0;  transform:scale(1.7); }
+  }
+
+  /* Phase name labels (SVG text below nodes) */
+  .mth-engine-name{
+    font-family:var(--f-mono);
+    font-size:10px;font-weight:600;
+    letter-spacing:.18em;
+    fill:rgba(138,173,184,.55);
+    transition:fill .35s var(--ease);
+    pointer-events:none;
+  }
+  .mth-engine-name.active{ fill:var(--off); }
+
+  /* Detail panel */
+  .mth-engine-detail{
+    max-width:980px;
+    margin:64px auto 0;
+    background:rgba(95,129,144,.05);
+    border:1px solid rgba(138,173,184,.18);
+    border-radius:6px;
+    padding:36px 40px 32px;
+    position:relative;
+    box-shadow:0 30px 60px -30px rgba(0,0,0,.45);
+  }
+  .mth-engine-detail-coord{
+    position:absolute;top:14px;right:20px;
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:var(--ocean-lt);
+  }
+  .mth-engine-detail-grid{
+    display:grid;
+    grid-template-columns:1fr 1.1fr;
+    gap:48px;align-items:start;
+  }
+  .mth-engine-detail-eyebrow{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ocean-lt);margin-bottom:14px;
+  }
+  .mth-engine-detail-name{
+    font-family:var(--f-disp);font-size:clamp(26px,2.6vw,36px);
+    font-weight:800;color:var(--off);
+    letter-spacing:-.01em;line-height:1.05;
+    margin-bottom:18px;
+    transition:opacity .25s var(--ease);
+  }
+  .mth-engine-detail-desc{
+    font-family:var(--f-body);font-weight:400;font-size:14px;
+    line-height:1.75;color:rgba(226,240,240,.82);
+    transition:opacity .25s var(--ease);
+  }
+  .fading{opacity:0;}
+
+  .mth-engine-detail-right{
+    display:flex;flex-direction:column;
+  }
+  .mth-engine-detail-row{
+    padding:16px 0 18px;
+    border-bottom:1px solid rgba(138,173,184,.15);
+  }
+  .mth-engine-detail-row:first-child{padding-top:0;}
+  .mth-engine-detail-row:last-child{border-bottom:none;padding-bottom:0;}
+  .mth-engine-detail-l{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ocean-lt);margin-bottom:8px;
+  }
+  .mth-engine-detail-v{
+    font-family:var(--f-body);font-weight:400;font-size:14px;
+    line-height:1.65;color:var(--off);
+    transition:opacity .25s var(--ease);
+  }
+
+  @media (max-width:768px){
+    .mth-engine{padding:80px 22px 60px;}
+    .mth-engine-coord-l,.mth-engine-coord-r{top:24px;}
+    .mth-engine-coord-l{left:22px;}
+    .mth-engine-coord-r{right:22px;}
+    .mth-engine-sub{margin-bottom:36px;}
+    .mth-engine-detail{padding:28px 22px;margin-top:40px;}
+    .mth-engine-detail-grid{grid-template-columns:1fr;gap:28px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .mth-engine-track,
+    .mth-flow-dot,
+    .mth-engine-node .node-pulse{animation:none;}
+    .mth-flow-dot{display:none;}
+  }
+</style>
 </head>
 <body data-page="method" data-location="root">
 <div id="cd"></div>
@@ -208,7 +436,96 @@
 <div class="r3d-r d1"><p class="mth-intro-body" data-typewriter-once>Every HIMARK engagement follows the same disciplined sequence. Not because we lack flexibility — but because rigour is a precondition for results. We do not skip steps. We do not abbreviate diagnosis. We do not move to execution before the architecture is sound.</p></div>
 </section>
 
-<div class="s-num-bar"><span>03.B · THE FOUR-STEP SEQUENCE</span><span>METHOD / 02</span><span>04 · PHASES</span></div>
+<div class="s-num-bar dk"><span>03.B · THE ENGINE</span><span>METHOD / 02</span><span>04 PHASES · LIVE</span></div>
+
+<!-- METHOD ENGINE — interactive at-a-glance map of the four phases.
+     The diagram auto-cycles; click a node to lock to a phase. Detail
+     content swaps below with a soft fade. -->
+<section class="mth-engine">
+<span class="mth-engine-coord-l">[ 03.B.01 ]</span>
+<span class="mth-engine-coord-r">DIAGRAM · INTERACTIVE</span>
+
+<p class="mth-engine-eyebrow">Interactive map</p>
+<h2 class="mth-engine-hl">The method<em>· live diagram.</em></h2>
+<p class="mth-engine-sub">Hover or tap any phase. The diagram cycles automatically every seven seconds until you take over — then it pauses while you read.</p>
+
+<div class="mth-engine-stage">
+<svg class="mth-engine-svg" viewBox="0 0 880 280" preserveAspectRatio="xMidYMid meet" role="img" aria-label="HIMARK method — four-phase engagement engine">
+
+<!-- connecting dashed track -->
+<path class="mth-engine-track" d="M 110 130 L 770 130" fill="none" stroke-width="1.2"/>
+
+<!-- flow dots -->
+<circle class="mth-flow-dot" r="2.5"/>
+<circle class="mth-flow-dot mth-flow-dot-2" r="2.5"/>
+<circle class="mth-flow-dot mth-flow-dot-3" r="2.5"/>
+
+<!-- nodes -->
+<g class="mth-engine-node" data-phase="0" tabindex="0" role="button" aria-label="Phase 01 — Diagnostic">
+<circle class="node-pulse" cx="110" cy="130" r="42"/>
+<circle class="node-ring" cx="110" cy="130" r="42"/>
+<circle class="node-fill" cx="110" cy="130" r="30"/>
+<text class="node-num" x="110" y="135" text-anchor="middle">01</text>
+</g>
+
+<g class="mth-engine-node" data-phase="1" tabindex="0" role="button" aria-label="Phase 02 — Architecture">
+<circle class="node-pulse" cx="330" cy="130" r="42"/>
+<circle class="node-ring" cx="330" cy="130" r="42"/>
+<circle class="node-fill" cx="330" cy="130" r="30"/>
+<text class="node-num" x="330" y="135" text-anchor="middle">02</text>
+</g>
+
+<g class="mth-engine-node" data-phase="2" tabindex="0" role="button" aria-label="Phase 03 — Execution">
+<circle class="node-pulse" cx="550" cy="130" r="42"/>
+<circle class="node-ring" cx="550" cy="130" r="42"/>
+<circle class="node-fill" cx="550" cy="130" r="30"/>
+<text class="node-num" x="550" y="135" text-anchor="middle">03</text>
+</g>
+
+<g class="mth-engine-node" data-phase="3" tabindex="0" role="button" aria-label="Phase 04 — Optimise">
+<circle class="node-pulse" cx="770" cy="130" r="42"/>
+<circle class="node-ring" cx="770" cy="130" r="42"/>
+<circle class="node-fill" cx="770" cy="130" r="30"/>
+<text class="node-num" x="770" y="135" text-anchor="middle">04</text>
+</g>
+
+<!-- phase labels below each node -->
+<text class="mth-engine-name" x="110" y="218" text-anchor="middle">DIAGNOSTIC</text>
+<text class="mth-engine-name" x="330" y="218" text-anchor="middle">ARCHITECTURE</text>
+<text class="mth-engine-name" x="550" y="218" text-anchor="middle">EXECUTION</text>
+<text class="mth-engine-name" x="770" y="218" text-anchor="middle">OPTIMISE</text>
+
+</svg>
+</div>
+
+<!-- detail panel — updates as nodes are activated -->
+<div class="mth-engine-detail" id="mth-engine-detail">
+<div class="mth-engine-detail-coord">[ <span id="mth-detail-phase">01</span> · <span id="mth-detail-tag">DIAGNOSTIC</span> ]</div>
+<div class="mth-engine-detail-grid">
+<div class="mth-engine-detail-left">
+<p class="mth-engine-detail-eyebrow">Phase</p>
+<h3 class="mth-engine-detail-name" id="mth-detail-name">Diagnostic</h3>
+<p class="mth-engine-detail-desc" id="mth-detail-desc">A structured commercial audit that surfaces real growth constraints — not symptoms. No assumptions, no pre-built frameworks applied before understanding is complete.</p>
+</div>
+<div class="mth-engine-detail-right">
+<div class="mth-engine-detail-row">
+<p class="mth-engine-detail-l">Duration</p>
+<p class="mth-engine-detail-v" id="mth-detail-duration">2–3 weeks</p>
+</div>
+<div class="mth-engine-detail-row">
+<p class="mth-engine-detail-l">Output</p>
+<p class="mth-engine-detail-v" id="mth-detail-output">Commercial audit · constraint map · growth thesis draft</p>
+</div>
+<div class="mth-engine-detail-row">
+<p class="mth-engine-detail-l">A principal asks</p>
+<p class="mth-engine-detail-v" id="mth-detail-asks" style="font-style:italic">Where is growth structurally constrained? What is the real demand signal? Which assumptions are load-bearing?</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<div class="s-num-bar"><span>03.C · THE FOUR-STEP SEQUENCE</span><span>METHOD / 03</span><span>DEEP · READ</span></div>
 
 <section class="mth-steps">
 <div class="mth-step r3d d1">
@@ -289,5 +606,138 @@
 </div>
 </div>
 <script src="main/main.js"></script>
+
+<!-- METHOD ENGINE — interactive cycle + click-to-lock -->
+<script>
+(function(){
+  const engine = document.querySelector('.mth-engine');
+  if(!engine) return;
+
+  const nodes = engine.querySelectorAll('.mth-engine-node');
+  const names = engine.querySelectorAll('.mth-engine-name');
+  const detailPhase    = document.getElementById('mth-detail-phase');
+  const detailTag      = document.getElementById('mth-detail-tag');
+  const detailName     = document.getElementById('mth-detail-name');
+  const detailDesc     = document.getElementById('mth-detail-desc');
+  const detailDuration = document.getElementById('mth-detail-duration');
+  const detailOutput   = document.getElementById('mth-detail-output');
+  const detailAsks     = document.getElementById('mth-detail-asks');
+
+  const phases = [
+    {
+      num:'01', tag:'DIAGNOSTIC', name:'Diagnostic',
+      desc:'A structured commercial audit that surfaces real growth constraints — not symptoms. No assumptions, no pre-built frameworks applied before understanding is complete.',
+      duration:'2–3 weeks',
+      output:'Commercial audit · constraint map · growth thesis draft',
+      asks:'Where is growth structurally constrained? What is the real demand signal? Which assumptions are load-bearing?'
+    },
+    {
+      num:'02', tag:'ARCHITECTURE', name:'Architecture',
+      desc:'Growth strategy designed from first principles — revenue model, go-to-market, positioning, and the operational stack required to sustain it.',
+      duration:'3–4 weeks',
+      output:'Strategic growth blueprint · prioritised initiative roadmap · board-ready presentation',
+      asks:'What does the strategy look like unbound by current structure? Where will it break first? What does the next eighteen months sequence into?'
+    },
+    {
+      num:'03', tag:'EXECUTION', name:'Execution',
+      desc:'We embed with your leadership to drive implementation through weekly accountability loops and measurable milestones.',
+      duration:'Per engagement tier',
+      output:'Weekly execution reviews · bi-weekly leadership alignment · monthly board update',
+      asks:'What did we learn this week? What is in the way? What do we kill? What gets defended?'
+    },
+    {
+      num:'04', tag:'OPTIMISE', name:'Optimise',
+      desc:'Quarterly performance reviews against real metrics. Strategy adapts to market conditions. What works is scaled. What does not is cut.',
+      duration:'Quarterly cycles',
+      output:'Revenue velocity · pipeline conversion · market share movement · initiative ROI',
+      asks:'Is the operating thesis still true? What does the next quarter look like if it is not? What does compounding look like from here?'
+    }
+  ];
+
+  let activeIdx = 0;
+  let timer = null;
+  let userTookOver = false;
+  let resumeAfter = null;
+  const INTERVAL = 7000;
+  const FADE = 220;
+  const RESUME_DELAY = 14000;
+
+  const valueEls = [detailName, detailDesc, detailDuration, detailOutput, detailAsks];
+
+  function setActive(idx){
+    if(idx === activeIdx) return;
+
+    nodes.forEach((n,i) => n.classList.toggle('active', i === idx));
+    names.forEach((n,i) => n.classList.toggle('active', i === idx));
+
+    valueEls.forEach(el => el.classList.add('fading'));
+
+    setTimeout(() => {
+      const p = phases[idx];
+      detailPhase.textContent    = p.num;
+      detailTag.textContent      = p.tag;
+      detailName.textContent     = p.name;
+      detailDesc.textContent     = p.desc;
+      detailDuration.textContent = p.duration;
+      detailOutput.textContent   = p.output;
+      detailAsks.textContent     = p.asks;
+      valueEls.forEach(el => el.classList.remove('fading'));
+    }, FADE);
+
+    activeIdx = idx;
+  }
+
+  function nextPhase(){ setActive((activeIdx + 1) % phases.length); }
+
+  function startTimer(){
+    if(timer) clearInterval(timer);
+    timer = setInterval(nextPhase, INTERVAL);
+  }
+  function stopTimer(){
+    if(timer){ clearInterval(timer); timer = null; }
+  }
+
+  nodes.forEach((node, i) => {
+    function activate(){
+      userTookOver = true;
+      setActive(i);
+      stopTimer();
+      if(resumeAfter) clearTimeout(resumeAfter);
+      resumeAfter = setTimeout(() => {
+        userTookOver = false;
+        startTimer();
+      }, RESUME_DELAY);
+    }
+    node.addEventListener('click', activate);
+    node.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); activate(); }
+    });
+  });
+
+  // Pause cycling when the engine scrolls out of view; resume when back
+  if('IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){ if(!userTookOver) startTimer(); }
+        else stopTimer();
+      });
+    }, { threshold: 0.15 });
+    io.observe(engine);
+  } else {
+    startTimer();
+  }
+
+  // Init — mark first node active (HTML already has phase-01 detail text)
+  nodes[0].classList.add('active');
+  names[0].classList.add('active');
+
+  // Pause when tab is hidden
+  document.addEventListener('visibilitychange', () => {
+    if(document.hidden) stopTimer();
+    else if(!userTookOver) startTimer();
+  });
+})();
+</script>
+
 </body>
 </html>

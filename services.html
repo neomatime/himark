@@ -114,6 +114,216 @@
     }
   ]
 }</script>
+
+<!-- ==========================================================
+     TIER LATTICE — interactive nested-envelope diagram of the
+     three engagement tiers. Same diagram-kit language as the
+     method engine on /process.html (mono coords, ocean active
+     state, hover-revealed detail panel).
+     ========================================================== -->
+<style>
+  .tier-lattice{
+    background:var(--off);
+    padding:120px var(--gx) 100px;
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid var(--rule);
+  }
+  .tier-lattice::before{
+    content:'';position:absolute;inset:0;
+    background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px);
+    background-size:calc((100vw - 128px)/6) 100%;
+    background-position:64px 0;
+    pointer-events:none;opacity:.6;
+  }
+  .tier-lattice > *{position:relative;z-index:1;}
+
+  .tier-lattice-coord-l{
+    position:absolute;top:48px;left:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:var(--ocean);z-index:2;
+  }
+  .tier-lattice-coord-r{
+    position:absolute;top:48px;right:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:rgba(46,74,90,.55);z-index:2;
+  }
+  .tier-lattice-eyebrow{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ocean);margin-bottom:18px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .tier-lattice-eyebrow::before{
+    content:'';display:block;width:24px;height:1px;background:var(--ocean);
+  }
+  .tier-lattice-hl{
+    font-family:var(--f-disp);font-size:clamp(34px,3.6vw,52px);
+    font-weight:800;line-height:1.05;color:var(--midnight);
+    letter-spacing:-.01em;margin-bottom:14px;
+  }
+  .tier-lattice-hl em{font-style:italic;font-weight:300;color:var(--ocean);}
+  .tier-lattice-sub{
+    font-family:var(--f-body);font-weight:300;
+    font-size:14px;color:var(--ink-mut);
+    max-width:560px;margin-bottom:56px;line-height:1.7;
+  }
+
+  /* Stage — SVG canvas wrapper */
+  .tier-lattice-stage{
+    position:relative;
+    width:100%;
+    max-width:980px;
+    margin:0 auto;
+  }
+  .tier-lattice-svg{
+    display:block;width:100%;height:auto;
+    user-select:none;-webkit-user-select:none;
+  }
+
+  /* Tier layer groups */
+  .tier-layer{ cursor:none; outline:none; }
+  .tier-layer .tier-rect{
+    transition:fill .35s var(--ease), stroke .35s var(--ease), stroke-width .35s var(--ease);
+    pointer-events:all;
+  }
+  .tier-layer .tier-rect-coord{
+    font-family:var(--f-mono);font-size:11px;font-weight:600;
+    letter-spacing:.14em;
+    fill:rgba(46,74,90,.55);
+    pointer-events:none;
+    transition:fill .35s var(--ease);
+  }
+  .tier-layer .tier-rect-price{
+    font-family:var(--f-mono);font-size:11px;font-weight:500;
+    letter-spacing:.06em;
+    fill:rgba(46,74,90,.55);
+    pointer-events:none;
+    transition:fill .35s var(--ease);
+  }
+  .tier-layer .tier-rect-name{
+    font-family:var(--f-disp);font-size:22px;font-weight:800;
+    letter-spacing:-.005em;
+    fill:var(--midnight);
+    pointer-events:none;
+    transition:fill .35s var(--ease);
+  }
+  .tier-layer .tier-rect-sub{
+    font-family:var(--f-body);font-style:italic;font-weight:300;
+    font-size:12px;
+    fill:rgba(20,20,20,.6);
+    pointer-events:none;
+    transition:fill .35s var(--ease);
+  }
+
+  /* Default fills — progressively deeper tint for each envelope */
+  .tier-layer[data-tier="2"] .tier-rect{ fill:rgba(95,129,144,.04); stroke:rgba(28,43,58,.18); stroke-width:1; }
+  .tier-layer[data-tier="1"] .tier-rect{ fill:rgba(95,129,144,.08); stroke:rgba(28,43,58,.24); stroke-width:1; }
+  .tier-layer[data-tier="0"] .tier-rect{ fill:rgba(95,129,144,.14); stroke:rgba(28,43,58,.32); stroke-width:1; }
+
+  /* Hover — brighten stroke */
+  .tier-layer:hover .tier-rect{ stroke:var(--ocean); stroke-width:1.5; }
+  .tier-layer:hover .tier-rect-coord,
+  .tier-layer:hover .tier-rect-price{ fill:var(--ocean); }
+
+  /* Active — ocean fill + bold stroke */
+  .tier-layer.active .tier-rect{
+    fill:rgba(95,129,144,.18) !important;
+    stroke:var(--midnight) !important;
+    stroke-width:2 !important;
+  }
+  .tier-layer.active .tier-rect-coord,
+  .tier-layer.active .tier-rect-price{ fill:var(--midnight); }
+
+  /* Focus visible for keyboard nav */
+  .tier-layer:focus-visible .tier-rect{
+    stroke:var(--midnight);stroke-width:2;
+  }
+
+  /* Detail panel */
+  .tier-lattice-detail{
+    max-width:980px;
+    margin:64px auto 0;
+    background:var(--white);
+    border:1px solid var(--rule);
+    border-radius:6px;
+    padding:36px 40px 32px;
+    position:relative;
+    box-shadow:0 30px 60px -30px rgba(28,43,58,.15);
+  }
+  .tier-lattice-detail-coord{
+    position:absolute;top:14px;right:20px;
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:var(--ocean);
+  }
+  .tier-lattice-detail-grid{
+    display:grid;
+    grid-template-columns:1fr 1.1fr;
+    gap:48px;align-items:start;
+  }
+  .tier-lattice-detail-eyebrow{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ocean);margin-bottom:14px;
+  }
+  .tier-lattice-detail-name{
+    font-family:var(--f-disp);font-size:clamp(26px,2.6vw,36px);
+    font-weight:800;color:var(--midnight);
+    letter-spacing:-.01em;line-height:1.05;
+    margin-bottom:18px;
+    transition:opacity .25s var(--ease);
+  }
+  .tier-lattice-detail-desc{
+    font-family:var(--f-body);font-weight:400;font-size:14px;
+    line-height:1.75;color:var(--ink);
+    margin-bottom:18px;
+    transition:opacity .25s var(--ease);
+  }
+  .tier-lattice-detail-price{
+    font-family:var(--f-disp);font-size:18px;font-weight:700;
+    color:var(--midnight);letter-spacing:-.005em;
+    padding-top:18px;border-top:1px solid var(--rule);
+    transition:opacity .25s var(--ease);
+  }
+
+  .tier-lattice-detail-right{
+    display:flex;flex-direction:column;
+  }
+  .tier-lattice-detail-row{
+    padding:16px 0 18px;
+    border-bottom:1px solid var(--rule);
+  }
+  .tier-lattice-detail-row:first-child{padding-top:0;}
+  .tier-lattice-detail-row:last-child{border-bottom:none;padding-bottom:0;}
+  .tier-lattice-detail-l{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ocean);margin-bottom:8px;
+  }
+  .tier-lattice-detail-v{
+    font-family:var(--f-body);font-weight:400;font-size:14px;
+    line-height:1.65;color:var(--ink);
+    transition:opacity .25s var(--ease);
+  }
+  .tier-lattice-detail .fading{opacity:0;}
+
+  @media (max-width:768px){
+    .tier-lattice{padding:80px 22px 60px;}
+    .tier-lattice-coord-l,.tier-lattice-coord-r{top:24px;}
+    .tier-lattice-coord-l{left:22px;}
+    .tier-lattice-coord-r{right:22px;}
+    .tier-lattice-sub{margin-bottom:36px;}
+    .tier-lattice-detail{padding:28px 22px;margin-top:40px;}
+    .tier-lattice-detail-grid{grid-template-columns:1fr;gap:28px;}
+  }
+
+  @media (max-width:560px){
+    .tier-layer .tier-rect-coord{font-size:9px;}
+    .tier-layer .tier-rect-price{font-size:9px;}
+    .tier-layer .tier-rect-name{font-size:16px;}
+    .tier-layer .tier-rect-sub{font-size:9px;}
+  }
+</style>
 </head>
 <body data-page="mandates" data-location="root">
 <div id="cd"></div>
@@ -237,7 +447,85 @@
 </div>
 </section>
 
-<div class="s-num-bar"><span>02.B · TIER ARCHITECTURE</span><span>MANDATES / 02</span><span>03 · LAYERS</span></div>
+<div class="s-num-bar"><span>02.B · THE LATTICE</span><span>MANDATES / 02</span><span>03 TIERS · NESTED</span></div>
+
+<!-- TIER LATTICE — interactive nested-envelope diagram. Each tier
+     contains everything in the one below it; clicking a layer reveals
+     that tier's specifics (cadence, fit, term, what's added). -->
+<section class="tier-lattice">
+<span class="tier-lattice-coord-l">[ 02.B.01 ]</span>
+<span class="tier-lattice-coord-r">DIAGRAM · INTERACTIVE</span>
+
+<p class="tier-lattice-eyebrow">Interactive map</p>
+<h2 class="tier-lattice-hl">The tier lattice<em>· nested by design.</em></h2>
+<p class="tier-lattice-sub">Each tier contains everything in the one below. Hover or tap any envelope to see what it includes — and what it adds over the one beneath it.</p>
+
+<div class="tier-lattice-stage">
+<svg class="tier-lattice-svg" viewBox="0 0 880 540" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Three nested tier envelopes — Signature, Growth, Private">
+
+<!-- Outer envelope — Private (Tier 03) -->
+<g class="tier-layer" data-tier="2" tabindex="0" role="button" aria-label="Tier 03 — Private Partner">
+<rect class="tier-rect" x="60" y="40" width="760" height="460" rx="3"/>
+<text class="tier-rect-coord" x="80" y="68">[ TIER.03 · PRIVATE ]</text>
+<text class="tier-rect-price" x="800" y="68" text-anchor="end">R150 000 – R200 000 / month</text>
+<text class="tier-rect-name" x="80" y="100">Private Partner</text>
+<text class="tier-rect-sub" x="80" y="120">Strategic Transformation · By invitation only</text>
+</g>
+
+<!-- Middle envelope — Growth (Tier 02) -->
+<g class="tier-layer" data-tier="1" tabindex="0" role="button" aria-label="Tier 02 — Growth Partner">
+<rect class="tier-rect" x="120" y="160" width="640" height="320" rx="3"/>
+<text class="tier-rect-coord" x="140" y="188">[ TIER.02 · GROWTH ]</text>
+<text class="tier-rect-price" x="740" y="188" text-anchor="end">R80 000 – R120 000 / month</text>
+<text class="tier-rect-name" x="140" y="220">Growth Partner</text>
+<text class="tier-rect-sub" x="140" y="240">Scale &amp; Optimisation · Core HIMARK tier</text>
+</g>
+
+<!-- Inner envelope — Signature (Tier 01) -->
+<g class="tier-layer" data-tier="0" tabindex="0" role="button" aria-label="Tier 01 — Signature Partner">
+<rect class="tier-rect" x="180" y="280" width="520" height="180" rx="3"/>
+<text class="tier-rect-coord" x="200" y="308">[ TIER.01 · SIGNATURE ]</text>
+<text class="tier-rect-price" x="680" y="308" text-anchor="end">R50 000 – R80 000 / month</text>
+<text class="tier-rect-name" x="200" y="340">Signature Partner</text>
+<text class="tier-rect-sub" x="200" y="360">Professionalisation · Foundation</text>
+</g>
+
+</svg>
+</div>
+
+<!-- Detail panel — updates as a tier is activated -->
+<div class="tier-lattice-detail">
+<div class="tier-lattice-detail-coord">[ <span id="tier-detail-num">01</span> · <span id="tier-detail-tag">SIGNATURE</span> ]</div>
+<div class="tier-lattice-detail-grid">
+<div>
+<p class="tier-lattice-detail-eyebrow">Tier</p>
+<h3 class="tier-lattice-detail-name" id="tier-detail-name">Signature Partner</h3>
+<p class="tier-lattice-detail-desc" id="tier-detail-desc">The launch-pad tier — foundational growth and brand infrastructure for startups, SMEs, and service businesses ready to formalise their market presence.</p>
+<p class="tier-lattice-detail-price" id="tier-detail-price">R50 000 – R80 000 / month</p>
+</div>
+<div class="tier-lattice-detail-right">
+<div class="tier-lattice-detail-row">
+<p class="tier-lattice-detail-l">Cadence</p>
+<p class="tier-lattice-detail-v" id="tier-detail-cadence">Monthly strategy session · Atlas advisory · Quarterly performance reviews</p>
+</div>
+<div class="tier-lattice-detail-row">
+<p class="tier-lattice-detail-l">Best fit</p>
+<p class="tier-lattice-detail-v" id="tier-detail-fit">Startups, SMEs, and professional service firms formalising operations and establishing market presence.</p>
+</div>
+<div class="tier-lattice-detail-row">
+<p class="tier-lattice-detail-l">Term</p>
+<p class="tier-lattice-detail-v" id="tier-detail-term">Quarterly minimum · Reviewed every 90 days</p>
+</div>
+<div class="tier-lattice-detail-row">
+<p class="tier-lattice-detail-l">What this tier adds</p>
+<p class="tier-lattice-detail-v" id="tier-detail-adds" style="font-style:italic">The foundation layer — establishes the operational baseline.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<div class="s-num-bar"><span>02.C · TIER ARCHITECTURE</span><span>MANDATES / 03</span><span>03 · LAYERS</span></div>
 
 <section class="tier-deep-dive">
 <p class="eyebrow r3d">Tier Architecture · Detailed Breakdown</p>
@@ -487,5 +775,147 @@
 </div>
 </div>
 <script src="main/main.js"></script>
+
+<!-- TIER LATTICE — interactive cycle + click-to-lock. Same pattern
+     as the method engine on /process.html. -->
+<script>
+(function(){
+  const lattice = document.querySelector('.tier-lattice');
+  if(!lattice) return;
+
+  const layers = lattice.querySelectorAll('.tier-layer');
+  const detailNum     = document.getElementById('tier-detail-num');
+  const detailTag     = document.getElementById('tier-detail-tag');
+  const detailName    = document.getElementById('tier-detail-name');
+  const detailDesc    = document.getElementById('tier-detail-desc');
+  const detailPrice   = document.getElementById('tier-detail-price');
+  const detailCadence = document.getElementById('tier-detail-cadence');
+  const detailFit     = document.getElementById('tier-detail-fit');
+  const detailTerm    = document.getElementById('tier-detail-term');
+  const detailAdds    = document.getElementById('tier-detail-adds');
+
+  // Tiers ordered inner-to-outer (0 = Signature, 1 = Growth, 2 = Private)
+  const tiers = [
+    {
+      num:'01', tag:'SIGNATURE', name:'Signature Partner',
+      desc:'The launch-pad tier — foundational growth and brand infrastructure for startups, SMEs, and service businesses ready to formalise their market presence.',
+      price:'R50 000 – R80 000 / month',
+      cadence:'Monthly strategy session · Atlas advisory · Quarterly performance reviews',
+      fit:'Startups, SMEs, and professional service firms formalising operations and establishing market presence.',
+      term:'Quarterly minimum · Reviewed every 90 days',
+      adds:'The foundation layer — establishes the operational baseline that every higher tier builds on.'
+    },
+    {
+      num:'02', tag:'GROWTH', name:'Growth Partner',
+      desc:'The core HIMARK tier. Scalable growth and operational integration — where businesses begin relying on us strategically and operationally as part of their growth engine.',
+      price:'R80 000 – R120 000 / month',
+      cadence:'Weekly principal session · Live Slack / WhatsApp link · Monthly board update',
+      fit:'Scaling businesses, mid-sized companies, and operational-heavy service firms expanding digitally with active sales teams.',
+      term:'Six-month minimum · Reviewed every 90 days',
+      adds:'Adds advanced brand strategy, CRM optimisation, full marketing systems, founder authority positioning, and weekly principal consulting.'
+    },
+    {
+      num:'03', tag:'PRIVATE', name:'Private Partner',
+      desc:'Executive-level strategic transformation. Embedded strategic leadership for enterprise clients, high-growth firms, and executive-led businesses. By invitation only.',
+      price:'R150 000 – R200 000 / month',
+      cadence:'Real-time access · Dedicated principal · Direct line to founder · Executive consultation on demand',
+      fit:'High-growth firms, enterprise clients, executive-led businesses, and multi-department companies scaling aggressively.',
+      term:'12-month minimum · By invitation only',
+      adds:'Adds executive strategy, enterprise infrastructure and AI ecosystems, executive personal branding, M&A architecture, capital strategy, and dedicated principal access.'
+    }
+  ];
+
+  let activeIdx = 0;
+  let timer = null;
+  let userTookOver = false;
+  let resumeAfter = null;
+  const INTERVAL = 7500;
+  const FADE = 220;
+  const RESUME_DELAY = 14000;
+
+  const valueEls = [detailName, detailDesc, detailPrice, detailCadence, detailFit, detailTerm, detailAdds];
+
+  function setActive(idx){
+    if(idx === activeIdx) return;
+
+    layers.forEach((l) => {
+      const tier = parseInt(l.getAttribute('data-tier'), 10);
+      l.classList.toggle('active', tier === idx);
+    });
+
+    valueEls.forEach(el => el.classList.add('fading'));
+
+    setTimeout(() => {
+      const t = tiers[idx];
+      detailNum.textContent     = t.num;
+      detailTag.textContent     = t.tag;
+      detailName.textContent    = t.name;
+      detailDesc.textContent    = t.desc;
+      detailPrice.textContent   = t.price;
+      detailCadence.textContent = t.cadence;
+      detailFit.textContent     = t.fit;
+      detailTerm.textContent    = t.term;
+      detailAdds.textContent    = t.adds;
+      valueEls.forEach(el => el.classList.remove('fading'));
+    }, FADE);
+
+    activeIdx = idx;
+  }
+
+  function nextTier(){ setActive((activeIdx + 1) % tiers.length); }
+
+  function startTimer(){
+    if(timer) clearInterval(timer);
+    timer = setInterval(nextTier, INTERVAL);
+  }
+  function stopTimer(){
+    if(timer){ clearInterval(timer); timer = null; }
+  }
+
+  layers.forEach((layer) => {
+    function activate(){
+      const idx = parseInt(layer.getAttribute('data-tier'), 10);
+      userTookOver = true;
+      setActive(idx);
+      stopTimer();
+      if(resumeAfter) clearTimeout(resumeAfter);
+      resumeAfter = setTimeout(() => {
+        userTookOver = false;
+        startTimer();
+      }, RESUME_DELAY);
+    }
+    layer.addEventListener('click', activate);
+    layer.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); activate(); }
+    });
+  });
+
+  // Pause cycling when scrolled out of view
+  if('IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){ if(!userTookOver) startTimer(); }
+        else stopTimer();
+      });
+    }, { threshold: 0.15 });
+    io.observe(lattice);
+  } else {
+    startTimer();
+  }
+
+  // Init — Signature tier marked active (HTML default text already matches)
+  layers.forEach((l) => {
+    const tier = parseInt(l.getAttribute('data-tier'), 10);
+    l.classList.toggle('active', tier === 0);
+  });
+
+  // Pause when tab is hidden
+  document.addEventListener('visibilitychange', () => {
+    if(document.hidden) stopTimer();
+    else if(!userTookOver) startTimer();
+  });
+})();
+</script>
+
 </body>
 </html>

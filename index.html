@@ -201,9 +201,11 @@ body::before{
 /* ============================================================
    IMARK reveal (Scene 3b) — IMAGE-BASED
    The IMARK wordmark is images/IMARK.png (644×106 white-on-
-   transparent, with the inverted V already baked in). A clip-path
-   inset reveals it left-to-right in one smooth wipe — premium,
-   confident, no stepped typewriter feel. Caret is retired.
+   transparent, with the inverted V already baked in). It enters
+   with a soft, non-directional reveal — opacity fade + a subtle
+   scale settle, so the wordmark "comes into focus" rather than
+   sweeping in from one side. No typewriter character. The caret
+   is retired.
    ============================================================ */
 .imark{
   display:inline-flex;
@@ -220,21 +222,27 @@ body::before{
   height:clamp(36px, 7vw, 68px);
   width:auto;
   /* Lock rendered width before the image loads so measureAndPosition
-     (which positions the H) is stable. */
+     (which positions the H) is stable. Transform/opacity don't
+     change layout box width, so the H positioning stays correct
+     throughout the animation. */
   aspect-ratio:367 / 99;
   user-select:none;
   -webkit-user-drag:none;
-  /* Hidden state — clipped to zero width from the right. */
-  clip-path:inset(0 100% 0 0);
-  -webkit-clip-path:inset(0 100% 0 0);
-  /* Smooth left-to-right reveal with the brand's editorial ease.
-     1.1s lets the reveal breathe; the curve front-loads the
-     motion so the wordmark lands confidently. */
-  transition:clip-path 1.1s var(--ease-out), -webkit-clip-path 1.1s var(--ease-out);
+  /* Hidden state — invisible, very lightly scaled down so the
+     reveal has a sense of "settling in" from soft focus. */
+  opacity:0;
+  transform:scale(0.97);
+  transform-origin:center center;
+  /* Editorial ease that decelerates into the final position.
+     Opacity rides slightly faster than transform so the wordmark
+     becomes visible first, then the scale completes the settle. */
+  transition:
+    opacity   1.05s cubic-bezier(.22, 1, .36, 1),
+    transform 1.30s cubic-bezier(.22, 1, .36, 1);
 }
 .imark-image.show{
-  clip-path:inset(0 0 0 0);
-  -webkit-clip-path:inset(0 0 0 0);
+  opacity:1;
+  transform:scale(1);
 }
 
 /* Caret retained as an element (the JS still references it) but
@@ -443,8 +451,8 @@ body::before{
     opacity:1 !important;
   }
   .hmark .frame{ stroke-dashoffset:0 !important; }
-  /* IMARK image shown immediately, no stepped reveal */
-  .imark-image{ clip-path:inset(0 0 0 0) !important; -webkit-clip-path:inset(0 0 0 0) !important; transition:none !important; }
+  /* IMARK image shown immediately, no transition */
+  .imark-image{ opacity:1 !important; transform:none !important; transition:none !important; }
   .caret{ display:none !important; }
   .progress-fill{ transition:right 1s linear !important; }
   .coord, .skip-hint{ animation:none !important; opacity:1 !important; }
@@ -512,8 +520,8 @@ body::before{
   </div>
 
   <!-- IMARK wordmark — image (images/IMARK.png with inverted V baked in)
-       revealed left-to-right in 5 stepped chunks via clip-path for a
-       typewriter-style appearance. -->
+       revealed with a soft fade + subtle scale settle. Non-directional,
+       editorial — no typewriter character. -->
   <span class="imark" id="imark" aria-hidden="true"><img src="images/IMARK.png" alt="IMARK" class="imark-image" id="imarkImage"/><span class="caret" id="caret"></span></span>
 
 </a>
@@ -676,8 +684,9 @@ body::before{
       caret.classList.add('active');
     }, 2500);
 
-    // SCENE 3b — IMARK reveal via stepped clip-path (3.0s → 3.9s)
-    // CSS handles the 5-step typewriter effect; we just toggle the class.
+    // SCENE 3b — IMARK reveal (3.0s → ~4.3s)
+    // CSS handles the smooth fade-in + subtle scale settle; we just
+    // toggle the .show class to start the transition.
     schedule(() => {
       imarkImage.classList.add('show');
     }, 3000);

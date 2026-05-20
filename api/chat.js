@@ -105,12 +105,13 @@ async function pushToHubSpot(record, kind){
 
   /* For session bookings, fold the format choice (video / in-person)
      into the timeline string so principals see both timing and venue
-     together when triaging in HubSpot. Avoids requiring a new custom
-     property to exist in the CRM. */
+     together when triaging in HubSpot. The in-person venue is NOT
+     stamped in the public-facing record — principals confirm venue
+     out-of-band when they confirm the slot. */
   let timelineStr = record.timeline || record.window || '';
   if (isSession && record.format) {
     const fmt = String(record.format).toLowerCase().trim();
-    const fmtLabel = fmt === 'in-person' ? 'In person · Randburg' : 'Video call';
+    const fmtLabel = fmt === 'in-person' ? 'In person' : 'Video call';
     timelineStr = timelineStr ? `${timelineStr} · ${fmtLabel}` : fmtLabel;
   }
 

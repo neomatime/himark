@@ -929,7 +929,7 @@
 <button class="sx-fig-dot" data-idx="2" type="button" aria-label="Slide 3"></button>
 </div>
 </div>
-<figcaption class="sx-fig-cap" id="sx-fig-cap">Sessions are convened in person at the Randburg office or by secure video — the venue is the working surface, not the meeting.</figcaption>
+<figcaption class="sx-fig-cap" id="sx-fig-cap">Sessions are held by secure video or in person by appointment — the venue is the working surface, not the meeting.</figcaption>
 </figure>
 </div>
 
@@ -1027,9 +1027,9 @@
 <label class="bkc-field-label">[ 05 ] Session Format <em>required</em></label>
 <select class="bkc-select" name="format" id="bkc-format" required>
 <option value="video">Video — Secure principal call (SAST)</option>
-<option value="in-person">In Person — HIMARK office, Randburg</option>
+<option value="in-person">In Person — Convened by appointment</option>
 </select>
-<p class="bkc-field-note" id="bkc-format-note">Sessions are convened at HIMARK's principal office in Randburg. The specific address is shared by a principal upon confirmation.</p>
+<p class="bkc-field-note" id="bkc-format-note">In-person sessions are convened by appointment. The principal confirms the venue when they confirm your slot.</p>
 </div>
 
 <div class="bkc-field">
@@ -1395,7 +1395,7 @@ Confirmation issued by a principal within one working day. Invoice issued upon c
     function applyFormat(){
       const v = formatSel.value;
       const isInPerson = v === 'in-person';
-      cardFormat.textContent = isInPerson ? 'In Person · Randburg' : 'Video · SAST';
+      cardFormat.textContent = isInPerson ? 'In Person · By appointment' : 'Video · SAST';
       formatNote.classList.toggle('show', isInPerson);
     }
     formatSel.addEventListener('change', applyFormat);
@@ -1420,7 +1420,7 @@ Confirmation issued by a principal within one working day. Invoice issued upon c
       const slides = [
         {
           tag:'Principal · Office',
-          cap:'Sessions are convened in person at the Randburg office or by secure video — the venue is the working surface, not the meeting.'
+          cap:'Sessions are held by secure video or in person by appointment — the venue is the working surface, not the meeting.'
         },
         {
           tag:'Working · Session',
@@ -1520,7 +1520,7 @@ Confirmation issued by a principal within one working day. Invoice issued upon c
       ' · ' + selectedTime + ' SAST';
 
     const format    = fd.get('format') || 'video';
-    const formatStr = format === 'in-person' ? 'In Person · Randburg' : 'Video · SAST';
+    const formatStr = format === 'in-person' ? 'In Person · By appointment' : 'Video · SAST';
 
     // Populate the success overlay
     document.getElementById('sx-success-when').textContent   = whenStr;

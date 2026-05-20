@@ -65,6 +65,194 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Roboto:ital,wght@0,300;0,400;1,300&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet"/>
 <link rel="icon" type="image/svg+xml" href="images/himark-favicon.svg"/><link rel="apple-touch-icon" href="images/himark-favicon.svg"/><link rel="manifest" href="manifest.json"/><link rel="icon" type="image/x-icon" href="images/himark-favicon.ico"/><link rel="stylesheet" href="styles/styles.css"/>
+
+<!-- ==========================================================
+     CONSTRAINT SPINE — vertical scroll-triggered diagram.
+     Six layers from the presenting constraint at top through
+     four HIMARK interventions to the outcome at bottom. Each
+     layer illuminates as it enters view.
+     ========================================================== -->
+<style>
+  .con-spine{
+    background:var(--off);
+    padding:120px var(--gx) 100px;
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid var(--rule);
+  }
+  .con-spine::before{
+    content:'';position:absolute;inset:0;
+    background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px);
+    background-size:calc((100vw - 128px)/6) 100%;
+    background-position:64px 0;
+    pointer-events:none;opacity:.5;
+  }
+  .con-spine > *{position:relative;z-index:1;}
+
+  .con-spine-coord-l{
+    position:absolute;top:48px;left:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:var(--ocean);z-index:2;
+  }
+  .con-spine-coord-r{
+    position:absolute;top:48px;right:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:rgba(46,74,90,.55);z-index:2;
+  }
+  .con-spine-eyebrow{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ocean);margin-bottom:18px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .con-spine-eyebrow::before{
+    content:'';display:block;width:24px;height:1px;background:var(--ocean);
+  }
+  .con-spine-hl{
+    font-family:var(--f-disp);font-size:clamp(34px,3.6vw,52px);
+    font-weight:800;line-height:1.05;color:var(--midnight);
+    letter-spacing:-.01em;margin-bottom:14px;
+  }
+  .con-spine-hl em{font-style:italic;font-weight:300;color:var(--ocean);}
+  .con-spine-sub{
+    font-family:var(--f-body);font-weight:300;
+    font-size:14px;color:var(--ink-mut);
+    max-width:560px;margin-bottom:72px;line-height:1.7;
+  }
+
+  /* Stage — rows stack vertically with a connecting rail */
+  .con-stage{
+    max-width:880px;margin:0 auto;
+  }
+  .con-row{
+    display:grid;
+    grid-template-columns:80px 1fr;
+    gap:40px;
+    position:relative;
+    padding-bottom:68px;
+  }
+  .con-row:last-child{padding-bottom:0;}
+
+  /* Vertical connecting rail — drawn as a ::before on each rail cell */
+  .con-rail{
+    display:flex;justify-content:center;
+    position:relative;
+    padding-top:8px;
+  }
+  .con-rail::before{
+    content:'';position:absolute;
+    left:50%;top:48px;bottom:-12px;
+    width:1px;
+    background:linear-gradient(to bottom, rgba(95,129,144,.45), rgba(95,129,144,.18));
+    transform:translateX(-50%);
+  }
+  .con-row:last-child .con-rail::before{display:none;}
+
+  /* Node disc */
+  .con-node{
+    width:40px;height:40px;border-radius:50%;
+    background:var(--white);
+    border:1px solid rgba(95,129,144,.4);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;z-index:1;
+    transition:
+      background .65s var(--ease),
+      border-color .65s var(--ease),
+      transform .65s var(--ease),
+      box-shadow .65s var(--ease);
+  }
+  .con-node-num{
+    font-family:var(--f-mono);font-size:11px;font-weight:700;
+    color:rgba(46,74,90,.6);letter-spacing:.05em;
+    transition:color .65s var(--ease);
+  }
+  .con-node-mark{
+    width:8px;height:8px;border-radius:1px;
+    background:rgba(46,74,90,.45);
+    display:block;
+    transition:background .65s var(--ease);
+  }
+
+  /* Active state — illuminated when scrolled into view */
+  .con-row.active .con-node{
+    background:var(--midnight);
+    border-color:var(--midnight);
+    transform:scale(1.08);
+    box-shadow:0 12px 30px -10px rgba(28,43,58,.4);
+  }
+  .con-row.active .con-node-num{ color:var(--off); }
+  .con-row.active .con-node-mark{ background:var(--ocean-lt); }
+  .con-row.active .con-rail::before{
+    background:linear-gradient(to bottom, var(--ocean), rgba(95,129,144,.18));
+  }
+
+  /* Cap rows (constraint + outcome) — slightly different visual */
+  .con-row[data-step="0"] .con-node,
+  .con-row[data-step="5"] .con-node{
+    width:44px;height:44px;
+    border-radius:2px;
+  }
+
+  /* Body content */
+  .con-body{padding-top:0;}
+  .con-tag{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.18em;color:var(--ocean);
+    margin-bottom:10px;
+    opacity:.55;
+    transition:opacity .65s var(--ease), color .65s var(--ease);
+  }
+  .con-row.active .con-tag{ opacity:1; }
+  .con-name{
+    font-family:var(--f-disp);font-size:clamp(22px,2.2vw,30px);
+    font-weight:800;color:var(--midnight);
+    letter-spacing:-.005em;line-height:1.15;
+    margin-bottom:14px;
+    opacity:.45;
+    transform:translateX(-8px);
+    transition:opacity .65s var(--ease), transform .65s var(--ease);
+  }
+  .con-row.active .con-name{ opacity:1; transform:translateX(0); }
+  .con-desc{
+    font-family:var(--f-body);font-weight:400;font-size:15px;
+    line-height:1.75;color:var(--ink);
+    max-width:560px;
+    opacity:.5;
+    transform:translateX(-8px);
+    transition:opacity .8s var(--ease) .1s, transform .8s var(--ease) .1s;
+  }
+  .con-row.active .con-desc{ opacity:.92; transform:translateX(0); }
+  .con-out{
+    font-family:var(--f-body);font-style:italic;font-weight:300;
+    font-size:13px;color:var(--ocean-dk);
+    margin-top:14px;line-height:1.6;
+    opacity:0;
+    transform:translateX(-8px);
+    transition:opacity .8s var(--ease) .25s, transform .8s var(--ease) .25s;
+  }
+  .con-row.active .con-out{ opacity:.85; transform:translateX(0); }
+
+  @media (max-width:768px){
+    .con-spine{padding:80px 22px 60px;}
+    .con-spine-coord-l,.con-spine-coord-r{top:24px;}
+    .con-spine-coord-l{left:22px;}
+    .con-spine-coord-r{right:22px;}
+    .con-spine-sub{margin-bottom:48px;}
+    .con-row{grid-template-columns:50px 1fr;gap:22px;padding-bottom:48px;}
+    .con-node{width:34px;height:34px;}
+    .con-node-num{font-size:10px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .con-node,.con-node-num,.con-node-mark,
+    .con-tag,.con-name,.con-desc,.con-out{
+      transition:none;
+    }
+    .con-row .con-name,.con-row .con-desc,.con-row .con-out{
+      opacity:1;transform:none;
+    }
+  }
+</style>
 </head>
 <body data-page="doctrine" data-location="root">
 <div id="cd"></div>
@@ -195,10 +383,85 @@
 </div>
 </section>
 
-<div class="s-num-bar dk"><span>01.D · PRINCIPAL STATEMENT</span><span>DOCTRINE / 04</span><span>ON · RECORD</span></div>
+<div class="s-num-bar"><span>01.D · THE SPINE</span><span>DOCTRINE / 04</span><span>06 · IN MOTION</span></div>
+
+<!-- CONSTRAINT SPINE — scroll-triggered illumination from constraint
+     at top, through four HIMARK interventions, to outcome at bottom. -->
+<section class="con-spine">
+<span class="con-spine-coord-l">[ 01.D.01 ]</span>
+<span class="con-spine-coord-r">DOCTRINE · IN MOTION</span>
+
+<p class="con-spine-eyebrow">Doctrine in motion</p>
+<h2 class="con-spine-hl">From constraint to outcome<em>· six moves.</em></h2>
+<p class="con-spine-sub">The doctrine in practice. As you scroll, each layer of the HIMARK approach reveals itself — from the constraint as it presents, through the four interventions that govern the work, to the outcome on the other side.</p>
+
+<div class="con-stage">
+
+<div class="con-row" data-step="0">
+<div class="con-rail"><div class="con-node"><span class="con-node-mark"></span></div></div>
+<div class="con-body">
+<p class="con-tag">[ START · THE CONSTRAINT ]</p>
+<h3 class="con-name">The presenting<br>problem.</h3>
+<p class="con-desc">Stalled growth. Eroding margin. An unclear next move. The business has hit a structural ceiling — and the answer is not more of what worked yesterday. This is the surface the principal arrives at.</p>
+</div>
+</div>
+
+<div class="con-row" data-step="1">
+<div class="con-rail"><div class="con-node"><span class="con-node-num">01</span></div></div>
+<div class="con-body">
+<p class="con-tag">[ 01 · DIAGNOSE ]</p>
+<h3 class="con-name">See the actual<br>constraint.</h3>
+<p class="con-desc">Most failures come from solving the wrong problem. HIMARK diagnoses first, prescribes second. A two-to-three-week commercial audit separates the symptom from the cause and surfaces the load-bearing assumptions.</p>
+<p class="con-out">→ Distinction between what is presenting and what is actually constraining.</p>
+</div>
+</div>
+
+<div class="con-row" data-step="2">
+<div class="con-rail"><div class="con-node"><span class="con-node-num">02</span></div></div>
+<div class="con-body">
+<p class="con-tag">[ 02 · ARCHITECT ]</p>
+<h3 class="con-name">Design the response<br>from first principles.</h3>
+<p class="con-desc">Strategy designed for this business — not from frameworks pulled off the shelf and not from last quarter's case study. Revenue model, go-to-market, positioning, and the operational stack required to sustain it. Built to hold weight.</p>
+<p class="con-out">→ A blueprint that fits the actual constraint, not a template draped over it.</p>
+</div>
+</div>
+
+<div class="con-row" data-step="3">
+<div class="con-rail"><div class="con-node"><span class="con-node-num">03</span></div></div>
+<div class="con-body">
+<p class="con-tag">[ 03 · EMBED ]</p>
+<h3 class="con-name">Drive execution<br>alongside leadership.</h3>
+<p class="con-desc">Strategy without execution is fiction. HIMARK sits in the weekly loops with leadership — moving initiatives past the politics, defending what matters, killing what doesn't. The work becomes operational, not aspirational.</p>
+<p class="con-out">→ Initiatives that move past committee, into measurable progress.</p>
+</div>
+</div>
+
+<div class="con-row" data-step="4">
+<div class="con-rail"><div class="con-node"><span class="con-node-num">04</span></div></div>
+<div class="con-body">
+<p class="con-tag">[ 04 · OPTIMISE ]</p>
+<h3 class="con-name">Adapt against<br>real metrics.</h3>
+<p class="con-desc">What works gets scaled. What doesn't gets cut. The strategy is a living document, not a quarterly deliverable. The principal returns every ninety days to test the operating thesis against the market it now faces.</p>
+<p class="con-out">→ Compounding by structure, not launching repeatedly.</p>
+</div>
+</div>
+
+<div class="con-row" data-step="5">
+<div class="con-rail"><div class="con-node"><span class="con-node-mark"></span></div></div>
+<div class="con-body">
+<p class="con-tag">[ OUTCOME ]</p>
+<h3 class="con-name">A business that grows<br>by structure.</h3>
+<p class="con-desc">The constraint becomes a fingerprint of where the business was — not where it lives. Growth no longer depends on heroics. It compounds because the architecture beneath it is sound.</p>
+</div>
+</div>
+
+</div>
+</section>
+
+<div class="s-num-bar dk"><span>01.E · PRINCIPAL STATEMENT</span><span>DOCTRINE / 05</span><span>ON · RECORD</span></div>
 
 <section class="quote-mono">
-<span class="quote-mono-coord-tl">[ 01.D.01 ]</span>
+<span class="quote-mono-coord-tl">[ 01.E.01 ]</span>
 <span class="quote-mono-coord-tr">PRINCIPAL — N. MATIME</span>
 <div class="quote-grid">
 <div class="quote-mark r3d">"</div>
@@ -260,5 +523,42 @@
 </div>
 </div>
 <script src="main/main.js"></script>
+
+<!-- CONSTRAINT SPINE — scroll-triggered illumination. Each row
+     gets .active when ~40% of it enters the viewport, which fires
+     the node + content reveal animations. -->
+<script>
+(function(){
+  const rows = document.querySelectorAll('.con-spine .con-row');
+  if(!rows.length) return;
+
+  const reduceMotion = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(reduceMotion){
+    rows.forEach(r => r.classList.add('active'));
+    return;
+  }
+
+  if(!('IntersectionObserver' in window)){
+    rows.forEach(r => r.classList.add('active'));
+    return;
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('active');
+        io.unobserve(entry.target); // illuminate once, then stop watching
+      }
+    });
+  }, {
+    threshold: 0.4,
+    rootMargin: '0px 0px -10% 0px'
+  });
+
+  rows.forEach(row => io.observe(row));
+})();
+</script>
+
 </body>
 </html>

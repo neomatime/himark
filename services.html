@@ -467,16 +467,16 @@
 <g class="tier-layer" data-tier="2" tabindex="0" role="button" aria-label="Tier 03 — Private Partner">
 <rect class="tier-rect" x="60" y="40" width="760" height="460" rx="3"/>
 <text class="tier-rect-coord" x="80" y="68">[ TIER.03 · PRIVATE ]</text>
-<text class="tier-rect-price" x="800" y="68" text-anchor="end">R150 000 – R200 000 / month</text>
+<text class="tier-rect-price" x="800" y="68" text-anchor="end">12-month minimum · By invitation</text>
 <text class="tier-rect-name" x="80" y="100">Private Partner</text>
-<text class="tier-rect-sub" x="80" y="120">Strategic Transformation · By invitation only</text>
+<text class="tier-rect-sub" x="80" y="120">Strategic Transformation · Executive-level</text>
 </g>
 
 <!-- Middle envelope — Growth (Tier 02) -->
 <g class="tier-layer" data-tier="1" tabindex="0" role="button" aria-label="Tier 02 — Growth Partner">
 <rect class="tier-rect" x="120" y="160" width="640" height="320" rx="3"/>
 <text class="tier-rect-coord" x="140" y="188">[ TIER.02 · GROWTH ]</text>
-<text class="tier-rect-price" x="740" y="188" text-anchor="end">R80 000 – R120 000 / month</text>
+<text class="tier-rect-price" x="740" y="188" text-anchor="end">Six-month minimum</text>
 <text class="tier-rect-name" x="140" y="220">Growth Partner</text>
 <text class="tier-rect-sub" x="140" y="240">Scale &amp; Optimisation · Core HIMARK tier</text>
 </g>
@@ -485,7 +485,7 @@
 <g class="tier-layer" data-tier="0" tabindex="0" role="button" aria-label="Tier 01 — Signature Partner">
 <rect class="tier-rect" x="180" y="280" width="520" height="180" rx="3"/>
 <text class="tier-rect-coord" x="200" y="308">[ TIER.01 · SIGNATURE ]</text>
-<text class="tier-rect-price" x="680" y="308" text-anchor="end">R50 000 – R80 000 / month</text>
+<text class="tier-rect-price" x="680" y="308" text-anchor="end">Quarterly minimum</text>
 <text class="tier-rect-name" x="200" y="340">Signature Partner</text>
 <text class="tier-rect-sub" x="200" y="360">Professionalisation · Foundation</text>
 </g>
@@ -501,7 +501,6 @@
 <p class="tier-lattice-detail-eyebrow">Tier</p>
 <h3 class="tier-lattice-detail-name" id="tier-detail-name">Signature Partner</h3>
 <p class="tier-lattice-detail-desc" id="tier-detail-desc">The launch-pad tier — foundational growth and brand infrastructure for startups, SMEs, and service businesses ready to formalise their market presence.</p>
-<p class="tier-lattice-detail-price" id="tier-detail-price">R50 000 – R80 000 / month</p>
 </div>
 <div class="tier-lattice-detail-right">
 <div class="tier-lattice-detail-row">
@@ -788,7 +787,6 @@
   const detailTag     = document.getElementById('tier-detail-tag');
   const detailName    = document.getElementById('tier-detail-name');
   const detailDesc    = document.getElementById('tier-detail-desc');
-  const detailPrice   = document.getElementById('tier-detail-price');
   const detailCadence = document.getElementById('tier-detail-cadence');
   const detailFit     = document.getElementById('tier-detail-fit');
   const detailTerm    = document.getElementById('tier-detail-term');
@@ -799,7 +797,6 @@
     {
       num:'01', tag:'SIGNATURE', name:'Signature Partner',
       desc:'The launch-pad tier — foundational growth and brand infrastructure for startups, SMEs, and service businesses ready to formalise their market presence.',
-      price:'R50 000 – R80 000 / month',
       cadence:'Monthly strategy session · Atlas advisory · Quarterly performance reviews',
       fit:'Startups, SMEs, and professional service firms formalising operations and establishing market presence.',
       term:'Quarterly minimum · Reviewed every 90 days',
@@ -808,7 +805,6 @@
     {
       num:'02', tag:'GROWTH', name:'Growth Partner',
       desc:'The core HIMARK tier. Scalable growth and operational integration — where businesses begin relying on us strategically and operationally as part of their growth engine.',
-      price:'R80 000 – R120 000 / month',
       cadence:'Weekly principal session · Live Slack / WhatsApp link · Monthly board update',
       fit:'Scaling businesses, mid-sized companies, and operational-heavy service firms expanding digitally with active sales teams.',
       term:'Six-month minimum · Reviewed every 90 days',
@@ -817,7 +813,6 @@
     {
       num:'03', tag:'PRIVATE', name:'Private Partner',
       desc:'Executive-level strategic transformation. Embedded strategic leadership for enterprise clients, high-growth firms, and executive-led businesses. By invitation only.',
-      price:'R150 000 – R200 000 / month',
       cadence:'Real-time access · Dedicated principal · Direct line to founder · Executive consultation on demand',
       fit:'High-growth firms, enterprise clients, executive-led businesses, and multi-department companies scaling aggressively.',
       term:'12-month minimum · By invitation only',
@@ -833,7 +828,7 @@
   const FADE = 220;
   const RESUME_DELAY = 14000;
 
-  const valueEls = [detailName, detailDesc, detailPrice, detailCadence, detailFit, detailTerm, detailAdds];
+  const valueEls = [detailName, detailDesc, detailCadence, detailFit, detailTerm, detailAdds];
 
   function setActive(idx){
     if(idx === activeIdx) return;
@@ -851,7 +846,6 @@
       detailTag.textContent     = t.tag;
       detailName.textContent    = t.name;
       detailDesc.textContent    = t.desc;
-      detailPrice.textContent   = t.price;
       detailCadence.textContent = t.cadence;
       detailFit.textContent     = t.fit;
       detailTerm.textContent    = t.term;

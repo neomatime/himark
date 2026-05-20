@@ -68,6 +68,147 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Roboto:ital,wght@0,300;0,400;1,300&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet"/>
 <link rel="icon" type="image/svg+xml" href="images/himark-favicon.svg"/><link rel="apple-touch-icon" href="images/himark-favicon.svg"/><link rel="manifest" href="manifest.json"/><link rel="icon" type="image/x-icon" href="images/himark-favicon.ico"/><link rel="stylesheet" href="styles/styles.css"/>
+
+<!-- ==========================================================
+     LIVING MARK — cursor-responsive HIMΛRK glyph as a kinetic
+     identity statement. Not a chart — a brand-as-motion moment
+     that punctuates the home page between archive and mandates.
+     ========================================================== -->
+<style>
+  .lm-section{
+    --mx:50%;
+    --my:50%;
+    background:
+      radial-gradient(circle 320px at var(--mx) var(--my), rgba(95,129,144,.18), transparent 60%),
+      var(--midnight);
+    padding:160px var(--gx) 140px;
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid var(--rule-dk);
+    color:var(--off);
+    transition:background-position .25s linear;
+  }
+  /* dot grid backdrop */
+  .lm-section::before{
+    content:'';position:absolute;inset:0;
+    background-image:
+      radial-gradient(circle 1px at 50% 50%, rgba(138,173,184,.18) 1px, transparent 1.5px);
+    background-size:38px 38px;
+    pointer-events:none;
+    mask-image:radial-gradient(ellipse at center, black 30%, transparent 75%);
+    -webkit-mask-image:radial-gradient(ellipse at center, black 30%, transparent 75%);
+    opacity:.7;
+  }
+  .lm-section > *{position:relative;z-index:1;}
+
+  .lm-coord-l{
+    position:absolute;top:48px;left:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:var(--ocean-lt);z-index:2;
+  }
+  .lm-coord-r{
+    position:absolute;top:48px;right:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:rgba(138,173,184,.5);z-index:2;
+  }
+
+  .lm-eyebrow{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ocean-lt);margin-bottom:18px;
+    display:flex;align-items:center;gap:14px;
+    justify-content:center;
+  }
+  .lm-eyebrow::before,
+  .lm-eyebrow::after{
+    content:'';display:block;width:32px;height:1px;background:var(--ocean-lt);
+  }
+  .lm-hl{
+    font-family:var(--f-disp);font-size:clamp(20px,1.8vw,28px);
+    font-weight:600;line-height:1.4;color:rgba(226,240,240,.78);
+    text-align:center;letter-spacing:-.005em;
+    margin-bottom:72px;
+    max-width:520px;margin-left:auto;margin-right:auto;
+  }
+  .lm-hl em{font-style:italic;font-weight:300;color:var(--ocean-lt);}
+
+  /* The glyph stage — perspective container */
+  .lm-stage{
+    --rx:0deg;
+    --ry:0deg;
+    perspective:1200px;
+    display:flex;align-items:center;justify-content:center;
+    min-height:260px;
+    margin:0 auto;
+    max-width:880px;
+  }
+  .lm-glyph{
+    width:clamp(260px, 38vw, 480px);
+    height:auto;
+    transform:rotateX(var(--rx)) rotateY(var(--ry));
+    transform-style:preserve-3d;
+    transition:transform .8s cubic-bezier(.22,1,.36,1);
+    will-change:transform;
+    animation:lm-breathe 5.5s ease-in-out infinite;
+  }
+  @keyframes lm-breathe{
+    0%, 100% { filter:drop-shadow(0 0 0 rgba(95,129,144,0)); }
+    50%      { filter:drop-shadow(0 0 18px rgba(95,129,144,.35)); }
+  }
+  /* The glyph echo — backdrop layer that parallax-shifts opposite to cursor */
+  .lm-echo{
+    position:absolute;
+    width:clamp(260px, 38vw, 480px);
+    height:auto;
+    transform:rotateX(calc(var(--rx) * -1)) rotateY(calc(var(--ry) * -1));
+    transition:transform .8s cubic-bezier(.22,1,.36,1);
+    opacity:.08;
+    pointer-events:none;
+    filter:blur(2px);
+    z-index:0;
+  }
+  .lm-glyph-path{
+    fill:none;
+    stroke:var(--off);
+    stroke-width:3;
+    stroke-linejoin:miter;
+  }
+  .lm-echo .lm-glyph-path{ stroke:var(--ocean-lt); }
+
+  .lm-foot{
+    margin-top:72px;
+    text-align:center;
+    font-family:var(--f-mono);font-size:10px;font-weight:500;
+    letter-spacing:.22em;text-transform:uppercase;
+    color:rgba(138,173,184,.55);
+  }
+  .lm-foot::before{
+    content:'';display:inline-block;width:20px;height:1px;
+    background:rgba(138,173,184,.4);
+    vertical-align:middle;margin-right:14px;
+  }
+  .lm-foot::after{
+    content:'';display:inline-block;width:20px;height:1px;
+    background:rgba(138,173,184,.4);
+    vertical-align:middle;margin-left:14px;
+  }
+
+  @media (max-width:768px){
+    .lm-section{padding:100px 22px 80px;}
+    .lm-coord-l,.lm-coord-r{top:24px;}
+    .lm-coord-l{left:22px;}
+    .lm-coord-r{right:22px;}
+    .lm-hl{margin-bottom:48px;font-size:18px;}
+    .lm-stage{min-height:200px;}
+    .lm-foot{margin-top:48px;font-size:9px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .lm-glyph{animation:none;transition:none;}
+    .lm-echo{transition:none;display:none;}
+    .lm-section{transition:none;}
+  }
+</style>
 </head>
 <body data-page="home" data-location="root">
 <div id="cd"></div>
@@ -235,6 +376,46 @@
 </div>
 </section>
 
+<div class="s-num-bar dk"><span>01.B.02 · THE LIVING MARK</span><span>HIMARK / IDENTITY</span><span>RESPONSIVE · LIVE</span></div>
+
+<!-- LIVING MARK — cursor-responsive HIMΛRK glyph as a kinetic
+     identity moment. Ambient breath + cursor parallax + a soft
+     light-field that follows the pointer through the section. -->
+<section class="lm-section" id="lm-section">
+<span class="lm-coord-l">[ 01.B.02 ]</span>
+<span class="lm-coord-r">MARK · IN MOTION</span>
+
+<p class="lm-eyebrow">The mark</p>
+<h2 class="lm-hl">A consultancy is its principals — and<em>their mark on the work.</em></h2>
+
+<div class="lm-stage" id="lm-stage">
+<!-- echo layer — parallax shifts opposite to the front glyph -->
+<svg class="lm-echo" viewBox="0 0 292 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+<g class="lm-glyph-path">
+<rect x="0" y="0" width="28" height="200"/>
+<rect x="28" y="88" width="104" height="20"/>
+<rect x="132" y="0" width="28" height="200"/>
+<polygon points="160,0 182,0 212,120 201,120"/>
+<polygon points="242,0 264,0 223,120 212,120"/>
+<rect x="264" y="0" width="28" height="200"/>
+</g>
+</svg>
+<!-- foreground glyph -->
+<svg class="lm-glyph" id="lm-glyph" viewBox="0 0 292 200" preserveAspectRatio="xMidYMid meet" role="img" aria-label="HIMARK">
+<g class="lm-glyph-path">
+<rect x="0" y="0" width="28" height="200"/>
+<rect x="28" y="88" width="104" height="20"/>
+<rect x="132" y="0" width="28" height="200"/>
+<polygon points="160,0 182,0 212,120 201,120"/>
+<polygon points="242,0 264,0 223,120 212,120"/>
+<rect x="264" y="0" width="28" height="200"/>
+</g>
+</svg>
+</div>
+
+<p class="lm-foot">HIMARK · MMXXVI</p>
+</section>
+
 <div class="s-num-bar"><span>01.C · MANDATES</span><span>HIMARK / 02</span><span>03 · TIERS · STRUCTURED</span></div>
 
 <section class="home-svc-section">
@@ -320,5 +501,70 @@
 </div>
 </div>
 <script src="main/main.js"></script>
+
+<!-- LIVING MARK — cursor-responsive glyph + cursor-following light field.
+     Pure pointer events; no mousemove listeners run on touch devices. -->
+<script>
+(function(){
+  const section = document.getElementById('lm-section');
+  const stage   = document.getElementById('lm-stage');
+  const glyph   = document.getElementById('lm-glyph');
+  if(!section || !stage || !glyph) return;
+
+  const reduceMotion = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  // Touch / no-hover devices: skip the pointer effects entirely.
+  const hasHover = window.matchMedia && window.matchMedia('(hover:hover)').matches;
+  if(!hasHover || reduceMotion) return;
+
+  let rafId = null;
+  let pending = null;
+
+  function applyPointer(){
+    if(!pending) return;
+    const { mx, my, sx, sy, sw, sh } = pending;
+    pending = null;
+    rafId = null;
+
+    // Light field — radial gradient follows the pointer over the section bg
+    section.style.setProperty('--mx', (mx / sw * 100) + '%');
+    section.style.setProperty('--my', (my / sh * 100) + '%');
+
+    // Glyph parallax — tilt towards the pointer relative to stage centre
+    const stageRect = stage.getBoundingClientRect();
+    const cx = stageRect.left + stageRect.width  / 2;
+    const cy = stageRect.top  + stageRect.height / 2;
+    const dx = (sx - cx) / (stageRect.width  / 2); // -1..1
+    const dy = (sy - cy) / (stageRect.height / 2); // -1..1
+    // Clamp so the parallax stays subtle
+    const ry = Math.max(-1.2, Math.min(1.2, dx)) *  7; // deg
+    const rx = Math.max(-1.2, Math.min(1.2, dy)) * -5; // deg
+    stage.style.setProperty('--rx', rx.toFixed(2) + 'deg');
+    stage.style.setProperty('--ry', ry.toFixed(2) + 'deg');
+  }
+
+  section.addEventListener('mousemove', (e) => {
+    const rect = section.getBoundingClientRect();
+    pending = {
+      mx: e.clientX - rect.left,
+      my: e.clientY - rect.top,
+      sx: e.clientX,
+      sy: e.clientY,
+      sw: rect.width,
+      sh: rect.height
+    };
+    if(!rafId) rafId = requestAnimationFrame(applyPointer);
+  });
+
+  section.addEventListener('mouseleave', () => {
+    section.style.setProperty('--mx', '50%');
+    section.style.setProperty('--my', '50%');
+    stage.style.setProperty('--rx', '0deg');
+    stage.style.setProperty('--ry', '0deg');
+  });
+})();
+</script>
+
 </body>
 </html>

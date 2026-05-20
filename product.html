@@ -84,6 +84,261 @@
     "businessFunction": "https://schema.org/Sell"
   }
 }</script>
+
+<!-- ==========================================================
+     AIRaaS COVERAGE MAP — radial diagram. Reception core at the
+     centre, four work categories around it. Same diagram-kit
+     language as method engine / tier lattice (mono coords, ocean
+     active state, soft-fade detail panel).
+     ========================================================== -->
+<style>
+  .air-map{
+    background:var(--midnight);
+    color:var(--off);
+    padding:120px var(--gx) 100px;
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid var(--rule-dk);
+  }
+  .air-map::before{
+    content:'';position:absolute;inset:0;
+    background-image:linear-gradient(to right,var(--grid-dk) 1px,transparent 1px);
+    background-size:calc((100vw - 128px)/6) 100%;
+    background-position:64px 0;
+    pointer-events:none;opacity:.5;
+  }
+  .air-map > *{position:relative;z-index:1;}
+
+  .air-map-coord-l{
+    position:absolute;top:48px;left:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:var(--ocean-lt);z-index:2;
+  }
+  .air-map-coord-r{
+    position:absolute;top:48px;right:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:rgba(138,173,184,.5);z-index:2;
+  }
+  .air-map-eyebrow{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ocean-lt);margin-bottom:18px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .air-map-eyebrow::before{
+    content:'';display:block;width:24px;height:1px;background:var(--ocean-lt);
+  }
+  .air-map-hl{
+    font-family:var(--f-disp);font-size:clamp(34px,3.6vw,52px);
+    font-weight:800;line-height:1.05;color:var(--off);
+    letter-spacing:-.01em;margin-bottom:14px;
+  }
+  .air-map-hl em{font-style:italic;font-weight:300;color:var(--ocean-lt);}
+  .air-map-sub{
+    font-family:var(--f-body);font-weight:300;
+    font-size:14px;color:rgba(226,240,240,.6);
+    max-width:560px;margin-bottom:56px;line-height:1.7;
+  }
+
+  /* Stage */
+  .air-map-stage{
+    position:relative;width:100%;
+    max-width:880px;margin:0 auto;
+  }
+  .air-map-svg{
+    display:block;width:100%;height:auto;
+    user-select:none;-webkit-user-select:none;
+  }
+
+  /* Spokes */
+  .air-spoke{
+    stroke:rgba(138,173,184,.35);
+    stroke-width:1.2;
+    stroke-dasharray:4 4;
+    animation:air-spoke-flow 1.8s linear infinite;
+  }
+  @keyframes air-spoke-flow{ to{ stroke-dashoffset:-16; } }
+
+  /* Flow dots — one per spoke, radiating outward from core */
+  .air-flow-dot{
+    fill:var(--ocean-lt);
+    animation:air-flow 3.6s ease-out infinite;
+    opacity:0;
+  }
+  .air-flow-dot.dir-top    { offset-path:path('M 440 208 L 440 132'); -webkit-offset-path:path('M 440 208 L 440 132'); }
+  .air-flow-dot.dir-right  { offset-path:path('M 512 280 L 608 280'); -webkit-offset-path:path('M 512 280 L 608 280'); }
+  .air-flow-dot.dir-bottom { offset-path:path('M 440 352 L 440 428'); -webkit-offset-path:path('M 440 352 L 440 428'); }
+  .air-flow-dot.dir-left   { offset-path:path('M 368 280 L 272 280'); -webkit-offset-path:path('M 368 280 L 272 280'); }
+  .air-flow-dot.dir-top    { animation-delay:0s;   }
+  .air-flow-dot.dir-right  { animation-delay:0.9s; }
+  .air-flow-dot.dir-bottom { animation-delay:1.8s; }
+  .air-flow-dot.dir-left   { animation-delay:2.7s; }
+  @keyframes air-flow{
+    0%   { offset-distance:0%;   opacity:0; }
+    20%  { opacity:1; }
+    80%  { opacity:1; }
+    100% { offset-distance:100%; opacity:0; }
+  }
+
+  /* Core */
+  .air-core-ring{
+    fill:none;
+    stroke:rgba(226,240,240,.25);
+    stroke-width:1;
+    transform-origin:440px 280px;
+    animation:air-core-pulse 3.2s ease-out infinite;
+  }
+  @keyframes air-core-pulse{
+    0%   { opacity:.5; transform:scale(1); }
+    100% { opacity:0;  transform:scale(1.35); }
+  }
+  .air-core-fill{
+    fill:var(--ink-deep);
+    stroke:var(--ocean);
+    stroke-width:1;
+  }
+  .air-core-label{
+    font-family:var(--f-disp);font-size:18px;font-weight:800;
+    fill:var(--off);letter-spacing:-.005em;
+    pointer-events:none;
+  }
+  .air-core-sub{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.16em;fill:var(--ocean-lt);
+    pointer-events:none;
+  }
+
+  /* Outer nodes */
+  .air-node{ cursor:none; outline:none; }
+  .air-node .node-ring{
+    fill:none;stroke:rgba(138,173,184,.4);stroke-width:1;
+    transition:stroke .35s var(--ease), stroke-width .35s var(--ease);
+  }
+  .air-node .node-fill{
+    fill:var(--midnight);
+    stroke:rgba(138,173,184,.6);
+    stroke-width:1;
+    transition:fill .35s var(--ease), stroke .35s var(--ease);
+  }
+  .air-node .node-icon{
+    fill:none;stroke:var(--ocean-lt);stroke-width:1.5;
+    stroke-linecap:round;stroke-linejoin:round;
+    pointer-events:none;
+    transition:stroke .35s var(--ease);
+  }
+  .air-node:hover .node-ring{stroke:var(--ocean-lt);stroke-width:1.5;}
+  .air-node:hover .node-fill{stroke:var(--ocean-lt);}
+  .air-node:hover .node-icon{stroke:var(--off);}
+  .air-node:focus-visible .node-ring{stroke:var(--off);stroke-width:2;}
+  .air-node.active .node-ring{stroke:var(--off);stroke-width:1.5;}
+  .air-node.active .node-fill{fill:var(--ocean);stroke:var(--off);}
+  .air-node.active .node-icon{stroke:var(--off);}
+  .air-node .node-pulse{
+    fill:none;stroke:var(--ocean-lt);stroke-width:1;opacity:0;
+    transform-box:fill-box;transform-origin:center;
+  }
+  .air-node.active .node-pulse{
+    animation:air-node-pulse 2.4s ease-out infinite;
+  }
+  @keyframes air-node-pulse{
+    0%   { opacity:.6; transform:scale(1); }
+    100% { opacity:0;  transform:scale(1.7); }
+  }
+
+  /* Node labels (SVG text outside nodes) */
+  .air-node-name{
+    font-family:var(--f-mono);
+    font-size:10px;font-weight:600;
+    letter-spacing:.18em;
+    fill:rgba(138,173,184,.6);
+    transition:fill .35s var(--ease);
+    pointer-events:none;
+  }
+  .air-node-name.active{fill:var(--off);}
+
+  /* Detail panel */
+  .air-map-detail{
+    max-width:880px;
+    margin:60px auto 0;
+    background:rgba(95,129,144,.05);
+    border:1px solid rgba(138,173,184,.18);
+    border-radius:6px;
+    padding:36px 40px 32px;
+    position:relative;
+    box-shadow:0 30px 60px -30px rgba(0,0,0,.45);
+  }
+  .air-map-detail-coord{
+    position:absolute;top:14px;right:20px;
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:var(--ocean-lt);
+  }
+  .air-map-detail-grid{
+    display:grid;
+    grid-template-columns:1fr 1.1fr;
+    gap:48px;align-items:start;
+  }
+  .air-map-detail-eyebrow{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ocean-lt);margin-bottom:14px;
+  }
+  .air-map-detail-name{
+    font-family:var(--f-disp);font-size:clamp(26px,2.6vw,36px);
+    font-weight:800;color:var(--off);
+    letter-spacing:-.01em;line-height:1.05;
+    margin-bottom:18px;
+    transition:opacity .25s var(--ease);
+  }
+  .air-map-detail-desc{
+    font-family:var(--f-body);font-weight:400;font-size:14px;
+    line-height:1.75;color:rgba(226,240,240,.82);
+    transition:opacity .25s var(--ease);
+  }
+  .air-map-detail .fading{opacity:0;}
+  .air-map-detail-right{display:flex;flex-direction:column;}
+  .air-map-detail-row{
+    padding:16px 0 18px;
+    border-bottom:1px solid rgba(138,173,184,.15);
+  }
+  .air-map-detail-row:first-child{padding-top:0;}
+  .air-map-detail-row:last-child{border-bottom:none;padding-bottom:0;}
+  .air-map-detail-l{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ocean-lt);margin-bottom:8px;
+  }
+  .air-map-detail-v{
+    font-family:var(--f-body);font-weight:400;font-size:14px;
+    line-height:1.65;color:var(--off);
+    transition:opacity .25s var(--ease);
+  }
+  .air-map-detail-v.auto-flag::before{
+    content:'AUTO · ';
+    font-family:var(--f-mono);font-size:10px;font-weight:700;
+    letter-spacing:.14em;color:var(--ocean-lt);margin-right:6px;
+  }
+  .air-map-detail-v.esc-flag::before{
+    content:'ESCALATES · ';
+    font-family:var(--f-mono);font-size:10px;font-weight:700;
+    letter-spacing:.14em;color:#E6A857;margin-right:6px;
+  }
+
+  @media (max-width:768px){
+    .air-map{padding:80px 22px 60px;}
+    .air-map-coord-l,.air-map-coord-r{top:24px;}
+    .air-map-coord-l{left:22px;}
+    .air-map-coord-r{right:22px;}
+    .air-map-sub{margin-bottom:36px;}
+    .air-map-detail{padding:28px 22px;margin-top:40px;}
+    .air-map-detail-grid{grid-template-columns:1fr;gap:28px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .air-spoke,.air-flow-dot,
+    .air-core-ring,.air-node .node-pulse{animation:none;}
+    .air-flow-dot{display:none;}
+  }
+</style>
 </head>
 <body data-page="airass" data-location="root">
 <div id="cd"></div>
@@ -222,6 +477,113 @@
 <div class="af-cell r3d d6" data-idx="[06]"><div class="af-num">06</div><div class="af-title">Continuous Learning</div><p class="af-desc">Monthly model updates based on your actual conversation data. Performance compounds over time.</p></div>
 </div>
 </section>
+
+<div class="s-num-bar dk"><span>04.C · COVERAGE MAP</span><span>AIRASS / 03</span><span>04 WORK · CATEGORIES</span></div>
+
+<!-- AIRaaS COVERAGE MAP — radial diagram showing the four categories
+     of work AIRaaS performs, with auto/escalate boundaries surfaced
+     per category. -->
+<section class="air-map">
+<span class="air-map-coord-l">[ 04.C.01 ]</span>
+<span class="air-map-coord-r">DIAGRAM · INTERACTIVE</span>
+
+<p class="air-map-eyebrow">Interactive map</p>
+<h2 class="air-map-hl">What it handles<em>· and when a human steps in.</em></h2>
+<p class="air-map-sub">AIRaaS automates four categories of work across web, WhatsApp, and voice. The boundary between what it handles and when a principal takes over is deliberate. Tap any node.</p>
+
+<div class="air-map-stage">
+<svg class="air-map-svg" viewBox="0 0 880 560" preserveAspectRatio="xMidYMid meet" role="img" aria-label="AIRaaS coverage map — four work categories around the reception core">
+
+<!-- spokes from core to each node -->
+<line class="air-spoke" x1="440" y1="208" x2="440" y2="132"/>
+<line class="air-spoke" x1="512" y1="280" x2="608" y2="280"/>
+<line class="air-spoke" x1="440" y1="352" x2="440" y2="428"/>
+<line class="air-spoke" x1="368" y1="280" x2="272" y2="280"/>
+
+<!-- flow dots -->
+<circle class="air-flow-dot dir-top"    r="2.5"/>
+<circle class="air-flow-dot dir-right"  r="2.5"/>
+<circle class="air-flow-dot dir-bottom" r="2.5"/>
+<circle class="air-flow-dot dir-left"   r="2.5"/>
+
+<!-- core -->
+<circle class="air-core-ring" cx="440" cy="280" r="72"/>
+<circle class="air-core-fill" cx="440" cy="280" r="72"/>
+<text class="air-core-label" x="440" y="278" text-anchor="middle">AIRaaS</text>
+<text class="air-core-sub"   x="440" y="298" text-anchor="middle">RECEPTION · CORE</text>
+
+<!-- node: TOP — Intake -->
+<g class="air-node" data-cat="0" tabindex="0" role="button" aria-label="Intake category">
+<circle class="node-pulse" cx="440" cy="90" r="42"/>
+<circle class="node-ring"  cx="440" cy="90" r="42"/>
+<circle class="node-fill"  cx="440" cy="90" r="30"/>
+<!-- icon: inbound arrow -->
+<path class="node-icon" d="M 432 82 L 440 90 L 432 98 M 426 90 L 454 90"/>
+</g>
+<text class="air-node-name" x="440" y="32" text-anchor="middle">INTAKE</text>
+
+<!-- node: RIGHT — Scheduling -->
+<g class="air-node" data-cat="1" tabindex="0" role="button" aria-label="Scheduling category">
+<circle class="node-pulse" cx="650" cy="280" r="42"/>
+<circle class="node-ring"  cx="650" cy="280" r="42"/>
+<circle class="node-fill"  cx="650" cy="280" r="30"/>
+<!-- icon: calendar -->
+<rect class="node-icon" x="640" y="272" width="20" height="16" rx="1" fill="none"/>
+<line class="node-icon" x1="640" y1="278" x2="660" y2="278"/>
+<line class="node-icon" x1="644" y1="270" x2="644" y2="274"/>
+<line class="node-icon" x1="656" y1="270" x2="656" y2="274"/>
+</g>
+<text class="air-node-name" x="710" y="284" text-anchor="start">SCHEDULING</text>
+
+<!-- node: BOTTOM — Follow-up -->
+<g class="air-node" data-cat="2" tabindex="0" role="button" aria-label="Follow-up category">
+<circle class="node-pulse" cx="440" cy="470" r="42"/>
+<circle class="node-ring"  cx="440" cy="470" r="42"/>
+<circle class="node-fill"  cx="440" cy="470" r="30"/>
+<!-- icon: cycle arrows -->
+<path class="node-icon" d="M 432 466 a 8 8 0 1 1 -2 6 M 432 466 L 432 470 L 428 470"/>
+<path class="node-icon" d="M 448 474 a 8 8 0 1 1 2 -6 M 448 474 L 448 470 L 452 470"/>
+</g>
+<text class="air-node-name" x="440" y="530" text-anchor="middle">FOLLOW-UP</text>
+
+<!-- node: LEFT — Escalation -->
+<g class="air-node" data-cat="3" tabindex="0" role="button" aria-label="Escalation category">
+<circle class="node-pulse" cx="230" cy="280" r="42"/>
+<circle class="node-ring"  cx="230" cy="280" r="42"/>
+<circle class="node-fill"  cx="230" cy="280" r="30"/>
+<!-- icon: outbound arrow up-right -->
+<path class="node-icon" d="M 224 286 L 236 274 M 230 274 L 236 274 L 236 280"/>
+</g>
+<text class="air-node-name" x="170" y="284" text-anchor="end">ESCALATION</text>
+
+</svg>
+</div>
+
+<div class="air-map-detail">
+<div class="air-map-detail-coord">[ <span id="air-detail-num">01</span> · <span id="air-detail-tag">INTAKE</span> ]</div>
+<div class="air-map-detail-grid">
+<div>
+<p class="air-map-detail-eyebrow">Category</p>
+<h3 class="air-map-detail-name" id="air-detail-name">Intake</h3>
+<p class="air-map-detail-desc" id="air-detail-desc">The first touch — automated greeting, intent capture, and LeadSense-based qualification across web, WhatsApp, and voice. Every visitor met immediately, in your brand voice.</p>
+</div>
+<div class="air-map-detail-right">
+<div class="air-map-detail-row">
+<p class="air-map-detail-l">What AIRaaS handles</p>
+<p class="air-map-detail-v auto-flag" id="air-detail-auto">Greeting, intent detection, KB-backed Q&amp;A, LeadSense scoring, CRM routing.</p>
+</div>
+<div class="air-map-detail-row">
+<p class="air-map-detail-l">When it steps back</p>
+<p class="air-map-detail-v esc-flag" id="air-detail-esc">Named-account inquiries, complex commercial questions, executive-level contacts.</p>
+</div>
+<div class="air-map-detail-row">
+<p class="air-map-detail-l">Channels</p>
+<p class="air-map-detail-v" id="air-detail-ch">Web · WhatsApp · Voice</p>
+</div>
+</div>
+</div>
+</div>
+</section>
 <footer class="footer">
 <span class="footer-coord-tl">[ END.DOCUMENT ]</span>
 <span class="footer-coord-tr">HIMARK / FOOTER</span>
@@ -274,5 +636,121 @@
 </div>
 </div>
 <script src="main/main.js"></script>
+
+<!-- AIRaaS COVERAGE MAP — same diagram-kit cycling pattern -->
+<script>
+(function(){
+  const map = document.querySelector('.air-map');
+  if(!map) return;
+
+  const nodes = map.querySelectorAll('.air-node');
+  const names = map.querySelectorAll('.air-node-name');
+  const detailNum  = document.getElementById('air-detail-num');
+  const detailTag  = document.getElementById('air-detail-tag');
+  const detailName = document.getElementById('air-detail-name');
+  const detailDesc = document.getElementById('air-detail-desc');
+  const detailAuto = document.getElementById('air-detail-auto');
+  const detailEsc  = document.getElementById('air-detail-esc');
+  const detailCh   = document.getElementById('air-detail-ch');
+
+  const cats = [
+    {
+      num:'01', tag:'INTAKE', name:'Intake',
+      desc:'The first touch — automated greeting, intent capture, and LeadSense-based qualification across web, WhatsApp, and voice. Every visitor met immediately, in your brand voice.',
+      auto:'Greeting, intent detection, KB-backed Q&A, LeadSense scoring, CRM routing.',
+      esc:'Named-account inquiries, complex commercial questions, executive-level contacts.',
+      ch:'Web · WhatsApp · Voice'
+    },
+    {
+      num:'02', tag:'SCHEDULING', name:'Scheduling',
+      desc:'Slot offering, confirmation, reschedule. Fully automated within booking policy. Calendar sync runs against principal availability in real time.',
+      auto:'Available-slot offering, calendar sync, confirmation messages, in-policy reschedules.',
+      esc:'Principal-direct slot requests, out-of-policy reschedules, calendar conflicts.',
+      ch:'Web · WhatsApp · Voice'
+    },
+    {
+      num:'03', tag:'FOLLOW-UP', name:'Follow-up',
+      desc:'Sequenced outbound nudges and asset delivery. Keeps qualified-but-not-yet-ready prospects warm without burning principal time.',
+      auto:'Sequence delivery, template messages, asset attachments, drip cadence.',
+      esc:'Principal-direct outbound, custom narrative, sensitive matters.',
+      ch:'WhatsApp · Email'
+    },
+    {
+      num:'04', tag:'ESCALATION', name:'Escalation',
+      desc:'The clean line between AIRaaS and a HIMARK principal — when, how, and to whom. Full conversation context, qualification signals, and a suggested principal are passed forward.',
+      auto:'Trigger detection, context summary, principal matching, hand-off notification.',
+      esc:'Full transcript, qualification score, suggested principal — delivered to Slack with priority flag.',
+      ch:'All channels'
+    }
+  ];
+
+  let activeIdx = 0;
+  let timer = null;
+  let userTookOver = false;
+  let resumeAfter = null;
+  const INTERVAL = 7500;
+  const FADE = 220;
+  const RESUME_DELAY = 14000;
+
+  const valueEls = [detailName, detailDesc, detailAuto, detailEsc, detailCh];
+
+  function setActive(idx){
+    if(idx === activeIdx) return;
+    nodes.forEach((n,i)=>n.classList.toggle('active', i===idx));
+    names.forEach((n,i)=>n.classList.toggle('active', i===idx));
+
+    valueEls.forEach(el=>el.classList.add('fading'));
+    setTimeout(()=>{
+      const c = cats[idx];
+      detailNum.textContent  = c.num;
+      detailTag.textContent  = c.tag;
+      detailName.textContent = c.name;
+      detailDesc.textContent = c.desc;
+      detailAuto.textContent = c.auto;
+      detailEsc.textContent  = c.esc;
+      detailCh.textContent   = c.ch;
+      valueEls.forEach(el=>el.classList.remove('fading'));
+    }, FADE);
+    activeIdx = idx;
+  }
+
+  function nextCat(){ setActive((activeIdx + 1) % cats.length); }
+  function startTimer(){ if(timer) clearInterval(timer); timer = setInterval(nextCat, INTERVAL); }
+  function stopTimer(){ if(timer){ clearInterval(timer); timer = null; } }
+
+  nodes.forEach((node, i)=>{
+    function activate(){
+      userTookOver = true;
+      setActive(i);
+      stopTimer();
+      if(resumeAfter) clearTimeout(resumeAfter);
+      resumeAfter = setTimeout(()=>{ userTookOver = false; startTimer(); }, RESUME_DELAY);
+    }
+    node.addEventListener('click', activate);
+    node.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); activate(); }
+    });
+  });
+
+  if('IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){ if(!userTookOver) startTimer(); }
+        else stopTimer();
+      });
+    }, { threshold: 0.15 });
+    io.observe(map);
+  } else { startTimer(); }
+
+  nodes[0].classList.add('active');
+  names[0].classList.add('active');
+
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.hidden) stopTimer();
+    else if(!userTookOver) startTimer();
+  });
+})();
+</script>
+
 </body>
 </html>

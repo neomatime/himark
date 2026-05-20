@@ -132,48 +132,88 @@
   }
   .lm-hl em{font-style:italic;font-weight:300;color:var(--ocean-lt);}
 
-  /* The glyph stage — perspective container */
+  /* The glyph stage — perspective container.
+     Houses the framed-H glyph borrowed from the loading sequence:
+     four solid bars forming an H inside a 132x192 rectangular frame
+     that draws on via stroke-dashoffset when the section enters view. */
   .lm-stage{
     --rx:0deg;
     --ry:0deg;
     perspective:1200px;
     display:flex;align-items:center;justify-content:center;
-    min-height:260px;
+    min-height:320px;
     margin:0 auto;
     max-width:880px;
   }
   .lm-glyph{
-    width:clamp(260px, 38vw, 480px);
+    width:clamp(150px, 22vw, 240px);  /* taller aspect than wordmark — smaller width */
     height:auto;
     transform:rotateX(var(--rx)) rotateY(var(--ry));
     transform-style:preserve-3d;
     transition:transform .8s cubic-bezier(.22,1,.36,1);
     will-change:transform;
     animation:lm-breathe 5.5s ease-in-out infinite;
+    /* Hidden until JS adds .in-view (via IntersectionObserver) so the
+       reveal plays as the section scrolls into the viewport. */
   }
   @keyframes lm-breathe{
     0%, 100% { filter:drop-shadow(0 0 0 rgba(95,129,144,0)); }
-    50%      { filter:drop-shadow(0 0 18px rgba(95,129,144,.35)); }
+    50%      { filter:drop-shadow(0 0 22px rgba(95,129,144,.4)); }
   }
-  /* The glyph echo — backdrop layer that parallax-shifts opposite to cursor */
+  /* The echo layer — parallax-shifts opposite for depth, no animation */
   .lm-echo{
     position:absolute;
-    width:clamp(260px, 38vw, 480px);
+    width:clamp(150px, 22vw, 240px);
     height:auto;
     transform:rotateX(calc(var(--rx) * -1)) rotateY(calc(var(--ry) * -1));
     transition:transform .8s cubic-bezier(.22,1,.36,1);
-    opacity:.08;
     pointer-events:none;
     filter:blur(2px);
     z-index:0;
+    opacity:.18;
   }
-  .lm-glyph-path{
+
+  /* H bars — start invisible, fade in once .in-view fires */
+  .lm-h-glyph rect{
+    fill:var(--off);
+    opacity:0;
+    transform-origin:50% 100%;
+    transform:translateY(8px);
+    transition:
+      opacity   .9s cubic-bezier(.22,1,.36,1) .15s,
+      transform .9s cubic-bezier(.22,1,.36,1) .15s;
+  }
+  .lm-glyph.in-view .lm-h-glyph rect{
+    opacity:1;
+    transform:translateY(0);
+  }
+  /* Echo H — always rendered, dim ocean tint */
+  .lm-echo .lm-h-glyph rect{
+    fill:var(--ocean-lt);
+    opacity:.55;
+    transform:none;
+    transition:none;
+  }
+
+  /* Frame — perimeter = 2*(132+192) = 648. Draws on with
+     stroke-dashoffset when .in-view fires, after the H has settled. */
+  .lm-frame{
     fill:none;
     stroke:var(--off);
-    stroke-width:3;
-    stroke-linejoin:miter;
+    stroke-dasharray:648;
+    stroke-dashoffset:648;
+    transition:stroke-dashoffset 1.5s cubic-bezier(.65,0,.35,1) .75s;
   }
-  .lm-echo .lm-glyph-path{ stroke:var(--ocean-lt); }
+  .lm-glyph.in-view .lm-frame{
+    stroke-dashoffset:0;
+  }
+  /* Echo frame — drawn permanently, ocean tinted */
+  .lm-echo .lm-frame{
+    stroke:var(--ocean-lt);
+    stroke-dasharray:none;
+    stroke-dashoffset:0;
+    opacity:.7;
+  }
 
   .lm-foot{
     margin-top:72px;
@@ -389,27 +429,28 @@
 <h2 class="lm-hl">A consultancy is its principals — and<em>their mark on the work.</em></h2>
 
 <div class="lm-stage" id="lm-stage">
-<!-- echo layer — parallax shifts opposite to the front glyph -->
-<svg class="lm-echo" viewBox="0 0 292 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-<g class="lm-glyph-path">
-<rect x="0" y="0" width="28" height="200"/>
-<rect x="28" y="88" width="104" height="20"/>
-<rect x="132" y="0" width="28" height="200"/>
-<polygon points="160,0 182,0 212,120 201,120"/>
-<polygon points="242,0 264,0 223,120 212,120"/>
-<rect x="264" y="0" width="28" height="200"/>
+<!-- Echo layer — same H+frame, parallax-shifts opposite, ocean-tinted -->
+<svg class="lm-echo" viewBox="0 0 140 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+<g class="lm-h-glyph">
+<rect x="14" y="14" width="38" height="170"/>
+<rect x="88" y="14" width="38" height="170"/>
+<rect x="52" y="85" width="16" height="30"/>
+<rect x="72" y="85" width="16" height="30"/>
 </g>
+<rect class="lm-frame" x="4" y="4" width="132" height="192" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter"/>
 </svg>
-<!-- foreground glyph -->
-<svg class="lm-glyph" id="lm-glyph" viewBox="0 0 292 200" preserveAspectRatio="xMidYMid meet" role="img" aria-label="HIMARK">
-<g class="lm-glyph-path">
-<rect x="0" y="0" width="28" height="200"/>
-<rect x="28" y="88" width="104" height="20"/>
-<rect x="132" y="0" width="28" height="200"/>
-<polygon points="160,0 182,0 212,120 201,120"/>
-<polygon points="242,0 264,0 223,120 212,120"/>
-<rect x="264" y="0" width="28" height="200"/>
+<!-- Foreground glyph — the framed H, borrowed from the loading sequence.
+     viewBox 140x200, frame 132x192 with stroke-width 10. Four solid H
+     bars (left leg, right leg, two halves of the middle connector with
+     a 4-unit vertical split between them at x=68..72). -->
+<svg class="lm-glyph" id="lm-glyph" viewBox="0 0 140 200" preserveAspectRatio="xMidYMid meet" role="img" aria-label="HIMARK">
+<g class="lm-h-glyph">
+<rect x="14" y="14" width="38" height="170"/>
+<rect x="88" y="14" width="38" height="170"/>
+<rect x="52" y="85" width="16" height="30"/>
+<rect x="72" y="85" width="16" height="30"/>
 </g>
+<rect class="lm-frame" x="4" y="4" width="132" height="192" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter"/>
 </svg>
 </div>
 
@@ -502,8 +543,11 @@
 </div>
 <script src="main/main.js"></script>
 
-<!-- LIVING MARK — cursor-responsive glyph + cursor-following light field.
-     Pure pointer events; no mousemove listeners run on touch devices. -->
+<!-- LIVING MARK — scroll-triggered reveal of the framed H + cursor-
+     following light field + glyph parallax. The framed-H borrows
+     the same animation language as the loading-page sequence:
+     H bars fade up first, then the frame draws on via stroke-
+     dashoffset. Plays once when the section enters the viewport. -->
 <script>
 (function(){
   const section = document.getElementById('lm-section');
@@ -513,6 +557,25 @@
 
   const reduceMotion = window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  // Scroll-trigger the reveal — IntersectionObserver fires once
+  // when the section is ~25% in view. Reduced-motion users get the
+  // final state instantly with no transition.
+  if(reduceMotion){
+    glyph.classList.add('in-view');
+  } else if('IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          glyph.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.25 });
+    io.observe(section);
+  } else {
+    glyph.classList.add('in-view');
+  }
 
   // Touch / no-hover devices: skip the pointer effects entirely.
   const hasHover = window.matchMedia && window.matchMedia('(hover:hover)').matches;

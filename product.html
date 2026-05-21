@@ -339,6 +339,251 @@
     .air-flow-dot{display:none;}
   }
 </style>
+
+<!-- ==========================================================
+     AIRaaS SYSTEMS ARCHITECTURE — five-layer Operations OS
+     pipeline + layered architecture summary. Positions AIRaaS
+     as enterprise infrastructure rather than a feature.
+     ========================================================== -->
+<style>
+  .airos-section{
+    background:var(--off);
+    padding:120px var(--gx) 100px;
+    position:relative;
+    overflow:hidden;
+    border-top:1px solid var(--rule);
+    border-bottom:1px solid var(--rule);
+  }
+  .airos-section::before{
+    content:'';position:absolute;inset:0;
+    background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px);
+    background-size:calc((100vw - 128px)/6) 100%;
+    background-position:64px 0;
+    pointer-events:none;opacity:.45;
+  }
+  .airos-section > *{position:relative;z-index:1;}
+
+  .airos-coord-l{
+    position:absolute;top:48px;left:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:var(--ocean);z-index:2;
+  }
+  .airos-coord-r{
+    position:absolute;top:48px;right:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:rgba(46,74,90,.55);z-index:2;
+  }
+
+  .airos-intro{
+    max-width:780px;
+    margin-bottom:64px;
+  }
+  .airos-eyebrow{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--ocean);
+    margin-bottom:18px;display:flex;align-items:center;gap:14px;
+  }
+  .airos-eyebrow::before{
+    content:'';display:block;width:24px;height:1px;background:var(--ocean);
+  }
+  .airos-hl{
+    font-family:var(--f-disp);font-size:clamp(32px,3.4vw,48px);
+    font-weight:800;line-height:1.05;color:var(--midnight);
+    letter-spacing:-.01em;margin-bottom:14px;
+  }
+  .airos-hl em{font-style:italic;font-weight:300;color:var(--ocean);}
+  .airos-sub{
+    font-family:var(--f-body);font-weight:400;font-size:14px;
+    color:var(--ink-mut);max-width:640px;line-height:1.75;
+  }
+
+  /* ==== Pipeline — five stages in a horizontal row ==== */
+  .airos-pipeline{
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:14px;
+    max-width:1280px;
+    margin:0 auto;
+  }
+
+  /* SVG flow line connecting stages — runs behind the stage racks */
+  .airos-flow{
+    position:absolute;
+    left:5%;right:5%;top:48px;
+    width:90%;height:60px;
+    pointer-events:none;
+    z-index:0;
+  }
+  .airos-flow-line{
+    stroke:rgba(95,129,144,.28);
+    stroke-width:1;
+    stroke-dasharray:3 4;
+  }
+  .airos-flow-dot{
+    fill:var(--ocean);
+    cy:30;
+    animation:airos-dot-flow 5s linear infinite;
+  }
+  .airos-flow-dot-1{animation-delay:0s;}
+  .airos-flow-dot-2{animation-delay:1.66s;}
+  .airos-flow-dot-3{animation-delay:3.33s;}
+  @keyframes airos-dot-flow{
+    0%   { cx:0;    opacity:0; }
+    8%   { opacity:1; }
+    92%  { opacity:1; }
+    100% { cx:1200; opacity:0; }
+  }
+
+  /* Stage rack — each layer */
+  .airos-stage{
+    background:var(--white);
+    border:1px solid var(--rule);
+    padding:24px 20px 22px;
+    position:relative;
+    z-index:1;
+    cursor:none;outline:none;
+    display:flex;flex-direction:column;
+    transition:transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s var(--ease);
+  }
+  .airos-stage:hover,
+  .airos-stage:focus-visible{
+    transform:translateY(-4px);
+    box-shadow:0 24px 48px -24px rgba(28,43,58,.2);
+    border-color:var(--ocean);
+  }
+  .airos-stage:focus-visible{outline:2px solid var(--ocean);outline-offset:-3px;}
+
+  .airos-stage-top{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:16px;
+  }
+  .airos-stage-coord{
+    font-family:var(--f-mono);font-size:9px;font-weight:700;
+    letter-spacing:.14em;color:var(--ocean);
+  }
+  .airos-stage-pulse{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--ocean);
+    box-shadow:0 0 0 0 rgba(95,129,144,.45);
+    animation:airos-pulse 2.4s ease-out infinite;
+  }
+  @keyframes airos-pulse{
+    0%   { box-shadow:0 0 0 0   rgba(95,129,144,.55); }
+    100% { box-shadow:0 0 0 8px rgba(95,129,144,0);   }
+  }
+  .airos-stage-tag{
+    font-family:var(--f-mono);font-size:9.5px;font-weight:700;
+    letter-spacing:.2em;color:var(--off);background:var(--midnight);
+    padding:5px 9px;border-radius:1px;
+    align-self:flex-start;margin-bottom:14px;
+  }
+  .airos-stage-name{
+    font-family:var(--f-disp);font-size:18px;font-weight:800;
+    color:var(--midnight);letter-spacing:-.005em;line-height:1.15;
+    margin-bottom:12px;
+  }
+  .airos-stage-desc{
+    font-family:var(--f-body);font-weight:400;font-size:12.5px;
+    color:var(--ink);line-height:1.6;
+    margin-bottom:18px;flex:1;
+  }
+  .airos-stage-mods{
+    list-style:none;padding:0;margin:0;
+    padding-top:14px;border-top:1px solid var(--rule);
+  }
+  .airos-stage-mods li{
+    font-family:var(--f-mono);font-size:10.5px;font-weight:500;
+    letter-spacing:.04em;color:var(--ink-mut);
+    padding:5px 0 5px 14px;position:relative;line-height:1.4;
+  }
+  .airos-stage-mods li::before{
+    content:'>';position:absolute;left:0;top:5px;
+    color:var(--ocean);font-weight:700;
+  }
+
+  /* ==== Layered architecture summary ==== */
+  .airos-layers{
+    max-width:1280px;
+    margin:80px auto 0;
+    padding:48px;
+    background:var(--midnight);
+    color:var(--off);
+    display:grid;
+    grid-template-columns:1fr 1.4fr;
+    gap:64px;
+    align-items:start;
+    border-radius:4px;
+    box-shadow:0 30px 60px -30px rgba(28,43,58,.3);
+  }
+  .airos-layers-eyebrow{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--ocean-lt);
+    margin-bottom:14px;
+  }
+  .airos-layers-hl{
+    font-family:var(--f-disp);font-size:clamp(24px,2.4vw,32px);
+    font-weight:800;line-height:1.1;color:var(--off);
+    letter-spacing:-.01em;
+  }
+  .airos-layers-hl em{font-style:italic;font-weight:300;color:var(--ocean-lt);}
+
+  .airos-layers-r{display:flex;flex-direction:column;}
+  .airos-layer-row{
+    display:grid;
+    grid-template-columns:120px 180px 1fr;
+    gap:24px;
+    align-items:start;
+    padding:18px 0;
+    border-top:1px solid rgba(138,173,184,.18);
+  }
+  .airos-layer-row:first-child{border-top:none;padding-top:0;}
+  .airos-layer-row:last-child{padding-bottom:0;}
+  .airos-layer-tag{
+    font-family:var(--f-mono);font-size:9px;font-weight:700;
+    letter-spacing:.2em;color:var(--ocean-lt);
+  }
+  .airos-layer-name{
+    font-family:var(--f-disp);font-size:14px;font-weight:700;
+    color:var(--off);letter-spacing:-.005em;
+  }
+  .airos-layer-note{
+    font-family:var(--f-body);font-weight:400;font-size:13px;
+    color:rgba(226,240,240,.7);line-height:1.6;
+  }
+
+  /* Responsive */
+  @media (max-width:1080px){
+    .airos-pipeline{
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+    }
+    .airos-stage:nth-child(4),
+    .airos-stage:nth-child(5),
+    .airos-stage:nth-child(6),
+    .airos-stage:nth-child(7){grid-row:auto;}
+    .airos-flow{display:none;}
+    .airos-layers{grid-template-columns:1fr;gap:32px;padding:36px;}
+    .airos-layer-row{grid-template-columns:100px 1fr;gap:14px;}
+    .airos-layer-note{grid-column:1 / -1;margin-top:4px;}
+  }
+  @media (max-width:768px){
+    .airos-section{padding:80px 22px 60px;}
+    .airos-coord-l,.airos-coord-r{top:24px;}
+    .airos-coord-l{left:22px;}
+    .airos-coord-r{right:22px;}
+    .airos-intro{margin-bottom:40px;}
+    .airos-pipeline{grid-template-columns:1fr;gap:12px;}
+    .airos-layers{padding:28px 22px;margin-top:48px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .airos-stage-pulse,
+    .airos-flow-dot{animation:none;}
+    .airos-flow-dot{display:none;}
+  }
+</style>
+
 </head>
 <body data-page="airass" data-location="root">
 <div id="cd"></div>
@@ -432,12 +677,12 @@
 <span class="np-hero-coord-tl">[ 04.A · AIRaaS ]</span>
 <span class="np-hero-coord-tr">DEPLOYED · 2026</span>
 <div class="np-hero-content">
-<p class="np-hero-eyebrow">New Product Line</p>
-<h1 class="np-hl">Intelligence at the<span>front line.</span></h1>
+<p class="np-hero-eyebrow">Operating Layer · Infrastructure</p>
+<h1 class="np-hl">The operating layer<span>for client engagement.</span></h1>
 <div class="np-meta">
-<div><div class="np-meta-l">Product</div><div class="np-meta-v">AIRaaS</div></div>
-<div><div class="np-meta-l">Channels</div><div class="np-meta-v">Web · WhatsApp · Voice</div></div>
-<div><div class="np-meta-l">Framework</div><div class="np-meta-v">LeadSense</div></div>
+<div><div class="np-meta-l">Class</div><div class="np-meta-v">Operating system</div></div>
+<div><div class="np-meta-l">Surfaces</div><div class="np-meta-v">Web · WhatsApp · Voice</div></div>
+<div><div class="np-meta-l">Cadence</div><div class="np-meta-v">Always-on</div></div>
 </div>
 </div>
 </section>
@@ -447,10 +692,10 @@
 <section class="air-body">
 <span class="air-body-coord">[ 04.A.01 ]</span>
 <div class="r3d-l">
-<p class="eyebrow">What It Is</p>
-<h2 class="air-hl">Always on.<br><em>Never off-brand.</em></h2>
-<p class="air-desc">AIRaaS delivers intelligent, always-on client engagement across WhatsApp, website chat, and voice channels — powered by HIMARK's proprietary LeadSense qualification framework.</p>
-<p class="air-desc" style="margin-top:-8px">Every interaction measured, qualified, and routed with the precision of a senior front-of-house team.</p>
+<p class="eyebrow">What it is</p>
+<h2 class="air-hl">Not a chatbot.<br><em>An operating layer.</em></h2>
+<p class="air-desc">AIRaaS is HIMARK's proprietary operating layer for client engagement — an always-on system that handles intake, qualification, intelligent routing, workflow orchestration, and CRM action across web, WhatsApp, and voice surfaces.</p>
+<p class="air-desc" style="margin-top:-8px">It runs as infrastructure beneath your business — the same way email or your CRM does — not as a feature bolted onto a website. Every interaction is measured, qualified, and routed with the precision of a senior front-of-house team that never sleeps.</p>
 <a href="#" class="btn btn-dk" style="margin-top:36px;cursor:none" data-page="intake" data-num="—">Request Demo</a>
 </div>
 <div class="r3d-r d1">
@@ -584,6 +829,148 @@
 </div>
 </div>
 </section>
+<div class="s-num-bar"><span>04.D · SYSTEMS ARCHITECTURE</span><span>AIRASS / 04</span><span>05 LAYERS · OPERATING</span></div>
+
+<!-- AIRaaS SYSTEMS ARCHITECTURE — the Operations OS pipeline.
+     Five layered stages (Input -> Intelligence -> Routing ->
+     Orchestration -> Output) shown as a left-to-right pipeline
+     of modular racks with flowing connection lines between them.
+     Positions AIRaaS as enterprise infrastructure, not a feature. -->
+<section class="airos-section">
+<span class="airos-coord-l">[ 04.D.01 · ARCHITECTURE ]</span>
+<span class="airos-coord-r">OPERATING · INFRASTRUCTURE</span>
+
+<div class="airos-intro">
+<p class="airos-eyebrow">The system, end to end</p>
+<h2 class="airos-hl">Five operating layers ·<em>one continuous pipeline.</em></h2>
+<p class="airos-sub">AIRaaS is not a single component. It is a layered operating system — five stages from inbound contact through orchestrated action. Every interaction passes through the full pipeline. Hover any layer to read what it owns.</p>
+</div>
+
+<div class="airos-pipeline" id="airos-pipeline">
+
+<!-- Flow connectors drawn behind the stage racks -->
+<svg class="airos-flow" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true">
+<line class="airos-flow-line" x1="0" y1="30" x2="1200" y2="30"/>
+<circle class="airos-flow-dot airos-flow-dot-1" r="3.5"/>
+<circle class="airos-flow-dot airos-flow-dot-2" r="3.5"/>
+<circle class="airos-flow-dot airos-flow-dot-3" r="3.5"/>
+</svg>
+
+<!-- 5 stage racks -->
+<article class="airos-stage" data-layer="0" tabindex="0">
+<div class="airos-stage-top">
+<span class="airos-stage-coord">[ L.01 ]</span>
+<span class="airos-stage-pulse"></span>
+</div>
+<div class="airos-stage-tag">INPUT</div>
+<h3 class="airos-stage-name">Channel Surfaces</h3>
+<p class="airos-stage-desc">Where the work enters the system. AIRaaS listens across every surface a client uses to reach you — and meets them in your brand voice immediately.</p>
+<ul class="airos-stage-mods">
+<li>Website chat embed</li>
+<li>WhatsApp Business API</li>
+<li>Voice (inbound calls)</li>
+<li>Email triage</li>
+</ul>
+</article>
+
+<article class="airos-stage" data-layer="1" tabindex="0">
+<div class="airos-stage-top">
+<span class="airos-stage-coord">[ L.02 ]</span>
+<span class="airos-stage-pulse"></span>
+</div>
+<div class="airos-stage-tag">INTELLIGENCE</div>
+<h3 class="airos-stage-name">AI Agent Layer</h3>
+<p class="airos-stage-desc">Intent recognition, knowledge-base grounding, and LeadSense qualification scoring. Each interaction understood, classified, and tagged within seconds — not minutes.</p>
+<ul class="airos-stage-mods">
+<li>Intent classification</li>
+<li>KB-grounded response</li>
+<li>LeadSense scoring</li>
+<li>Persona alignment</li>
+</ul>
+</article>
+
+<article class="airos-stage" data-layer="2" tabindex="0">
+<div class="airos-stage-top">
+<span class="airos-stage-coord">[ L.03 ]</span>
+<span class="airos-stage-pulse"></span>
+</div>
+<div class="airos-stage-tag">ROUTING</div>
+<h3 class="airos-stage-name">Intelligent Decision</h3>
+<p class="airos-stage-desc">The rules engine. AIRaaS decides what stays automated, what escalates to a principal, what waits for sequence, and what fires the priority alert.</p>
+<ul class="airos-stage-mods">
+<li>Auto vs escalate logic</li>
+<li>Principal matching</li>
+<li>Priority weighting</li>
+<li>Timezone awareness</li>
+</ul>
+</article>
+
+<article class="airos-stage" data-layer="3" tabindex="0">
+<div class="airos-stage-top">
+<span class="airos-stage-coord">[ L.04 ]</span>
+<span class="airos-stage-pulse"></span>
+</div>
+<div class="airos-stage-tag">ORCHESTRATION</div>
+<h3 class="airos-stage-name">Workflow Engine</h3>
+<p class="airos-stage-desc">Where decisions become action. Sequenced outbound, calendar sync, CRM record creation, document delivery, and the operational glue that connects every downstream tool.</p>
+<ul class="airos-stage-mods">
+<li>Outbound sequences</li>
+<li>Calendar orchestration</li>
+<li>CRM record sync</li>
+<li>API + webhook chain</li>
+</ul>
+</article>
+
+<article class="airos-stage" data-layer="4" tabindex="0">
+<div class="airos-stage-top">
+<span class="airos-stage-coord">[ L.05 ]</span>
+<span class="airos-stage-pulse"></span>
+</div>
+<div class="airos-stage-tag">OUTPUT</div>
+<h3 class="airos-stage-name">Action Delivery</h3>
+<p class="airos-stage-desc">The system meets the human. Calendar invites land, CRM contacts appear in the principal's view, priority Slack alerts fire, follow-up assets are delivered — all with full conversation context attached.</p>
+<ul class="airos-stage-mods">
+<li>CRM contact creation</li>
+<li>Calendar invites</li>
+<li>Principal Slack alert</li>
+<li>Asset / document drop</li>
+</ul>
+</article>
+
+</div>
+
+<!-- Layered architecture summary — beneath the pipeline -->
+<div class="airos-layers">
+<div class="airos-layers-l">
+<p class="airos-layers-eyebrow">Architectural posture</p>
+<h3 class="airos-layers-hl">AIRaaS as<em>infrastructure layer.</em></h3>
+</div>
+<div class="airos-layers-r">
+<div class="airos-layer-row">
+<span class="airos-layer-tag">SURFACE</span>
+<span class="airos-layer-name">Client touchpoints</span>
+<span class="airos-layer-note">Web · WhatsApp · Voice · Email — every channel handled in your voice.</span>
+</div>
+<div class="airos-layer-row">
+<span class="airos-layer-tag">INTELLIGENCE</span>
+<span class="airos-layer-name">Reasoning &amp; qualification</span>
+<span class="airos-layer-note">LLM-backed intent + LeadSense scoring. Tunable to your ideal client profile.</span>
+</div>
+<div class="airos-layer-row">
+<span class="airos-layer-tag">ORCHESTRATION</span>
+<span class="airos-layer-name">Workflow + integrations</span>
+<span class="airos-layer-note">Sequences, CRM sync, calendar, API chain. Connects your existing stack.</span>
+</div>
+<div class="airos-layer-row">
+<span class="airos-layer-tag">GOVERNANCE</span>
+<span class="airos-layer-name">Brand &amp; escalation rules</span>
+<span class="airos-layer-note">Your tone, your routing rules, your privacy posture. AIRaaS configured per mandate.</span>
+</div>
+</div>
+</div>
+
+</section>
+
 <footer class="footer">
 <span class="footer-coord-tl">[ END.DOCUMENT ]</span>
 <span class="footer-coord-tr">HIMARK / FOOTER</span>
@@ -749,6 +1136,43 @@
     if(document.hidden) stopTimer();
     else if(!userTookOver) startTimer();
   });
+})();
+</script>
+
+
+<!-- AIRaaS Operations OS — pipeline stage focus interactivity.
+     Click/hover a stage to bring it forward; keyboard accessible. -->
+<script>
+(function(){
+  const pipeline = document.getElementById('airos-pipeline');
+  if(!pipeline) return;
+  const stages = pipeline.querySelectorAll('.airos-stage');
+
+  stages.forEach(function(stage, i){
+    stage.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        stage.focus();
+      }
+    });
+  });
+
+  // Pause the flow dots when the section is off-screen (purely visual,
+  // saves a few RAF cycles).
+  if('IntersectionObserver' in window){
+    const flow = pipeline.querySelector('.airos-flow');
+    const io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(flow){
+          flow.style.animationPlayState = entry.isIntersecting ? 'running' : 'paused';
+          flow.querySelectorAll('circle').forEach(function(c){
+            c.style.animationPlayState = entry.isIntersecting ? 'running' : 'paused';
+          });
+        }
+      });
+    }, { threshold: 0.15 });
+    io.observe(pipeline);
+  }
 })();
 </script>
 

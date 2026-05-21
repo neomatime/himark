@@ -459,6 +459,304 @@
   }
 </style>
 
+
+<!-- ==========================================================
+     ORBIT — three engagement tiers orbiting the HIMARK core.
+     Replaces the static three-card layout on /home.html with
+     a minimal, spatial, interactive system. Per the brief:
+     reduce visual weight while increasing interaction depth.
+     ========================================================== -->
+<style>
+  .orbit-section{
+    background:var(--off);
+    padding:130px var(--gx) 110px;
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid var(--rule);
+  }
+  /* Subtle radial light at the center — pulls the eye to the orbit */
+  .orbit-section::before{
+    content:'';position:absolute;inset:0;
+    background:
+      radial-gradient(circle 480px at 50% 50%, rgba(95,129,144,.06), transparent 70%),
+      linear-gradient(to right, var(--grid) 1px, transparent 1px);
+    background-size:auto, calc((100vw - 128px)/6) 100%;
+    background-position:center, 64px 0;
+    pointer-events:none;
+    opacity:.85;
+  }
+  .orbit-section > *{position:relative;z-index:1;}
+
+  .orbit-coord-l{
+    position:absolute;top:48px;left:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:var(--ocean);z-index:2;
+  }
+  .orbit-coord-r{
+    position:absolute;top:48px;right:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:rgba(46,74,90,.55);z-index:2;
+  }
+
+  /* Intro — minimal copy, centred */
+  .orbit-intro{
+    text-align:center;
+    max-width:680px;
+    margin:0 auto 36px;
+  }
+  .orbit-eyebrow{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--ocean);
+    margin-bottom:18px;
+    display:flex;align-items:center;justify-content:center;gap:14px;
+  }
+  .orbit-eyebrow::before,
+  .orbit-eyebrow::after{
+    content:'';display:block;width:32px;height:1px;background:var(--ocean);
+  }
+  .orbit-hl{
+    font-family:var(--f-disp);font-size:clamp(32px,3.4vw,48px);
+    font-weight:800;line-height:1.05;color:var(--midnight);
+    letter-spacing:-.01em;margin-bottom:14px;
+  }
+  .orbit-hl em{font-style:italic;font-weight:300;color:var(--ocean);}
+  .orbit-sub{
+    font-family:var(--f-body);font-weight:400;font-size:14px;
+    color:var(--ink-mut);line-height:1.7;
+    max-width:520px;margin:0 auto;
+  }
+
+  /* Stage — SVG canvas wrapper */
+  .orbit-stage{
+    position:relative;
+    width:100%;
+    max-width:880px;
+    margin:0 auto;
+  }
+  .orbit-svg{
+    display:block;width:100%;height:auto;
+    user-select:none;-webkit-user-select:none;
+    overflow:visible;
+  }
+
+  /* Faint orbital ring */
+  .orbit-ring{
+    fill:none;
+    stroke:rgba(95,129,144,.25);
+    stroke-width:1;
+    stroke-dasharray:2 4;
+    animation:orbit-ring-spin 90s linear infinite;
+    transform-origin:440px 270px;
+  }
+  @keyframes orbit-ring-spin{ to{ transform:rotate(360deg); } }
+
+  /* Orbital tick marks (decorative — show motion) */
+  .orbit-ticks{
+    transform-origin:440px 270px;
+    animation:orbit-ring-spin 120s linear infinite reverse;
+  }
+  .orbit-tick{fill:rgba(95,129,144,.4);}
+  .orbit-tick-sm{fill:rgba(95,129,144,.18);}
+
+  /* Connection lines from core to nodes */
+  .orbit-link{
+    stroke:rgba(95,129,144,.22);
+    stroke-width:1;
+    stroke-dasharray:3 3;
+    transition:stroke .4s var(--ease), stroke-width .4s var(--ease);
+  }
+  .orbit-link.active{
+    stroke:var(--ocean);
+    stroke-width:1.5;
+    stroke-dasharray:none;
+  }
+
+  /* HIMARK core */
+  .orbit-core{
+    transform-origin:440px 270px;
+    animation:orbit-core-breathe 5s ease-in-out infinite;
+  }
+  @keyframes orbit-core-breathe{
+    0%, 100% { filter:drop-shadow(0 0 0 rgba(95,129,144,0)); }
+    50%      { filter:drop-shadow(0 0 12px rgba(95,129,144,.3)); }
+  }
+  .orbit-core-bg{
+    fill:var(--midnight);
+    stroke:rgba(95,129,144,.35);
+    stroke-width:1;
+  }
+  .orbit-core-bar{fill:var(--off);}
+  .orbit-core-frame{stroke:var(--off);}
+  .orbit-core-label{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.22em;fill:var(--ocean);
+  }
+
+  /* Tier nodes */
+  .orbit-node{
+    cursor:none;outline:none;
+    transition:opacity .45s var(--ease);
+  }
+  .orbit-node-bg{
+    fill:var(--white);
+    stroke:rgba(28,43,58,.18);
+    stroke-width:1;
+    transition:fill .45s var(--ease), stroke .45s var(--ease), stroke-width .45s var(--ease);
+  }
+  .orbit-node-ring{
+    fill:none;
+    stroke:rgba(95,129,144,.25);
+    stroke-width:1;
+    transition:stroke .45s var(--ease), stroke-width .45s var(--ease);
+  }
+  .orbit-node-coord{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.14em;fill:var(--ocean);
+    pointer-events:none;
+    transition:fill .45s var(--ease);
+  }
+  .orbit-node-name{
+    font-family:var(--f-disp);font-size:14px;font-weight:800;
+    letter-spacing:.04em;fill:var(--midnight);
+    pointer-events:none;
+    transition:fill .45s var(--ease);
+  }
+  .orbit-node-pulse{
+    fill:none;stroke:var(--ocean);stroke-width:1;opacity:0;
+    transform-box:fill-box;transform-origin:center;
+  }
+
+  /* Hover state */
+  .orbit-node:hover .orbit-node-bg,
+  .orbit-node:focus-visible .orbit-node-bg{
+    stroke:var(--ocean);
+    stroke-width:1.5;
+  }
+  .orbit-node:hover .orbit-node-ring{
+    stroke:var(--ocean);
+    stroke-width:1.5;
+  }
+
+  /* Active state */
+  .orbit-node.active .orbit-node-bg{
+    fill:var(--midnight);
+    stroke:var(--midnight);
+    stroke-width:2;
+  }
+  .orbit-node.active .orbit-node-coord{fill:var(--ocean-lt);}
+  .orbit-node.active .orbit-node-name{fill:var(--off);}
+  .orbit-node.active .orbit-node-pulse{
+    animation:orbit-node-pulse 2.6s ease-out infinite;
+  }
+  @keyframes orbit-node-pulse{
+    0%   { opacity:.6; transform:scale(1); }
+    100% { opacity:0;  transform:scale(1.5); }
+  }
+
+  /* When one node is active, dim the others */
+  .orbit-stage.has-active .orbit-node:not(.active){opacity:.35;}
+
+  /* Detail panel — sits below the orbit */
+  .orbit-detail{
+    max-width:880px;
+    margin:48px auto 0;
+    background:var(--white);
+    border:1px solid var(--rule);
+    border-radius:4px;
+    padding:36px 40px 32px;
+    position:relative;
+    box-shadow:0 30px 60px -30px rgba(28,43,58,.15);
+  }
+  .orbit-detail-coord{
+    position:absolute;top:14px;right:20px;
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:var(--ocean);
+  }
+  .orbit-detail-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:48px;
+    align-items:start;
+  }
+  .orbit-detail-eyebrow{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--ocean);
+    margin-bottom:14px;
+  }
+  .orbit-detail-name{
+    font-family:var(--f-disp);font-size:clamp(28px,2.6vw,36px);
+    font-weight:800;color:var(--midnight);
+    letter-spacing:-.01em;line-height:1.05;
+    margin-bottom:8px;
+    transition:opacity .28s var(--ease);
+  }
+  .orbit-detail-class{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--ocean);
+    margin-bottom:20px;padding-bottom:16px;
+    border-bottom:1px solid var(--rule);
+    transition:opacity .28s var(--ease);
+  }
+  .orbit-detail-desc{
+    font-family:var(--f-body);font-weight:400;font-size:14px;
+    line-height:1.75;color:var(--ink);
+    transition:opacity .28s var(--ease);
+  }
+  .orbit-detail-right{display:flex;flex-direction:column;}
+  .orbit-detail-row{
+    padding:14px 0 16px;
+    border-bottom:1px solid var(--rule);
+  }
+  .orbit-detail-row:first-child{padding-top:0;}
+  .orbit-detail-l{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ocean);margin-bottom:6px;
+  }
+  .orbit-detail-v{
+    font-family:var(--f-body);font-weight:400;font-size:13.5px;
+    line-height:1.6;color:var(--ink);
+    transition:opacity .28s var(--ease);
+  }
+  .orbit-detail .fading{opacity:0;}
+  .orbit-detail-cta{
+    font-family:var(--f-nav);font-size:11px;font-weight:700;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--midnight);text-decoration:none;
+    align-self:flex-start;
+    padding:13px 22px;
+    border:1px solid var(--midnight);
+    margin-top:24px;
+    display:inline-flex;align-items:center;gap:12px;
+    transition:background .3s var(--ease), color .3s var(--ease), gap .3s var(--ease);
+    cursor:none;
+  }
+  .orbit-detail-cta:hover{
+    background:var(--midnight);color:var(--off);gap:18px;
+  }
+  .orbit-detail-arrow{font-size:14px;font-weight:300;}
+
+  @media (max-width:768px){
+    .orbit-section{padding:80px 22px 60px;}
+    .orbit-coord-l,.orbit-coord-r{top:24px;}
+    .orbit-coord-l{left:22px;}
+    .orbit-coord-r{right:22px;}
+    .orbit-intro{margin-bottom:24px;}
+    .orbit-detail{padding:28px 22px;margin-top:32px;}
+    .orbit-detail-grid{grid-template-columns:1fr;gap:24px;}
+  }
+
+  @media (max-width:560px){
+    .orbit-node-name{font-size:11px;}
+    .orbit-node-coord{font-size:8px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .orbit-ring,.orbit-ticks,
+    .orbit-core,.orbit-node-pulse{animation:none;}
+  }
+</style>
+
 </head>
 <body data-page="home" data-location="root">
 <div id="cd"></div>
@@ -785,22 +1083,111 @@
 
 <div class="s-num-bar"><span>01.C · MANDATES</span><span>HIMARK / 02</span><span>03 · TIERS · STRUCTURED</span></div>
 
-<section class="home-svc-section">
-<div class="home-svc-header">
-<div class="r3d-l">
-<p class="eyebrow">Engagement Models</p>
-<h2 class="svc-hl typewriter-h2" data-typewriter aria-label="Three levels of engagement."><span class="tw-out" aria-hidden="true"></span><span class="tw-cursor" aria-hidden="true"></span></h2>
+<section class="orbit-section">
+<span class="orbit-coord-l">[ 01.C.01 · ORBIT ]</span>
+<span class="orbit-coord-r">THREE PATHS · ONE FIRM</span>
+
+<div class="orbit-intro">
+<p class="orbit-eyebrow">Engagement architecture</p>
+<h2 class="orbit-hl">Three engagement paths<em>· orbiting a single firm.</em></h2>
+<p class="orbit-sub">Each path enters HIMARK at a different depth. Engagement terms are confirmed directly. Tap any node to read its scope.</p>
 </div>
-<div class="r3d-r d1">
-<p class="svc-note">Each model is structured around depth of access and scope of delivery. Engagement terms are discussed directly — not published.</p>
-<a href="#" class="btn btn-lt" style="margin-top:32px" data-page="mandates" data-num="—">View All Mandates</a>
+
+<div class="orbit-stage" id="orbit-stage">
+<svg class="orbit-svg" viewBox="0 0 880 540" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Three orbiting engagement tiers around the HIMARK core">
+
+<!-- Faint orbital ring -->
+<circle cx="440" cy="270" r="200" class="orbit-ring"/>
+
+<!-- Slow rotating tick marks on the orbital ring -->
+<g class="orbit-ticks">
+<circle cx="440" cy="70"  r="2" class="orbit-tick"/>
+<circle cx="613" cy="370" r="2" class="orbit-tick"/>
+<circle cx="267" cy="370" r="2" class="orbit-tick"/>
+<circle cx="640" cy="270" r="1.5" class="orbit-tick-sm"/>
+<circle cx="240" cy="270" r="1.5" class="orbit-tick-sm"/>
+<circle cx="540" cy="100" r="1.5" class="orbit-tick-sm"/>
+<circle cx="340" cy="100" r="1.5" class="orbit-tick-sm"/>
+<circle cx="540" cy="440" r="1.5" class="orbit-tick-sm"/>
+<circle cx="340" cy="440" r="1.5" class="orbit-tick-sm"/>
+</g>
+
+<!-- Connection lines from core to each node -->
+<line x1="440" y1="270" x2="440" y2="70"  class="orbit-link" data-tier="0"/>
+<line x1="440" y1="270" x2="613" y2="370" class="orbit-link" data-tier="1"/>
+<line x1="440" y1="270" x2="267" y2="370" class="orbit-link" data-tier="2"/>
+
+<!-- HIMARK core — the framed H glyph in miniature -->
+<g class="orbit-core">
+<circle cx="440" cy="270" r="64" class="orbit-core-bg"/>
+<g transform="translate(412 244)">
+<rect x="0"  y="0"  width="8" height="42" class="orbit-core-bar"/>
+<rect x="48" y="0"  width="8" height="42" class="orbit-core-bar"/>
+<rect x="11" y="18" width="14" height="6" class="orbit-core-bar"/>
+<rect x="31" y="18" width="14" height="6" class="orbit-core-bar"/>
+<rect class="orbit-core-frame" x="-4" y="-4" width="64" height="50" fill="none" stroke-width="2"/>
+</g>
+<text x="440" y="356" text-anchor="middle" class="orbit-core-label">HIMARK · CORE</text>
+</g>
+
+<!-- TIER 01 — SIGNATURE (top) -->
+<g class="orbit-node" data-tier="0" tabindex="0" role="button" aria-label="Tier 01 Signature Partner">
+<circle class="orbit-node-pulse" cx="440" cy="70" r="60"/>
+<circle class="orbit-node-bg"    cx="440" cy="70" r="54"/>
+<circle class="orbit-node-ring"  cx="440" cy="70" r="54"/>
+<text x="440" y="62" text-anchor="middle" class="orbit-node-coord">[ TIER.01 ]</text>
+<text x="440" y="83" text-anchor="middle" class="orbit-node-name">SIGNATURE</text>
+</g>
+
+<!-- TIER 02 — GROWTH (lower right) -->
+<g class="orbit-node" data-tier="1" tabindex="0" role="button" aria-label="Tier 02 Growth Partner">
+<circle class="orbit-node-pulse" cx="613" cy="370" r="60"/>
+<circle class="orbit-node-bg"    cx="613" cy="370" r="54"/>
+<circle class="orbit-node-ring"  cx="613" cy="370" r="54"/>
+<text x="613" y="362" text-anchor="middle" class="orbit-node-coord">[ TIER.02 ]</text>
+<text x="613" y="383" text-anchor="middle" class="orbit-node-name">GROWTH</text>
+</g>
+
+<!-- TIER 03 — PRIVATE (lower left) -->
+<g class="orbit-node" data-tier="2" tabindex="0" role="button" aria-label="Tier 03 Private Partner">
+<circle class="orbit-node-pulse" cx="267" cy="370" r="60"/>
+<circle class="orbit-node-bg"    cx="267" cy="370" r="54"/>
+<circle class="orbit-node-ring"  cx="267" cy="370" r="54"/>
+<text x="267" y="362" text-anchor="middle" class="orbit-node-coord">[ TIER.03 ]</text>
+<text x="267" y="383" text-anchor="middle" class="orbit-node-name">PRIVATE</text>
+</g>
+
+</svg>
+</div>
+
+<!-- Detail panel — updates on node activation -->
+<div class="orbit-detail" id="orbit-detail">
+<div class="orbit-detail-coord">[ <span id="orb-coord">TIER.01</span> · <span id="orb-tag">SIGNATURE PARTNER</span> ]</div>
+<div class="orbit-detail-grid">
+<div class="orbit-detail-left">
+<p class="orbit-detail-eyebrow">Engagement path</p>
+<h3 class="orbit-detail-name" id="orb-name">Signature Partner</h3>
+<p class="orbit-detail-class" id="orb-class">Foundation · Professionalisation</p>
+<p class="orbit-detail-desc" id="orb-desc">Foundational growth and brand infrastructure for startups, SMEs, and service businesses ready to formalise their market presence. The launch-pad tier.</p>
+</div>
+<div class="orbit-detail-right">
+<div class="orbit-detail-row">
+<p class="orbit-detail-l">Cadence</p>
+<p class="orbit-detail-v" id="orb-cadence">Monthly strategy · Atlas advisory · Quarterly reviews</p>
+</div>
+<div class="orbit-detail-row">
+<p class="orbit-detail-l">Term</p>
+<p class="orbit-detail-v" id="orb-term">Quarterly minimum · Reviewed every 90 days</p>
+</div>
+<div class="orbit-detail-row">
+<p class="orbit-detail-l">Best fit</p>
+<p class="orbit-detail-v" id="orb-fit">Startups, SMEs, professional service firms establishing market presence</p>
+</div>
+<a class="orbit-detail-cta" href="#" data-page="intake">Apply for Engagement <span class="orbit-detail-arrow">→</span></a>
 </div>
 </div>
-<div class="svc-grid-3">
-<div class="svc-card r3d d1" data-idx="[T1]"><div class="svc-card-face front" data-idx="[T1]"><p class="svc-tag">Tier 01 — Professionalization</p><h3 class="svc-title">Signature<br>Partner</h3><div class="svc-rule"></div><p class="svc-desc">Foundational growth and brand infrastructure. For startups, SMEs, and service businesses ready to formalise their market presence.</p><ul class="svc-feats"><li>Brand &amp; visual identity systems</li><li>Business website + SEO foundations</li><li>CRM setup &amp; client onboarding</li><li>Marketing infrastructure &amp; lead capture</li><li>Monthly strategy sessions</li></ul><a href="#" class="svc-cta" data-page="mandates">Enquire</a><span class="svc-flip-hint">Hover · See Inside</span></div><div class="svc-card-face back"><span class="svc-back-coord">[ T1.B ]</span><p class="svc-back-tag">Tier 01 — Behind the Curtain</p><h4 class="svc-back-h">Become <em>market-ready.</em></h4><div class="svc-back-block"><div class="svc-back-l">[ Cadence ]</div><div class="svc-back-v">Monthly strategy session. Open advisory via Atlas. Performance reviews quarterly.</div></div><div class="svc-back-block"><div class="svc-back-l">[ Best Fit ]</div><div class="svc-back-v">Startups, local businesses, and professional service firms formalising operations and establishing market presence.</div></div><div class="svc-back-block"><div class="svc-back-l">[ Outcome ]</div><div class="svc-back-v">Clear brand positioning. Professional digital presence. CRM and lead-capture systems in place. A growth roadmap to act on.</div></div><div class="svc-back-block"><div class="svc-back-l">[ Term ]</div><div class="svc-back-v">Quarterly minimum. Reviewed every 90 days.</div></div><a href="#" class="svc-back-cta" data-page="intake">Apply for Engagement</a></div></div>
-<div class="svc-card r3d d2" data-idx="[T2]"><div class="svc-card-face front" data-idx="[T2]"><p class="svc-tag">Tier 02 — Scale &amp; Optimization</p><h3 class="svc-title">Growth<br>Partner</h3><div class="svc-rule"></div><p class="svc-desc">Scalable growth and operational integration. The core HIMARK tier — where businesses begin relying on us operationally and strategically.</p><ul class="svc-feats"><li>Advanced brand strategy &amp; differentiation</li><li>CRM optimisation &amp; workflow automation</li><li>Full marketing strategy &amp; lead generation</li><li>LinkedIn authority &amp; founder positioning</li><li>Quarterly growth strategy workshops</li></ul><a href="#" class="svc-cta" data-page="mandates">Enquire</a><span class="svc-flip-hint">Hover · See Inside</span></div><div class="svc-card-face back"><span class="svc-back-coord">[ T2.B ]</span><p class="svc-back-tag">Tier 02 — Behind the Curtain</p><h4 class="svc-back-h">Part of your <em>growth engine.</em></h4><div class="svc-back-block"><div class="svc-back-l">[ Cadence ]</div><div class="svc-back-v">Weekly principal session. Live Slack/WhatsApp link. Monthly board update. Quarterly workshops.</div></div><div class="svc-back-block"><div class="svc-back-l">[ Best Fit ]</div><div class="svc-back-v">Scaling businesses, mid-sized companies, operational-heavy service firms expanding digitally with active sales teams.</div></div><div class="svc-back-block"><div class="svc-back-l">[ Outcome ]</div><div class="svc-back-v">Strategy in motion. CRM + automation deployed. Lead generation systems running. Revenue lift attributable.</div></div><div class="svc-back-block"><div class="svc-back-l">[ Term ]</div><div class="svc-back-v">6-month minimum. Reviewed every 90 days.</div></div><a href="#" class="svc-back-cta" data-page="intake">Apply for Engagement</a></div></div>
-<div class="svc-card r3d d3" data-idx="[T3]"><div class="svc-card-face front" data-idx="[T3]"><p class="svc-tag">Tier 03 — Strategic Transformation</p><h3 class="svc-title">Private<br>Partner</h3><div class="svc-rule"></div><p class="svc-desc">Executive-level strategic transformation. Embedded strategic leadership for enterprise clients. By invitation only.</p><ul class="svc-feats"><li>Executive advisory &amp; strategic planning</li><li>Enterprise infrastructure &amp; AI ecosystems</li><li>Executive personal branding</li><li>Innovation &amp; market expansion consulting</li><li>Dedicated principal access</li></ul><a href="#" class="svc-cta" data-page="mandates">Enquire</a><span class="svc-flip-hint">Hover · See Inside</span></div><div class="svc-card-face back"><span class="svc-back-coord">[ T3.B ]</span><p class="svc-back-tag">Tier 03 — Behind the Curtain</p><h4 class="svc-back-h">A strategic extension of <em>your leadership team.</em></h4><div class="svc-back-block"><div class="svc-back-l">[ Cadence ]</div><div class="svc-back-v">Real-time access. Dedicated principal. Direct line to founder. Executive consultation on demand.</div></div><div class="svc-back-block"><div class="svc-back-l">[ Best Fit ]</div><div class="svc-back-v">High-growth firms, enterprise clients, executive-led businesses, multi-department companies scaling aggressively.</div></div><div class="svc-back-block"><div class="svc-back-l">[ Outcome ]</div><div class="svc-back-v">Enterprise transformation. AI-assisted operational systems. Executive brand. M&amp;A architecture. Long-term scaling blueprint.</div></div><div class="svc-back-block"><div class="svc-back-l">[ Term ]</div><div class="svc-back-v">12-month minimum. By invitation only.</div></div><a href="#" class="svc-back-cta" data-page="intake">Apply for Engagement</a></div></div>
 </div>
+
 </section>
 
 <div class="s-num-bar dk"><span>01.D · PRINCIPAL STATEMENT</span><span>HIMARK / 03</span><span>QUOTED · ON.RECORD</span></div>
@@ -1009,6 +1396,130 @@
   document.addEventListener('visibilitychange', function(){
     if(document.hidden) stop();
     else start();
+  });
+})();
+</script>
+
+
+<!-- ORBIT — node activation + auto-cycle + click-to-lock + viewport pause. -->
+<script>
+(function(){
+  const stage = document.getElementById('orbit-stage');
+  if(!stage) return;
+  const nodes = stage.querySelectorAll('.orbit-node');
+  const links = stage.querySelectorAll('.orbit-link');
+
+  const cCoord   = document.getElementById('orb-coord');
+  const cTag     = document.getElementById('orb-tag');
+  const cName    = document.getElementById('orb-name');
+  const cClass   = document.getElementById('orb-class');
+  const cDesc    = document.getElementById('orb-desc');
+  const cCadence = document.getElementById('orb-cadence');
+  const cTerm    = document.getElementById('orb-term');
+  const cFit     = document.getElementById('orb-fit');
+
+  const tiers = [
+    {
+      coord:'TIER.01', tag:'SIGNATURE PARTNER',
+      name:'Signature Partner',
+      cls:'Foundation · Professionalisation',
+      desc:'Foundational growth and brand infrastructure for startups, SMEs, and service businesses ready to formalise their market presence. The launch-pad tier — where most engagements begin.',
+      cadence:'Monthly strategy · Atlas advisory · Quarterly performance reviews',
+      term:'Quarterly minimum · Reviewed every 90 days',
+      fit:'Startups, SMEs, professional service firms establishing market presence'
+    },
+    {
+      coord:'TIER.02', tag:'GROWTH PARTNER',
+      name:'Growth Partner',
+      cls:'Core HIMARK Tier · Scale & Optimisation',
+      desc:'Scalable growth and operational integration — the core HIMARK tier. Where businesses begin relying on us strategically and operationally as part of the growth engine.',
+      cadence:'Weekly principal cadence · Live Slack/WhatsApp · Monthly board update',
+      term:'Six-month minimum · Reviewed every 90 days',
+      fit:'Scaling businesses, mid-sized companies, operationally heavy service firms'
+    },
+    {
+      coord:'TIER.03', tag:'PRIVATE PARTNER',
+      name:'Private Partner',
+      cls:'Executive Transformation · By Invitation',
+      desc:'Executive-level strategic transformation with a dedicated principal embedded with leadership. Enterprise AI, M&A architecture, capital strategy, executive branding. By invitation only.',
+      cadence:'Real-time access · Dedicated principal · Direct line to founder',
+      term:'12-month minimum · By invitation only',
+      fit:'High-growth firms, enterprise clients, executive-led businesses scaling aggressively'
+    }
+  ];
+
+  const valueEls = [cName, cClass, cDesc, cCadence, cTerm, cFit];
+
+  let activeIdx = 0;
+  let timer = null;
+  let userTookOver = false;
+  let resumeAfter = null;
+  const INTERVAL = 7000;
+  const FADE = 240;
+  const RESUME_DELAY = 14000;
+
+  function setActive(idx){
+    if(idx === activeIdx && stage.classList.contains('has-active')) return;
+    nodes.forEach(function(n,i){ n.classList.toggle('active', i === idx); });
+    links.forEach(function(l){ l.classList.toggle('active', l.getAttribute('data-tier') === String(idx)); });
+    stage.classList.add('has-active');
+
+    valueEls.forEach(function(el){ el.classList.add('fading'); });
+    setTimeout(function(){
+      const t = tiers[idx];
+      cCoord.textContent   = t.coord;
+      cTag.textContent     = t.tag;
+      cName.textContent    = t.name;
+      cClass.textContent   = t.cls;
+      cDesc.textContent    = t.desc;
+      cCadence.textContent = t.cadence;
+      cTerm.textContent    = t.term;
+      cFit.textContent     = t.fit;
+      valueEls.forEach(function(el){ el.classList.remove('fading'); });
+    }, FADE);
+
+    activeIdx = idx;
+  }
+
+  function nextTier(){ setActive((activeIdx + 1) % tiers.length); }
+  function startTimer(){ if(timer) clearInterval(timer); timer = setInterval(nextTier, INTERVAL); }
+  function stopTimer(){ if(timer){ clearInterval(timer); timer = null; } }
+
+  nodes.forEach(function(node, i){
+    function activate(){
+      userTookOver = true;
+      setActive(i);
+      stopTimer();
+      if(resumeAfter) clearTimeout(resumeAfter);
+      resumeAfter = setTimeout(function(){
+        userTookOver = false;
+        startTimer();
+      }, RESUME_DELAY);
+    }
+    node.addEventListener('click', activate);
+    node.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); activate(); }
+    });
+  });
+
+  // IntersectionObserver — pause cycling when off-screen
+  if('IntersectionObserver' in window){
+    const io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){ if(!userTookOver) startTimer(); }
+        else stopTimer();
+      });
+    }, { threshold: 0.2 });
+    io.observe(stage);
+  } else { startTimer(); }
+
+  // Init — first tier active
+  setActive(0);
+
+  // Pause when tab is hidden
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden) stopTimer();
+    else if(!userTookOver) startTimer();
   });
 })();
 </script>

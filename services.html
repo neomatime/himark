@@ -324,6 +324,421 @@
     .tier-layer .tier-rect-sub{font-size:9px;}
   }
 </style>
+
+<!-- ==========================================================
+     SERVICES RESTRUCTURE — Service Matrix + Standalone Catalogue
+     + Brief Tier Overview. Replaces three duplicated tier
+     representations with one unified institutional system.
+     ========================================================== -->
+<style>
+  /* ============ Section: SERVICE MATRIX ============ */
+  .svc-matrix-section{
+    background:var(--off);
+    padding:120px var(--gx) 100px;
+    position:relative;overflow:hidden;
+    border-top:1px solid var(--rule);
+    border-bottom:1px solid var(--rule);
+  }
+  .svc-matrix-section::before{
+    content:'';position:absolute;inset:0;
+    background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px);
+    background-size:calc((100vw - 128px)/6) 100%;
+    background-position:64px 0;
+    pointer-events:none;opacity:.5;
+  }
+  .svc-matrix-section > *{position:relative;z-index:1;}
+  .svc-matrix-coord-l{
+    position:absolute;top:48px;left:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:var(--ocean);z-index:2;
+  }
+  .svc-matrix-coord-r{
+    position:absolute;top:48px;right:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:rgba(46,74,90,.55);z-index:2;
+  }
+  .svc-matrix-eyebrow{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--ocean);
+    margin-bottom:18px;display:flex;align-items:center;gap:14px;
+  }
+  .svc-matrix-eyebrow::before{
+    content:'';display:block;width:24px;height:1px;background:var(--ocean);
+  }
+  .svc-matrix-hl{
+    font-family:var(--f-disp);font-size:clamp(32px,3.4vw,48px);
+    font-weight:800;line-height:1.05;color:var(--midnight);
+    letter-spacing:-.01em;margin-bottom:14px;max-width:880px;
+  }
+  .svc-matrix-hl em{font-style:italic;font-weight:300;color:var(--ocean);}
+  .svc-matrix-sub{
+    font-family:var(--f-body);font-weight:400;font-size:14px;
+    color:var(--ink);max-width:760px;margin-bottom:48px;line-height:1.75;
+  }
+  .svc-matrix-sub strong{font-weight:700;color:var(--midnight);}
+
+  .svc-matrix-stage{
+    max-width:1180px;margin:0 auto;
+    background:var(--white);
+    border:1px solid var(--rule);
+    box-shadow:0 30px 60px -30px rgba(28,43,58,.12);
+    overflow-x:auto;
+  }
+  .svc-matrix-grid{
+    display:grid;
+    grid-template-columns:minmax(220px, 1.4fr) repeat(4, 1fr);
+    min-width:900px;
+  }
+  .svc-matrix-row{display:contents;}
+
+  .svc-cell{
+    padding:18px 16px;
+    border-right:1px solid var(--rule);
+    border-bottom:1px solid var(--rule);
+    transition:background .35s var(--ease);
+  }
+  .svc-cell:last-child{border-right:none;}
+  .svc-matrix-row:last-child .svc-cell{border-bottom:none;}
+
+  .svc-cell-head{
+    background:var(--midnight);
+    color:var(--off);
+    padding:18px 14px;
+    display:flex;flex-direction:column;gap:4px;
+    cursor:none;
+    transition:background .3s var(--ease);
+  }
+  .svc-cell-corner{background:var(--ink-deep);}
+  .svc-cell-head-mono{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.14em;color:rgba(226,240,240,.5);
+  }
+  .svc-cell-head-tag{
+    font-family:var(--f-disp);font-size:14px;font-weight:800;
+    letter-spacing:.04em;color:var(--off);text-transform:uppercase;
+  }
+  .svc-cell-head-sub{
+    font-family:var(--f-mono);font-size:8.5px;font-weight:500;
+    letter-spacing:.14em;color:var(--ocean-lt);
+  }
+  .svc-cell-head:not(.svc-cell-corner):hover,
+  .svc-cell-head:not(.svc-cell-corner).active{background:var(--ocean);}
+  .svc-cell-head:focus-visible{outline:2px solid var(--ocean-lt);outline-offset:-3px;}
+
+  .svc-cell-label{
+    display:flex;flex-direction:column;gap:5px;
+    background:var(--off);
+    cursor:none;
+  }
+  .svc-row-coord{
+    font-family:var(--f-mono);font-size:9px;font-weight:700;
+    letter-spacing:.14em;color:var(--ocean);
+  }
+  .svc-row-name{
+    font-family:var(--f-disp);font-size:16px;font-weight:700;
+    color:var(--midnight);letter-spacing:-.005em;margin-top:2px;
+  }
+  .svc-row-sub{
+    font-family:var(--f-body);font-weight:300;font-size:12px;
+    color:var(--ink-mut);line-height:1.55;margin-top:3px;
+  }
+
+  .svc-cov{
+    display:flex;flex-direction:column;justify-content:center;
+    align-items:flex-start;gap:6px;
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.14em;
+  }
+  .svc-cov-mark{color:var(--midnight);font-weight:700;}
+  .svc-cov-dots{display:inline-flex;gap:3px;}
+  .svc-cov-dots > span{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--midnight);display:block;
+  }
+  .svc-cov-tag{
+    font-family:var(--f-mono);font-size:9px;
+    color:var(--ink-mut);font-weight:500;
+  }
+  .svc-cov-yes{background:rgba(95,129,144,.06);}
+  .svc-cov-yes .svc-cov-mark{color:var(--ocean-dk);}
+  .svc-cov-no{background:rgba(28,43,58,.02);}
+  .svc-cov-no .svc-cov-mark{color:rgba(46,74,90,.3);}
+  .svc-cov-req .svc-cov-mark{color:rgba(46,74,90,.55);font-style:italic;font-weight:400;}
+  .svc-cov-part .svc-cov-dots > span:nth-child(n+2){opacity:.18;}
+  .svc-cov-found .svc-cov-dots > span:nth-child(n+3){opacity:.18;}
+  .svc-cov-exec{background:rgba(95,129,144,.1);}
+
+  .svc-matrix-row[data-row]{cursor:none;}
+  .svc-matrix-row[data-row]:hover .svc-cell-label,
+  .svc-matrix-row[data-row].active .svc-cell-label{background:rgba(95,129,144,.12);}
+  .svc-matrix-row[data-row].active .svc-cov{background:rgba(95,129,144,.06);}
+  .svc-matrix-row[data-row]:focus-visible{outline:2px solid var(--ocean);outline-offset:-3px;}
+
+  .svc-matrix-stage[data-active-col] .svc-matrix-row > .svc-cell:not(.svc-cell-label){opacity:.32;transition:opacity .3s var(--ease);}
+  .svc-matrix-stage[data-active-col="0"] .svc-matrix-row > .svc-cell:nth-child(2),
+  .svc-matrix-stage[data-active-col="1"] .svc-matrix-row > .svc-cell:nth-child(3),
+  .svc-matrix-stage[data-active-col="2"] .svc-matrix-row > .svc-cell:nth-child(4),
+  .svc-matrix-stage[data-active-col="3"] .svc-matrix-row > .svc-cell:nth-child(5){opacity:1;}
+
+  .svc-matrix-detail{
+    max-width:1180px;margin:36px auto 0;
+    background:var(--white);
+    border:1px solid var(--rule);
+    border-radius:4px;
+    padding:32px 36px 28px;
+    position:relative;
+    box-shadow:0 30px 60px -30px rgba(28,43,58,.12);
+  }
+  .svc-matrix-detail-coord{
+    position:absolute;top:14px;right:20px;
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:var(--ocean);
+  }
+  .svc-matrix-detail-grid{
+    display:grid;grid-template-columns:1fr 1.1fr;
+    gap:48px;align-items:start;
+  }
+  .svc-matrix-detail-eyebrow{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ocean);margin-bottom:12px;
+  }
+  .svc-matrix-detail-name{
+    font-family:var(--f-disp);font-size:clamp(24px,2.4vw,32px);
+    font-weight:800;color:var(--midnight);
+    letter-spacing:-.005em;line-height:1.1;
+    margin-bottom:14px;transition:opacity .25s var(--ease);
+  }
+  .svc-matrix-detail-desc{
+    font-family:var(--f-body);font-weight:400;font-size:14px;
+    line-height:1.7;color:var(--ink);
+    transition:opacity .25s var(--ease);
+  }
+  .svc-matrix-detail-right{display:flex;flex-direction:column;}
+  .svc-matrix-detail-row{
+    padding:14px 0 16px;border-bottom:1px solid var(--rule);
+  }
+  .svc-matrix-detail-row:first-child{padding-top:0;}
+  .svc-matrix-detail-row:last-child{border-bottom:none;padding-bottom:0;}
+  .svc-matrix-detail-l{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ocean);margin-bottom:6px;
+  }
+  .svc-matrix-detail-v{
+    font-family:var(--f-body);font-weight:400;font-size:13.5px;
+    line-height:1.6;color:var(--ink);
+    transition:opacity .25s var(--ease);
+  }
+  .svc-matrix-detail .fading{opacity:0;}
+
+  @media (max-width:900px){.svc-matrix-detail-grid{grid-template-columns:1fr;gap:24px;}}
+  @media (max-width:768px){
+    .svc-matrix-section{padding:80px 22px 60px;}
+    .svc-matrix-coord-l,.svc-matrix-coord-r{top:24px;}
+    .svc-matrix-coord-l{left:22px;}
+    .svc-matrix-coord-r{right:22px;}
+    .svc-matrix-stage{margin:0 -22px;border-left:none;border-right:none;}
+    .svc-matrix-grid{min-width:780px;}
+    .svc-matrix-detail{padding:24px 22px;}
+  }
+
+  /* ============ Section: STANDALONE SERVICES ============ */
+  .svc-standalone-section{
+    background:var(--white);
+    padding:120px var(--gx) 100px;
+    position:relative;
+    border-bottom:1px solid var(--rule);
+  }
+  .svc-standalone-coord-l{
+    position:absolute;top:48px;left:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;color:var(--ocean);
+  }
+  .svc-standalone-coord-r{
+    position:absolute;top:48px;right:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;color:rgba(46,74,90,.55);
+  }
+  .svc-standalone-eyebrow{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--ocean);
+    margin-bottom:18px;display:flex;align-items:center;gap:14px;
+  }
+  .svc-standalone-eyebrow::before{
+    content:'';display:block;width:24px;height:1px;background:var(--ocean);
+  }
+  .svc-standalone-hl{
+    font-family:var(--f-disp);font-size:clamp(32px,3.4vw,48px);
+    font-weight:800;line-height:1.05;color:var(--midnight);
+    letter-spacing:-.01em;margin-bottom:14px;max-width:880px;
+  }
+  .svc-standalone-hl em{font-style:italic;font-weight:300;color:var(--ocean);}
+  .svc-standalone-sub{
+    font-family:var(--f-body);font-weight:400;font-size:14px;
+    color:var(--ink);max-width:680px;margin-bottom:60px;line-height:1.75;
+  }
+  .svc-standalone-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+    max-width:1180px;
+  }
+  @media (max-width:1000px){.svc-standalone-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:600px){.svc-standalone-grid{grid-template-columns:1fr;}}
+  .svc-stnd-card{
+    background:var(--off);
+    border:1px solid var(--rule);
+    padding:24px 24px 22px;
+    display:flex;flex-direction:column;position:relative;
+    transition:transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s var(--ease);
+  }
+  .svc-stnd-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 24px 48px -24px rgba(28,43,58,.18);
+    border-color:rgba(95,129,144,.5);
+  }
+  .svc-stnd-coord{
+    font-family:var(--f-mono);font-size:9px;font-weight:700;
+    letter-spacing:.14em;color:var(--ocean);margin-bottom:18px;
+  }
+  .svc-stnd-tag{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.16em;color:rgba(46,74,90,.7);
+    padding-bottom:14px;border-bottom:1px solid var(--rule);margin-bottom:16px;
+  }
+  .svc-stnd-name{
+    font-family:var(--f-disp);font-size:20px;font-weight:800;
+    color:var(--midnight);letter-spacing:-.005em;line-height:1.15;
+    margin-bottom:12px;
+  }
+  .svc-stnd-scope{
+    font-family:var(--f-body);font-weight:400;font-size:13.5px;
+    color:var(--ink);line-height:1.65;flex:1;margin-bottom:22px;
+  }
+  .svc-stnd-link{color:var(--ocean-dk);text-decoration:none;border-bottom:1px solid currentColor;}
+  .svc-stnd-cta{
+    font-family:var(--f-nav);font-size:10.5px;font-weight:700;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--midnight);text-decoration:none;
+    align-self:flex-start;padding:11px 18px;border:1px solid var(--midnight);
+    transition:background .3s var(--ease), color .3s var(--ease);
+    cursor:none;
+  }
+  .svc-stnd-cta:hover{background:var(--midnight);color:var(--off);}
+  @media (max-width:768px){
+    .svc-standalone-section{padding:80px 22px 60px;}
+    .svc-standalone-coord-l,.svc-standalone-coord-r{top:24px;}
+    .svc-standalone-coord-l{left:22px;}
+    .svc-standalone-coord-r{right:22px;}
+    .svc-standalone-sub{margin-bottom:40px;}
+  }
+
+  /* ============ Section: TIERS BRIEF ============ */
+  .svc-tiers-brief{
+    background:var(--midnight);
+    color:var(--off);
+    padding:120px var(--gx) 100px;
+    position:relative;
+    border-bottom:1px solid var(--rule-dk);
+  }
+  .svc-tiers-brief::before{
+    content:'';position:absolute;inset:0;
+    background-image:linear-gradient(to right,var(--grid-dk) 1px,transparent 1px);
+    background-size:calc((100vw - 128px)/6) 100%;
+    background-position:64px 0;
+    pointer-events:none;opacity:.5;
+  }
+  .svc-tiers-brief > *{position:relative;z-index:1;}
+  .svc-tiers-coord-l{
+    position:absolute;top:48px;left:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;color:var(--ocean-lt);
+  }
+  .svc-tiers-coord-r{
+    position:absolute;top:48px;right:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;color:rgba(138,173,184,.5);
+  }
+  .svc-tiers-intro{max-width:880px;margin-bottom:64px;}
+  .svc-tiers-eyebrow{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--ocean-lt);
+    margin-bottom:18px;display:flex;align-items:center;gap:14px;
+  }
+  .svc-tiers-eyebrow::before{
+    content:'';display:block;width:24px;height:1px;background:var(--ocean-lt);
+  }
+  .svc-tiers-hl{
+    font-family:var(--f-disp);font-size:clamp(32px,3.4vw,48px);
+    font-weight:800;line-height:1.05;color:var(--off);
+    letter-spacing:-.01em;margin-bottom:18px;
+  }
+  .svc-tiers-hl em{font-style:italic;font-weight:300;color:var(--ocean-lt);}
+  .svc-tiers-sub{
+    font-family:var(--f-body);font-weight:400;font-size:14px;
+    color:rgba(226,240,240,.78);max-width:680px;line-height:1.75;
+  }
+  .svc-tiers-row{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+    max-width:1180px;
+  }
+  @media (max-width:900px){.svc-tiers-row{grid-template-columns:1fr;}}
+  .svc-tier-card{
+    background:rgba(95,129,144,.06);
+    border:1px solid rgba(138,173,184,.18);
+    padding:28px 28px 24px;
+    display:flex;flex-direction:column;
+    transition:background .4s var(--ease), border-color .4s var(--ease), transform .4s var(--ease);
+  }
+  .svc-tier-card:hover{
+    background:rgba(95,129,144,.12);
+    border-color:var(--ocean-lt);
+    transform:translateY(-4px);
+  }
+  .svc-tier-card-mid{
+    background:rgba(95,129,144,.12);
+    border-color:rgba(138,173,184,.3);
+  }
+  .svc-tier-top{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:18px;
+  }
+  .svc-tier-coord{
+    font-family:var(--f-mono);font-size:9px;font-weight:700;
+    letter-spacing:.14em;color:var(--ocean-lt);
+  }
+  .svc-tier-term{
+    font-family:var(--f-mono);font-size:9px;font-weight:500;
+    letter-spacing:.14em;color:rgba(226,240,240,.55);
+  }
+  .svc-tier-name{
+    font-family:var(--f-disp);font-size:24px;font-weight:800;
+    color:var(--off);letter-spacing:-.005em;line-height:1.05;margin-bottom:6px;
+  }
+  .svc-tier-class{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.14em;color:var(--ocean-lt);
+    text-transform:uppercase;margin-bottom:18px;
+    padding-bottom:14px;border-bottom:1px solid rgba(138,173,184,.18);
+  }
+  .svc-tier-desc{
+    font-family:var(--f-body);font-weight:400;font-size:13.5px;
+    color:rgba(226,240,240,.82);line-height:1.7;flex:1;margin-bottom:24px;
+  }
+  .svc-tier-cta{
+    font-family:var(--f-nav);font-size:10.5px;font-weight:700;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--off);text-decoration:none;
+    align-self:flex-start;padding:11px 18px;border:1px solid var(--off);
+    transition:background .3s var(--ease), color .3s var(--ease);
+    cursor:none;
+  }
+  .svc-tier-cta:hover{background:var(--off);color:var(--midnight);}
+
+  @media (max-width:768px){
+    .svc-tiers-brief{padding:80px 22px 60px;}
+    .svc-tiers-coord-l,.svc-tiers-coord-r{top:24px;}
+    .svc-tiers-coord-l{left:22px;}
+    .svc-tiers-coord-r{right:22px;}
+    .svc-tiers-intro{margin-bottom:40px;}
+  }
+</style>
+
 </head>
 <body data-page="mandates" data-location="root">
 <div id="cd"></div>
@@ -427,291 +842,281 @@
 </div>
 </section>
 
-<div class="s-num-bar"><span>02.A · ENGAGEMENT MODELS</span><span>MANDATES / 01</span><span>03 · TIERS</span></div>
+<div class="s-num-bar"><span>02.A · THE SERVICE MATRIX</span><span>MANDATES / 01</span><span>06 × 04 · COVERAGE</span></div>
 
-<section class="mnd-cards">
-<p class="eyebrow r3d">Engagement Models</p>
-<div class="svc-grid-3" style="margin-top:60px">
-<div class="svc-card r3d d1" data-idx="[T1]"><div class="svc-card-face front" data-idx="[T1]"><p class="svc-tag">Tier 01 — Professionalization</p><h3 class="svc-title">Signature<br>Partner</h3><div class="svc-rule"></div>
-<p class="svc-desc">Foundational growth and brand infrastructure. For startups, SMEs, and service businesses ready to formalise their market presence.</p>
-<ul class="svc-feats"><li>Brand &amp; visual identity systems</li><li>Business website + SEO foundations</li><li>CRM setup &amp; client onboarding</li><li>Marketing infrastructure &amp; lead capture</li><li>Monthly strategy sessions</li></ul>
-<a href="#" class="svc-cta" data-page="intake">Apply for Engagement</a><span class="svc-flip-hint">Hover · See Inside</span></div><div class="svc-card-face back"><span class="svc-back-coord">[ T1.B ]</span><p class="svc-back-tag">Tier 01 — Behind the Curtain</p><h4 class="svc-back-h">Become <em>market-ready.</em></h4><div class="svc-back-block"><div class="svc-back-l">[ Cadence ]</div><div class="svc-back-v">Monthly strategy session. Open advisory via Atlas. Performance reviews quarterly.</div></div><div class="svc-back-block"><div class="svc-back-l">[ Best Fit ]</div><div class="svc-back-v">Startups, local businesses, and professional service firms formalising operations and establishing market presence.</div></div><div class="svc-back-block"><div class="svc-back-l">[ Outcome ]</div><div class="svc-back-v">Clear brand positioning. Professional digital presence. CRM and lead-capture systems in place. A growth roadmap to act on.</div></div><div class="svc-back-block"><div class="svc-back-l">[ Term ]</div><div class="svc-back-v">Quarterly minimum. Reviewed every 90 days.</div></div><a href="#" class="svc-back-cta" data-page="intake">Apply for Engagement</a></div></div>
-<div class="svc-card r3d d2" data-idx="[T2]"><div class="svc-card-face front" data-idx="[T2]"><p class="svc-tag">Tier 02 — Scale &amp; Optimization</p><h3 class="svc-title">Growth<br>Partner</h3><div class="svc-rule"></div>
-<p class="svc-desc">Scalable growth and operational integration. The core HIMARK tier — where businesses begin relying on us operationally and strategically.</p>
-<ul class="svc-feats"><li>Advanced brand strategy &amp; differentiation</li><li>CRM optimisation &amp; workflow automation</li><li>Full marketing strategy &amp; lead generation</li><li>LinkedIn authority &amp; founder positioning</li><li>Quarterly growth strategy workshops</li></ul>
-<a href="#" class="svc-cta" data-page="intake">Apply for Engagement</a><span class="svc-flip-hint">Hover · See Inside</span></div><div class="svc-card-face back"><span class="svc-back-coord">[ T2.B ]</span><p class="svc-back-tag">Tier 02 — Behind the Curtain</p><h4 class="svc-back-h">Part of your <em>growth engine.</em></h4><div class="svc-back-block"><div class="svc-back-l">[ Cadence ]</div><div class="svc-back-v">Weekly principal session. Live Slack/WhatsApp link. Monthly board update. Quarterly workshops.</div></div><div class="svc-back-block"><div class="svc-back-l">[ Best Fit ]</div><div class="svc-back-v">Scaling businesses, mid-sized companies, operational-heavy service firms expanding digitally with active sales teams.</div></div><div class="svc-back-block"><div class="svc-back-l">[ Outcome ]</div><div class="svc-back-v">Strategy in motion. CRM + automation deployed. Lead generation systems running. Revenue lift attributable.</div></div><div class="svc-back-block"><div class="svc-back-l">[ Term ]</div><div class="svc-back-v">6-month minimum. Reviewed every 90 days.</div></div><a href="#" class="svc-back-cta" data-page="intake">Apply for Engagement</a></div></div>
-<div class="svc-card r3d d3" data-idx="[T3]"><div class="svc-card-face front" data-idx="[T3]"><p class="svc-tag">Tier 03 — Strategic Transformation</p><h3 class="svc-title">Private<br>Partner</h3><div class="svc-rule"></div>
-<p class="svc-desc">Executive-level strategic transformation. Embedded strategic leadership for enterprise clients. By invitation only.</p>
-<ul class="svc-feats"><li>Executive advisory &amp; strategic planning</li><li>Enterprise infrastructure &amp; AI ecosystems</li><li>Executive personal branding</li><li>Innovation &amp; market expansion consulting</li><li>Dedicated principal access</li></ul>
-<a href="#" class="svc-cta" data-page="intake">Apply for Engagement</a><span class="svc-flip-hint">Hover · See Inside</span></div><div class="svc-card-face back"><span class="svc-back-coord">[ T3.B ]</span><p class="svc-back-tag">Tier 03 — Behind the Curtain</p><h4 class="svc-back-h">A strategic extension of <em>your leadership team.</em></h4><div class="svc-back-block"><div class="svc-back-l">[ Cadence ]</div><div class="svc-back-v">Real-time access. Dedicated principal. Direct line to founder. Executive consultation on demand.</div></div><div class="svc-back-block"><div class="svc-back-l">[ Best Fit ]</div><div class="svc-back-v">High-growth firms, enterprise clients, executive-led businesses, multi-department companies scaling aggressively.</div></div><div class="svc-back-block"><div class="svc-back-l">[ Outcome ]</div><div class="svc-back-v">Enterprise transformation. AI-assisted operational systems. Executive brand. M&amp;A architecture. Long-term scaling blueprint.</div></div><div class="svc-back-block"><div class="svc-back-l">[ Term ]</div><div class="svc-back-v">12-month minimum. By invitation only.</div></div><a href="#" class="svc-back-cta" data-page="intake">Apply for Engagement</a></div></div>
+<section class="svc-matrix-section">
+<span class="svc-matrix-coord-l">[ 02.A.01 · MATRIX ]</span>
+<span class="svc-matrix-coord-r">UNIFIED · SCOPE</span>
+
+<p class="svc-matrix-eyebrow">The full surface</p>
+<h2 class="svc-matrix-hl">Six service categories ·<em>four engagement paths.</em></h2>
+<p class="svc-matrix-sub">The HIMARK service surface, mapped against engagement options. Tap any category to read its brief. Tap any column header to isolate that engagement path. Services marked <strong>Available</strong> can be commissioned standalone — you are not required to enter a full tier engagement.</p>
+
+<div class="svc-matrix-stage" id="svc-matrix-stage">
+<div class="svc-matrix-grid" role="grid" aria-label="Service coverage matrix">
+
+<div class="svc-matrix-row svc-matrix-header" role="row">
+<div class="svc-cell svc-cell-head svc-cell-corner" role="columnheader"><span class="svc-cell-head-mono">[ SERVICE · CATEGORY ]</span></div>
+<div class="svc-cell svc-cell-head" role="columnheader" data-col="0" tabindex="0">
+<span class="svc-cell-head-tag">STANDALONE</span>
+<span class="svc-cell-head-sub">No tier required</span>
 </div>
-</section>
-
-<div class="s-num-bar"><span>02.B · THE LATTICE</span><span>MANDATES / 02</span><span>03 TIERS · NESTED</span></div>
-
-<!-- TIER LATTICE — interactive nested-envelope diagram. Each tier
-     contains everything in the one below it; clicking a layer reveals
-     that tier's specifics (cadence, fit, term, what's added). -->
-<section class="tier-lattice">
-<span class="tier-lattice-coord-l">[ 02.B.01 ]</span>
-<span class="tier-lattice-coord-r">DIAGRAM · INTERACTIVE</span>
-
-<p class="tier-lattice-eyebrow">Interactive map</p>
-<h2 class="tier-lattice-hl">The tier lattice<em>· nested by design.</em></h2>
-<p class="tier-lattice-sub">Each tier contains everything in the one below. Hover or tap any envelope to see what it includes — and what it adds over the one beneath it.</p>
-
-<div class="tier-lattice-stage">
-<svg class="tier-lattice-svg" viewBox="0 0 880 540" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Three nested tier envelopes — Signature, Growth, Private">
-
-<!-- Outer envelope — Private (Tier 03) -->
-<g class="tier-layer" data-tier="2" tabindex="0" role="button" aria-label="Tier 03 — Private Partner">
-<rect class="tier-rect" x="60" y="40" width="760" height="460" rx="3"/>
-<text class="tier-rect-coord" x="80" y="68">[ TIER.03 · PRIVATE ]</text>
-<text class="tier-rect-price" x="800" y="68" text-anchor="end">12-month minimum · By invitation</text>
-<text class="tier-rect-name" x="80" y="100">Private Partner</text>
-<text class="tier-rect-sub" x="80" y="120">Strategic Transformation · Executive-level</text>
-</g>
-
-<!-- Middle envelope — Growth (Tier 02) -->
-<g class="tier-layer" data-tier="1" tabindex="0" role="button" aria-label="Tier 02 — Growth Partner">
-<rect class="tier-rect" x="120" y="160" width="640" height="320" rx="3"/>
-<text class="tier-rect-coord" x="140" y="188">[ TIER.02 · GROWTH ]</text>
-<text class="tier-rect-price" x="740" y="188" text-anchor="end">Six-month minimum</text>
-<text class="tier-rect-name" x="140" y="220">Growth Partner</text>
-<text class="tier-rect-sub" x="140" y="240">Scale &amp; Optimisation · Core HIMARK tier</text>
-</g>
-
-<!-- Inner envelope — Signature (Tier 01) -->
-<g class="tier-layer" data-tier="0" tabindex="0" role="button" aria-label="Tier 01 — Signature Partner">
-<rect class="tier-rect" x="180" y="280" width="520" height="180" rx="3"/>
-<text class="tier-rect-coord" x="200" y="308">[ TIER.01 · SIGNATURE ]</text>
-<text class="tier-rect-price" x="680" y="308" text-anchor="end">Quarterly minimum</text>
-<text class="tier-rect-name" x="200" y="340">Signature Partner</text>
-<text class="tier-rect-sub" x="200" y="360">Professionalisation · Foundation</text>
-</g>
-
-</svg>
+<div class="svc-cell svc-cell-head" role="columnheader" data-col="1" tabindex="0">
+<span class="svc-cell-head-tag">SIGNATURE</span>
+<span class="svc-cell-head-sub">Tier 01 · Foundation</span>
+</div>
+<div class="svc-cell svc-cell-head" role="columnheader" data-col="2" tabindex="0">
+<span class="svc-cell-head-tag">GROWTH</span>
+<span class="svc-cell-head-sub">Tier 02 · Core</span>
+</div>
+<div class="svc-cell svc-cell-head" role="columnheader" data-col="3" tabindex="0">
+<span class="svc-cell-head-tag">PRIVATE</span>
+<span class="svc-cell-head-sub">Tier 03 · Executive</span>
+</div>
 </div>
 
-<!-- Detail panel — updates as a tier is activated -->
-<div class="tier-lattice-detail">
-<div class="tier-lattice-detail-coord">[ <span id="tier-detail-num">01</span> · <span id="tier-detail-tag">SIGNATURE</span> ]</div>
-<div class="tier-lattice-detail-grid">
+<div class="svc-matrix-row" role="row" data-row="0" tabindex="0">
+<div class="svc-cell svc-cell-label">
+<span class="svc-row-coord">[ S.01 ]</span>
+<span class="svc-row-name">Brand Architecture</span>
+<span class="svc-row-sub">Identity, positioning, brand systems, executive personal branding</span>
+</div>
+<div class="svc-cell svc-cov svc-cov-yes"><span class="svc-cov-mark">Available</span></div>
+<div class="svc-cell svc-cov svc-cov-found"><span class="svc-cov-dots"><span></span><span></span></span><span class="svc-cov-tag">Foundation</span></div>
+<div class="svc-cell svc-cov svc-cov-adv"><span class="svc-cov-dots"><span></span><span></span><span></span></span><span class="svc-cov-tag">Advanced</span></div>
+<div class="svc-cell svc-cov svc-cov-exec"><span class="svc-cov-dots"><span></span><span></span><span></span></span><span class="svc-cov-tag">Executive</span></div>
+</div>
+
+<div class="svc-matrix-row" role="row" data-row="1" tabindex="0">
+<div class="svc-cell svc-cell-label">
+<span class="svc-row-coord">[ S.02 ]</span>
+<span class="svc-row-name">Digital Infrastructure</span>
+<span class="svc-row-sub">Website, SEO, CRM, lead capture, enterprise systems</span>
+</div>
+<div class="svc-cell svc-cov svc-cov-yes"><span class="svc-cov-mark">Available</span></div>
+<div class="svc-cell svc-cov svc-cov-found"><span class="svc-cov-dots"><span></span><span></span></span><span class="svc-cov-tag">Foundation</span></div>
+<div class="svc-cell svc-cov svc-cov-adv"><span class="svc-cov-dots"><span></span><span></span><span></span></span><span class="svc-cov-tag">Advanced</span></div>
+<div class="svc-cell svc-cov svc-cov-exec"><span class="svc-cov-dots"><span></span><span></span><span></span></span><span class="svc-cov-tag">Enterprise</span></div>
+</div>
+
+<div class="svc-matrix-row" role="row" data-row="2" tabindex="0">
+<div class="svc-cell svc-cell-label">
+<span class="svc-row-coord">[ S.03 ]</span>
+<span class="svc-row-name">Marketing &amp; Demand</span>
+<span class="svc-row-sub">Strategy, lead generation, content, channel architecture</span>
+</div>
+<div class="svc-cell svc-cov svc-cov-yes"><span class="svc-cov-mark">Available</span></div>
+<div class="svc-cell svc-cov svc-cov-part"><span class="svc-cov-dots"><span></span></span><span class="svc-cov-tag">Basics</span></div>
+<div class="svc-cell svc-cov svc-cov-adv"><span class="svc-cov-dots"><span></span><span></span><span></span></span><span class="svc-cov-tag">Full strategy</span></div>
+<div class="svc-cell svc-cov svc-cov-exec"><span class="svc-cov-dots"><span></span><span></span><span></span></span><span class="svc-cov-tag">+ Executive</span></div>
+</div>
+
+<div class="svc-matrix-row" role="row" data-row="3" tabindex="0">
+<div class="svc-cell svc-cell-label">
+<span class="svc-row-coord">[ S.04 ]</span>
+<span class="svc-row-name">AI &amp; Operational Systems</span>
+<span class="svc-row-sub">AIRaaS, workflow automation, intelligent routing, orchestration</span>
+</div>
+<div class="svc-cell svc-cov svc-cov-yes"><span class="svc-cov-mark">Available</span></div>
+<div class="svc-cell svc-cov svc-cov-part"><span class="svc-cov-dots"><span></span></span><span class="svc-cov-tag">Atlas basic</span></div>
+<div class="svc-cell svc-cov svc-cov-adv"><span class="svc-cov-dots"><span></span><span></span><span></span></span><span class="svc-cov-tag">AIRaaS deployed</span></div>
+<div class="svc-cell svc-cov svc-cov-exec"><span class="svc-cov-dots"><span></span><span></span><span></span></span><span class="svc-cov-tag">Enterprise AI</span></div>
+</div>
+
+<div class="svc-matrix-row" role="row" data-row="4" tabindex="0">
+<div class="svc-cell svc-cell-label">
+<span class="svc-row-coord">[ S.05 ]</span>
+<span class="svc-row-name">Strategic Advisory</span>
+<span class="svc-row-sub">Principal sessions, workshops, doctrine, growth review</span>
+</div>
+<div class="svc-cell svc-cov svc-cov-req"><span class="svc-cov-mark">On request</span></div>
+<div class="svc-cell svc-cov svc-cov-part"><span class="svc-cov-dots"><span></span></span><span class="svc-cov-tag">Monthly</span></div>
+<div class="svc-cell svc-cov svc-cov-adv"><span class="svc-cov-dots"><span></span><span></span><span></span></span><span class="svc-cov-tag">Weekly principal</span></div>
+<div class="svc-cell svc-cov svc-cov-exec"><span class="svc-cov-dots"><span></span><span></span><span></span></span><span class="svc-cov-tag">Dedicated principal</span></div>
+</div>
+
+<div class="svc-matrix-row" role="row" data-row="5" tabindex="0">
+<div class="svc-cell svc-cell-label">
+<span class="svc-row-coord">[ S.06 ]</span>
+<span class="svc-row-name">Executive &amp; Transformation</span>
+<span class="svc-row-sub">M&amp;A, capital strategy, pricing architecture, exec branding</span>
+</div>
+<div class="svc-cell svc-cov svc-cov-yes"><span class="svc-cov-mark">Selected</span></div>
+<div class="svc-cell svc-cov svc-cov-no"><span class="svc-cov-mark">—</span></div>
+<div class="svc-cell svc-cov svc-cov-part"><span class="svc-cov-dots"><span></span></span><span class="svc-cov-tag">Partial</span></div>
+<div class="svc-cell svc-cov svc-cov-exec"><span class="svc-cov-dots"><span></span><span></span><span></span></span><span class="svc-cov-tag">Full</span></div>
+</div>
+
+</div>
+
+<div class="svc-matrix-detail" id="svc-matrix-detail">
+<div class="svc-matrix-detail-coord">[ <span id="svc-detail-coord">02.A.S.01</span> ]</div>
+<div class="svc-matrix-detail-grid">
 <div>
-<p class="tier-lattice-detail-eyebrow">Tier</p>
-<h3 class="tier-lattice-detail-name" id="tier-detail-name">Signature Partner</h3>
-<p class="tier-lattice-detail-desc" id="tier-detail-desc">The launch-pad tier — foundational growth and brand infrastructure for startups, SMEs, and service businesses ready to formalise their market presence.</p>
+<p class="svc-matrix-detail-eyebrow"><span id="svc-detail-eyebrow">Service category · 01</span></p>
+<h3 class="svc-matrix-detail-name" id="svc-detail-name">Brand Architecture</h3>
+<p class="svc-matrix-detail-desc" id="svc-detail-desc">Brand identity systems, market positioning, and the architecture underneath them. Where most engagements begin — because brand is the surface every commercial decision is measured against.</p>
 </div>
-<div class="tier-lattice-detail-right">
-<div class="tier-lattice-detail-row">
-<p class="tier-lattice-detail-l">Cadence</p>
-<p class="tier-lattice-detail-v" id="tier-detail-cadence">Monthly strategy session · Atlas advisory · Quarterly performance reviews</p>
+<div class="svc-matrix-detail-right">
+<div class="svc-matrix-detail-row">
+<p class="svc-matrix-detail-l">Standalone scope</p>
+<p class="svc-matrix-detail-v" id="svc-detail-standalone">Identity sprint · Brand audit · Positioning workshop</p>
 </div>
-<div class="tier-lattice-detail-row">
-<p class="tier-lattice-detail-l">Best fit</p>
-<p class="tier-lattice-detail-v" id="tier-detail-fit">Startups, SMEs, and professional service firms formalising operations and establishing market presence.</p>
+<div class="svc-matrix-detail-row">
+<p class="svc-matrix-detail-l">In tier engagements</p>
+<p class="svc-matrix-detail-v" id="svc-detail-tiers">Signature: foundational identity. Growth: advanced strategy. Private: full executive brand.</p>
 </div>
-<div class="tier-lattice-detail-row">
-<p class="tier-lattice-detail-l">Term</p>
-<p class="tier-lattice-detail-v" id="tier-detail-term">Quarterly minimum · Reviewed every 90 days</p>
-</div>
-<div class="tier-lattice-detail-row">
-<p class="tier-lattice-detail-l">What this tier adds</p>
-<p class="tier-lattice-detail-v" id="tier-detail-adds" style="font-style:italic">The foundation layer — establishes the operational baseline.</p>
+<div class="svc-matrix-detail-row">
+<p class="svc-matrix-detail-l">Typical timeline</p>
+<p class="svc-matrix-detail-v" id="svc-detail-timeline">Standalone: 4–6 weeks. As part of a tier: continuous.</p>
 </div>
 </div>
 </div>
+</div>
+
 </div>
 </section>
 
-<div class="s-num-bar"><span>02.C · TIER ARCHITECTURE</span><span>MANDATES / 03</span><span>03 · LAYERS</span></div>
+<div class="s-num-bar"><span>02.B · STANDALONE SERVICES</span><span>MANDATES / 02</span><span>NO TIER · REQUIRED</span></div>
 
-<section class="tier-deep-dive">
-<p class="eyebrow r3d">Tier Architecture · Detailed Breakdown</p>
+<section class="svc-standalone-section">
+<span class="svc-standalone-coord-l">[ 02.B.01 · STANDALONE ]</span>
+<span class="svc-standalone-coord-r">CATALOGUE · OPEN</span>
 
-<!-- ===== TIER 01 · SIGNATURE PARTNER ===== -->
-<article class="tier-block r3d d1" id="tier-signature">
-<header class="tier-block-head">
-<span class="tier-coord">[ TIER.01 ]</span>
-<div class="tier-num">01</div>
-<div class="tier-block-titles">
-<p class="tier-psy">Professionalization</p>
-<h3 class="tier-name">Signature Partner</h3>
-<p class="tier-sub">Foundational Growth &amp; Brand Infrastructure</p>
-</div>
-</header>
-<div class="tier-objective">
-<p>The launch-pad tier. Built for startups, SMEs, and growing service businesses ready to formalise their brand, establish a clean digital presence, and put the foundational systems in place that allow them to operate, sell, and scale with intent.</p>
-</div>
-<div class="tier-meta-grid">
-<div class="tier-meta">
-<p class="tier-meta-l">[ For ]</p>
-<ul class="tier-meta-ul"><li>Startups</li><li>Small &amp; medium businesses</li><li>Growing service businesses</li><li>Founders professionalising operations</li></ul>
-</div>
-<div class="tier-meta">
-<p class="tier-meta-l">[ Core Focus ]</p>
-<div class="tier-tags"><span class="tier-tag">Brand foundation</span><span class="tier-tag">Digital presence</span><span class="tier-tag">Lead capture</span><span class="tier-tag">Operational hygiene</span><span class="tier-tag">Strategic clarity</span></div>
-</div>
-</div>
-<div class="tier-services">
-<p class="tier-services-h">Included Services</p>
-<div class="tier-cat-grid">
-<div class="tier-cat">
-<p class="tier-cat-h">Brand &amp; Identity</p>
-<ul><li>Brand strategy &amp; positioning</li><li>Logo &amp; visual identity systems</li><li>Tone-of-voice &amp; messaging frameworks</li><li>Brand collateral (decks, profiles, social kits)</li></ul>
-</div>
-<div class="tier-cat">
-<p class="tier-cat-h">Digital Presence</p>
-<ul><li>Business website design &amp; build</li><li>SEO foundations &amp; on-page optimisation</li><li>Google Business + local discovery</li><li>Email signature &amp; domain hygiene</li></ul>
-</div>
-<div class="tier-cat">
-<p class="tier-cat-h">Marketing Infrastructure</p>
-<ul><li>CRM setup &amp; lead capture</li><li>Email marketing foundations</li><li>Content calendar &amp; social baseline</li><li>Marketing analytics scaffolding</li></ul>
-</div>
-<div class="tier-cat">
-<p class="tier-cat-h">Operational Systems</p>
-<ul><li>Client onboarding flow</li><li>Proposal &amp; quoting templates</li><li>Internal documentation baseline</li><li>Workflow + task system setup</li></ul>
-</div>
-<div class="tier-cat">
-<p class="tier-cat-h">Strategic Support</p>
-<ul><li>Monthly strategy sessions</li><li>Quarterly performance reviews</li><li>Advisory via Atlas (async)</li><li>Growth roadmap (12 months)</li></ul>
-</div>
-</div>
-</div>
-<div class="tier-clients">
-<p class="tier-cat-h">Ideal Clients</p>
-<ul class="tier-clients-ul"><li>Startups validating their offer</li><li>Local businesses building presence</li><li>Professional service firms (legal, financial, consulting)</li><li>Trade &amp; service-based SMEs</li><li>Founders moving from informal to formal operations</li></ul>
-</div>
-<blockquote class="tier-pull">
-<span class="tier-pull-mark">"</span>
-<p>We help businesses become <em>market-ready.</em></p>
-<span class="tier-pull-attr">— HIMARK · STRATEGIC POSITIONING</span>
-</blockquote>
+<p class="svc-standalone-eyebrow">Single-scope commissions</p>
+<h2 class="svc-standalone-hl">Available standalone —<em>without a tier commitment.</em></h2>
+<p class="svc-standalone-sub">For organisations that don't yet need a full engagement, or that have a specific commission in mind. Each is scoped, fixed-price (confirmed on application), and delivered by a HIMARK principal.</p>
+
+<div class="svc-standalone-grid">
+
+<article class="svc-stnd-card">
+<div class="svc-stnd-coord">[ T.01 ]</div>
+<div class="svc-stnd-tag">BRAND ARCHITECTURE</div>
+<h3 class="svc-stnd-name">Brand Identity Sprint</h3>
+<p class="svc-stnd-scope">Visual identity, mark, brand system, and the foundational guideline document. Two-week intensive with a principal.</p>
+<a class="svc-stnd-cta" href="#" data-page="intake">Commission →</a>
 </article>
 
-<!-- ===== TIER 02 · GROWTH PARTNER ===== -->
-<article class="tier-block r3d d2" id="tier-growth">
-<header class="tier-block-head">
-<span class="tier-coord">[ TIER.02 ]</span>
-<div class="tier-num">02</div>
-<div class="tier-block-titles">
-<p class="tier-psy">Scale &amp; Optimization</p>
-<h3 class="tier-name">Growth Partner</h3>
-<p class="tier-sub">Scalable Growth &amp; Operational Integration</p>
-</div>
-</header>
-<div class="tier-objective">
-<p>The core HIMARK tier. Built for businesses past the foundation stage who now require integrated growth systems, advanced marketing, operational rigour, and strategic depth. This is the tier where clients begin to rely on HIMARK operationally — not just creatively.</p>
-</div>
-<div class="tier-meta-grid">
-<div class="tier-meta">
-<p class="tier-meta-l">[ For ]</p>
-<ul class="tier-meta-ul"><li>Scaling businesses</li><li>Mid-sized companies</li><li>Operationally heavy service firms</li><li>Businesses expanding digitally</li><li>Active sales-team environments</li></ul>
-</div>
-<div class="tier-meta">
-<p class="tier-meta-l">[ Core Focus ]</p>
-<div class="tier-tags"><span class="tier-tag">Brand differentiation</span><span class="tier-tag">Automation</span><span class="tier-tag">Lead generation</span><span class="tier-tag">Authority building</span><span class="tier-tag">Operational scale</span></div>
-</div>
-</div>
-<div class="tier-services">
-<p class="tier-services-h">Included Services <span class="tier-incl">— Everything in Signature, plus</span></p>
-<div class="tier-cat-grid">
-<div class="tier-cat">
-<p class="tier-cat-h">Advanced Brand Strategy</p>
-<ul><li>Brand repositioning &amp; differentiation</li><li>Competitive landscape &amp; messaging architecture</li><li>Brand storytelling &amp; narrative systems</li><li>Visual identity evolution</li></ul>
-</div>
-<div class="tier-cat">
-<p class="tier-cat-h">Advanced Digital Infrastructure</p>
-<ul><li>Custom website builds &amp; conversion design</li><li>Advanced SEO &amp; technical optimisation</li><li>Analytics, tracking &amp; attribution stack</li><li>Performance reporting dashboards</li></ul>
-</div>
-<div class="tier-cat">
-<p class="tier-cat-h">Growth &amp; Marketing Systems</p>
-<ul><li>Full marketing strategy &amp; calendar</li><li>Paid acquisition (Meta, Google, LinkedIn)</li><li>Lead generation funnels &amp; nurture flows</li><li>CRM optimisation &amp; workflow automation</li><li>LinkedIn authority + founder positioning</li></ul>
-</div>
-<div class="tier-cat">
-<p class="tier-cat-h">Content &amp; Storytelling</p>
-<ul><li>Content production (written, visual, video)</li><li>Editorial &amp; publishing rhythm</li><li>Thought-leadership programme</li><li>PR &amp; earned media outreach</li></ul>
-</div>
-<div class="tier-cat">
-<p class="tier-cat-h">Consulting &amp; Advisory</p>
-<ul><li>Quarterly growth strategy workshops</li><li>Weekly principal session</li><li>Live ops link (Slack / WhatsApp)</li><li>Monthly board-style update</li></ul>
-</div>
-</div>
-</div>
-<div class="tier-clients">
-<p class="tier-cat-h">Ideal Clients</p>
-<ul class="tier-clients-ul"><li>Established SMEs scaling beyond founder-led ops</li><li>Mid-market service firms with growth ambition</li><li>Operationally heavy businesses (logistics, manufacturing, professional services)</li><li>Companies expanding into new markets or channels</li><li>Brands building category authority</li></ul>
-</div>
-<blockquote class="tier-pull">
-<span class="tier-pull-mark">"</span>
-<p>We become part of your <em>growth engine.</em></p>
-<span class="tier-pull-attr">— HIMARK · STRATEGIC POSITIONING</span>
-</blockquote>
+<article class="svc-stnd-card">
+<div class="svc-stnd-coord">[ T.02 ]</div>
+<div class="svc-stnd-tag">BRAND ARCHITECTURE</div>
+<h3 class="svc-stnd-name">Strategic Positioning Workshop</h3>
+<p class="svc-stnd-scope">Principal-led two-day workshop to surface the positioning thesis and define the category narrative. Output: positioning document + go-forward brief.</p>
+<a class="svc-stnd-cta" href="#" data-page="intake">Commission →</a>
 </article>
 
-<!-- ===== TIER 03 · PRIVATE PARTNER ===== -->
-<article class="tier-block r3d d3" id="tier-private">
-<header class="tier-block-head">
-<span class="tier-coord">[ TIER.03 ]</span>
-<div class="tier-num">03</div>
-<div class="tier-block-titles">
-<p class="tier-psy">Strategic Transformation</p>
-<h3 class="tier-name">Private Partner</h3>
-<p class="tier-sub">Executive-Level Strategic Transformation</p>
-</div>
-</header>
-<div class="tier-objective">
-<p>The elite tier. Reserved for enterprise clients, executive-led firms, and high-growth businesses where HIMARK operates as embedded strategic leadership. Engagements at this level cover the full surface area — strategy, infrastructure, brand, growth, and executive counsel. By invitation only.</p>
-</div>
-<div class="tier-meta-grid">
-<div class="tier-meta">
-<p class="tier-meta-l">[ For ]</p>
-<ul class="tier-meta-ul"><li>Enterprise clients</li><li>High-growth firms</li><li>Executive-led businesses</li><li>Multi-department companies</li><li>Founders &amp; CEOs scaling aggressively</li></ul>
-</div>
-<div class="tier-meta">
-<p class="tier-meta-l">[ Core Focus ]</p>
-<div class="tier-tags"><span class="tier-tag">Executive strategy</span><span class="tier-tag">Enterprise systems</span><span class="tier-tag">AI ecosystems</span><span class="tier-tag">Executive brand</span><span class="tier-tag">M&amp;A architecture</span></div>
-</div>
-</div>
-<div class="tier-services">
-<p class="tier-services-h">Included Services <span class="tier-incl">— Everything in Growth, plus</span></p>
-<div class="tier-cat-grid">
-<div class="tier-cat">
-<p class="tier-cat-h">Executive Strategy</p>
-<ul><li>Board-level strategic planning</li><li>Long-term scaling blueprint</li><li>Market expansion &amp; geographic strategy</li><li>Innovation &amp; product strategy advisory</li></ul>
-</div>
-<div class="tier-cat">
-<p class="tier-cat-h">Enterprise Infrastructure</p>
-<ul><li>Enterprise-grade digital infrastructure</li><li>AI-assisted operational ecosystems</li><li>Custom internal tooling &amp; dashboards</li><li>Data architecture &amp; reporting backbone</li></ul>
-</div>
-<div class="tier-cat">
-<p class="tier-cat-h">Executive Branding</p>
-<ul><li>Founder &amp; C-suite personal brand strategy</li><li>Editorial &amp; publishing programme</li><li>Keynote &amp; speaking architecture</li><li>Media positioning &amp; press handling</li></ul>
-</div>
-<div class="tier-cat">
-<p class="tier-cat-h">Advanced Growth Consulting</p>
-<ul><li>M&amp;A architecture &amp; acquisition support</li><li>Capital strategy &amp; investor narrative</li><li>Partnership &amp; channel development</li><li>Pricing architecture &amp; commercial design</li></ul>
-</div>
-<div class="tier-cat">
-<p class="tier-cat-h">Dedicated Strategic Access</p>
-<ul><li>Dedicated HIMARK principal on retainer</li><li>Real-time executive advisory</li><li>Direct line to founder</li><li>Executive consultation on demand</li><li>Owner-level alignment &amp; confidence</li></ul>
-</div>
-</div>
-</div>
-<div class="tier-clients">
-<p class="tier-cat-h">Ideal Clients</p>
-<ul class="tier-clients-ul"><li>Established enterprises in transition</li><li>High-growth firms preparing for next stage</li><li>Executive teams requiring institutional-grade counsel</li><li>Founder-led companies scaling aggressively</li><li>Multi-department organisations consolidating strategy</li></ul>
-</div>
-<blockquote class="tier-pull">
-<span class="tier-pull-mark">"</span>
-<p>HIMARK operates as a strategic extension of <em>your leadership team.</em></p>
-<span class="tier-pull-attr">— HIMARK · STRATEGIC POSITIONING</span>
-</blockquote>
+<article class="svc-stnd-card">
+<div class="svc-stnd-coord">[ T.03 ]</div>
+<div class="svc-stnd-tag">DIGITAL INFRASTRUCTURE</div>
+<h3 class="svc-stnd-name">Website Architecture &amp; Build</h3>
+<p class="svc-stnd-scope">Editorial-grade website built on the HIMARK system. Includes information architecture, build, SEO foundations, and analytics setup.</p>
+<a class="svc-stnd-cta" href="#" data-page="intake">Commission →</a>
 </article>
 
+<article class="svc-stnd-card">
+<div class="svc-stnd-coord">[ T.04 ]</div>
+<div class="svc-stnd-tag">DIGITAL INFRASTRUCTURE</div>
+<h3 class="svc-stnd-name">CRM &amp; Pipeline Architecture</h3>
+<p class="svc-stnd-scope">CRM platform setup, pipeline design, lead routing, and the workflow automations that hold it together. HubSpot, Salesforce, or platform-native.</p>
+<a class="svc-stnd-cta" href="#" data-page="intake">Commission →</a>
+</article>
+
+<article class="svc-stnd-card">
+<div class="svc-stnd-coord">[ T.05 ]</div>
+<div class="svc-stnd-tag">AI &amp; OPERATIONAL SYSTEMS</div>
+<h3 class="svc-stnd-name">AIRaaS Deployment</h3>
+<p class="svc-stnd-scope">Full AIRaaS deployment across web, WhatsApp, and voice. Includes LeadSense calibration, persona training, and CRM routing.</p>
+<a class="svc-stnd-cta" href="#" data-page="intake">Commission →</a>
+</article>
+
+<article class="svc-stnd-card">
+<div class="svc-stnd-coord">[ T.06 ]</div>
+<div class="svc-stnd-tag">AI &amp; OPERATIONAL SYSTEMS</div>
+<h3 class="svc-stnd-name">Workflow Automation Build</h3>
+<p class="svc-stnd-scope">Operational automation across your existing stack — lead handling, onboarding, internal routing, reporting. Designed for compounding leverage, not novelty.</p>
+<a class="svc-stnd-cta" href="#" data-page="intake">Commission →</a>
+</article>
+
+<article class="svc-stnd-card">
+<div class="svc-stnd-coord">[ T.07 ]</div>
+<div class="svc-stnd-tag">MARKETING &amp; DEMAND</div>
+<h3 class="svc-stnd-name">Demand Architecture Sprint</h3>
+<p class="svc-stnd-scope">Four-week diagnostic + design sprint on the demand engine — sources, channels, conversion infrastructure. Output: demand blueprint.</p>
+<a class="svc-stnd-cta" href="#" data-page="intake">Commission →</a>
+</article>
+
+<article class="svc-stnd-card">
+<div class="svc-stnd-coord">[ T.08 ]</div>
+<div class="svc-stnd-tag">STRATEGIC ADVISORY</div>
+<h3 class="svc-stnd-name">Principal Advisory Session</h3>
+<p class="svc-stnd-scope">Ninety minutes with a HIMARK principal on a defined commercial question. Includes pre-read review and a written one-pager. Bookable via <a href="#" data-page="sessions" class="svc-stnd-link">Counsel</a>.</p>
+<a class="svc-stnd-cta" href="#" data-page="sessions">Book a session →</a>
+</article>
+
+<article class="svc-stnd-card">
+<div class="svc-stnd-coord">[ T.09 ]</div>
+<div class="svc-stnd-tag">EXECUTIVE &amp; TRANSFORMATION</div>
+<h3 class="svc-stnd-name">M&amp;A Readiness Assessment</h3>
+<p class="svc-stnd-scope">Diagnostic on the business's M&amp;A posture — narrative, financials, operational fit, principal questions a buyer will ask. Output: readiness brief.</p>
+<a class="svc-stnd-cta" href="#" data-page="intake">Commission →</a>
+</article>
+
+</div>
 </section>
 
-<div class="s-num-bar"><span>02.C · CAPABILITY MATRIX</span><span>MANDATES / 03</span><span>04 · DOMAINS</span></div>
+<div class="s-num-bar dk"><span>02.C · ENGAGEMENT TIERS</span><span>MANDATES / 03</span><span>03 · RETAINER PATHS</span></div>
+
+<section class="svc-tiers-brief">
+<span class="svc-tiers-coord-l">[ 02.C.01 · TIERS ]</span>
+<span class="svc-tiers-coord-r">RETAINER · ENGAGEMENT</span>
+
+<div class="svc-tiers-intro">
+<p class="svc-tiers-eyebrow">Three retainer paths</p>
+<h2 class="svc-tiers-hl">For organisations that need<em>a continuous partner.</em></h2>
+<p class="svc-tiers-sub">Standalone commissions solve discrete problems. Tier engagements provide continuous principal access, cadence, and infrastructure — for businesses scaling through complexity rather than discrete challenges. Coverage detail is in the matrix above; what differs by tier is principally cadence, scope envelope, and depth of principal involvement.</p>
+</div>
+
+<div class="svc-tiers-row">
+
+<article class="svc-tier-card">
+<div class="svc-tier-top">
+<span class="svc-tier-coord">[ TIER.01 ]</span>
+<span class="svc-tier-term">Quarterly minimum</span>
+</div>
+<h3 class="svc-tier-name">Signature Partner</h3>
+<p class="svc-tier-class">Foundation · Professionalisation</p>
+<p class="svc-tier-desc">Foundational growth infrastructure for startups, SMEs, and professional service firms ready to formalise. Monthly principal strategy, advisory via Atlas, quarterly performance reviews.</p>
+<a class="svc-tier-cta" href="#" data-page="intake">Apply →</a>
+</article>
+
+<article class="svc-tier-card svc-tier-card-mid">
+<div class="svc-tier-top">
+<span class="svc-tier-coord">[ TIER.02 ]</span>
+<span class="svc-tier-term">Six-month minimum</span>
+</div>
+<h3 class="svc-tier-name">Growth Partner</h3>
+<p class="svc-tier-class">Core HIMARK tier · Scale &amp; optimisation</p>
+<p class="svc-tier-desc">The core tier. Scalable growth infrastructure with weekly principal cadence, full marketing systems, CRM optimisation, founder authority positioning, and live direct-line access to the engagement team.</p>
+<a class="svc-tier-cta" href="#" data-page="intake">Apply →</a>
+</article>
+
+<article class="svc-tier-card">
+<div class="svc-tier-top">
+<span class="svc-tier-coord">[ TIER.03 ]</span>
+<span class="svc-tier-term">12-month · By invitation</span>
+</div>
+<h3 class="svc-tier-name">Private Partner</h3>
+<p class="svc-tier-class">Executive transformation · Strategic embed</p>
+<p class="svc-tier-desc">Executive-level strategic transformation with a dedicated principal embedded with leadership. Enterprise AI infrastructure, M&amp;A architecture, capital strategy, executive branding. By invitation only.</p>
+<a class="svc-tier-cta" href="#" data-page="intake">Apply →</a>
+</article>
+
+</div>
+</section>
+
+<div class="s-num-bar"><span>02.D · CAPABILITY MATRIX</span><span>MANDATES / 04</span><span>04 · DOMAINS</span></div>
+
+
 
 <section class="cap-section">
 <p class="eyebrow r3d">Capability Matrix</p>
@@ -908,6 +1313,120 @@
     if(document.hidden) stopTimer();
     else if(!userTookOver) startTimer();
   });
+})();
+</script>
+
+
+<!-- SERVICE MATRIX — row + column interactivity. -->
+<script>
+(function(){
+  const stage = document.getElementById('svc-matrix-stage');
+  if(!stage) return;
+  const rows  = stage.querySelectorAll('.svc-matrix-row[data-row]');
+  const heads = stage.querySelectorAll('.svc-cell-head[data-col]');
+
+  const detailCoord    = document.getElementById('svc-detail-coord');
+  const detailEyebrow  = document.getElementById('svc-detail-eyebrow');
+  const detailName     = document.getElementById('svc-detail-name');
+  const detailDesc     = document.getElementById('svc-detail-desc');
+  const detailStnd     = document.getElementById('svc-detail-standalone');
+  const detailTiers    = document.getElementById('svc-detail-tiers');
+  const detailTimeline = document.getElementById('svc-detail-timeline');
+
+  const services = [
+    {
+      coord:'02.A.S.01', name:'Brand Architecture',
+      desc:'Brand identity systems, market positioning, and the architecture underneath them. Where most engagements begin — because brand is the surface every commercial decision is measured against. Includes executive personal branding at the upper tiers.',
+      standalone:'Identity sprint · Brand audit · Positioning workshop · Brand system guideline',
+      tiers:'Signature: foundational identity + system. Growth: advanced strategy + market differentiation. Private: full executive brand + founder positioning.',
+      timeline:'Standalone: 2–6 weeks. As part of a tier: continuous.'
+    },
+    {
+      coord:'02.A.S.02', name:'Digital Infrastructure',
+      desc:'The operational technology layer — website, SEO foundations, CRM platform, lead capture, automation workflows, and enterprise systems. The pipe everything else runs through.',
+      standalone:'Website architecture · CRM build · Pipeline automation · Analytics setup',
+      tiers:'Signature: website + CRM + basic capture. Growth: full marketing tech + automation. Private: enterprise infrastructure + AI ecosystems.',
+      timeline:'Standalone: 4–10 weeks depending on scope. In tier: continuous build-out.'
+    },
+    {
+      coord:'02.A.S.03', name:'Marketing & Demand',
+      desc:'The demand engine — strategy, lead generation, content systems, channel architecture, and the founder-authority positioning that lets demand compound. Built for sustained pipeline, not one-quarter spikes.',
+      standalone:'Demand architecture sprint · Channel diagnostic · Content engine build · Founder authority audit',
+      tiers:'Signature: marketing basics + lead capture. Growth: full demand engine + content + founder authority. Private: + executive thought-leadership.',
+      timeline:'Standalone: 4–8 weeks. In tier: ongoing pipeline operation.'
+    },
+    {
+      coord:'02.A.S.04', name:'AI & Operational Systems',
+      desc:'AIRaaS deployment, workflow automation, intelligent routing, and the operational orchestration that turns AI into compounding leverage rather than novelty. The infrastructure layer for businesses running at scale.',
+      standalone:'AIRaaS deployment · Workflow automation build · LeadSense implementation · Automation audit',
+      tiers:'Signature: Atlas advisory. Growth: AIRaaS deployed across channels + workflow automation. Private: enterprise AI ecosystem + custom orchestration.',
+      timeline:'Standalone: 6–12 weeks. In tier: continuous evolution.'
+    },
+    {
+      coord:'02.A.S.05', name:'Strategic Advisory',
+      desc:'Principal-level counsel — sessions, workshops, weekly reviews, and continuous access. The thinking layer above all of the above. Available standalone only as the Counsel session; otherwise integrated into tier cadence.',
+      standalone:'Counsel — 90-min principal session with written one-pager. Book directly.',
+      tiers:'Signature: monthly strategy + Atlas advisory. Growth: weekly principal cadence + Slack/WhatsApp direct line. Private: dedicated principal + on-demand access.',
+      timeline:'Counsel: scheduled within one working day. Tier engagements: continuous.'
+    },
+    {
+      coord:'02.A.S.06', name:'Executive & Transformation',
+      desc:'M&A architecture, capital strategy, pricing design, partnership development, and the executive-level work that reshapes a business rather than refines it. Selected services available standalone; the full surface is Private Partner.',
+      standalone:'M&A readiness assessment · Capital narrative review · Pricing architecture (selected scope)',
+      tiers:'Not available at Signature. Growth: partial scope (pricing, partnership). Private: full M&A, capital strategy, executive branding, dedicated principal.',
+      timeline:'Standalone: 4–8 weeks per piece. Private tier: continuous throughout the engagement.'
+    }
+  ];
+
+  const valueEls = [detailName, detailDesc, detailStnd, detailTiers, detailTimeline];
+
+  function setActiveRow(idx){
+    rows.forEach(function(r,i){ r.classList.toggle('active', i === idx); });
+    valueEls.forEach(function(el){ el.classList.add('fading'); });
+    setTimeout(function(){
+      const svc = services[idx];
+      detailCoord.textContent    = svc.coord;
+      detailEyebrow.textContent  = 'Service category · ' + (idx + 1).toString().padStart(2,'0');
+      detailName.textContent     = svc.name;
+      detailDesc.textContent     = svc.desc;
+      detailStnd.textContent     = svc.standalone;
+      detailTiers.textContent    = svc.tiers;
+      detailTimeline.textContent = svc.timeline;
+      valueEls.forEach(function(el){ el.classList.remove('fading'); });
+    }, 200);
+  }
+
+  function setActiveCol(col){
+    if(col === null || col === undefined){
+      stage.removeAttribute('data-active-col');
+      heads.forEach(function(h){ h.classList.remove('active'); });
+      return;
+    }
+    stage.setAttribute('data-active-col', col);
+    heads.forEach(function(h){ h.classList.toggle('active', h.getAttribute('data-col') === String(col)); });
+  }
+
+  rows.forEach(function(row, i){
+    function activate(){ setActiveRow(i); }
+    row.addEventListener('click', activate);
+    row.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); activate(); }
+    });
+  });
+
+  heads.forEach(function(head){
+    function activateCol(){
+      const col = head.getAttribute('data-col');
+      const isActive = stage.getAttribute('data-active-col') === col;
+      setActiveCol(isActive ? null : col);
+    }
+    head.addEventListener('click', activateCol);
+    head.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); activateCol(); }
+    });
+  });
+
+  setActiveRow(0);
 })();
 </script>
 

@@ -1117,17 +1117,20 @@
 <line x1="440" y1="270" x2="613" y2="370" class="orbit-link" data-tier="1"/>
 <line x1="440" y1="270" x2="267" y2="370" class="orbit-link" data-tier="2"/>
 
-<!-- HIMARK core — the framed H glyph in miniature -->
+<!-- HIMARK core — the same framed H from the loading sequence,
+     scaled to fit the r=64 core circle at (440, 270). Geometry
+     matches index.html exactly: viewBox 140x200, frame 132x192
+     stroke-width 10, four solid H bars with the 4-unit vertical
+     split through the connector. -->
 <g class="orbit-core">
 <circle cx="440" cy="270" r="64" class="orbit-core-bg"/>
-<g transform="translate(412 244)">
-<rect x="0"  y="0"  width="8" height="42" class="orbit-core-bar"/>
-<rect x="48" y="0"  width="8" height="42" class="orbit-core-bar"/>
-<rect x="11" y="18" width="14" height="6" class="orbit-core-bar"/>
-<rect x="31" y="18" width="14" height="6" class="orbit-core-bar"/>
-<rect class="orbit-core-frame" x="-4" y="-4" width="64" height="50" fill="none" stroke-width="2"/>
+<g class="orbit-core-h" transform="translate(410.0 226.97) scale(0.43)">
+<rect x="14" y="14" width="38" height="170" class="orbit-core-bar"/>
+<rect x="88" y="14" width="38" height="170" class="orbit-core-bar"/>
+<rect x="52" y="85" width="16" height="30" class="orbit-core-bar"/>
+<rect x="72" y="85" width="16" height="30" class="orbit-core-bar"/>
+<rect class="orbit-core-frame" x="4" y="4" width="132" height="192" fill="none" stroke-width="10"/>
 </g>
-<text x="440" y="356" text-anchor="middle" class="orbit-core-label">HIMARK · CORE</text>
 </g>
 
 <!-- TIER 01 — SIGNATURE (top) -->

@@ -43,6 +43,241 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Roboto:ital,wght@0,300;0,400;1,300&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet"/>
 <link rel="icon" type="image/svg+xml" href="images/himark-favicon.svg"/><link rel="apple-touch-icon" href="images/himark-favicon.svg"/><link rel="manifest" href="manifest.json"/><link rel="icon" type="image/x-icon" href="images/himark-favicon.ico"/><link rel="stylesheet" href="styles/styles.css"/>
+
+<!-- ==========================================================
+     LOCATOR — radar-style position indicator for /contact.html.
+     Concentric range rings with a slowly rotating sweep arm and
+     a pulsing centre marker at Randburg. Editorial / navigational
+     chart aesthetic; no third-party map tiles, no Google embed.
+     Pairs with a side readout panel showing lat/long + SAST.
+     ========================================================== -->
+<style>
+  .loc-section{
+    background:var(--midnight);
+    color:var(--off);
+    padding:120px var(--gx) 100px;
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid var(--rule-dk);
+  }
+  .loc-section::before{
+    content:'';position:absolute;inset:0;
+    background-image:linear-gradient(to right,var(--grid-dk) 1px,transparent 1px);
+    background-size:calc((100vw - 128px)/6) 100%;
+    background-position:64px 0;
+    pointer-events:none;opacity:.5;
+  }
+  .loc-section > *{position:relative;z-index:1;}
+
+  .loc-coord-l{
+    position:absolute;top:48px;left:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:var(--ocean-lt);z-index:2;
+  }
+  .loc-coord-r{
+    position:absolute;top:48px;right:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:rgba(138,173,184,.5);z-index:2;
+  }
+
+  .loc-eyebrow{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--ocean-lt);
+    margin-bottom:18px;display:flex;align-items:center;gap:14px;
+  }
+  .loc-eyebrow::before{
+    content:'';display:block;width:24px;height:1px;background:var(--ocean-lt);
+  }
+  .loc-hl{
+    font-family:var(--f-disp);font-size:clamp(32px,3.4vw,48px);
+    font-weight:800;line-height:1.05;color:var(--off);
+    letter-spacing:-.01em;margin-bottom:14px;max-width:680px;
+  }
+  .loc-hl em{font-style:italic;font-weight:300;color:var(--ocean-lt);}
+  .loc-sub{
+    font-family:var(--f-body);font-weight:400;font-size:14px;
+    color:rgba(226,240,240,.7);max-width:520px;
+    margin-bottom:64px;line-height:1.7;
+  }
+
+  /* Two-column layout: radar stage + readout panel */
+  .loc-stage{
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    gap:80px;
+    align-items:center;
+    max-width:1180px;
+    margin:0 auto;
+  }
+  @media (max-width:1000px){
+    .loc-stage{grid-template-columns:1fr;gap:48px;}
+  }
+
+  .loc-radar{
+    position:relative;
+    aspect-ratio:1 / 1;
+    max-width:520px;
+    margin:0 auto;
+    width:100%;
+  }
+  .loc-svg{
+    display:block;width:100%;height:100%;
+    overflow:visible;
+  }
+
+  /* Concentric range rings */
+  .loc-ring{
+    fill:none;
+    stroke:rgba(138,173,184,.22);
+    stroke-width:1;
+  }
+  .loc-ring-outer{stroke-dasharray:2 4;}
+
+  /* Lat/long crosshairs through the marker */
+  .loc-cross{
+    stroke:rgba(138,173,184,.15);
+    stroke-width:1;
+    stroke-dasharray:2 6;
+  }
+
+  /* Rotating radar sweep — a thin triangle/fan rotating slowly */
+  .loc-sweep{
+    transform-origin:300px 300px;
+    animation:loc-sweep-spin 14s linear infinite;
+  }
+  @keyframes loc-sweep-spin{ to{ transform:rotate(360deg); } }
+  .loc-sweep-fill{
+    fill:url(#loc-sweep-grad);
+    opacity:.6;
+  }
+  .loc-sweep-arm{
+    stroke:var(--ocean-lt);
+    stroke-width:1.5;
+  }
+
+  /* Compass marks */
+  .loc-compass{
+    font-family:var(--f-mono);font-size:11px;font-weight:600;
+    letter-spacing:.2em;
+    fill:var(--ocean-lt);
+  }
+  .loc-compass-sub{
+    font-family:var(--f-mono);font-size:8px;
+    letter-spacing:.16em;
+    fill:rgba(138,173,184,.5);
+  }
+
+  /* Centre marker */
+  .loc-pulse-1, .loc-pulse-2{
+    fill:none;
+    stroke:var(--off);
+    stroke-width:1;
+    transform-box:fill-box;transform-origin:center;
+    animation:loc-pulse 3s ease-out infinite;
+  }
+  .loc-pulse-2{ animation-delay:1.5s; }
+  @keyframes loc-pulse{
+    0%   { opacity:.7; transform:scale(.4); }
+    100% { opacity:0;  transform:scale(1); }
+  }
+  .loc-dot-ring{
+    fill:none;
+    stroke:var(--off);
+    stroke-width:1.5;
+  }
+  .loc-dot{
+    fill:var(--off);
+  }
+
+  .loc-marker-label{
+    font-family:var(--f-mono);font-size:9px;font-weight:700;
+    letter-spacing:.22em;fill:var(--off);
+    text-transform:uppercase;
+  }
+
+  /* ==== Right-side readout panel ==== */
+  .loc-readout{
+    background:rgba(95,129,144,.06);
+    border:1px solid rgba(138,173,184,.18);
+    padding:36px 40px;
+  }
+  .loc-readout-eyebrow{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--ocean-lt);
+    margin-bottom:14px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .loc-readout-eyebrow::before{
+    content:'';display:block;width:18px;height:1px;background:var(--ocean-lt);
+  }
+  .loc-readout-status{
+    margin-left:auto;
+    display:inline-flex;align-items:center;gap:7px;
+    font-family:var(--f-mono);font-size:9px;
+    color:var(--ocean-lt);letter-spacing:.18em;
+  }
+  .loc-readout-status-dot{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--ocean-lt);
+    box-shadow:0 0 0 0 rgba(138,173,184,.5);
+    animation:loc-dot-pulse 2.4s ease-out infinite;
+  }
+  @keyframes loc-dot-pulse{
+    0%   { box-shadow:0 0 0 0   rgba(138,173,184,.65); }
+    100% { box-shadow:0 0 0 7px rgba(138,173,184,0);   }
+  }
+
+  .loc-readout-name{
+    font-family:var(--f-disp);font-size:32px;font-weight:800;
+    color:var(--off);letter-spacing:-.005em;line-height:1.05;
+    margin-bottom:6px;
+  }
+  .loc-readout-name em{font-style:italic;font-weight:300;color:var(--ocean-lt);display:block;font-size:14px;margin-top:6px;}
+
+  .loc-readout-rows{
+    margin-top:28px;
+    padding-top:24px;
+    border-top:1px solid rgba(138,173,184,.2);
+  }
+  .loc-readout-row{
+    display:grid;
+    grid-template-columns:80px 1fr;
+    gap:24px;
+    padding:12px 0;
+    border-bottom:1px solid rgba(138,173,184,.12);
+    align-items:baseline;
+  }
+  .loc-readout-row:last-child{border-bottom:none;}
+  .loc-readout-l{
+    font-family:var(--f-mono);font-size:9px;font-weight:700;
+    letter-spacing:.2em;color:var(--ocean-lt);
+  }
+  .loc-readout-v{
+    font-family:var(--f-mono);font-size:13px;font-weight:500;
+    color:var(--off);letter-spacing:.04em;
+  }
+  .loc-readout-v em{
+    font-family:var(--f-body);font-style:italic;font-weight:300;
+    color:rgba(226,240,240,.55);
+    letter-spacing:0;margin-left:8px;font-size:12px;
+  }
+
+  @media (max-width:768px){
+    .loc-section{padding:80px 22px 60px;}
+    .loc-coord-l,.loc-coord-r{top:24px;}
+    .loc-coord-l{left:22px;}
+    .loc-coord-r{right:22px;}
+    .loc-sub{margin-bottom:36px;}
+    .loc-readout{padding:28px 24px;}
+    .loc-readout-name{font-size:26px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .loc-sweep,.loc-pulse-1,.loc-pulse-2,
+    .loc-readout-status-dot{animation:none;}
+  }
+</style>
+
 </head>
 <body data-page="direct" data-location="root">
 <div id="cd"></div>
@@ -182,6 +417,102 @@
 </div>
 </section>
 
+<div class="s-num-bar dk"><span>09.B · LOCATOR</span><span>DIRECT / 02</span><span>SIGNAL · ACTIVE</span></div>
+
+<!-- LOCATOR — radar-style position indicator. Editorial / nav-chart
+     aesthetic, not a third-party map. Centred on Randburg. -->
+<section class="loc-section">
+<span class="loc-coord-l">[ 09.B.01 · LOCATOR ]</span>
+<span class="loc-coord-r">PRINCIPAL · OFFICE</span>
+
+<p class="loc-eyebrow">Position</p>
+<h2 class="loc-hl">Randburg,<em>Gauteng · South Africa.</em></h2>
+<p class="loc-sub">The principal office. Specific street address shared with admitted clients during onboarding — the position above is the public marker.</p>
+
+<div class="loc-stage">
+
+<div class="loc-radar">
+<svg class="loc-svg" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Locator — Randburg, Gauteng">
+<defs>
+<linearGradient id="loc-sweep-grad" x1="50%" y1="0%" x2="50%" y2="100%">
+<stop offset="0%" stop-color="rgba(95,129,144,0)"/>
+<stop offset="100%" stop-color="rgba(138,173,184,.5)"/>
+</linearGradient>
+</defs>
+
+<!-- Concentric range rings -->
+<circle class="loc-ring" cx="300" cy="300" r="80"/>
+<circle class="loc-ring" cx="300" cy="300" r="150"/>
+<circle class="loc-ring" cx="300" cy="300" r="220"/>
+<circle class="loc-ring loc-ring-outer" cx="300" cy="300" r="285"/>
+
+<!-- Lat/long crosshair through marker -->
+<line class="loc-cross" x1="300" y1="0" x2="300" y2="600"/>
+<line class="loc-cross" x1="0" y1="300" x2="600" y2="300"/>
+
+<!-- Rotating sweep arm -->
+<g class="loc-sweep">
+<path class="loc-sweep-fill" d="M 300 300 L 300 15 A 285 285 0 0 1 555 240 Z"/>
+<line class="loc-sweep-arm" x1="300" y1="300" x2="300" y2="15"/>
+</g>
+
+<!-- Compass marks (positioned just inside the outer ring) -->
+<text class="loc-compass"     x="300" y="10"  text-anchor="middle">N</text>
+<text class="loc-compass"     x="594" y="305" text-anchor="end">E</text>
+<text class="loc-compass"     x="300" y="600" text-anchor="middle">S</text>
+<text class="loc-compass"     x="6"   y="305" text-anchor="start">W</text>
+<text class="loc-compass-sub" x="300" y="24"  text-anchor="middle">0°</text>
+<text class="loc-compass-sub" x="586" y="318" text-anchor="end">90°</text>
+<text class="loc-compass-sub" x="300" y="586" text-anchor="middle">180°</text>
+<text class="loc-compass-sub" x="14"  y="318" text-anchor="start">270°</text>
+
+<!-- Marker pulse rings -->
+<circle class="loc-pulse-1" cx="300" cy="300" r="46"/>
+<circle class="loc-pulse-2" cx="300" cy="300" r="46"/>
+
+<!-- Centre marker — small dot with outline ring -->
+<circle class="loc-dot-ring" cx="300" cy="300" r="14"/>
+<circle class="loc-dot"      cx="300" cy="300" r="4"/>
+
+<!-- Label adjacent to the marker -->
+<text class="loc-marker-label" x="320" y="296">RANDBURG</text>
+<text class="loc-marker-label" x="320" y="312" style="font-size:8px;fill:rgba(138,173,184,.7);letter-spacing:.18em">— 26.09° S</text>
+<text class="loc-marker-label" x="320" y="326" style="font-size:8px;fill:rgba(138,173,184,.7);letter-spacing:.18em">— 27.97° E</text>
+</svg>
+</div>
+
+<!-- Right-side coordinate readout -->
+<div class="loc-readout">
+<p class="loc-readout-eyebrow">Position read<span class="loc-readout-status"><span class="loc-readout-status-dot"></span>LIVE</span></p>
+<h3 class="loc-readout-name">Randburg<em>Gauteng · South Africa</em></h3>
+
+<div class="loc-readout-rows">
+<div class="loc-readout-row">
+<span class="loc-readout-l">LAT</span>
+<span class="loc-readout-v">26.0939° S <em>southern hemisphere</em></span>
+</div>
+<div class="loc-readout-row">
+<span class="loc-readout-l">LON</span>
+<span class="loc-readout-v">27.9742° E <em>UTC + 02:00</em></span>
+</div>
+<div class="loc-readout-row">
+<span class="loc-readout-l">TIME</span>
+<span class="loc-readout-v" id="loc-time">— SAST</span>
+</div>
+<div class="loc-readout-row">
+<span class="loc-readout-l">HOURS</span>
+<span class="loc-readout-v">Mon–Fri · 09:00–17:00</span>
+</div>
+<div class="loc-readout-row">
+<span class="loc-readout-l">VENUE</span>
+<span class="loc-readout-v">By appointment <em>address on admission</em></span>
+</div>
+</div>
+</div>
+
+</div>
+</section>
+
 <section class="cap-section" style="background:var(--white);border-top:1px solid var(--rule);padding-top:80px">
 <p class="eyebrow r3d">Office</p>
 <div class="cap-grid" style="grid-template-columns:repeat(3,1fr);margin-top:60px">
@@ -226,7 +557,7 @@
 
 <div class="chat-win" id="chatWin">
 <div class="ch-hdr">
-<div class="ch-av"><svg width="12" height="9" viewBox="0 0 292 200" fill="none"><rect x="0" y="0" width="28" height="200" fill="#5F8190"/><rect x="28" y="88" width="104" height="20" fill="#5F8190"/><rect x="132" y="0" width="28" height="200" fill="#5F8190"/><polygon points="160,0 182,0 212,120 201,120" fill="#5F8190"/><polygon points="242,0 264,0 223,120 212,120" fill="#5F8190"/><rect x="264" y="0" width="28" height="200" fill="#5F8190"/></svg></div>
+<div class="ch-av"><svg width="9" height="13" viewBox="0 0 140 200" fill="none"><rect x="14" y="14" width="38" height="170" fill="#5F8190"/><rect x="88" y="14" width="38" height="170" fill="#5F8190"/><rect x="52" y="85" width="16" height="30" fill="#5F8190"/><rect x="72" y="85" width="16" height="30" fill="#5F8190"/><rect x="4" y="4" width="132" height="192" fill="none" stroke="#5F8190" stroke-width="10"/></svg></div>
 <div><div class="ch-nm">ATLAS · HIMARK</div><div class="ch-st"><span class="ch-st-dot"></span>ONLINE · INSTANT REPLIES</div></div>
 </div>
 <div class="ch-tabs">
@@ -256,5 +587,26 @@
 </div>
 </div>
 <script src="main/main.js"></script>
+
+<!-- LOCATOR — live SAST time readout. Updates every 30s. -->
+<script>
+(function(){
+  const el = document.getElementById('loc-time');
+  if(!el) return;
+  function tick(){
+    // SAST is UTC+2, no DST. Build the time from UTC + 2 hours.
+    const now = new Date();
+    const utcH = now.getUTCHours();
+    const utcM = now.getUTCMinutes();
+    let h = (utcH + 2) % 24;
+    const hh = h.toString().padStart(2,'0');
+    const mm = utcM.toString().padStart(2,'0');
+    el.textContent = hh + ':' + mm + ' SAST';
+  }
+  tick();
+  setInterval(tick, 30000);
+})();
+</script>
+
 </body>
 </html>

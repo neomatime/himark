@@ -656,6 +656,129 @@
     border-width:0 !important;
   }
 
+  /* ============ SHORTCUT PANEL ============
+     Appears in place of the detail panel when the orbit is collapsed.
+     Three editorial action cards mapping to the three real entry
+     paths into HIMARK. Pops in with a slight overshoot (back-out
+     curve) and staggered card delays for a tactile reveal. */
+  .orbit-shortcut{
+    max-width:920px;
+    margin:0 auto;
+    overflow:hidden;
+    opacity:0;
+    transform:translateY(20px) scale(.96);
+    max-height:0;
+    margin-top:0;
+    pointer-events:none;
+    transition:
+      transform .55s cubic-bezier(.34, 1.46, .64, 1) .25s,
+      opacity .4s var(--ease) .3s,
+      max-height .55s cubic-bezier(.22,1,.36,1) .25s,
+      margin-top .5s var(--ease) .25s;
+  }
+  .orbit-stage.collapsed ~ .orbit-shortcut{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    max-height:600px;
+    margin-top:60px;
+    pointer-events:auto;
+  }
+
+  .orbit-shortcut-eyebrow{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--ocean);
+    text-align:center;margin-bottom:28px;
+    display:flex;align-items:center;justify-content:center;gap:14px;
+  }
+  .orbit-shortcut-eyebrow::before,
+  .orbit-shortcut-eyebrow::after{
+    content:'';display:block;width:32px;height:1px;background:var(--ocean);
+  }
+  .orbit-shortcut-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:18px;
+  }
+  /* Staggered reveal — each card lands ~100ms after the previous */
+  .orbit-shortcut-card{
+    display:flex;flex-direction:column;
+    padding:30px 26px 26px;
+    background:var(--white);
+    border:1px solid var(--rule);
+    text-decoration:none;
+    cursor:none;
+    text-align:left;
+    font-family:inherit;
+    color:inherit;
+    position:relative;
+    opacity:0;
+    transform:translateY(12px);
+    transition:
+      opacity .45s var(--ease),
+      transform .55s cubic-bezier(.34, 1.46, .64, 1),
+      border-color .35s var(--ease),
+      box-shadow .35s var(--ease);
+  }
+  .orbit-stage.collapsed ~ .orbit-shortcut .orbit-shortcut-card{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .orbit-stage.collapsed ~ .orbit-shortcut .orbit-shortcut-card:nth-child(1){transition-delay:.4s, .4s, 0s, 0s;}
+  .orbit-stage.collapsed ~ .orbit-shortcut .orbit-shortcut-card:nth-child(2){transition-delay:.5s, .5s, 0s, 0s;}
+  .orbit-stage.collapsed ~ .orbit-shortcut .orbit-shortcut-card:nth-child(3){transition-delay:.6s, .6s, 0s, 0s;}
+
+  .orbit-shortcut-card:hover{
+    transform:translateY(-4px);
+    border-color:var(--ocean);
+    box-shadow:0 24px 48px -24px rgba(28,43,58,.18);
+  }
+
+  .orbit-shortcut-card-top{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    margin-bottom:18px;
+  }
+  .orbit-shortcut-coord{
+    font-family:var(--f-mono);font-size:10px;font-weight:700;
+    letter-spacing:.22em;color:var(--ocean);
+  }
+  .orbit-shortcut-pill{
+    font-family:var(--f-mono);font-size:8.5px;font-weight:600;
+    letter-spacing:.16em;color:rgba(46,74,90,.55);
+    padding:3px 8px;
+    border:1px solid var(--rule);
+    border-radius:1px;
+    text-transform:uppercase;
+  }
+  .orbit-shortcut-name{
+    font-family:var(--f-disp);font-size:22px;font-weight:800;
+    color:var(--midnight);letter-spacing:-.005em;line-height:1.1;
+    margin-bottom:10px;
+  }
+  .orbit-shortcut-sub{
+    font-family:var(--f-body);font-weight:400;font-size:13px;
+    color:var(--ink-mut);line-height:1.6;
+    flex:1;margin-bottom:16px;
+  }
+  .orbit-shortcut-cta{
+    font-family:var(--f-mono);font-size:10px;font-weight:700;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--midnight);
+    display:inline-flex;align-items:center;gap:10px;
+    align-self:flex-start;
+    transition:gap .35s var(--ease), color .35s var(--ease);
+  }
+  .orbit-shortcut-card:hover .orbit-shortcut-cta{
+    color:var(--ocean-dk);
+    gap:14px;
+  }
+  .orbit-shortcut-arrow{font-size:14px;font-family:var(--f-mono);}
+
+  @media (max-width:768px){
+    .orbit-shortcut-grid{grid-template-columns:1fr;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .orbit-shortcut, .orbit-shortcut-card{transition:none;}
+  }
+
   /* Tier nodes */
   .orbit-node{
     cursor:none;outline:none;
@@ -1251,6 +1374,47 @@
 </div>
 </div>
 
+<!-- SHORTCUT PANEL — pops up when the orbit is collapsed. Three
+     direct entry paths into HIMARK, mapped to the three real channels
+     a visitor would use. Sibling of .orbit-stage so the CSS sibling
+     selector reveals it on .orbit-stage.collapsed. -->
+<div class="orbit-shortcut" id="orbit-shortcut">
+<p class="orbit-shortcut-eyebrow">Three ways to begin</p>
+<div class="orbit-shortcut-grid">
+
+<a href="#" data-page="intake" class="orbit-shortcut-card">
+<div class="orbit-shortcut-card-top">
+<span class="orbit-shortcut-coord">[ A ]</span>
+<span class="orbit-shortcut-pill">Retainer</span>
+</div>
+<h4 class="orbit-shortcut-name">Apply</h4>
+<p class="orbit-shortcut-sub">Formal engagement application for one of the three retainer tiers. Reviewed by a principal within five working days.</p>
+<span class="orbit-shortcut-cta">Apply for engagement <span class="orbit-shortcut-arrow">→</span></span>
+</a>
+
+<a href="#" data-page="sessions" class="orbit-shortcut-card">
+<div class="orbit-shortcut-card-top">
+<span class="orbit-shortcut-coord">[ B ]</span>
+<span class="orbit-shortcut-pill">90 min</span>
+</div>
+<h4 class="orbit-shortcut-name">Counsel</h4>
+<p class="orbit-shortcut-sub">A single principal session on a defined commercial question. No tier commitment, written one-pager afterward.</p>
+<span class="orbit-shortcut-cta">Book a session <span class="orbit-shortcut-arrow">→</span></span>
+</a>
+
+<button type="button" class="orbit-shortcut-card" id="orbit-shortcut-atlas">
+<div class="orbit-shortcut-card-top">
+<span class="orbit-shortcut-coord">[ C ]</span>
+<span class="orbit-shortcut-pill">Live</span>
+</div>
+<h4 class="orbit-shortcut-name">Atlas</h4>
+<p class="orbit-shortcut-sub">Talk to HIMARK's principal-trained assistant. Get clarity on tier alignment before committing to anything.</p>
+<span class="orbit-shortcut-cta">Open Atlas <span class="orbit-shortcut-arrow">→</span></span>
+</button>
+
+</div>
+</div>
+
 </section>
 
 <div class="s-num-bar dk"><span>01.D · PRINCIPAL STATEMENT</span><span>HIMARK / 03</span><span>QUOTED · ON.RECORD</span></div>
@@ -1610,6 +1774,17 @@
       if(e.key === 'Enter' || e.key === ' '){
         e.preventDefault();
         toggleCollapse();
+      }
+    });
+  }
+
+  // Shortcut Atlas card — opens the floating chat widget.
+  const atlasBtn = document.getElementById('orbit-shortcut-atlas');
+  if(atlasBtn){
+    atlasBtn.addEventListener('click', function(){
+      const chatTgl = document.getElementById('chatTgl');
+      if(chatTgl && !document.body.classList.contains('ch')){
+        chatTgl.click();
       }
     });
   }

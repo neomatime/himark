@@ -425,24 +425,26 @@
   .svc-cell-head:not(.svc-cell-corner).active{background:var(--ocean);}
   .svc-cell-head:focus-visible{outline:2px solid var(--ocean-lt);outline-offset:-3px;}
 
-  /* Popular badge on the GROWTH tier column header */
+  /* Popular flag on the GROWTH tier column header.
+     The badge sits INSIDE the cell as a full-width flag band at the
+     top — the previous "floating above" approach was getting clipped
+     by .svc-matrix-stage's overflow-x:auto (which forces overflow-y
+     to clip too on the same axis). Inside the cell = always visible. */
   .svc-cell-head-pop{
     position:relative;
     background:var(--ink-deep);
-  }
-  .svc-cell-head-pop::before{
-    /* slim ocean accent at top */
-    content:'';position:absolute;top:0;left:0;right:0;height:2px;
-    background:var(--ocean-lt);
+    padding-top:32px;
   }
   .svc-cell-head-badge{
     position:absolute;
-    top:-11px;left:50%;transform:translateX(-50%);
-    font-family:var(--f-mono);font-size:8.5px;font-weight:700;
-    letter-spacing:.2em;text-transform:uppercase;
-    color:var(--midnight);background:var(--ocean-lt);
-    padding:4px 10px;border-radius:1px;white-space:nowrap;
-    box-shadow:0 4px 12px -4px rgba(28,43,58,.35);
+    top:0;left:0;right:0;
+    background:var(--ocean-lt);
+    color:var(--midnight);
+    font-family:var(--f-mono);font-size:9px;font-weight:700;
+    letter-spacing:.22em;text-transform:uppercase;
+    padding:6px 8px 5px;
+    text-align:center;
+    line-height:1;
   }
 
   .svc-cell-label{
@@ -603,6 +605,23 @@
     margin:0 auto;
     perspective:2200px;
     outline:none;
+    /* Initial state — slides in from the left when scrolled into view.
+       JS adds .in-view via IntersectionObserver. Transform on the book
+       does not interfere with the inner 3D page-flip transforms since
+       pages are absolutely positioned inside nb-pages. */
+    transform:translateX(-90px);
+    opacity:0;
+    transition:
+      transform 1.05s cubic-bezier(.22, 1, .36, 1),
+      opacity 0.85s cubic-bezier(.22, 1, .36, 1);
+    will-change:transform, opacity;
+  }
+  .nb-book.in-view{
+    transform:translateX(0);
+    opacity:1;
+  }
+  @media (prefers-reduced-motion:reduce){
+    .nb-book{transform:none;opacity:1;transition:none;}
   }
   .nb-book:focus-visible .nb-book-frame{
     box-shadow:0 0 0 2px var(--ocean), 0 24px 48px -24px rgba(28,43,58,.2);
@@ -1656,6 +1675,22 @@
     if(e.key === 'ArrowLeft' && idx > 0){ idx--; update(); e.preventDefault(); }
     else if(e.key === 'ArrowRight' && idx < total - 1){ idx++; update(); e.preventDefault(); }
   });
+
+  // Slide-in on scroll — IntersectionObserver fires .in-view once when
+  // the book is ~25% in the viewport. Pure CSS handles the transition.
+  if('IntersectionObserver' in window){
+    const io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    io.observe(book);
+  } else {
+    book.classList.add('in-view');
+  }
 
   update();
 })();

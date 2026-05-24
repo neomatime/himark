@@ -982,10 +982,18 @@ window.submitIntake=submitIntake;
   let scrubTimer=null;
 
   function getTarget(){
-    const sr=spacer.getBoundingClientRect();
+    // Map scroll progress directly against the page's scroll position.
+    // PREVIOUS implementation measured spacer.getBoundingClientRect().top,
+    // which only became negative once the spacer crossed the viewport top —
+    // meaning scrubbing didn't begin until the user had scrolled the entire
+    // hero height (100vh). That delay felt broken.
+    //
+    // New: scrub frames 0 → 299 across the spacer's height starting at
+    // scroll = 0. First pixel of scroll moves the frame; the sequence
+    // completes by the time scroll reaches spacer.offsetHeight, after
+    // which the final frame holds while the sticky hero finishes releasing.
     const total=spacer.offsetHeight||1;
-    // scrolled = how far past the spacer's top we've travelled in viewport coords
-    const scrolled=Math.max(0,-sr.top);
+    const scrolled=page.scrollTop;
     const t=Math.max(0,Math.min(1,scrolled/total));
     return t*(FRAME_COUNT-1);
   }

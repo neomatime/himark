@@ -425,6 +425,26 @@
   .svc-cell-head:not(.svc-cell-corner).active{background:var(--ocean);}
   .svc-cell-head:focus-visible{outline:2px solid var(--ocean-lt);outline-offset:-3px;}
 
+  /* Popular badge on the GROWTH tier column header */
+  .svc-cell-head-pop{
+    position:relative;
+    background:var(--ink-deep);
+  }
+  .svc-cell-head-pop::before{
+    /* slim ocean accent at top */
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:var(--ocean-lt);
+  }
+  .svc-cell-head-badge{
+    position:absolute;
+    top:-11px;left:50%;transform:translateX(-50%);
+    font-family:var(--f-mono);font-size:8.5px;font-weight:700;
+    letter-spacing:.2em;text-transform:uppercase;
+    color:var(--midnight);background:var(--ocean-lt);
+    padding:4px 10px;border-radius:1px;white-space:nowrap;
+    box-shadow:0 4px 12px -4px rgba(28,43,58,.35);
+  }
+
   .svc-cell-label{
     display:flex;flex-direction:column;gap:5px;
     background:var(--off);
@@ -543,7 +563,7 @@
     .svc-matrix-detail{padding:24px 22px;}
   }
 
-  /* ============ Section: STANDALONE SERVICES ============ */
+  /* ============ Section: STANDALONE SERVICES (NOTEBOOK) ============ */
   .svc-standalone-section{
     background:var(--white);
     padding:120px var(--gx) 100px;
@@ -576,58 +596,168 @@
     font-family:var(--f-body);font-weight:400;font-size:14px;
     color:var(--ink);max-width:680px;margin-bottom:60px;line-height:1.75;
   }
-  .svc-standalone-grid{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
-    max-width:1180px;
+
+  /* ===== The notebook ===== */
+  .nb-book{
+    max-width:520px;
+    margin:0 auto;
+    perspective:2200px;
+    outline:none;
   }
-  @media (max-width:1000px){.svc-standalone-grid{grid-template-columns:repeat(2,1fr);}}
-  @media (max-width:600px){.svc-standalone-grid{grid-template-columns:1fr;}}
-  .svc-stnd-card{
+  .nb-book:focus-visible .nb-book-frame{
+    box-shadow:0 0 0 2px var(--ocean), 0 24px 48px -24px rgba(28,43,58,.2);
+  }
+  .nb-book-frame{
+    position:relative;
+    aspect-ratio:5 / 6;
+    transition:box-shadow .3s var(--ease);
+    border-radius:2px;
+  }
+  /* Vertical binding effect on the left edge of the page stack */
+  .nb-book-spine{
+    position:absolute;
+    left:0;top:0;bottom:0;
+    width:22px;
+    background:linear-gradient(to right,
+      rgba(28,43,58,.18) 0%,
+      rgba(28,43,58,.1)  30%,
+      rgba(28,43,58,.04) 70%,
+      transparent 100%);
+    z-index:30;
+    pointer-events:none;
+  }
+  .nb-book-spine::before{
+    /* faint dashed stitch line down the spine */
+    content:'';position:absolute;
+    left:11px;top:14px;bottom:14px;width:1px;
+    background-image:linear-gradient(to bottom, rgba(28,43,58,.35) 50%, transparent 0);
+    background-size:1px 5px;background-repeat:repeat-y;
+  }
+  .nb-pages{
+    position:relative;
+    width:100%;height:100%;
+    transform-style:preserve-3d;
+  }
+  .nb-page{
+    position:absolute;
+    inset:0;
     background:var(--off);
     border:1px solid var(--rule);
-    padding:24px 24px 22px;
-    display:flex;flex-direction:column;position:relative;
-    transition:transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s var(--ease);
+    transform-origin:left center;
+    transform:rotateY(0deg);
+    transition:transform .9s cubic-bezier(.65,0,.35,1), box-shadow .9s var(--ease);
+    transform-style:preserve-3d;
+    box-shadow:
+      0 24px 48px -24px rgba(28,43,58,.22),
+      0 1px 0 rgba(255,255,255,.6) inset;
+    will-change:transform;
   }
-  .svc-stnd-card:hover{
-    transform:translateY(-4px);
-    box-shadow:0 24px 48px -24px rgba(28,43,58,.18);
-    border-color:rgba(95,129,144,.5);
+  .nb-page.flipped{
+    transform:rotateY(-180deg);
+    box-shadow:0 12px 24px -16px rgba(28,43,58,.15);
   }
-  .svc-stnd-coord{
-    font-family:var(--f-mono);font-size:9px;font-weight:700;
-    letter-spacing:.14em;color:var(--ocean);margin-bottom:18px;
+  /* The visible front face of a page */
+  .nb-page-front{
+    position:absolute;inset:0;
+    padding:36px 32px 30px 44px;
+    display:flex;flex-direction:column;
+    backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
+    /* Subtle paper-edge gradient near the spine */
+    background:
+      linear-gradient(to right, rgba(95,129,144,.05) 0%, transparent 12%),
+      var(--off);
   }
-  .svc-stnd-tag{
+  .nb-page-num{
+    align-self:flex-end;
+    font-family:var(--f-mono);font-size:10px;font-weight:700;
+    letter-spacing:.22em;color:var(--ocean);
+    margin-bottom:24px;
+  }
+  .nb-page-tag{
     font-family:var(--f-mono);font-size:9px;font-weight:600;
-    letter-spacing:.16em;color:rgba(46,74,90,.7);
-    padding-bottom:14px;border-bottom:1px solid var(--rule);margin-bottom:16px;
+    letter-spacing:.18em;color:rgba(46,74,90,.7);
+    padding-bottom:14px;
+    border-bottom:1px solid var(--rule);
+    margin-bottom:24px;
   }
-  .svc-stnd-name{
-    font-family:var(--f-disp);font-size:20px;font-weight:800;
-    color:var(--midnight);letter-spacing:-.005em;line-height:1.15;
-    margin-bottom:12px;
+  .nb-page-name{
+    font-family:var(--f-disp);font-size:26px;font-weight:800;
+    color:var(--midnight);letter-spacing:-.005em;line-height:1.1;
+    margin-bottom:16px;
   }
-  .svc-stnd-scope{
+  .nb-page-scope{
     font-family:var(--f-body);font-weight:400;font-size:13.5px;
-    color:var(--ink);line-height:1.65;flex:1;margin-bottom:22px;
+    color:var(--ink);line-height:1.7;
+    flex:1;margin-bottom:24px;
   }
-  .svc-stnd-link{color:var(--ocean-dk);text-decoration:none;border-bottom:1px solid currentColor;}
-  .svc-stnd-cta{
+  .nb-page-link{
+    color:var(--ocean-dk);text-decoration:none;
+    border-bottom:1px solid currentColor;
+  }
+  .nb-page-cta{
     font-family:var(--f-nav);font-size:10.5px;font-weight:700;
     letter-spacing:.18em;text-transform:uppercase;
     color:var(--midnight);text-decoration:none;
-    align-self:flex-start;padding:11px 18px;border:1px solid var(--midnight);
+    padding:12px 20px;
+    border:1px solid var(--midnight);
+    align-self:flex-start;
     transition:background .3s var(--ease), color .3s var(--ease);
     cursor:none;
   }
-  .svc-stnd-cta:hover{background:var(--midnight);color:var(--off);}
+  .nb-page-cta:hover{background:var(--midnight);color:var(--off);}
+  /* Page corner curl decoration */
+  .nb-page-corner{
+    position:absolute;bottom:0;right:0;
+    width:42px;height:42px;
+    background:
+      linear-gradient(225deg,
+        rgba(28,43,58,.14) 0%,
+        rgba(28,43,58,.06) 38%,
+        transparent 38%);
+    pointer-events:none;
+  }
+
+  /* Navigation */
+  .nb-nav{
+    margin-top:32px;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:24px;
+    max-width:520px;margin-left:auto;margin-right:auto;
+  }
+  .nb-btn{
+    font-family:var(--f-nav);font-size:10.5px;font-weight:700;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--midnight);background:transparent;
+    border:1px solid var(--rule);
+    padding:13px 20px;cursor:none;
+    display:inline-flex;align-items:center;gap:12px;
+    transition:background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease);
+  }
+  .nb-btn:hover:not(:disabled){
+    background:var(--midnight);color:var(--off);border-color:var(--midnight);
+  }
+  .nb-btn:disabled{opacity:.3;cursor:not-allowed;}
+  .nb-nav-arrow{font-size:14px;font-weight:300;}
+  .nb-indicator{
+    font-family:var(--f-mono);font-size:11px;font-weight:700;
+    letter-spacing:.24em;color:var(--ocean);
+  }
+
   @media (max-width:768px){
     .svc-standalone-section{padding:80px 22px 60px;}
     .svc-standalone-coord-l,.svc-standalone-coord-r{top:24px;}
     .svc-standalone-coord-l{left:22px;}
     .svc-standalone-coord-r{right:22px;}
     .svc-standalone-sub{margin-bottom:40px;}
+    .nb-book{max-width:100%;}
+    .nb-nav{flex-wrap:wrap;justify-content:center;}
+    .nb-page-name{font-size:22px;}
+    .nb-page-front{padding:28px 22px 24px 36px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .nb-page{transition:none;}
   }
 
   /* ============ Section: TIERS BRIEF ============ */
@@ -865,7 +995,8 @@
 <span class="svc-cell-head-tag">SIGNATURE</span>
 <span class="svc-cell-head-sub">Tier 01 · Foundation</span>
 </div>
-<div class="svc-cell svc-cell-head" role="columnheader" data-col="2" tabindex="0">
+<div class="svc-cell svc-cell-head svc-cell-head-pop" role="columnheader" data-col="2" tabindex="0">
+<span class="svc-cell-head-badge">Most engaged</span>
 <span class="svc-cell-head-tag">GROWTH</span>
 <span class="svc-cell-head-sub">Tier 02 · Core</span>
 </div>
@@ -987,79 +1118,131 @@
 <h2 class="svc-standalone-hl">Available standalone —<em>without a tier commitment.</em></h2>
 <p class="svc-standalone-sub">For organisations that don't yet need a full engagement, or that have a specific commission in mind. Each is scoped, fixed-price (confirmed on application), and delivered by a HIMARK principal.</p>
 
-<div class="svc-standalone-grid">
+<!-- NOTEBOOK — page-through standalone services. Each service is
+     one notebook page; click prev/next or arrow-key to flip. True
+     3D page-flip animation (transform-origin: left, rotateY -180). -->
+<div class="nb-book" id="nb-book" tabindex="0" role="region" aria-label="Standalone services catalogue">
+<div class="nb-book-frame">
+<div class="nb-book-spine"></div>
 
-<article class="svc-stnd-card">
-<div class="svc-stnd-coord">[ T.01 ]</div>
-<div class="svc-stnd-tag">BRAND ARCHITECTURE</div>
-<h3 class="svc-stnd-name">Brand Identity Sprint</h3>
-<p class="svc-stnd-scope">Visual identity, mark, brand system, and the foundational guideline document. Two-week intensive with a principal.</p>
-<a class="svc-stnd-cta" href="#" data-page="intake">Commission →</a>
+<div class="nb-pages">
+
+<article class="nb-page" data-idx="0">
+<div class="nb-page-front">
+<span class="nb-page-num">01 / 09</span>
+<span class="nb-page-tag">BRAND ARCHITECTURE</span>
+<h3 class="nb-page-name">Brand Identity Sprint</h3>
+<p class="nb-page-scope">Visual identity, mark, brand system, and the foundational guideline document. Two-week intensive with a principal.</p>
+<a class="nb-page-cta" href="#" data-page="intake">Commission &rarr;</a>
+<span class="nb-page-corner"></span>
+</div>
 </article>
 
-<article class="svc-stnd-card">
-<div class="svc-stnd-coord">[ T.02 ]</div>
-<div class="svc-stnd-tag">BRAND ARCHITECTURE</div>
-<h3 class="svc-stnd-name">Strategic Positioning Workshop</h3>
-<p class="svc-stnd-scope">Principal-led two-day workshop to surface the positioning thesis and define the category narrative. Output: positioning document + go-forward brief.</p>
-<a class="svc-stnd-cta" href="#" data-page="intake">Commission →</a>
+<article class="nb-page" data-idx="1">
+<div class="nb-page-front">
+<span class="nb-page-num">02 / 09</span>
+<span class="nb-page-tag">BRAND ARCHITECTURE</span>
+<h3 class="nb-page-name">Strategic Positioning Workshop</h3>
+<p class="nb-page-scope">Principal-led two-day workshop to surface the positioning thesis and define the category narrative. Output: positioning document + go-forward brief.</p>
+<a class="nb-page-cta" href="#" data-page="intake">Commission &rarr;</a>
+<span class="nb-page-corner"></span>
+</div>
 </article>
 
-<article class="svc-stnd-card">
-<div class="svc-stnd-coord">[ T.03 ]</div>
-<div class="svc-stnd-tag">DIGITAL INFRASTRUCTURE</div>
-<h3 class="svc-stnd-name">Website Architecture &amp; Build</h3>
-<p class="svc-stnd-scope">Editorial-grade website built on the HIMARK system. Includes information architecture, build, SEO foundations, and analytics setup.</p>
-<a class="svc-stnd-cta" href="#" data-page="intake">Commission →</a>
+<article class="nb-page" data-idx="2">
+<div class="nb-page-front">
+<span class="nb-page-num">03 / 09</span>
+<span class="nb-page-tag">DIGITAL INFRASTRUCTURE</span>
+<h3 class="nb-page-name">Website Architecture &amp; Build</h3>
+<p class="nb-page-scope">Editorial-grade website built on the HIMARK system. Includes information architecture, build, SEO foundations, and analytics setup.</p>
+<a class="nb-page-cta" href="#" data-page="intake">Commission &rarr;</a>
+<span class="nb-page-corner"></span>
+</div>
 </article>
 
-<article class="svc-stnd-card">
-<div class="svc-stnd-coord">[ T.04 ]</div>
-<div class="svc-stnd-tag">DIGITAL INFRASTRUCTURE</div>
-<h3 class="svc-stnd-name">CRM &amp; Pipeline Architecture</h3>
-<p class="svc-stnd-scope">CRM platform setup, pipeline design, lead routing, and the workflow automations that hold it together. HubSpot, Salesforce, or platform-native.</p>
-<a class="svc-stnd-cta" href="#" data-page="intake">Commission →</a>
+<article class="nb-page" data-idx="3">
+<div class="nb-page-front">
+<span class="nb-page-num">04 / 09</span>
+<span class="nb-page-tag">DIGITAL INFRASTRUCTURE</span>
+<h3 class="nb-page-name">CRM &amp; Pipeline Architecture</h3>
+<p class="nb-page-scope">CRM platform setup, pipeline design, lead routing, and the workflow automations that hold it together. HubSpot, Salesforce, or platform-native.</p>
+<a class="nb-page-cta" href="#" data-page="intake">Commission &rarr;</a>
+<span class="nb-page-corner"></span>
+</div>
 </article>
 
-<article class="svc-stnd-card">
-<div class="svc-stnd-coord">[ T.05 ]</div>
-<div class="svc-stnd-tag">AI &amp; OPERATIONAL SYSTEMS</div>
-<h3 class="svc-stnd-name">AIRaaS Deployment</h3>
-<p class="svc-stnd-scope">Full AIRaaS deployment across web, WhatsApp, and voice. Includes LeadSense calibration, persona training, and CRM routing.</p>
-<a class="svc-stnd-cta" href="#" data-page="intake">Commission →</a>
+<article class="nb-page" data-idx="4">
+<div class="nb-page-front">
+<span class="nb-page-num">05 / 09</span>
+<span class="nb-page-tag">AI &amp; OPERATIONAL SYSTEMS</span>
+<h3 class="nb-page-name">AIRaaS Deployment</h3>
+<p class="nb-page-scope">Full AIRaaS deployment across web, WhatsApp, and voice. Includes LeadSense calibration, persona training, and CRM routing.</p>
+<a class="nb-page-cta" href="#" data-page="intake">Commission &rarr;</a>
+<span class="nb-page-corner"></span>
+</div>
 </article>
 
-<article class="svc-stnd-card">
-<div class="svc-stnd-coord">[ T.06 ]</div>
-<div class="svc-stnd-tag">AI &amp; OPERATIONAL SYSTEMS</div>
-<h3 class="svc-stnd-name">Workflow Automation Build</h3>
-<p class="svc-stnd-scope">Operational automation across your existing stack — lead handling, onboarding, internal routing, reporting. Designed for compounding leverage, not novelty.</p>
-<a class="svc-stnd-cta" href="#" data-page="intake">Commission →</a>
+<article class="nb-page" data-idx="5">
+<div class="nb-page-front">
+<span class="nb-page-num">06 / 09</span>
+<span class="nb-page-tag">AI &amp; OPERATIONAL SYSTEMS</span>
+<h3 class="nb-page-name">Workflow Automation Build</h3>
+<p class="nb-page-scope">Operational automation across your existing stack &mdash; lead handling, onboarding, internal routing, reporting. Designed for compounding leverage, not novelty.</p>
+<a class="nb-page-cta" href="#" data-page="intake">Commission &rarr;</a>
+<span class="nb-page-corner"></span>
+</div>
 </article>
 
-<article class="svc-stnd-card">
-<div class="svc-stnd-coord">[ T.07 ]</div>
-<div class="svc-stnd-tag">MARKETING &amp; DEMAND</div>
-<h3 class="svc-stnd-name">Demand Architecture Sprint</h3>
-<p class="svc-stnd-scope">Four-week diagnostic + design sprint on the demand engine — sources, channels, conversion infrastructure. Output: demand blueprint.</p>
-<a class="svc-stnd-cta" href="#" data-page="intake">Commission →</a>
+<article class="nb-page" data-idx="6">
+<div class="nb-page-front">
+<span class="nb-page-num">07 / 09</span>
+<span class="nb-page-tag">MARKETING &amp; DEMAND</span>
+<h3 class="nb-page-name">Demand Architecture Sprint</h3>
+<p class="nb-page-scope">Four-week diagnostic + design sprint on the demand engine &mdash; sources, channels, conversion infrastructure. Output: demand blueprint.</p>
+<a class="nb-page-cta" href="#" data-page="intake">Commission &rarr;</a>
+<span class="nb-page-corner"></span>
+</div>
 </article>
 
-<article class="svc-stnd-card">
-<div class="svc-stnd-coord">[ T.08 ]</div>
-<div class="svc-stnd-tag">STRATEGIC ADVISORY</div>
-<h3 class="svc-stnd-name">Principal Advisory Session</h3>
-<p class="svc-stnd-scope">Ninety minutes with a HIMARK principal on a defined commercial question. Includes pre-read review and a written one-pager. Bookable via <a href="#" data-page="sessions" class="svc-stnd-link">Counsel</a>.</p>
-<a class="svc-stnd-cta" href="#" data-page="sessions">Book a session →</a>
+<article class="nb-page" data-idx="7">
+<div class="nb-page-front">
+<span class="nb-page-num">08 / 09</span>
+<span class="nb-page-tag">STRATEGIC ADVISORY</span>
+<h3 class="nb-page-name">Principal Advisory Session</h3>
+<p class="nb-page-scope">Ninety minutes with a HIMARK principal on a defined commercial question. Includes pre-read review and a written one-pager. Bookable via <a href="#" data-page="sessions" class="nb-page-link">Counsel</a>.</p>
+<a class="nb-page-cta" href="#" data-page="sessions">Book a session &rarr;</a>
+<span class="nb-page-corner"></span>
+</div>
 </article>
 
-<article class="svc-stnd-card">
-<div class="svc-stnd-coord">[ T.09 ]</div>
-<div class="svc-stnd-tag">EXECUTIVE &amp; TRANSFORMATION</div>
-<h3 class="svc-stnd-name">M&amp;A Readiness Assessment</h3>
-<p class="svc-stnd-scope">Diagnostic on the business's M&amp;A posture — narrative, financials, operational fit, principal questions a buyer will ask. Output: readiness brief.</p>
-<a class="svc-stnd-cta" href="#" data-page="intake">Commission →</a>
+<article class="nb-page" data-idx="8">
+<div class="nb-page-front">
+<span class="nb-page-num">09 / 09</span>
+<span class="nb-page-tag">EXECUTIVE &amp; TRANSFORMATION</span>
+<h3 class="nb-page-name">M&amp;A Readiness Assessment</h3>
+<p class="nb-page-scope">Diagnostic on the business's M&amp;A posture &mdash; narrative, financials, operational fit, principal questions a buyer will ask. Output: readiness brief.</p>
+<a class="nb-page-cta" href="#" data-page="intake">Commission &rarr;</a>
+<span class="nb-page-corner"></span>
+</div>
 </article>
+
+</div>
+</div>
+
+<!-- Navigation -->
+<div class="nb-nav">
+<button class="nb-btn nb-prev" id="nb-prev" type="button" aria-label="Previous service">
+<span class="nb-nav-arrow">&larr;</span>
+<span class="nb-nav-label">Previous</span>
+</button>
+<span class="nb-indicator" id="nb-indicator">01 / 09</span>
+<button class="nb-btn nb-next" id="nb-next" type="button" aria-label="Next service">
+<span class="nb-nav-label">Next</span>
+<span class="nb-nav-arrow">&rarr;</span>
+</button>
+</div>
+
+</div>
 
 </div>
 </section>
@@ -1427,6 +1610,54 @@
   });
 
   setActiveRow(0);
+})();
+</script>
+
+
+<!-- NOTEBOOK — page-flip controller. Pages stack absolutely; the
+     active page has the highest z-index and pages already turned
+     past get .flipped (rotateY -180). Arrow keys + buttons navigate. -->
+<script>
+(function(){
+  const book = document.getElementById('nb-book');
+  if(!book) return;
+  const pages = book.querySelectorAll('.nb-page');
+  const prevBtn = document.getElementById('nb-prev');
+  const nextBtn = document.getElementById('nb-next');
+  const indicator = document.getElementById('nb-indicator');
+  const total = pages.length;
+  if(!total || !prevBtn || !nextBtn) return;
+
+  let idx = 0;
+
+  function update(){
+    pages.forEach(function(page, i){
+      if(i < idx){
+        page.classList.add('flipped');
+        page.style.zIndex = i;  // flipped pages settle low
+      } else {
+        page.classList.remove('flipped');
+        page.style.zIndex = total - (i - idx);  // current page on top
+      }
+    });
+    indicator.textContent = String(idx + 1).padStart(2,'0') + ' / ' + String(total).padStart(2,'0');
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === total - 1;
+  }
+
+  prevBtn.addEventListener('click', function(){
+    if(idx > 0){ idx--; update(); }
+  });
+  nextBtn.addEventListener('click', function(){
+    if(idx < total - 1){ idx++; update(); }
+  });
+
+  book.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowLeft' && idx > 0){ idx--; update(); e.preventDefault(); }
+    else if(e.key === 'ArrowRight' && idx < total - 1){ idx++; update(); e.preventDefault(); }
+  });
+
+  update();
 })();
 </script>
 

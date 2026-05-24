@@ -539,12 +539,14 @@
     overflow:visible;
   }
 
-  /* Faint orbital ring */
+  /* Orbital ring — clearly visible against the off-white surface.
+     Previous opacity (.25) read as nearly transparent; bumped to .55
+     with slightly heavier stroke so the orbit reads as architecture. */
   .orbit-ring{
     fill:none;
-    stroke:rgba(95,129,144,.25);
-    stroke-width:1;
-    stroke-dasharray:2 4;
+    stroke:rgba(46,74,90,.55);
+    stroke-width:1.5;
+    stroke-dasharray:3 5;
     animation:orbit-ring-spin 90s linear infinite;
     transform-origin:440px 270px;
   }
@@ -555,14 +557,14 @@
     transform-origin:440px 270px;
     animation:orbit-ring-spin 120s linear infinite reverse;
   }
-  .orbit-tick{fill:rgba(95,129,144,.4);}
-  .orbit-tick-sm{fill:rgba(95,129,144,.18);}
+  .orbit-tick{fill:rgba(46,74,90,.75);}
+  .orbit-tick-sm{fill:rgba(46,74,90,.4);}
 
-  /* Connection lines from core to nodes */
+  /* Connection lines from core to nodes — also bumped from .22 to .5 */
   .orbit-link{
-    stroke:rgba(95,129,144,.22);
-    stroke-width:1;
-    stroke-dasharray:3 3;
+    stroke:rgba(46,74,90,.5);
+    stroke-width:1.3;
+    stroke-dasharray:4 4;
     transition:stroke .4s var(--ease), stroke-width .4s var(--ease);
   }
   .orbit-link.active{
@@ -777,6 +779,111 @@
   }
   @media (prefers-reduced-motion:reduce){
     .orbit-shortcut, .orbit-shortcut-card{transition:none;}
+  }
+
+  /* ============ SIDE IMAGES — appear when collapsed ============
+     Two tall vertical image panels that slide in from off-screen
+     when the orbit collapses. Each is a clickable navigation card
+     into a relevant page (Method on the left, Principals on the
+     right). Hidden on viewports below 1200px where the orbit
+     content already takes most of the width. */
+  .orbit-side{
+    position:absolute;
+    top:50%;
+    width:170px;
+    height:440px;
+    transform:translateY(-50%) translateX(var(--off));
+    opacity:0;
+    pointer-events:none;
+    z-index:5;
+    transition:
+      transform .75s cubic-bezier(.34, 1.46, .64, 1) .35s,
+      opacity .55s var(--ease) .4s;
+  }
+  .orbit-side-l{ left:32px;  --off:-260px; }
+  .orbit-side-r{ right:32px; --off:260px;  }
+  .orbit-stage.collapsed ~ .orbit-side{
+    --off:0px;
+    opacity:1;
+    pointer-events:auto;
+  }
+  .orbit-side-link{
+    display:block;
+    position:relative;
+    width:100%;height:100%;
+    text-decoration:none;
+    cursor:none;
+    overflow:hidden;
+    border:1px solid rgba(46,74,90,.18);
+    background:var(--midnight);
+    transition:border-color .35s var(--ease), transform .45s var(--ease), box-shadow .45s var(--ease);
+    box-shadow:0 30px 60px -30px rgba(28,43,58,.35);
+  }
+  .orbit-side-link:hover{
+    border-color:var(--ocean);
+    transform:translateY(-4px);
+    box-shadow:0 40px 70px -30px rgba(28,43,58,.45);
+  }
+  .orbit-side-coord{
+    position:absolute;
+    top:14px;left:14px;
+    font-family:var(--f-mono);font-size:9px;font-weight:700;
+    letter-spacing:.22em;color:var(--off);
+    background:rgba(14,24,34,.65);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    padding:5px 9px;
+    z-index:2;
+  }
+  .orbit-side-img{
+    position:absolute;
+    inset:0;
+    background-size:cover;
+    background-position:center;
+    filter:saturate(.85) brightness(.65) contrast(1.02);
+    transition:filter .55s var(--ease), transform .9s var(--ease);
+  }
+  .orbit-side-link:hover .orbit-side-img{
+    filter:saturate(1) brightness(.8) contrast(1.04);
+    transform:scale(1.05);
+  }
+  .orbit-side-caption{
+    position:absolute;
+    bottom:0;left:0;right:0;
+    padding:32px 16px 18px;
+    background:linear-gradient(to top,
+      rgba(14,24,34,.92) 0%,
+      rgba(14,24,34,.55) 55%,
+      transparent 100%);
+    z-index:1;
+  }
+  .orbit-side-tag{
+    display:block;
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ocean-lt);
+    margin-bottom:6px;
+  }
+  .orbit-side-name{
+    display:block;
+    font-family:var(--f-disp);font-size:18px;font-weight:800;
+    color:var(--off);letter-spacing:-.005em;line-height:1.1;
+  }
+  .orbit-side-arrow{
+    position:absolute;
+    bottom:18px;right:16px;
+    font-family:var(--f-mono);font-size:16px;font-weight:300;
+    color:var(--off);z-index:2;
+    transition:transform .35s var(--ease);
+  }
+  .orbit-side-link:hover .orbit-side-arrow{transform:translateX(4px);}
+
+  /* Hide on narrower viewports where there's no room beside the orbit */
+  @media (max-width:1200px){
+    .orbit-side{display:none;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .orbit-side{transition:none;}
   }
 
   /* Tier nodes */
@@ -1400,9 +1507,7 @@
 <h4 class="orbit-shortcut-name">Counsel</h4>
 <p class="orbit-shortcut-sub">A single principal session on a defined commercial question. No tier commitment, written one-pager afterward.</p>
 <span class="orbit-shortcut-cta">Book a session <span class="orbit-shortcut-arrow">→</span></span>
-</a>
-
-<button type="button" class="orbit-shortcut-card" id="orbit-shortcut-atlas">
+</a><button type="button" class="orbit-shortcut-card" id="orbit-shortcut-atlas">
 <div class="orbit-shortcut-card-top">
 <span class="orbit-shortcut-coord">[ C ]</span>
 <span class="orbit-shortcut-pill">Live</span>
@@ -1414,6 +1519,34 @@
 
 </div>
 </div>
+
+<!-- SIDE IMAGES — vertical editorial panels that slide in when the
+     orbit collapses. Each is a clickable link into a relevant page.
+     Hidden by default; revealed via the .orbit-stage.collapsed
+     sibling selector. Hidden on viewports below 1200px. -->
+<aside class="orbit-side orbit-side-l">
+<a href="#" data-page="method" class="orbit-side-link">
+<span class="orbit-side-coord">[ 03 ]</span>
+<div class="orbit-side-img" style="background-image:url('images/method-hero.jpg')"></div>
+<div class="orbit-side-caption">
+<span class="orbit-side-tag">Process</span>
+<span class="orbit-side-name">The Method</span>
+</div>
+<span class="orbit-side-arrow">→</span>
+</a>
+</aside>
+
+<aside class="orbit-side orbit-side-r">
+<a href="#" data-page="principals" class="orbit-side-link">
+<span class="orbit-side-coord">[ 05 ]</span>
+<div class="orbit-side-img" style="background-image:url('images/team-hero.jpg')"></div>
+<div class="orbit-side-caption">
+<span class="orbit-side-tag">Team</span>
+<span class="orbit-side-name">The Principals</span>
+</div>
+<span class="orbit-side-arrow">→</span>
+</a>
+</aside>
 
 </section>
 

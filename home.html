@@ -571,25 +571,89 @@
     stroke-dasharray:none;
   }
 
-  /* HIMARK core */
+  /* Orbit core — now a white tap-to-toggle circle. Click to
+     collapse the surrounding tier nodes; click again to expand. */
   .orbit-core{
     transform-origin:440px 270px;
     animation:orbit-core-breathe 5s ease-in-out infinite;
+    cursor:none;outline:none;
   }
   @keyframes orbit-core-breathe{
     0%, 100% { filter:drop-shadow(0 0 0 rgba(95,129,144,0)); }
-    50%      { filter:drop-shadow(0 0 12px rgba(95,129,144,.3)); }
+    50%      { filter:drop-shadow(0 0 14px rgba(95,129,144,.32)); }
   }
   .orbit-core-bg{
-    fill:var(--midnight);
-    stroke:rgba(95,129,144,.35);
+    fill:var(--white);
+    stroke:rgba(28,43,58,.22);
     stroke-width:1;
+    transition:stroke .35s var(--ease), stroke-width .35s var(--ease);
   }
-  .orbit-core-bar{fill:var(--off);}
-  .orbit-core-frame{stroke:var(--off);}
+  .orbit-core:hover .orbit-core-bg{
+    stroke:var(--midnight);
+    stroke-width:1.5;
+  }
+  .orbit-core:focus-visible .orbit-core-bg{
+    stroke:var(--ocean);
+    stroke-width:2;
+  }
+  /* Toggle icon — + (collapsed) rotates to × (expanded) on default */
+  .orbit-core-icon{
+    transform-origin:440px 262px;
+    transform:rotate(45deg);  /* default = expanded = × */
+    transition:transform .6s cubic-bezier(.65,0,.35,1);
+  }
+  .orbit-stage.collapsed .orbit-core-icon{
+    transform:rotate(0deg);   /* collapsed = + */
+  }
+  .orbit-core-line{
+    stroke:var(--midnight);
+    stroke-width:2.5;
+    stroke-linecap:round;
+    transition:stroke .35s var(--ease);
+  }
+  .orbit-core:hover .orbit-core-line{stroke:var(--ocean-dk);}
   .orbit-core-label{
-    font-family:var(--f-mono);font-size:9px;font-weight:600;
-    letter-spacing:.22em;fill:var(--ocean);
+    font-family:var(--f-mono);font-size:9px;font-weight:700;
+    letter-spacing:.28em;fill:rgba(46,74,90,.65);
+    transition:fill .35s var(--ease);
+  }
+  .orbit-core:hover .orbit-core-label{fill:var(--midnight);}
+
+  /* ============ COLLAPSED STATE ============ */
+  /* Tier nodes shrink toward the centre and fade */
+  .orbit-stage.collapsed .orbit-node{
+    opacity:0;
+    transform:scale(.15);
+    transform-box:fill-box;transform-origin:center;
+    pointer-events:none;
+    transition:
+      opacity .55s var(--ease),
+      transform .65s cubic-bezier(.65,0,.35,1);
+  }
+  /* Connecting links fade out */
+  .orbit-stage.collapsed .orbit-link,
+  .orbit-stage.collapsed .orbit-ticks{
+    opacity:0;
+    transition:opacity .4s var(--ease);
+  }
+  /* Detail panel below collapses cleanly */
+  .orbit-section .orbit-detail{
+    transition:
+      max-height .65s cubic-bezier(.65,0,.35,1),
+      opacity .4s var(--ease),
+      margin-top .5s var(--ease),
+      padding .5s var(--ease),
+      border-width .35s var(--ease);
+    max-height:800px;
+    overflow:hidden;
+  }
+  .orbit-stage.collapsed ~ .orbit-detail{
+    max-height:0 !important;
+    opacity:0 !important;
+    margin-top:0 !important;
+    padding-top:0 !important;
+    padding-bottom:0 !important;
+    border-width:0 !important;
   }
 
   /* Tier nodes */
@@ -1117,20 +1181,16 @@
 <line x1="440" y1="270" x2="613" y2="370" class="orbit-link" data-tier="1"/>
 <line x1="440" y1="270" x2="267" y2="370" class="orbit-link" data-tier="2"/>
 
-<!-- HIMARK core — the same framed H from the loading sequence,
-     scaled to fit the r=64 core circle at (440, 270). Geometry
-     matches index.html exactly: viewBox 140x200, frame 132x192
-     stroke-width 10, four solid H bars with the 4-unit vertical
-     split through the connector. -->
-<g class="orbit-core">
+<!-- ORBIT CORE — white tap-to-toggle circle. Click to collapse the
+     surrounding tier nodes inward; click again to expand them back.
+     The + icon rotates 45deg to become × when expanded (default). -->
+<g class="orbit-core" id="orbit-core" tabindex="0" role="button" aria-label="Toggle engagement paths" aria-pressed="true">
 <circle cx="440" cy="270" r="64" class="orbit-core-bg"/>
-<g class="orbit-core-h" transform="translate(410.0 226.97) scale(0.43)">
-<rect x="14" y="14" width="38" height="170" class="orbit-core-bar"/>
-<rect x="88" y="14" width="38" height="170" class="orbit-core-bar"/>
-<rect x="52" y="85" width="16" height="30" class="orbit-core-bar"/>
-<rect x="72" y="85" width="16" height="30" class="orbit-core-bar"/>
-<rect class="orbit-core-frame" x="4" y="4" width="132" height="192" fill="none" stroke-width="10"/>
+<g class="orbit-core-icon">
+<line class="orbit-core-line" x1="425" y1="262" x2="455" y2="262"/>
+<line class="orbit-core-line" x1="440" y1="247" x2="440" y2="277"/>
 </g>
+<text class="orbit-core-label" x="440" y="300" text-anchor="middle">TAP</text>
 </g>
 
 <!-- TIER 01 — SIGNATURE (top) -->
@@ -1522,8 +1582,37 @@
   // Pause when tab is hidden
   document.addEventListener('visibilitychange', function(){
     if(document.hidden) stopTimer();
-    else if(!userTookOver) startTimer();
+    else if(!userTookOver && !stage.classList.contains('collapsed')) startTimer();
   });
+
+  // Collapsible — clicking the centre toggles the surrounding orbit.
+  // When collapsed, the tier nodes shrink toward the core, connecting
+  // links fade, and the detail panel below collapses cleanly. Cycling
+  // is paused while collapsed so we don't lerp invisible state.
+  const core = document.getElementById('orbit-core');
+  if(core){
+    function toggleCollapse(){
+      const willCollapse = !stage.classList.contains('collapsed');
+      stage.classList.toggle('collapsed', willCollapse);
+      core.setAttribute('aria-pressed', willCollapse ? 'false' : 'true');
+      if(willCollapse){
+        stopTimer();
+      } else {
+        userTookOver = false;
+        startTimer();
+      }
+    }
+    core.addEventListener('click', function(e){
+      e.stopPropagation();
+      toggleCollapse();
+    });
+    core.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        toggleCollapse();
+      }
+    });
+  }
 })();
 </script>
 

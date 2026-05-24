@@ -624,33 +624,58 @@
     .nb-book{transform:none;opacity:1;transition:none;}
   }
   .nb-book:focus-visible .nb-book-frame{
-    box-shadow:0 0 0 2px var(--ocean), 0 24px 48px -24px rgba(28,43,58,.2);
+    box-shadow:
+      0 0 0 2px var(--ocean),
+      0 36px 60px -20px rgba(0,0,0,.5),
+      0 12px 24px -12px rgba(28,43,58,.3);
   }
+  /* Dark hardcover wrapping the pages. The cover has padding around
+     all four edges so the paper pages sit recessed inside it. */
   .nb-book-frame{
     position:relative;
     aspect-ratio:5 / 6;
+    /* Cover surface — subtle 135deg gradient gives a leather-bound look */
+    background:linear-gradient(135deg, var(--midnight) 0%, var(--ink-deep) 100%);
+    /* Padding leaves room for the binding on the left and a uniform
+       cover lip on the other three sides */
+    padding:20px 20px 20px 38px;
+    border-radius:3px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.05) inset,
+      0 0 0 1px rgba(138,173,184,.18),
+      0 36px 60px -20px rgba(0,0,0,.5),
+      0 12px 24px -12px rgba(28,43,58,.3);
     transition:box-shadow .3s var(--ease);
-    border-radius:2px;
   }
-  /* Vertical binding effect on the left edge of the page stack */
+  /* Subtle publisher mark on the bottom-right corner of the cover */
+  .nb-book-frame::after{
+    content:'HIMARK · MMXXVI';
+    position:absolute;
+    bottom:7px;right:14px;
+    font-family:var(--f-mono);font-size:7.5px;font-weight:600;
+    letter-spacing:.26em;
+    color:rgba(138,173,184,.32);
+    pointer-events:none;
+  }
+  /* Binding seam — sits inside the left padding area, looks like
+     a stitched join between cover and pages */
   .nb-book-spine{
     position:absolute;
-    left:0;top:0;bottom:0;
-    width:22px;
-    background:linear-gradient(to right,
-      rgba(28,43,58,.18) 0%,
-      rgba(28,43,58,.1)  30%,
-      rgba(28,43,58,.04) 70%,
-      transparent 100%);
+    left:17px;top:16px;bottom:16px;
+    width:1px;
+    background:rgba(138,173,184,.32);
     z-index:30;
     pointer-events:none;
   }
   .nb-book-spine::before{
-    /* faint dashed stitch line down the spine */
-    content:'';position:absolute;
-    left:11px;top:14px;bottom:14px;width:1px;
-    background-image:linear-gradient(to bottom, rgba(28,43,58,.35) 50%, transparent 0);
-    background-size:1px 5px;background-repeat:repeat-y;
+    /* dashed stitch line directly on top of the seam */
+    content:'';
+    position:absolute;
+    left:-3px;top:0;bottom:0;width:7px;
+    background-image:linear-gradient(to bottom, rgba(138,173,184,.45) 50%, transparent 0);
+    background-size:1px 6px;
+    background-repeat:repeat-y;
+    background-position:center;
   }
   .nb-pages{
     position:relative;

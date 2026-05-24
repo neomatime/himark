@@ -18,6 +18,19 @@ html{font-size:16px;overflow-x:hidden;scroll-behavior:smooth;}
 body{background:var(--off);color:var(--charcoal);font-family:var(--f-body);font-weight:300;overflow-x:hidden;cursor:none;}
 img{display:block;max-width:100%;}
 
+/* Visually-hidden helper — used to attach screen-reader-only
+   announce regions (aria-live) to interactive diagrams. Preserves
+   reader access while keeping the element out of the visual flow. */
+.a11y-only{
+  position:absolute !important;
+  width:1px !important;height:1px !important;
+  padding:0 !important;margin:-1px !important;
+  overflow:hidden !important;
+  clip:rect(0,0,0,0) !important;
+  white-space:nowrap !important;
+  border:0 !important;
+}
+
 /* CURSOR */
 #cd{position:fixed;width:6px;height:6px;background:var(--ocean);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s;}
 #cr{position:fixed;width:32px;height:32px;border:1px solid rgba(95,129,144,.45);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:width .35s var(--ease),height .35s var(--ease);}

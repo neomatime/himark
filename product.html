@@ -117,7 +117,7 @@
   .air-map-coord-r{
     position:absolute;top:48px;right:var(--gx);
     font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
-    color:rgba(138,173,184,.5);z-index:2;
+    color:rgba(138,173,184,.7);z-index:2;
   }
   .air-map-eyebrow{
     font-family:var(--f-mono);font-size:10px;font-weight:600;
@@ -136,7 +136,7 @@
   .air-map-hl em{font-style:italic;font-weight:300;color:var(--ocean-lt);}
   .air-map-sub{
     font-family:var(--f-body);font-weight:300;
-    font-size:14px;color:rgba(226,240,240,.6);
+    font-size:14px;color:rgba(226,240,240,.8);
     max-width:560px;margin-bottom:56px;line-height:1.7;
   }
 
@@ -371,7 +371,7 @@
   .airos-coord-r{
     position:absolute;top:48px;right:var(--gx);
     font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
-    color:rgba(46,74,90,.55);z-index:2;
+    color:rgba(46,74,90,.68);z-index:2;
   }
 
   .airos-intro{
@@ -552,17 +552,46 @@
     color:rgba(226,240,240,.7);line-height:1.6;
   }
 
-  /* Responsive */
+  /* ─── Responsive ─────────────────────────────────────────
+     Below 1080px the pipeline switches to a single vertical
+     column with dashed-line + arrow connectors between stages,
+     preserving the "flow" metaphor instead of just stacking the
+     stages with no visual linkage. */
   @media (max-width:1080px){
     .airos-pipeline{
-      grid-template-columns:repeat(3,1fr);
-      gap:14px;
+      grid-template-columns:1fr;
+      gap:54px;             /* space for the vertical connector */
+      max-width:540px;
+      margin:0 auto;
     }
-    .airos-stage:nth-child(4),
-    .airos-stage:nth-child(5),
-    .airos-stage:nth-child(6),
-    .airos-stage:nth-child(7){grid-row:auto;}
     .airos-flow{display:none;}
+
+    /* Vertical dashed line between adjacent stages */
+    .airos-stage:not(:last-child)::before{
+      content:'';
+      position:absolute;
+      left:50%;
+      bottom:-44px;
+      width:1px;
+      height:32px;
+      background-image:linear-gradient(to bottom, rgba(95,129,144,.55) 50%, transparent 50%);
+      background-size:1px 6px;
+      transform:translateX(-50%);
+      pointer-events:none;
+    }
+    /* Arrow tip at the end of the line */
+    .airos-stage:not(:last-child)::after{
+      content:'';
+      position:absolute;
+      left:50%;
+      bottom:-22px;
+      width:10px;height:10px;
+      border-right:1.5px solid rgba(46,74,90,.7);
+      border-bottom:1.5px solid rgba(46,74,90,.7);
+      transform:translateX(-50%) rotate(45deg);
+      pointer-events:none;
+    }
+
     .airos-layers{grid-template-columns:1fr;gap:32px;padding:36px;}
     .airos-layer-row{grid-template-columns:100px 1fr;gap:14px;}
     .airos-layer-note{grid-column:1 / -1;margin-top:4px;}
@@ -573,7 +602,6 @@
     .airos-coord-l{left:22px;}
     .airos-coord-r{right:22px;}
     .airos-intro{margin-bottom:40px;}
-    .airos-pipeline{grid-template-columns:1fr;gap:12px;}
     .airos-layers{padding:28px 22px;margin-top:48px;}
   }
 
@@ -616,7 +644,7 @@
   .lds-coord-r{
     position:absolute;top:48px;right:var(--gx);
     font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
-    color:rgba(46,74,90,.55);z-index:2;
+    color:rgba(46,74,90,.68);z-index:2;
   }
 
   .lds-intro{

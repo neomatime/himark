@@ -109,7 +109,7 @@
   .lm-coord-r{
     position:absolute;top:48px;right:var(--gx);
     font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
-    color:rgba(138,173,184,.5);z-index:2;
+    color:rgba(138,173,184,.7);z-index:2;
   }
 
   .lm-eyebrow{
@@ -220,7 +220,7 @@
     text-align:center;
     font-family:var(--f-mono);font-size:10px;font-weight:500;
     letter-spacing:.22em;text-transform:uppercase;
-    color:rgba(138,173,184,.55);
+    color:rgba(138,173,184,.7);
   }
   .lm-foot::before{
     content:'';display:inline-block;width:20px;height:1px;
@@ -282,7 +282,7 @@
   .mlr-coord-r{
     position:absolute;top:48px;right:var(--gx);
     font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
-    color:rgba(46,74,90,.55);z-index:2;
+    color:rgba(46,74,90,.68);z-index:2;
   }
 
   /* Rotating doctrine fragment — large, centred, italic */
@@ -369,7 +369,7 @@
     box-shadow:0 0 0 0 rgba(95,129,144,.5);
     animation:mlr-pulse 2.4s ease-out infinite;
   }
-  .mlr-status-concluded{ color:rgba(46,74,90,.5); }
+  .mlr-status-concluded{ color:rgba(46,74,90,.65); }
   .mlr-status-concluded .mlr-status-dot{ background:rgba(46,74,90,.4); }
   @keyframes mlr-pulse{
     0%   { box-shadow:0 0 0 0 rgba(95,129,144,.55); }
@@ -495,7 +495,7 @@
   .orbit-coord-r{
     position:absolute;top:48px;right:var(--gx);
     font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
-    color:rgba(46,74,90,.55);z-index:2;
+    color:rgba(46,74,90,.68);z-index:2;
   }
 
   /* Intro — minimal copy, centred */
@@ -729,10 +729,16 @@
   .orbit-stage.collapsed ~ .orbit-shortcut .orbit-shortcut-card:nth-child(2){transition-delay:.5s, .5s, 0s, 0s;}
   .orbit-stage.collapsed ~ .orbit-shortcut .orbit-shortcut-card:nth-child(3){transition-delay:.6s, .6s, 0s, 0s;}
 
-  .orbit-shortcut-card:hover{
+  .orbit-shortcut-card:hover,
+  .orbit-shortcut-card:focus-visible{
     transform:translateY(-4px);
     border-color:var(--ocean);
     box-shadow:0 24px 48px -24px rgba(28,43,58,.18);
+    outline:none;
+  }
+  .orbit-shortcut-card:focus-visible{
+    outline:2px solid var(--ocean);
+    outline-offset:2px;
   }
 
   .orbit-shortcut-card-top{
@@ -745,7 +751,7 @@
   }
   .orbit-shortcut-pill{
     font-family:var(--f-mono);font-size:8.5px;font-weight:600;
-    letter-spacing:.16em;color:rgba(46,74,90,.55);
+    letter-spacing:.16em;color:rgba(46,74,90,.68);
     padding:3px 8px;
     border:1px solid var(--rule);
     border-radius:1px;
@@ -819,10 +825,15 @@
     transition:border-color .35s var(--ease), transform .45s var(--ease), box-shadow .45s var(--ease);
     box-shadow:0 30px 60px -30px rgba(28,43,58,.35);
   }
-  .orbit-side-link:hover{
+  .orbit-side-link:hover,
+  .orbit-side-link:focus-visible{
     border-color:var(--ocean);
     transform:translateY(-4px);
     box-shadow:0 40px 70px -30px rgba(28,43,58,.45);
+  }
+  .orbit-side-link:focus-visible{
+    outline:2px solid var(--ocean-lt);
+    outline-offset:2px;
   }
   .orbit-side-coord{
     position:absolute;

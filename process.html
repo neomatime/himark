@@ -129,7 +129,7 @@
   .mth-engine-coord-r{
     position:absolute;top:48px;right:var(--gx);
     font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
-    color:rgba(138,173,184,.5);z-index:2;
+    color:rgba(138,173,184,.7);z-index:2;
   }
   .mth-engine-eyebrow{
     font-family:var(--f-mono);font-size:10px;font-weight:600;
@@ -148,7 +148,7 @@
   .mth-engine-hl em{font-style:italic;font-weight:300;color:var(--ocean-lt);}
   .mth-engine-sub{
     font-family:var(--f-body);font-weight:300;
-    font-size:14px;color:rgba(226,240,240,.6);
+    font-size:14px;color:rgba(226,240,240,.8);
     max-width:520px;margin-bottom:56px;line-height:1.7;
   }
 
@@ -499,6 +499,9 @@
 </svg>
 </div>
 
+<!-- SR announcement region for phase activation -->
+<div class="a11y-only" role="status" aria-live="polite" id="mth-engine-announce"></div>
+
 <!-- detail panel — updates as nodes are activated -->
 <div class="mth-engine-detail" id="mth-engine-detail">
 <div class="mth-engine-detail-coord">[ <span id="mth-detail-phase">01</span> · <span id="mth-detail-tag">DIAGNOSTIC</span> ]</div>
@@ -664,11 +667,15 @@
   const RESUME_DELAY = 14000;
 
   const valueEls = [detailName, detailDesc, detailDuration, detailOutput, detailAsks];
+  const announce = document.getElementById('mth-engine-announce');
 
   function setActive(idx){
     if(idx === activeIdx) return;
 
-    nodes.forEach((n,i) => n.classList.toggle('active', i === idx));
+    nodes.forEach((n,i) => {
+      n.classList.toggle('active', i === idx);
+      n.setAttribute('aria-current', i === idx ? 'step' : 'false');
+    });
     names.forEach((n,i) => n.classList.toggle('active', i === idx));
 
     valueEls.forEach(el => el.classList.add('fading'));
@@ -683,6 +690,7 @@
       detailOutput.textContent   = p.output;
       detailAsks.textContent     = p.asks;
       valueEls.forEach(el => el.classList.remove('fading'));
+      if(announce) announce.textContent = 'Showing phase ' + p.num + ': ' + p.name;
     }, FADE);
 
     activeIdx = idx;

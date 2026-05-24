@@ -103,6 +103,142 @@
     }
   ]
 }</script>
+
+<!-- ==========================================================
+     INTAKE — DARK THEME. Scoped to #page-intake so the rest of
+     the site is untouched. Overrides the light .itk-* styles in
+     styles.css with a midnight-on-off palette. The aside (Atlas /
+     WhatsApp panel) already uses a dark surface, so its styles
+     mostly carry over.
+     ========================================================== -->
+<style>
+  /* Page surface */
+  #page-intake{background:var(--midnight);}
+  #page-intake .itk-body{
+    background:var(--midnight);
+    border-bottom:1px solid rgba(138,173,184,.18);
+  }
+  /* Subtle grid backdrop on the dark intake surface */
+  #page-intake .itk-body::before{
+    content:'';position:absolute;inset:0;
+    background-image:linear-gradient(to right,var(--grid-dk) 1px,transparent 1px);
+    background-size:calc((100vw - 128px)/6) 100%;
+    background-position:64px 0;
+    pointer-events:none;opacity:.4;
+  }
+  #page-intake .itk-body > *{position:relative;z-index:1;}
+
+  /* Top-of-section coords */
+  #page-intake .itk-body-coord{color:var(--ocean-lt);}
+  #page-intake .itk-body-coord-r{color:rgba(138,173,184,.45);}
+
+  /* Intro band */
+  #page-intake .itk-intro-hl{color:var(--off);}
+  #page-intake .itk-intro-hl em{color:var(--ocean-lt);}
+  #page-intake .itk-intro-body{color:rgba(226,240,240,.82);}
+
+  /* The form card */
+  #page-intake .itk-form{
+    background:var(--ink-deep);
+    border:1px solid rgba(138,173,184,.18);
+    box-shadow:0 30px 60px -30px rgba(0,0,0,.4);
+  }
+  #page-intake .itk-form::before{
+    background:var(--ocean);
+    opacity:.16;
+  }
+  #page-intake .itk-form-header{
+    border-bottom:1px solid rgba(138,173,184,.18);
+  }
+  #page-intake .itk-form-title{color:var(--off);}
+  #page-intake .itk-form-meta{color:var(--ocean-lt);}
+
+  /* Field labels */
+  #page-intake .itk-field-label{color:var(--ocean-lt);}
+  #page-intake .itk-field-label em{color:rgba(138,173,184,.55);}
+
+  /* Inputs */
+  #page-intake .itk-input{
+    color:var(--off);
+    border-bottom:1px solid rgba(138,173,184,.28);
+  }
+  #page-intake .itk-input::placeholder{color:rgba(226,240,240,.32);}
+  #page-intake .itk-input:focus{border-bottom-color:var(--off);}
+
+  #page-intake .itk-textarea{
+    color:var(--off);
+    background:rgba(95,129,144,.04);
+    border:1px solid rgba(138,173,184,.22);
+  }
+  #page-intake .itk-textarea::placeholder{color:rgba(226,240,240,.32);}
+  #page-intake .itk-textarea:focus{
+    border-color:var(--ocean-lt);
+    background:rgba(95,129,144,.08);
+  }
+
+  #page-intake .itk-select{
+    color:var(--off);
+    border-bottom:1px solid rgba(138,173,184,.28);
+    /* Lighter chevron for dark surface */
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%238AADB8' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  }
+  #page-intake .itk-select option{
+    background:var(--midnight);color:var(--off);
+  }
+  #page-intake .itk-select:focus{border-bottom-color:var(--off);}
+
+  /* Form footer */
+  #page-intake .itk-form-foot{
+    border-top:1px solid rgba(138,173,184,.18);
+  }
+  #page-intake .itk-disclaimer{color:rgba(226,240,240,.6);}
+  #page-intake .itk-disclaimer strong{color:var(--off);}
+
+  /* Submit — inverted: off-white on midnight becomes solid off on dark */
+  #page-intake .itk-submit{
+    background:var(--off);
+    color:var(--midnight);
+  }
+  #page-intake .itk-submit:hover{
+    background:var(--ocean-lt);
+    color:var(--midnight);
+  }
+
+  /* Aside (Atlas/WhatsApp panel) — already dark, just refresh
+     contrast against the new midnight body */
+  #page-intake .itk-aside-card{
+    background:var(--ink-deep);
+    border:1px solid rgba(138,173,184,.22);
+  }
+  #page-intake .itk-aside-mini{
+    background:rgba(95,129,144,.06);
+    border:1px solid rgba(138,173,184,.2);
+  }
+  #page-intake .itk-aside-mini-l{color:var(--ocean-lt);}
+  #page-intake .itk-aside-mini-v{color:var(--off);}
+  #page-intake .itk-aside-mini-v a{border-bottom-color:var(--ocean-lt);}
+  #page-intake .itk-aside-mini-v a:hover{color:var(--ocean-lt);}
+
+  /* Bottom meta row (Headquarters / Response Time) */
+  #page-intake .itk-meta-row{
+    background:rgba(138,173,184,.16);
+    border-top:1px solid rgba(138,173,184,.18);
+    border-bottom:1px solid rgba(138,173,184,.18);
+  }
+  #page-intake .itk-meta-cell{
+    background:var(--ink-deep);
+  }
+  #page-intake .itk-meta-cell::before{color:rgba(138,173,184,.45);}
+  #page-intake .itk-meta-l{color:var(--ocean-lt);}
+  #page-intake .itk-meta-v{color:var(--off);}
+
+  /* Coord above the intro */
+  #page-intake .itk-body-coord,
+  #page-intake .itk-body-coord-r{
+    z-index:2;
+  }
+</style>
+
 </head>
 <body data-page="intake" data-location="root">
 <div id="cd"></div>
@@ -167,15 +303,15 @@
 <span class="menu-coord-tl">[ INDEX / 09 ]</span>
 <span class="menu-coord-tr" id="menuClose">CLOSE [ × ]</span>
 <ul class="menu-list">
-<li><a href="#" class="menu-item" data-page="home"><span class="mi-num">[ 00 ]</span><span class="mi-name">Origin <em>· home</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item" data-page="doctrine"><span class="mi-num">[ 01 ]</span><span class="mi-name">Doctrine <em>· about</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item" data-page="mandates"><span class="mi-num">[ 02 ]</span><span class="mi-name">Mandates <em>· services</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item" data-page="method"><span class="mi-num">[ 03 ]</span><span class="mi-name">Method <em>· process</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item" data-page="airass"><span class="mi-num">[ 04 ]</span><span class="mi-name">AIRaaS <em>· product</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item" data-page="principals"><span class="mi-num">[ 05 ]</span><span class="mi-name">Principals <em>· team</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item" data-page="intake"><span class="mi-num">[ 08 ]</span><span class="mi-name">Intake <em>· apply</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item menu-item-sub" data-page="sessions"><span class="mi-num">[ 08.A ]</span><span class="mi-name">Counsel <em>· advise</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item" data-page="direct"><span class="mi-num">[ 09 ]</span><span class="mi-name">Direct <em>· contact</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="home"><span class="mi-num">[ 00 ]</span><span class="mi-name">Home <em>· Origin</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="doctrine"><span class="mi-num">[ 01 ]</span><span class="mi-name">About <em>· Doctrine</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="mandates"><span class="mi-num">[ 02 ]</span><span class="mi-name">Services <em>· Mandates</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="method"><span class="mi-num">[ 03 ]</span><span class="mi-name">Process <em>· Method</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="airass"><span class="mi-num">[ 04 ]</span><span class="mi-name">AIRaaS <em>· Product</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="principals"><span class="mi-num">[ 05 ]</span><span class="mi-name">Team <em>· Principals</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="intake"><span class="mi-num">[ 08 ]</span><span class="mi-name">Apply <em>· Intake</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item menu-item-sub" data-page="sessions"><span class="mi-num">[ 08.A ]</span><span class="mi-name">Counsel <em>· Advisory session</em></span><span class="mi-arrow">→</span></a></li>
+<li><a href="#" class="menu-item" data-page="direct"><span class="mi-num">[ 09 ]</span><span class="mi-name">Contact <em>· Direct</em></span><span class="mi-arrow">→</span></a></li>
 </ul>
 <div class="menu-footer">
 <div class="mf-block">

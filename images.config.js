@@ -31,6 +31,15 @@
  *  All paths are relative to the site root.
  *  e.g. 'images/my-image.jpg' resolves to /images/my-image.jpg
  *
+ *  ─────────────────────────────────────────────────────
+ *  OPTIMIZATION (optional)
+ *  ─────────────────────────────────────────────────────
+ *  To convert images to next-gen WebP and slash bandwidth:
+ *      node scripts/optimize-images.js --dry-run   (preview)
+ *      node scripts/optimize-images.js             (run)
+ *  Then point a key below at the new .webp variant.
+ *  Full workflow + <picture> snippets: docs/IMAGES.md
+ *
  *  ============================================================ */
 
 window.HIMARK_IMAGES = {

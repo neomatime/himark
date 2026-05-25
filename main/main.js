@@ -20,6 +20,7 @@ const PAGE_URLS={
   engagements:'work.html',
   journal:'insights.html',
   direct:'contact.html',
+  press:'press.html',
   /* Legal + auth */
   privacy:'privacy.html',
   terms:'terms.html',

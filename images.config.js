@@ -45,6 +45,7 @@ window.HIMARK_IMAGES = {
   'hero.product'  : 'images/airass-hero.jpg',
   'hero.services' : 'images/mandates-hero.jpg',
   'hero.sessions' : 'images/apply-hero.jpg',
+  'hero.press'    : 'images/team-hero.jpg',
   'hero.team'     : 'images/team-hero.jpg',
   'hero.work'     : 'images/mandates-hero.jpg',
 

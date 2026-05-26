@@ -582,17 +582,37 @@
 </div>
 </div>
 <script>
+/* HIMARK · Engagement intake submit handler
+   POSTs directly to HubSpot's public Forms API (no serverless function
+   in the middle). The HubSpot form GUID is the per-form credential —
+   it's safe to expose client-side; it grants submission rights only,
+   not read access.
+
+   Region: eu1. Portal: 148503009.
+   Form: 7e1c1b56-5ef5-47ce-a491-d5a794fbe80c (Application for Engagement).
+
+   HubSpot only persists fields that exist in the form definition.
+   Extra fields posted here are silently ignored, so it's safe to send
+   the whole payload even if the form doesn't yet have every property
+   configured. To add new fields later, add them in HubSpot — no code
+   change here required. */
 (function(){
   'use strict';
-  var ENDPOINT = '/api/apply';
+
+  var HUBSPOT_ENDPOINT =
+    'https://api-eu1.hsforms.com/submissions/v3/integration/submit/' +
+    '148503009/7e1c1b56-5ef5-47ce-a491-d5a794fbe80c';
 
   var form    = document.querySelector('form.itk-form');
   var success = document.querySelector('.itk-success');
   if(!form) return;
 
-  /* Stamp render time onto the _t input. */
-  var tEl = form.querySelector('[data-itk-t]');
-  if(tEl) tEl.value = String(Date.now());
+  function pad(n){ return String(n).padStart(2, '0'); }
+  function makeReference(){
+    var d = new Date();
+    return 'APP-' + d.getUTCFullYear() + pad(d.getUTCMonth()+1) + pad(d.getUTCDate()) +
+           '-' + pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + pad(d.getUTCSeconds());
+  }
 
   /* Define the global submitIntake so the form's inline
      onsubmit="return submitIntake(event)" resolves. */
@@ -609,9 +629,12 @@
     var name             = (fd.get('name')             || '').toString().trim();
     var positionCompany  = (fd.get('position_company') || '').toString().trim();
     var email            = (fd.get('email')            || '').toString().trim();
+    var phone            = (fd.get('phone')            || '').toString().trim();
+    var tier             = (fd.get('tier')             || '').toString().trim();
     var brief            = (fd.get('brief')            || '').toString().trim();
+    var why              = (fd.get('why')              || '').toString().trim();
 
-    /* Client-side validation matching the server. */
+    /* Client-side validation. */
     if(!name){
       if(msg) msg.textContent = 'Add your name and try again.';
       return false;
@@ -629,59 +652,101 @@
       return false;
     }
 
+    /* Split "Ada Lovelace" → firstname=Ada, lastname=Lovelace. */
+    var nameParts = name.split(/\s+/);
+    var firstname = nameParts[0] || '';
+    var lastname  = nameParts.slice(1).join(' ');
+
+    /* Split "CEO · Acme Corp" → jobtitle=CEO, company=Acme Corp. */
+    var jobtitle = positionCompany;
+    var company  = '';
+    var sepIdx = positionCompany.indexOf(' · ');
+    if(sepIdx !== -1){
+      jobtitle = positionCompany.slice(0, sepIdx).trim();
+      company  = positionCompany.slice(sepIdx + 3).trim();
+    }
+
+    /* Fold optional "Why HIMARK" into the brief so HubSpot only needs
+       one custom property. */
+    var briefStr = why
+      ? brief + '\n\n--- Why HIMARK ---\n' + why
+      : brief;
+
+    var reference = makeReference();
+
     if(btn){
       btn.disabled = true;
       btn.setAttribute('aria-busy','true');
       btn.textContent = 'Filing…';
     }
 
-    fetch(ENDPOINT, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        name:             name,
-        position_company: positionCompany,
-        email:            email,
-        phone:            (fd.get('phone') || '').toString().trim(),
-        tier:             (fd.get('tier')  || '').toString().trim(),
-        brief:            brief,
-        why:              (fd.get('why')   || '').toString().trim(),
-        _hp:              (fd.get('_hp')   || '').toString(),
-        _t:               Number(fd.get('_t')) || 0
-      })
-    }).then(function(r){ return r.json().catch(function(){ return {ok:false}; }); })
-      .then(function(data){
-        if(data && data.ok){
-          if(success){
-            var refEl = success.querySelector('[data-ref]');
-            if(refEl) refEl.textContent = data.reference || '—';
-            form.hidden = true;
-            success.hidden = false;
-            success.scrollIntoView({behavior:'smooth', block:'start'});
-          }
-          return;
-        }
-        var err = data && data.error || 'unknown';
-        if(msg){
-          if(err === 'invalid-email')              msg.textContent = "That doesn't look like an email address. Check the spelling and try again.";
-          else if(err === 'missing-name')          msg.textContent = 'Add your name and try again.';
-          else if(err === 'missing-position-company') msg.textContent = 'Add your role and company.';
-          else if(err === 'brief-length')          msg.textContent = 'The brief should be between 200 and 8000 characters.';
-          else if(err === 'why-too-long')          msg.textContent = "Trim the 'Why HIMARK' answer — under 4000 characters.";
-          else if(err === 'phone-too-long')        msg.textContent = "Check the phone number — it's longer than expected.";
-          else                                     msg.textContent = "Couldn't reach the desk. Try again in a moment, or email info@himark.co.za directly.";
-        }
-      })
-      .catch(function(){
-        if(msg) msg.textContent = "Couldn't reach the desk. Try again in a moment, or email info@himark.co.za directly.";
-      })
-      .then(function(){
-        if(btn){
-          btn.disabled = false;
-          btn.removeAttribute('aria-busy');
-          btn.textContent = btnTxt || 'Submit for Review';
-        }
+    /* HubSpot v3 Forms API payload — fields array with objectTypeId
+       '0-1' (contact). HubSpot ignores fields not configured in the
+       form definition. */
+    var payload = {
+      fields: [
+        { objectTypeId: '0-1', name: 'email',        value: email     },
+        { objectTypeId: '0-1', name: 'firstname',    value: firstname },
+        { objectTypeId: '0-1', name: 'lastname',     value: lastname  },
+        { objectTypeId: '0-1', name: 'phone',        value: phone     },
+        { objectTypeId: '0-1', name: 'jobtitle',     value: jobtitle  },
+        { objectTypeId: '0-1', name: 'company',      value: company   },
+        { objectTypeId: '0-1', name: 'himark_tier',  value: tier      },
+        { objectTypeId: '0-1', name: 'himark_brief', value: briefStr  }
+      ],
+      context: {
+        pageUri:  window.location.href,
+        pageName: document.title
+      }
+    };
+
+    fetch(HUBSPOT_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function(r){
+      return r.json().catch(function(){ return null; }).then(function(data){
+        return { ok: r.ok, status: r.status, data: data };
       });
+    }).then(function(result){
+      if(result.ok){
+        if(success){
+          var refEl = success.querySelector('[data-ref]');
+          if(refEl) refEl.textContent = reference;
+          form.hidden = true;
+          success.hidden = false;
+          success.scrollIntoView({behavior:'smooth', block:'start'});
+        }
+        return;
+      }
+      /* HubSpot v3 error shapes:
+         400 → { status:'error', message:'...', errors:[{message,errorType,...}] }
+         404 → form GUID not found
+         Anything else → treat as a generic "try again" */
+      if(msg){
+        var firstErr = result.data && result.data.errors && result.data.errors[0];
+        var errType  = firstErr && firstErr.errorType || '';
+        if(errType === 'INVALID_EMAIL'){
+          msg.textContent = "That doesn't look like an email address. Check the spelling and try again.";
+        } else if(errType === 'REQUIRED_FIELD'){
+          msg.textContent = 'A required field is missing. Check your entries and try again.';
+        } else {
+          msg.textContent = "Couldn't reach the desk. Try again in a moment, or email info@himark.co.za directly.";
+          /* Log the underlying HubSpot error for diagnosis without
+             surfacing it to the visitor. */
+          if(result.data) console.warn('[apply] hubspot rejected:', result.status, result.data);
+        }
+      }
+    }).catch(function(err){
+      if(msg) msg.textContent = "Couldn't reach the desk. Try again in a moment, or email info@himark.co.za directly.";
+      console.warn('[apply] network error:', err);
+    }).then(function(){
+      if(btn){
+        btn.disabled = false;
+        btn.removeAttribute('aria-busy');
+        btn.textContent = btnTxt || 'Submit for Review';
+      }
+    });
 
     return false;
   };

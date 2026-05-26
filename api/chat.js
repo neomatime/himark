@@ -123,9 +123,15 @@ async function pushToHubSpot(record, kind){
     jobtitle: record.role || '',
     hs_lead_status: 'NEW',
     lifecyclestage: 'lead',
-    /* HIMARK custom properties — create these in HubSpot if you
-       want them populated (Settings → Properties → Contacts).
-       If they don't exist HubSpot will ignore them silently. */
+    /* HIMARK custom properties — these MUST exist in HubSpot
+       before this code runs. Create them at Settings → Properties
+       → Contacts as "Single-line text". Required names:
+         himark_brief, himark_tier, himark_timeline,
+         himark_budget, himark_source
+       If any one is missing, HubSpot rejects the WHOLE contact
+       create with 400 PROPERTY_DOESNT_EXIST — the lead is lost.
+       (Confirmed in production 2026-05-26: HubSpot does NOT
+        silently ignore unknown properties.) */
     himark_brief:    record.brief    || '',
     himark_tier:     record.tier     || (isSession ? 'session' : 'unsure'),
     himark_timeline: timelineStr,

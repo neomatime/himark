@@ -212,8 +212,17 @@ If the list grows past low thousands or starts attracting bot signups, revisit a
 ## 7. HubSpot setup checklist
 
 Before this is live in production, ensure inside the HubSpot account:
-1. The `himark_source` and `himark_tier` custom properties already exist (they were created for `api/chat.js`). No new properties needed.
-2. The Private App access token in `HUBSPOT_ACCESS_TOKEN` has the `crm.objects.contacts.write` scope. Already the case for chat.
+1. **Custom properties MUST exist** at Settings → Properties → Contacts (Single-line text):
+   - `himark_source`
+   - `himark_tier`
+   - `himark_brief`
+   - `himark_timeline`
+   - `himark_budget`
+
+   **Important — verified in production 2026-05-26:** HubSpot does NOT silently ignore unknown properties as earlier docs claimed. If even one is missing, the v3 `/crm/v3/objects/contacts` POST returns 400 `PROPERTY_DOESNT_EXIST` and the entire contact create fails — the lead is lost. The first three properties are also used by `api/chat.js` so creating all five at once is the right move.
+
+2. The Private App access token in `HUBSPOT_ACCESS_TOKEN` has the `crm.objects.contacts.write` scope. (`.read` is not strictly required — the 409→PATCH flow only needs write.)
+
 3. (Optional) Build a HubSpot active list with filter `himark_source EQUALS journal-subscribe` so the team can send broadcasts to journal subscribers later. Not blocking for this change.
 
 ---

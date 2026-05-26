@@ -840,6 +840,21 @@
     font-family:var(--f-disp);font-size:14px;font-weight:700;
     color:var(--midnight);
   }
+  /* ===== Counsel form network states ===== */
+  .bkc-hp{ position:absolute; left:-9999px; width:1px; height:1px; opacity:0; }
+  .bkc-msg{
+    font-family:'Roboto',sans-serif;
+    font-weight:300;
+    font-size:13px;
+    color:#E0A0A0;
+    margin:12px 0 0;
+    min-height:1em;
+  }
+  .bkc-msg:empty{ display:none; }
+  .bkc-submit[aria-busy="true"]{ opacity:.7; cursor:wait; }
+  @media (prefers-reduced-motion: reduce){
+    .bkc-submit{ transition:none; }
+  }
 </style>
 
 <script type="application/ld+json">{
@@ -1026,6 +1041,8 @@
 
 <!-- Form -->
 <form class="bkc-form" id="bkc-form" onsubmit="return submitBooking(event)">
+<input type="text" name="_hp" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="bkc-hp"/>
+<input type="hidden" name="_t" value="0" data-bkc-t/>
 
 <div class="bkc-form-hdr">
 <span class="bkc-form-l">Step 02 · Your details</span>
@@ -1078,6 +1095,7 @@
 <span>Request Session</span>
 <span class="bkc-submit-arrow">→</span>
 </button>
+<p class="bkc-msg" role="status" aria-live="polite"></p>
 </div>
 
 </form>
@@ -1532,7 +1550,15 @@ Confirmation issued by a principal within one working day. Invoice issued upon c
     });
   });
 
-  // Form submission — placeholder; wires to /api/session-booking once approved
+  // Stamp the _t timestamp on render (used server-side to filter
+  // sub-2-second auto-submits).
+  (function(){
+    var tEl = document.querySelector('#bkc-form [data-bkc-t]');
+    if(tEl) tEl.value = String(Date.now());
+  })();
+
+  // Form submission — POSTs to /api/session-booking. Fail-closed:
+  // the visual success overlay only appears after a 2xx response.
   window.submitBooking = function(e){
     e.preventDefault();
     if(!selectedDate || !selectedTime){
@@ -1540,32 +1566,68 @@ Confirmation issued by a principal within one working day. Invoice issued upon c
       return false;
     }
 
-    const f = e.target;
-    const fd = new FormData(f);
-    const dateObj = new Date(selectedDate.y, selectedDate.m, selectedDate.d);
-    const whenStr = WEEKDAYS[dateObj.getDay()] + ', ' +
+    var f = e.target;
+    var fd = new FormData(f);
+    var dateObj = new Date(selectedDate.y, selectedDate.m, selectedDate.d);
+    var whenStr = WEEKDAYS[dateObj.getDay()] + ', ' +
       selectedDate.d + ' ' + MONTHS[selectedDate.m] + ' ' + selectedDate.y +
       ' · ' + selectedTime + ' SAST';
+    var format    = fd.get('format') || 'video';
+    var formatStr = format === 'in-person' ? 'In Person · By appointment' : 'Video · SAST';
 
-    const format    = fd.get('format') || 'video';
-    const formatStr = format === 'in-person' ? 'In Person · By appointment' : 'Video · SAST';
+    var msg    = f.querySelector('.bkc-msg');
+    var btn    = f.querySelector('.bkc-submit');
+    var btnTxt = btn ? btn.textContent : '';
+    if(msg) msg.textContent = '';
+    if(btn){
+      btn.disabled = true;
+      btn.setAttribute('aria-busy','true');
+      btn.textContent = 'Sending…';
+    }
 
-    // Populate the success overlay
-    document.getElementById('sx-success-when').textContent   = whenStr;
-    document.getElementById('sx-success-format').textContent = formatStr;
-    document.getElementById('sx-success-email').textContent  = fd.get('email') || '—';
-    document.getElementById('sx-success').classList.add('show');
-
-    // TODO (post-approval): POST to /api/session-booking
-    // {
-    //   name:    fd.get('name'),
-    //   email:   fd.get('email'),
-    //   company: fd.get('company'),
-    //   role:    fd.get('role'),
-    //   format:  format,                  // 'video' | 'in-person'
-    //   brief:   fd.get('brief'),
-    //   window:  whenStr
-    // }
+    fetch('/api/session-booking', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        name:    (fd.get('name')    || '').toString().trim(),
+        email:   (fd.get('email')   || '').toString().trim(),
+        company: (fd.get('company') || '').toString().trim(),
+        role:    (fd.get('role')    || '').toString().trim(),
+        format:  format,
+        brief:   (fd.get('brief')   || '').toString().trim(),
+        window:  whenStr,
+        _hp:     (fd.get('_hp')     || '').toString(),
+        _t:      Number(fd.get('_t')) || 0
+      })
+    }).then(function(r){ return r.json().catch(function(){ return {ok:false}; }); })
+      .then(function(data){
+        if(data && data.ok){
+          document.getElementById('sx-success-when').textContent   = whenStr;
+          document.getElementById('sx-success-format').textContent = formatStr;
+          document.getElementById('sx-success-email').textContent  = fd.get('email') || '—';
+          document.getElementById('sx-success').classList.add('show');
+          return;
+        }
+        var err = data && data.error || 'unknown';
+        if(msg){
+          if(err === 'invalid-email')         msg.textContent = "That doesn't look like an email address. Check the spelling and try again.";
+          else if(err === 'missing-name')     msg.textContent = 'Add your name and try again.';
+          else if(err === 'missing-brief')    msg.textContent = 'Add the brief so the principal can prepare.';
+          else if(err === 'missing-window' ||
+                  err === 'missing-format')   msg.textContent = 'Pick a date, time and format first.';
+          else                                msg.textContent = "Couldn't reach the desk. Try again in a moment, or email info@himark.co.za directly.";
+        }
+      })
+      .catch(function(){
+        if(msg) msg.textContent = "Couldn't reach the desk. Try again in a moment, or email info@himark.co.za directly.";
+      })
+      .then(function(){
+        if(btn){
+          btn.disabled = false;
+          btn.removeAttribute('aria-busy');
+          btn.textContent = btnTxt || 'Confirm Booking';
+        }
+      });
 
     return false;
   };

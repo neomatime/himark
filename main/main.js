@@ -21,6 +21,7 @@ const PAGE_URLS={
   journal:'insights.html',
   direct:'contact.html',
   press:'press.html',
+  subscribe:'subscribe.html',
   /* Legal + auth */
   privacy:'privacy.html',
   terms:'terms.html',

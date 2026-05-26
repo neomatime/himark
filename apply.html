@@ -582,81 +582,107 @@
 </div>
 </div>
 <script>
-(function() {
-  const form = document.querySelector('form.itk-form');
-  const msgSlot = document.querySelector('.itk-msg');
-  const successCard = document.querySelector('.itk-success');
-  const submitBtn = form.querySelector('button[type="submit"]');
+(function(){
+  'use strict';
+  var ENDPOINT = '/api/apply';
 
-  window.submitIntake = async function(e) {
-    e.preventDefault();
+  var form    = document.querySelector('form.itk-form');
+  var success = document.querySelector('.itk-success');
+  if(!form) return;
 
-    // Set timestamp
-    const tField = form.querySelector('input[data-itk-t]');
-    tField.value = Date.now();
+  /* Stamp render time onto the _t input. */
+  var tEl = form.querySelector('[data-itk-t]');
+  if(tEl) tEl.value = String(Date.now());
 
-    // Honeypot check (server-side primary, but client validates)
-    const hpField = form.querySelector('input[name="_hp"]');
-    if (hpField.value.trim()) {
-      msgSlot.textContent = 'Form submission blocked. Please try again.';
-      return;
+  /* Define the global submitIntake so the form's inline
+     onsubmit="return submitIntake(event)" resolves. */
+  window.submitIntake = function(ev){
+    ev.preventDefault();
+
+    var msg = form.querySelector('.itk-msg');
+    var btn = form.querySelector('.itk-submit');
+    var btnTxt = btn ? btn.textContent : '';
+    if(msg) msg.textContent = '';
+    if(btn && btn.getAttribute('aria-busy') === 'true') return false;
+
+    var fd = new FormData(form);
+    var name             = (fd.get('name')             || '').toString().trim();
+    var positionCompany  = (fd.get('position_company') || '').toString().trim();
+    var email            = (fd.get('email')            || '').toString().trim();
+    var brief            = (fd.get('brief')            || '').toString().trim();
+
+    /* Client-side validation matching the server. */
+    if(!name){
+      if(msg) msg.textContent = 'Add your name and try again.';
+      return false;
+    }
+    if(!positionCompany){
+      if(msg) msg.textContent = 'Add your role and company.';
+      return false;
+    }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      if(msg) msg.textContent = "That doesn't look like an email address. Check the spelling and try again.";
+      return false;
+    }
+    if(brief.length < 200){
+      if(msg) msg.textContent = 'The brief needs to be at least 200 characters.';
+      return false;
     }
 
-    // Client-side validation
-    const nameField = form.querySelector('input[name="name"]');
-    const emailField = form.querySelector('input[name="email"]');
-    const phoneField = form.querySelector('input[name="phone"]');
-    const tierField = form.querySelector('select[name="tier"]');
-    const briefField = form.querySelector('textarea[name="brief"]');
-
-    const errors = [];
-    if (!nameField.value.trim()) errors.push('Full name is required.');
-    if (!emailField.value.trim()) errors.push('Email is required.');
-    if (!phoneField.value.trim()) errors.push('Phone is required.');
-    if (!tierField.value) errors.push('Engagement tier is required.');
-    if (!briefField.value.trim()) errors.push('Brief is required.');
-
-    if (errors.length > 0) {
-      msgSlot.textContent = errors[0];
-      return;
+    if(btn){
+      btn.disabled = true;
+      btn.setAttribute('aria-busy','true');
+      btn.textContent = 'Filing…';
     }
 
-    // Prepare and send
-    submitBtn.setAttribute('aria-busy', 'true');
-    msgSlot.textContent = '';
-
-    const formData = new FormData(form);
-
-    try {
-      const response = await fetch('/api/apply', {
-        method: 'POST',
-        body: formData
+    fetch(ENDPOINT, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        name:             name,
+        position_company: positionCompany,
+        email:            email,
+        phone:            (fd.get('phone') || '').toString().trim(),
+        tier:             (fd.get('tier')  || '').toString().trim(),
+        brief:            brief,
+        why:              (fd.get('why')   || '').toString().trim(),
+        _hp:              (fd.get('_hp')   || '').toString(),
+        _t:               Number(fd.get('_t')) || 0
+      })
+    }).then(function(r){ return r.json().catch(function(){ return {ok:false}; }); })
+      .then(function(data){
+        if(data && data.ok){
+          if(success){
+            var refEl = success.querySelector('[data-ref]');
+            if(refEl) refEl.textContent = data.reference || '—';
+            form.hidden = true;
+            success.hidden = false;
+            success.scrollIntoView({behavior:'smooth', block:'start'});
+          }
+          return;
+        }
+        var err = data && data.error || 'unknown';
+        if(msg){
+          if(err === 'invalid-email')              msg.textContent = "That doesn't look like an email address. Check the spelling and try again.";
+          else if(err === 'missing-name')          msg.textContent = 'Add your name and try again.';
+          else if(err === 'missing-position-company') msg.textContent = 'Add your role and company.';
+          else if(err === 'brief-too-short')       msg.textContent = 'The brief needs to be at least 200 characters.';
+          else                                     msg.textContent = "Couldn't reach the desk. Try again in a moment, or email info@himark.co.za directly.";
+        }
+      })
+      .catch(function(){
+        if(msg) msg.textContent = "Couldn't reach the desk. Try again in a moment, or email info@himark.co.za directly.";
+      })
+      .then(function(){
+        if(btn){
+          btn.disabled = false;
+          btn.removeAttribute('aria-busy');
+          btn.textContent = btnTxt || 'Submit for Review';
+        }
       });
 
-      if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
-        msgSlot.textContent = data.message || 'Submission failed. Please try again.';
-        submitBtn.removeAttribute('aria-busy');
-        return;
-      }
-
-      const data = await response.json();
-
-      // Hide form, show success card
-      form.style.display = 'none';
-      successCard.hidden = false;
-
-      // Populate reference number
-      const refSpan = successCard.querySelector('[data-ref]');
-      refSpan.textContent = data.ref || 'PENDING';
-
-    } catch (err) {
-      msgSlot.textContent = 'Network error. Please check your connection and try again.';
-      submitBtn.removeAttribute('aria-busy');
-    }
+    return false;
   };
-
-  form.addEventListener('submit', window.submitIntake);
 })();
 </script>
 <script src="main/main.js"></script>

@@ -134,7 +134,9 @@ module.exports = async (req, res) => {
   if (!name || name.length > 200)             return json(res, 400, { ok: false, error: 'missing-name' });
   if (!positionCompany || positionCompany.length > 200) return json(res, 400, { ok: false, error: 'missing-position-company' });
   if (!EMAIL_RX.test(email))                  return json(res, 400, { ok: false, error: 'invalid-email' });
-  if (!brief || brief.length < 200)           return json(res, 400, { ok: false, error: 'brief-too-short' });
+  if (!brief || brief.length < 200 || brief.length > 8000) return json(res, 400, { ok: false, error: 'brief-length' });
+  if (why.length > 4000)                      return json(res, 400, { ok: false, error: 'why-too-long' });
+  if (phone.length > 40)                      return json(res, 400, { ok: false, error: 'phone-too-long' });
 
   const tier = TIER_SLUGS.has(tierRaw) ? tierRaw : '';
 

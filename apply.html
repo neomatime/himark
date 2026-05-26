@@ -624,8 +624,8 @@
       if(msg) msg.textContent = "That doesn't look like an email address. Check the spelling and try again.";
       return false;
     }
-    if(brief.length < 200){
-      if(msg) msg.textContent = 'The brief needs to be at least 200 characters.';
+    if(brief.length < 200 || brief.length > 8000){
+      if(msg) msg.textContent = 'The brief should be between 200 and 8000 characters.';
       return false;
     }
 
@@ -666,7 +666,9 @@
           if(err === 'invalid-email')              msg.textContent = "That doesn't look like an email address. Check the spelling and try again.";
           else if(err === 'missing-name')          msg.textContent = 'Add your name and try again.';
           else if(err === 'missing-position-company') msg.textContent = 'Add your role and company.';
-          else if(err === 'brief-too-short')       msg.textContent = 'The brief needs to be at least 200 characters.';
+          else if(err === 'brief-length')          msg.textContent = 'The brief should be between 200 and 8000 characters.';
+          else if(err === 'why-too-long')          msg.textContent = "Trim the 'Why HIMARK' answer — under 4000 characters.";
+          else if(err === 'phone-too-long')        msg.textContent = "Check the phone number — it's longer than expected.";
           else                                     msg.textContent = "Couldn't reach the desk. Try again in a moment, or email info@himark.co.za directly.";
         }
       })

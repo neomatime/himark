@@ -180,6 +180,81 @@
     background:var(--ocean-lt);
     color:var(--midnight);
   }
+
+  /* ===== Apply form network states + success ===== */
+  #page-intake .itk-hp{ position:absolute; left:-9999px; width:1px; height:1px; opacity:0; }
+  #page-intake .itk-msg{
+    font-family:'Roboto',sans-serif;
+    font-weight:300;
+    font-size:13px;
+    color:#E0A0A0;
+    margin:12px 0 0;
+    min-height:1em;
+  }
+  #page-intake .itk-msg:empty{ display:none; }
+  #page-intake .itk-submit[aria-busy="true"]{ opacity:.7; cursor:wait; }
+
+  #page-intake .itk-success{
+    background:var(--midnight);
+    border:1px solid rgba(138,173,184,.22);
+    padding:64px 56px;
+    color:var(--off);
+    box-shadow:0 30px 60px -30px rgba(28,43,58,.35);
+  }
+  #page-intake .itk-success-coord{
+    display:block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.22em;
+    color:var(--ocean-lt);
+    text-transform:uppercase;
+    margin-bottom:18px;
+  }
+  #page-intake .itk-success-hl{
+    font-family:'Source Sans 3',sans-serif;
+    font-weight:300;
+    font-size:clamp(42px,4.4vw,64px);
+    line-height:1;
+    letter-spacing:-.02em;
+    margin:0 0 22px;
+    color:var(--off);
+  }
+  #page-intake .itk-success-body{
+    font-family:'Roboto',sans-serif;
+    font-weight:300;
+    font-size:16px;
+    line-height:1.6;
+    color:rgba(226,240,240,.78);
+    margin:0 0 30px;
+    max-width:540px;
+  }
+  #page-intake .itk-success-ref{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    padding-top:24px;
+    border-top:1px solid rgba(138,173,184,.18);
+    max-width:340px;
+  }
+  #page-intake .itk-success-ref-l{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:.2em;
+    color:var(--ocean-lt);
+    text-transform:uppercase;
+  }
+  #page-intake .itk-success-ref-v{
+    font-family:'JetBrains Mono',monospace;
+    font-size:16px;
+    color:var(--off);
+    letter-spacing:.08em;
+  }
+  @media (max-width:680px){
+    #page-intake .itk-success{ padding:44px 28px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    #page-intake .itk-submit, #page-intake .itk-input{ transition:none; }
+  }
 </style>
 
   <script src="images.config.js"></script>
@@ -357,6 +432,8 @@
 
 <div class="itk-grid">
 <form class="itk-form r3d d1" onsubmit="return submitIntake(event)">
+<input type="text" name="_hp" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="itk-hp"/>
+<input type="hidden" name="_t" value="0" data-itk-t/>
 <div class="itk-form-header">
 <span class="itk-form-title">Application for Engagement</span>
 <span class="itk-form-meta">[ FORM.06.01 ]  ·  CONFIDENTIAL</span>
@@ -364,47 +441,58 @@
 <div class="itk-fields">
 <div class="itk-field">
 <label class="itk-field-label">[ 01 ] Applicant <em>required</em></label>
-<input class="itk-input" type="text" placeholder="Full name" required/>
+<input class="itk-input" type="text" name="name" placeholder="Full name" required/>
 </div>
 <div class="itk-field">
 <label class="itk-field-label">[ 02 ] Position & Company <em>required</em></label>
-<input class="itk-input" type="text" placeholder="Role · Organisation" required/>
+<input class="itk-input" type="text" name="position_company" placeholder="Role · Organisation" required/>
 </div>
 <div class="itk-row">
 <div class="itk-field">
 <label class="itk-field-label">[ 03 ] Direct Email <em>required</em></label>
-<input class="itk-input" type="email" placeholder="name@company.co.za" required/>
+<input class="itk-input" type="email" name="email" placeholder="name@company.co.za" required/>
 </div>
 <div class="itk-field">
 <label class="itk-field-label">[ 04 ] Direct Line</label>
-<input class="itk-input" type="tel" placeholder="+27 XX XXX XXXX"/>
+<input class="itk-input" type="tel" name="phone" placeholder="+27 XX XXX XXXX"/>
 </div>
 </div>
 <div class="itk-field">
 <label class="itk-field-label">[ 05 ] Engagement of Interest</label>
-<select class="itk-select">
+<select class="itk-select" name="tier">
 <option value="">Select a mandate</option>
-<option>Tier 01 — Signature Partner</option>
-<option>Tier 02 — Growth Partner</option>
-<option>Tier 03 — Private Partner</option>
-<option>AIRaaS — Receptionist Product</option>
-<option>Discovery / Not yet decided</option>
+<option value="tier-01">Tier 01 — Signature Partner</option>
+<option value="tier-02">Tier 02 — Growth Partner</option>
+<option value="tier-03">Tier 03 — Private Partner</option>
+<option value="airass">AIRaaS — Receptionist Product</option>
+<option value="discovery">Discovery / Not yet decided</option>
 </select>
 </div>
 <div class="itk-field">
 <label class="itk-field-label">[ 06 ] The Brief <em>200 chars min</em></label>
-<textarea class="itk-textarea" placeholder="Describe the strategic objective, the constraint you are encountering, and the timeframe in which it must be resolved." required></textarea>
+<textarea class="itk-textarea" name="brief" placeholder="Describe the strategic objective, the constraint you are encountering, and the timeframe in which it must be resolved." required></textarea>
 </div>
 <div class="itk-field">
 <label class="itk-field-label">[ 07 ] Why HIMARK</label>
-<textarea class="itk-textarea" placeholder="Optional. What about HIMARK's positioning suggests this is the right firm for the work?"></textarea>
+<textarea class="itk-textarea" name="why" placeholder="Optional. What about HIMARK's positioning suggests this is the right firm for the work?"></textarea>
 </div>
 </div>
 <div class="itk-form-foot">
 <p class="itk-disclaimer"><strong>Engagements are accepted by invitation.</strong> Submission of this form does not constitute admission. Review takes place within five working days.</p>
 <button type="submit" class="itk-submit">Submit for Review</button>
+<p class="itk-msg" role="status" aria-live="polite"></p>
 </div>
 </form>
+
+<div class="itk-success" hidden>
+<span class="itk-success-coord">[ ✓ ]  APPLICATION RECEIVED</span>
+<h2 class="itk-success-hl">Filed.</h2>
+<p class="itk-success-body">A principal will review your brief and respond within five working days. The record has been logged.</p>
+<div class="itk-success-ref">
+<span class="itk-success-ref-l">Reference</span>
+<span class="itk-success-ref-v" data-ref></span>
+</div>
+</div>
 
 <aside class="itk-aside r3d d2">
 <div class="itk-aside-card">
@@ -493,6 +581,84 @@
 <button class="v-btn" id="vMic" onclick="tV()">START SPEAKING</button>
 </div>
 </div>
+<script>
+(function() {
+  const form = document.querySelector('form[name="itk"]');
+  const msgSlot = document.querySelector('.itk-msg');
+  const successCard = document.querySelector('.itk-success');
+  const submitBtn = form.querySelector('button[type="submit"]');
+
+  window.submitIntake = async function(e) {
+    e.preventDefault();
+
+    // Set timestamp
+    const tField = form.querySelector('input[data-itk-t]');
+    tField.value = Date.now();
+
+    // Honeypot check (server-side primary, but client validates)
+    const hpField = form.querySelector('input[name="_hp"]');
+    if (hpField.value.trim()) {
+      msgSlot.textContent = 'Form submission blocked. Please try again.';
+      return;
+    }
+
+    // Client-side validation
+    const nameField = form.querySelector('input[name="name"]');
+    const emailField = form.querySelector('input[name="email"]');
+    const phoneField = form.querySelector('input[name="phone"]');
+    const tierField = form.querySelector('select[name="tier"]');
+    const briefField = form.querySelector('textarea[name="brief"]');
+
+    const errors = [];
+    if (!nameField.value.trim()) errors.push('Full name is required.');
+    if (!emailField.value.trim()) errors.push('Email is required.');
+    if (!phoneField.value.trim()) errors.push('Phone is required.');
+    if (!tierField.value) errors.push('Engagement tier is required.');
+    if (!briefField.value.trim()) errors.push('Brief is required.');
+
+    if (errors.length > 0) {
+      msgSlot.textContent = errors[0];
+      return;
+    }
+
+    // Prepare and send
+    submitBtn.setAttribute('aria-busy', 'true');
+    msgSlot.textContent = '';
+
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch('/api/apply', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        msgSlot.textContent = data.message || 'Submission failed. Please try again.';
+        submitBtn.removeAttribute('aria-busy');
+        return;
+      }
+
+      const data = await response.json();
+
+      // Hide form, show success card
+      form.style.display = 'none';
+      successCard.hidden = false;
+
+      // Populate reference number
+      const refSpan = successCard.querySelector('[data-ref]');
+      refSpan.textContent = data.ref || 'PENDING';
+
+    } catch (err) {
+      msgSlot.textContent = 'Network error. Please check your connection and try again.';
+      submitBtn.removeAttribute('aria-busy');
+    }
+  };
+
+  form.addEventListener('submit', window.submitIntake);
+})();
+</script>
 <script src="main/main.js"></script>
 </body>
 </html>

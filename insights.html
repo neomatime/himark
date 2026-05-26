@@ -45,6 +45,100 @@
 <link rel="icon" type="image/svg+xml" href="images/himark-favicon.svg"/><link rel="apple-touch-icon" href="images/himark-favicon.svg"/><link rel="manifest" href="manifest.json"/><link rel="icon" type="image/x-icon" href="images/himark-favicon.ico"/><link rel="stylesheet" href="styles/styles.css"/>
   <script src="images.config.js"></script>
   <script defer data-domain="himark.co.za" src="https://plausible.io/js/script.js"></script>
+  <style>
+/* ===== Inline newsletter cell ===== */
+.nl-cell{ position:relative; }
+.nl-coord{
+  display:block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  letter-spacing:.22em;
+  color:var(--ocean);
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+.nl-form{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  margin-top:18px;
+}
+.nl-field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.nl-field-l{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  letter-spacing:.18em;
+  color:var(--ocean);
+  text-transform:uppercase;
+}
+.nl-input{
+  font-family:'Roboto',sans-serif;
+  font-weight:300;
+  font-size:15px;
+  color:var(--midnight);
+  background:transparent;
+  border:none;
+  border-bottom:1px solid rgba(95,129,144,.3);
+  padding:8px 0;
+  transition:border-color .22s ease;
+}
+.nl-input:focus{ outline:none; border-bottom-color:var(--midnight); }
+.nl-input::placeholder{ color:rgba(95,129,144,.5); }
+.nl-hp{
+  position:absolute;
+  left:-9999px;
+  width:1px;
+  height:1px;
+  opacity:0;
+}
+.nl-submit{
+  margin-top:4px;
+  align-self:flex-start;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--off);
+  background:var(--midnight);
+  border:1px solid var(--midnight);
+  padding:12px 18px;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  min-height:44px;
+  transition:background .22s ease, color .22s ease;
+}
+.nl-submit:hover{ background:var(--ocean-dk); border-color:var(--ocean-dk); }
+.nl-submit:focus-visible{ outline:2px solid var(--ocean); outline-offset:2px; }
+.nl-submit[aria-busy="true"]{ opacity:.7; cursor:wait; }
+.nl-submit-arrow{ font-size:14px; line-height:1; }
+.nl-msg{
+  font-family:'Roboto',sans-serif;
+  font-weight:300;
+  font-size:13px;
+  color:#9A4A4A;
+  margin:0;
+  min-height:1em;
+}
+.nl-msg:empty{ display:none; }
+.nl-success-coord{
+  display:block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  letter-spacing:.22em;
+  color:var(--ocean-dk);
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+@media (prefers-reduced-motion: reduce){
+  .nl-submit, .nl-input{ transition:none; }
+}
+  </style>
 </head>
 <body data-page="journal" data-location="root">
 <div id="cd"></div>
@@ -185,9 +279,37 @@
 <p class="cap-d" style="font-style:italic;margin-top:14px;color:rgba(95,129,144,.7);font-size:12px">08 min read · 2026</p>
 </div>
 
-<div class="cap-cell r3d d2" data-idx="[J.06]">
-<div class="cap-t">Forthcoming</div>
-<p class="cap-d" style="margin-top:8px;font-style:italic;color:var(--ink-mut)">More issues will appear here as they are written. The journal is irregular by design — it issues when there is something to say, not on a schedule. Subscribe via <a class="mf-link" href="#" data-page="direct">Direct</a> for new-issue notification.</p>
+<div class="cap-cell r3d d2 nl-cell" data-idx="[J.06]" id="nl-inline">
+  <span class="nl-coord">[ 07.B · NEWSLETTER ]</span>
+  <div class="cap-t">The Journal, <em style="font-style:italic;color:var(--ocean-dk)">in your inbox.</em></div>
+  <p class="cap-d" style="margin-top:8px;color:var(--ink-mut)">Irregular by design — issues when there is something to say, not on a schedule. Three or four most quarters. No tracking pixels.</p>
+
+  <form class="nl-form" id="nl-form-inline" novalidate>
+    <input type="text" name="_hp" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="nl-hp"/>
+    <input type="hidden" name="_t" value="0" data-nl-t/>
+
+    <label class="nl-field">
+      <span class="nl-field-l">First name</span>
+      <input type="text" name="firstname" required autocomplete="given-name" maxlength="80" class="nl-input"/>
+    </label>
+    <label class="nl-field">
+      <span class="nl-field-l">Email</span>
+      <input type="email" name="email" required autocomplete="email" inputmode="email" class="nl-input"/>
+    </label>
+
+    <button type="submit" class="nl-submit">
+      <span class="nl-submit-label">Subscribe</span>
+      <span class="nl-submit-arrow">→</span>
+    </button>
+
+    <p class="nl-msg" role="status" aria-live="polite"></p>
+  </form>
+
+  <div class="nl-success" hidden>
+    <span class="nl-success-coord">[ ✓ ]  On the list</span>
+    <div class="cap-t">You're <em style="font-style:italic;color:var(--ocean-dk)">in.</em></div>
+    <p class="cap-d" style="margin-top:8px;color:var(--ink-mut)">The next issue lands when there's something to say. Until then, the inbox stays quiet.</p>
+  </div>
 </div>
 
 </div>
@@ -245,6 +367,84 @@
 <button class="v-btn" id="vMic" onclick="tV()">START SPEAKING</button>
 </div>
 </div>
+<script>
+(function(){
+  'use strict';
+  var ENDPOINT = '/api/subscribe';
+
+  function wire(formEl, successEl){
+    if(!formEl) return;
+
+    /* Stamp render time on the hidden _t input — used server-side to
+       filter sub-2-second auto-submits. */
+    var tEl = formEl.querySelector('[data-nl-t]');
+    if(tEl) tEl.value = String(Date.now());
+
+    var msg = formEl.querySelector('.nl-msg');
+    var btn = formEl.querySelector('.nl-submit');
+    var btnLabel = formEl.querySelector('.nl-submit-label');
+
+    formEl.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      if(btn.getAttribute('aria-busy') === 'true') return;
+      msg.textContent = '';
+
+      var fd = new FormData(formEl);
+      var firstname = (fd.get('firstname') || '').toString().trim();
+      var email     = (fd.get('email')     || '').toString().trim();
+
+      if(!firstname){ msg.textContent = 'Add your first name and try again.'; return; }
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+        msg.textContent = "That doesn't look like an email address. Check the spelling and try again.";
+        return;
+      }
+
+      btn.setAttribute('aria-busy','true');
+      btn.disabled = true;
+      btnLabel.textContent = 'Sending…';
+
+      fetch(ENDPOINT, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          email: email,
+          firstname: firstname,
+          _hp: (fd.get('_hp') || '').toString(),
+          _t: Number(fd.get('_t')) || 0
+        })
+      }).then(function(r){ return r.json().catch(function(){ return {ok:false}; }); })
+        .then(function(data){
+          if(data && data.ok){
+            formEl.hidden = true;
+            if(successEl) successEl.hidden = false;
+            return;
+          }
+          var err = data && data.error || 'unknown';
+          if(err === 'invalid-email'){
+            msg.textContent = "That doesn't look like an email address. Check the spelling and try again.";
+          } else if(err === 'missing-name'){
+            msg.textContent = 'Add your first name and try again.';
+          } else {
+            msg.textContent = "Couldn't reach the desk. Try again in a moment, or email info@himark.co.za directly.";
+          }
+        })
+        .catch(function(){
+          msg.textContent = "Couldn't reach the desk. Try again in a moment, or email info@himark.co.za directly.";
+        })
+        .then(function(){
+          btn.disabled = false;
+          btn.removeAttribute('aria-busy');
+          btnLabel.textContent = 'Subscribe';
+        });
+    });
+  }
+
+  var inline = document.getElementById('nl-form-inline');
+  var cell   = document.getElementById('nl-inline');
+  var success = cell ? cell.querySelector('.nl-success') : null;
+  wire(inline, success);
+})();
+</script>
 <script src="main/main.js"></script>
 </body>
 </html>

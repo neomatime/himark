@@ -98,12 +98,24 @@ if(authPages.includes(cur))document.body.classList.add('auth-mode');
   if(p&&!p.classList.contains('active'))p.classList.add('active');
 })();
 
-/* CURSOR */
+/* CURSOR — performance-tuned. Previously used style.cssText to set
+   left/top each frame, which triggers a full layout reflow per frame
+   and stutters under load. Now uses transform: translate3d(...) which
+   stays on the compositor (GPU) and never touches layout. The dot
+   tracks the cursor instantly; the ring lerps toward the target at
+   .18/frame (was .11 — bumped for snappier follow without losing
+   the trailing feel). */
 const cd=document.getElementById('cd'),cr=document.getElementById('cr');
 let mx=-100,my=-100,rx=-100,ry=-100;
 if(cd&&cr){
-  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-  (function aC(){cd.style.cssText=`left:${mx}px;top:${my}px`;rx+=(mx-rx)*.11;ry+=(my-ry)*.11;cr.style.cssText=`left:${rx}px;top:${ry}px`;requestAnimationFrame(aC);})();
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;},{passive:true});
+  (function aC(){
+    cd.style.transform=`translate3d(${mx}px,${my}px,0) translate(-50%,-50%)`;
+    rx+=(mx-rx)*.18;
+    ry+=(my-ry)*.18;
+    cr.style.transform=`translate3d(${rx}px,${ry}px,0) translate(-50%,-50%)`;
+    requestAnimationFrame(aC);
+  })();
   document.querySelectorAll('a,button,input,select,textarea,.principal-card,.imgm-card').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('ch'));el.addEventListener('mouseleave',()=>document.body.classList.remove('ch'));});
 }
 

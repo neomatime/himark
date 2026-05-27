@@ -32,8 +32,8 @@ img{display:block;max-width:100%;}
 }
 
 /* CURSOR */
-#cd{position:fixed;width:6px;height:6px;background:var(--ocean);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s;}
-#cr{position:fixed;width:32px;height:32px;border:1px solid rgba(95,129,144,.45);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:width .35s var(--ease),height .35s var(--ease);}
+#cd{position:fixed;top:0;left:0;width:6px;height:6px;background:var(--ocean);border-radius:50%;pointer-events:none;z-index:99999;transition:width .2s,height .2s,background .2s;will-change:transform;}
+#cr{position:fixed;top:0;left:0;width:32px;height:32px;border:1px solid rgba(95,129,144,.45);border-radius:50%;pointer-events:none;z-index:99998;transition:width .35s var(--ease),height .35s var(--ease);will-change:transform;}
 body.ch #cd{width:11px;height:11px;background:var(--ocean-lt);}
 body.ch #cr{width:48px;height:48px;}
 

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HIMARK · Engagement Dossier · 2026</title>
+<meta name="description" content="HIMARK Engagement Dossier — the firm in a single document. Private."/>
+<meta name="robots" content="noindex,nofollow"/>
+<meta name="theme-color" content="#1C2B3A"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Roboto:ital,wght@0,300;0,400;1,300&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet"/>
+<link rel="icon" type="image/svg+xml" href="images/himark-favicon.svg"/>
+<style>
+  :root{
+    --midnight: #1C2B3A;
+    --ocean:    #5F8190;
+    --ocean-dk: #2E4A5A;
+    --ocean-lt: #8AADB8;
+    --off:      #F7F7F5;
+    --ink:      #1C2B3A;
+    --ink-mut:  rgba(28,43,58,.66);
+  }
+  *{ box-sizing: border-box; }
+  html, body{ margin: 0; padding: 0; background: #E8E8E5; color: var(--ink); font-family: 'Roboto', sans-serif; font-weight: 300; -webkit-font-smoothing: antialiased; }
+
+  /* ── PAGE FRAME ──────────────────────────────────────────── */
+  .dossier-page{
+    width: 8.5in;
+    min-height: 11in;
+    padding: 0.85in 0.95in;
+    background: var(--off);
+    position: relative;
+    page-break-after: always;
+    counter-increment: dossier-page;
+  }
+  .dossier-page:last-of-type{ page-break-after: auto; }
+  .dossier-page.cover{ background: var(--midnight); color: var(--off); }
+  .dossier-page.dark{  background: var(--midnight); color: var(--off); }
+
+  /* Page-corner coords */
+  .dp-coord-tl, .dp-coord-tr, .dp-foot-l, .dp-foot-r{
+    position: absolute;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: .22em;
+    color: var(--ocean);
+  }
+  .dossier-page.dark .dp-coord-tl,
+  .dossier-page.dark .dp-coord-tr,
+  .dossier-page.dark .dp-foot-l,
+  .dossier-page.dark .dp-foot-r{ color: var(--ocean-lt); }
+
+  .dp-coord-tl{ top: 0.35in; left: 0.95in; }
+  .dp-coord-tr{ top: 0.35in; right: 0.95in; }
+  .dp-foot-l{   bottom: 0.42in; left: 0.95in; }
+  .dp-foot-r{   bottom: 0.42in; right: 0.95in; }
+  .dp-foot-r::after{ content: counter(dossier-page); margin-left: 12px; }
+
+  /* ── EDITORIAL TYPOGRAPHY ────────────────────────────────── */
+  .dp-eyebrow{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .24em;
+    color: var(--ocean);
+    text-transform: uppercase;
+    margin: 0 0 14px;
+  }
+  .dossier-page.dark .dp-eyebrow{ color: var(--ocean-lt); }
+
+  .dp-h1{
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    font-size: 60px;
+    line-height: .98;
+    letter-spacing: -.02em;
+    color: var(--midnight);
+    margin: 0 0 22px;
+  }
+  .dossier-page.dark .dp-h1{ color: var(--off); }
+  .dp-h1 em{ font-style: italic; font-weight: 300; color: var(--ocean-dk); }
+  .dossier-page.dark .dp-h1 em{ color: var(--ocean-lt); }
+
+  .dp-h2{
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    font-size: 38px;
+    line-height: 1.04;
+    letter-spacing: -.015em;
+    color: var(--midnight);
+    margin: 32px 0 14px;
+  }
+  .dossier-page.dark .dp-h2{ color: var(--off); }
+  .dp-h2 em{ font-style: italic; color: var(--ocean-dk); }
+  .dossier-page.dark .dp-h2 em{ color: var(--ocean-lt); }
+
+  .dp-h3{
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: .01em;
+    color: var(--midnight);
+    margin: 22px 0 8px;
+  }
+  .dossier-page.dark .dp-h3{ color: var(--off); }
+
+  .dp-body{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 13.5px;
+    line-height: 1.62;
+    color: var(--ink-mut);
+    margin: 0 0 14px;
+    max-width: 6.2in;
+  }
+  .dossier-page.dark .dp-body{ color: rgba(226,240,240,.78); }
+
+  .dp-lead{
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    font-size: 19px;
+    line-height: 1.45;
+    color: var(--ocean-dk);
+    margin: 0 0 26px;
+    max-width: 6.0in;
+    font-style: italic;
+  }
+  .dossier-page.dark .dp-lead{ color: var(--ocean-lt); }
+
+  .dp-mono{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: .14em;
+    color: var(--ocean);
+    text-transform: uppercase;
+  }
+
+  .dp-rule{
+    border: 0;
+    border-top: 1px solid rgba(95,129,144,.28);
+    margin: 26px 0;
+  }
+  .dossier-page.dark .dp-rule{ border-top-color: rgba(138,173,184,.22); }
+
+  /* ── KEEP-TOGETHER UTILITIES ─────────────────────────────── */
+  .dp-keep{ page-break-inside: avoid; }
+  .dp-h1, .dp-h2, .dp-h3{ page-break-after: avoid; }
+  .dp-body{ orphans: 3; widows: 3; }
+
+  /* ── COVER PAGE ──────────────────────────────────────────── */
+  .cover-frame{
+    position: absolute;
+    inset: 0.6in;
+    border: 1px solid rgba(138,173,184,.28);
+    pointer-events: none;
+  }
+  .cover-stack{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 0.95in;
+  }
+  .cover-wm{
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    font-size: 84px;
+    letter-spacing: -.02em;
+    color: var(--off);
+    margin: 0 0 12px;
+  }
+  .cover-strap{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .34em;
+    color: var(--ocean-lt);
+    text-transform: uppercase;
+    margin: 0 0 60px;
+  }
+  .cover-title{
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    font-size: 30px;
+    letter-spacing: .04em;
+    color: var(--off);
+    text-transform: uppercase;
+    margin: 0;
+  }
+  .cover-title em{ font-style: italic; color: var(--ocean-lt); text-transform: none; }
+  .cover-meta{
+    position: absolute;
+    bottom: 0.95in;
+    left: 0.95in;
+    right: 0.95in;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: .22em;
+    color: var(--ocean-lt);
+    text-transform: uppercase;
+  }
+
+  /* ── PRINT BUTTON (screen-only) ──────────────────────────── */
+  .dossier-screen-only{
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 1000;
+  }
+  .dp-print-btn{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--off);
+    background: var(--midnight);
+    border: 1px solid var(--midnight);
+    padding: 12px 18px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 16px 30px -16px rgba(28,43,58,.4);
+  }
+  .dp-print-btn:hover{ background: var(--ocean-dk); border-color: var(--ocean-dk); }
+  .dp-print-btn::after{ content: '↓'; font-size: 13px; }
+
+  /* ── SCREEN MODE ─────────────────────────────────────────── */
+  @media screen{
+    body{ padding: 24px 0; }
+    .dossier-page{
+      margin: 24px auto;
+      box-shadow: 0 24px 48px -28px rgba(28,43,58,.28);
+    }
+  }
+
+  /* ── PRINT MODE ──────────────────────────────────────────── */
+  @page{
+    size: Letter;
+    margin: 0;
+  }
+  @media print{
+    body{ background: var(--off); padding: 0; }
+    .dossier-screen-only{ display: none !important; }
+    .dossier-page{
+      margin: 0;
+      box-shadow: none;
+      page-break-after: always;
+    }
+    .dossier-page:last-of-type{ page-break-after: auto; }
+    /* preserve background colors and borders */
+    *{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Screen-only print button -->
+<div class="dossier-screen-only">
+<button class="dp-print-btn" type="button" onclick="window.print()">Print as PDF</button>
+</div>
+
+<!-- ── COVER PAGE ── -->
+<section class="dossier-page cover" data-coord="[ DOSSIER · 2026 ]">
+<div class="cover-frame"></div>
+<div class="cover-stack">
+<h1 class="cover-wm">HIMARK</h1>
+<p class="cover-strap">[ DOSSIER · 2026 ]</p>
+<p class="cover-title">Engagement <em>Dossier</em></p>
+</div>
+<div class="cover-meta">
+<span>[ INSTITUTIONAL · CONFIDENTIAL ]</span>
+<span>For the recipient</span>
+</div>
+</section>
+
+<!-- The remaining ~20 pages are added in Task 4. -->
+
+</body>
+</html>

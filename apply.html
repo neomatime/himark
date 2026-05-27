@@ -381,7 +381,6 @@
 <li><a href="services.html">Services</a></li>
 <li><a href="team.html">Team</a></li>
 <li><a href="apply.html">Apply</a></li>
-<li><a href="sessions.html">Counsel</a></li>
 <li><a href="contact.html">Contact</a></li>
 <li><a href="subscribe.html">Subscribe</a></li>
 </ul>
@@ -511,66 +510,25 @@
 </div>
 
 <div class="itk-grid">
-<form class="itk-form r3d d1" onsubmit="return submitIntake(event)">
-<input type="text" name="_hp" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="itk-hp"/>
-<input type="hidden" name="_t" value="0" data-itk-t/>
+<div class="itk-form r3d d1">
 <div class="itk-form-header">
-<span class="itk-form-title">Application for Engagement</span>
+<span class="itk-form-title">Application via Atlas</span>
 <span class="itk-form-meta">[ FORM.06.01 ]  ·  CONFIDENTIAL</span>
 </div>
-<div class="itk-fields">
-<div class="itk-field">
-<label class="itk-field-label">[ 01 ] Applicant <em>required</em></label>
-<input class="itk-input" type="text" name="name" placeholder="Full name" required/>
-</div>
-<div class="itk-field">
-<label class="itk-field-label">[ 02 ] Position & Company <em>required</em></label>
-<input class="itk-input" type="text" name="position_company" placeholder="Role · Organisation" required/>
-</div>
-<div class="itk-row">
-<div class="itk-field">
-<label class="itk-field-label">[ 03 ] Direct Email <em>required</em></label>
-<input class="itk-input" type="email" name="email" placeholder="name@company.co.za" required/>
-</div>
-<div class="itk-field">
-<label class="itk-field-label">[ 04 ] Direct Line</label>
-<input class="itk-input" type="tel" name="phone" placeholder="+27 XX XXX XXXX"/>
-</div>
-</div>
-<div class="itk-field">
-<label class="itk-field-label">[ 05 ] Engagement of Interest</label>
-<select class="itk-select" name="tier">
-<option value="">Select a mandate</option>
-<option value="tier-01">Tier 01 — Signature Partner</option>
-<option value="tier-02">Tier 02 — Growth Partner</option>
-<option value="tier-03">Tier 03 — Private Partner</option>
-<option value="airass">AIRaaS — Receptionist Product</option>
-<option value="discovery">Discovery / Not yet decided</option>
-</select>
-</div>
-<div class="itk-field">
-<label class="itk-field-label">[ 06 ] The Brief <em>200 chars min</em></label>
-<textarea class="itk-textarea" name="brief" placeholder="Describe the strategic objective, the constraint you are encountering, and the timeframe in which it must be resolved." required></textarea>
-</div>
-<div class="itk-field">
-<label class="itk-field-label">[ 07 ] Why HIMARK</label>
-<textarea class="itk-textarea" name="why" placeholder="Optional. What about HIMARK's positioning suggests this is the right firm for the work?"></textarea>
-</div>
-</div>
-<div class="itk-form-foot">
-<p class="itk-disclaimer"><strong>Engagements are accepted by invitation.</strong> Submission of this form does not constitute admission. Review takes place within five working days.</p>
-<button type="submit" class="itk-submit">Submit for Review</button>
-<p class="itk-msg" role="status" aria-live="polite"></p>
-</div>
-</form>
-
-<div class="itk-success" hidden>
-<span class="itk-success-coord">[ ✓ ]  APPLICATION RECEIVED</span>
-<h2 class="itk-success-hl">Filed.</h2>
-<p class="itk-success-body">A principal will review your brief and respond within five working days. The record has been logged.</p>
-<div class="itk-success-ref">
-<span class="itk-success-ref-l">Reference</span>
-<span class="itk-success-ref-v" data-ref></span>
+<div class="itk-fields" style="gap:28px;">
+<p style="font-family:'Source Sans 3',sans-serif;font-weight:300;font-size:24px;line-height:1.4;color:var(--off);margin:0;letter-spacing:-.005em;">
+Applications run through <em style="font-style:italic;color:var(--ocean-lt);">Atlas</em> — the firm's principal-trained assistant.
+</p>
+<p style="font-family:'Roboto',sans-serif;font-weight:300;font-size:15.5px;line-height:1.7;color:rgba(226,240,240,.78);margin:0;">
+Atlas conducts the intake conversation directly, qualifies fit against your strategic constraint, and routes the qualified brief to a principal for review. Most applications complete in six to eight minutes. The principal who reads your brief is the principal who would lead the engagement.
+</p>
+<button type="button" id="apply-atlas-btn" style="align-self:flex-start;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--midnight);background:var(--off);border:1px solid var(--off);padding:18px 30px;cursor:pointer;display:inline-flex;align-items:center;gap:14px;transition:background-color .22s ease,color .22s ease;border-radius:2px;min-height:44px;">
+<span>Open Atlas</span>
+<span aria-hidden="true" style="font-size:15px;line-height:1;">→</span>
+</button>
+<p style="font-family:'Roboto',sans-serif;font-weight:300;font-size:13.5px;line-height:1.6;color:rgba(226,240,240,.55);margin:0;padding-top:12px;border-top:1px solid rgba(138,173,184,.18);">
+Prefer email? Write directly to <strong style="color:var(--ocean-lt);">info@himark.co.za</strong>. A principal reads every message within five working days.
+</p>
 </div>
 </div>
 
@@ -614,7 +572,7 @@
 <span class="footer-coord-tr">HIMARK / FOOTER</span>
 <div class="footer-top">
 <div><div class="ft-wm"><svg width="14" height="10" viewBox="0 0 292 200" fill="none"><rect x="0" y="0" width="28" height="200" fill="#5F8190"/><rect x="28" y="88" width="104" height="20" fill="#5F8190"/><rect x="132" y="0" width="28" height="200" fill="#5F8190"/><polygon points="160,0 182,0 212,120 201,120" fill="#5F8190"/><polygon points="242,0 264,0 223,120 212,120" fill="#5F8190"/><rect x="264" y="0" width="28" height="200" fill="#5F8190"/></svg>HIMARK</div><p class="ft-tag">Strategic Growth Consultancy</p><p class="ft-blurb">HIMARK (Pty) Ltd</p></div>
-<div><p class="ft-col-t">[ 01 ] Engagement</p><ul class="ft-links"><li><a href="#" data-page="mandates">Mandates</a></li><li><a href="#" data-page="intake">Apply</a></li><li><a href="#" data-page="sessions">Counsel</a></li></ul></div>
+<div><p class="ft-col-t">[ 01 ] Engagement</p><ul class="ft-links"><li><a href="#" data-page="mandates">Mandates</a></li><li><a href="#" data-page="intake">Apply</a></li></ul></div>
 <div><p class="ft-col-t">[ 02 ] Firm</p><ul class="ft-links"><li><a href="#" data-page="doctrine">Doctrine</a></li><li><a href="#" data-page="principals">Principals</a></li><li><a href="#" data-page="home">Origin</a></li></ul></div>
 <div><p class="ft-col-t">[ 03 ] Contact</p><ul class="ft-links"><li><a href="#">info@himark.co.za</a></li><li><a href="#" data-page="subscribe">Subscribe to The Journal</a></li><li><a href="#" data-page="signin">Client Portal</a></li></ul></div>
 </div>
@@ -662,116 +620,13 @@
 </div>
 </div>
 <script>
-/* HIMARK · Engagement intake submit handler
-   POSTs to /api/apply (same-origin Vercel function). The function
-   forwards the payload to HubSpot's public Forms API server-side,
-   which is essential because uBlock Origin, AdBlock, Brave Shields,
-   and Firefox Enhanced Tracking Protection all block direct
-   browser→hsforms.com calls by default. Going through our own
-   domain side-steps every browser-level blocker.
-
-   The serverside function generates the APP-... reference; the
-   client just renders it. */
+/* Apply page — wire the Atlas CTA to the floating chat widget. */
 (function(){
-  'use strict';
-  var ENDPOINT = '/api/apply';
-
-  var form    = document.querySelector('form.itk-form');
-  var success = document.querySelector('.itk-success');
-  if(!form) return;
-
-  /* Define the global submitIntake so the form's inline
-     onsubmit="return submitIntake(event)" resolves. */
-  window.submitIntake = function(ev){
-    ev.preventDefault();
-
-    var msg = form.querySelector('.itk-msg');
-    var btn = form.querySelector('.itk-submit');
-    var btnTxt = btn ? btn.textContent : '';
-    if(msg) msg.textContent = '';
-    if(btn && btn.getAttribute('aria-busy') === 'true') return false;
-
-    var fd = new FormData(form);
-    var name             = (fd.get('name')             || '').toString().trim();
-    var positionCompany  = (fd.get('position_company') || '').toString().trim();
-    var email            = (fd.get('email')            || '').toString().trim();
-    var brief            = (fd.get('brief')            || '').toString().trim();
-
-    /* Client-side validation matching the server. */
-    if(!name){
-      if(msg) msg.textContent = 'Add your name and try again.';
-      return false;
-    }
-    if(!positionCompany){
-      if(msg) msg.textContent = 'Add your role and company.';
-      return false;
-    }
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-      if(msg) msg.textContent = "That doesn't look like an email address. Check the spelling and try again.";
-      return false;
-    }
-    if(brief.length < 200 || brief.length > 8000){
-      if(msg) msg.textContent = 'The brief should be between 200 and 8000 characters.';
-      return false;
-    }
-
-    if(btn){
-      btn.disabled = true;
-      btn.setAttribute('aria-busy','true');
-      btn.textContent = 'Filing…';
-    }
-
-    fetch(ENDPOINT, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        name:             name,
-        position_company: positionCompany,
-        email:            email,
-        phone:            (fd.get('phone') || '').toString().trim(),
-        tier:             (fd.get('tier')  || '').toString().trim(),
-        brief:            brief,
-        why:              (fd.get('why')   || '').toString().trim(),
-        pageUri:          window.location.href,
-        pageName:         document.title
-      })
-    }).then(function(r){ return r.json().catch(function(){ return {ok:false}; }); })
-      .then(function(data){
-        if(data && data.ok){
-          if(success){
-            var refEl = success.querySelector('[data-ref]');
-            if(refEl) refEl.textContent = data.reference || '—';
-            form.hidden = true;
-            success.hidden = false;
-            success.scrollIntoView({behavior:'smooth', block:'start'});
-          }
-          return;
-        }
-        var err = data && data.error || 'unknown';
-        if(msg){
-          if(err === 'invalid-email')              msg.textContent = "That doesn't look like an email address. Check the spelling and try again.";
-          else if(err === 'missing-name')          msg.textContent = 'Add your name and try again.';
-          else if(err === 'missing-position-company') msg.textContent = 'Add your role and company.';
-          else if(err === 'brief-length')          msg.textContent = 'The brief should be between 200 and 8000 characters.';
-          else if(err === 'why-too-long')          msg.textContent = "Trim the 'Why HIMARK' answer — under 4000 characters.";
-          else if(err === 'phone-too-long')        msg.textContent = "Check the phone number — it's longer than expected.";
-          else if(err === 'missing-required-field') msg.textContent = 'A required field is missing. Check your entries and try again.';
-          else                                     msg.textContent = "Couldn't reach the desk. Try again in a moment, or email info@himark.co.za directly.";
-        }
-      })
-      .catch(function(){
-        if(msg) msg.textContent = "Couldn't reach the desk. Try again in a moment, or email info@himark.co.za directly.";
-      })
-      .then(function(){
-        if(btn){
-          btn.disabled = false;
-          btn.removeAttribute('aria-busy');
-          btn.textContent = btnTxt || 'Submit for Review';
-        }
-      });
-
-    return false;
-  };
+  var btn = document.getElementById("apply-atlas-btn");
+  var chatTgl = document.getElementById("chatTgl");
+  if (btn && chatTgl) {
+    btn.addEventListener("click", function(){ chatTgl.click(); });
+  }
 })();
 </script>
 <script src="main/main.js"></script>

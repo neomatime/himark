@@ -1061,7 +1061,6 @@
 <li><a href="services.html">Services</a></li>
 <li><a href="team.html">Team</a></li>
 <li><a href="apply.html">Apply</a></li>
-<li><a href="sessions.html">Counsel</a></li>
 <li><a href="contact.html">Contact</a></li>
 <li><a href="subscribe.html">Subscribe</a></li>
 </ul>
@@ -1297,15 +1296,7 @@
 <span class="orbit-shortcut-cta">Apply for engagement <span class="orbit-shortcut-arrow">→</span></span>
 </a>
 
-<a href="#" data-page="sessions" class="orbit-shortcut-card">
-<div class="orbit-shortcut-card-top">
-<span class="orbit-shortcut-coord">[ B ]</span>
-<span class="orbit-shortcut-pill">90 min</span>
-</div>
-<h4 class="orbit-shortcut-name">Counsel</h4>
-<p class="orbit-shortcut-sub">A single principal session on a defined commercial question. No tier commitment, written one-pager afterward.</p>
-<span class="orbit-shortcut-cta">Book a session <span class="orbit-shortcut-arrow">→</span></span>
-</a><button type="button" class="orbit-shortcut-card" id="orbit-shortcut-atlas">
+<button type="button" class="orbit-shortcut-card" id="orbit-shortcut-atlas">
 <div class="orbit-shortcut-card-top">
 <span class="orbit-shortcut-coord">[ C ]</span>
 <span class="orbit-shortcut-pill">Live</span>
@@ -1366,7 +1357,7 @@
 <span class="footer-coord-tr">HIMARK / FOOTER</span>
 <div class="footer-top">
 <div><div class="ft-wm"><svg width="14" height="10" viewBox="0 0 292 200" fill="none"><rect x="0" y="0" width="28" height="200" fill="#5F8190"/><rect x="28" y="88" width="104" height="20" fill="#5F8190"/><rect x="132" y="0" width="28" height="200" fill="#5F8190"/><polygon points="160,0 182,0 212,120 201,120" fill="#5F8190"/><polygon points="242,0 264,0 223,120 212,120" fill="#5F8190"/><rect x="264" y="0" width="28" height="200" fill="#5F8190"/></svg>HIMARK</div><p class="ft-tag">Strategic Growth Consultancy</p><p class="ft-blurb">HIMARK (Pty) Ltd</p></div>
-<div><p class="ft-col-t">[ 01 ] Engagement</p><ul class="ft-links"><li><a href="services.html">Mandates</a></li><li><a href="apply.html">Apply</a></li><li><a href="sessions.html">Counsel</a></li></ul></div>
+<div><p class="ft-col-t">[ 01 ] Engagement</p><ul class="ft-links"><li><a href="services.html">Mandates</a></li><li><a href="apply.html">Apply</a></li></ul></div>
 <div><p class="ft-col-t">[ 02 ] Firm</p><ul class="ft-links"><li><a href="about.html">Doctrine</a></li><li><a href="team.html">Principals</a></li><li><a href="/">Origin</a></li></ul></div>
 <div><p class="ft-col-t">[ 03 ] Contact</p><ul class="ft-links"><li><a href="mailto:info@himark.co.za">info@himark.co.za</a></li><li><a href="subscribe.html">Subscribe to The Journal</a></li><li><a href="auth/signin.html">Client Portal</a></li></ul></div>
 </div>
@@ -1413,39 +1404,11 @@
 </div>
 </div>
 
-<!-- Inline topnav script — mobile toggle + active-page marker ── -->
-<script>
-(function(){
-  'use strict';
-
-  /* Mobile hamburger toggle */
-  var toggle = document.querySelector('.topnav-toggle');
-  var list   = document.getElementById('topnav-list');
-  if (toggle && list) {
-    toggle.addEventListener('click', function(){
-      var open = list.classList.toggle('open');
-      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-    });
-    /* Close on link click (mobile) */
-    list.addEventListener('click', function(e){
-      if (e.target.tagName === 'A' && list.classList.contains('open')) {
-        list.classList.remove('open');
-        toggle.setAttribute('aria-expanded', 'false');
-      }
-    });
-  }
-
-  /* Mark the current page link with aria-current="page".
-     Compare basename of pathname to each link's pathname. */
-  var here = (location.pathname.split('/').pop() || 'home.html').toLowerCase();
-  if (here === '' || here === 'index.html') here = 'home.html';
-  document.querySelectorAll('.topnav-list a[href]').forEach(function(a){
-    var href = (a.getAttribute('href') || '').toLowerCase();
-    var base = href.split('/').pop();
-    if (base === here) a.setAttribute('aria-current', 'page');
-  });
-})();
-</script>
+<!-- Topnav mobile-toggle + active-page marker live in main/main.js
+     (run once site-wide). Removed the inline duplicate here that
+     was double-binding the hamburger click — both handlers were
+     toggling the .open class on the same event, cancelling out so
+     the menu never opened. -->
 
 <!-- ORBIT INTERACTIVITY — tier cycle, tap-to-collapse, node activation,
      Atlas shortcut. Restored from the original home.html as part of the

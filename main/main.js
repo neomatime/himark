@@ -14,7 +14,6 @@ const PAGE_URLS={
   method:'process.html',
   airass:'product.html',
   principals:'team.html',
-  sessions:'sessions.html',
   intake:'apply.html',
   /* New surfaces */
   engagements:'work.html',

@@ -377,6 +377,7 @@
      Sections following the hero need z-index: 1 so they cleanly
      occlude the sticky hero as they scroll up over it. */
   #page-home > .home-marquee,
+  #page-home > .home-img-marquee,
   #page-home > .orbit-section,
   #page-home > .home-anchor,
   #page-home > .footer{
@@ -386,6 +387,56 @@
   /* Soft top-shadow on the first section to arrive over the hero. */
   #page-home > .home-marquee{
     box-shadow: 0 -24px 60px rgba(28,43,58,.10), 0 -1px 0 rgba(28,43,58,.06);
+  }
+
+  /* ── IMAGE MARQUEE — editorial photo strip ─────────────────
+     Mirrors the doctrine marquee's pattern but with images. A
+     horizontal infinite-scroll band of the firm's hero photography,
+     looping continuously. Compact (single band, no clutter),
+     visually warm without competing with the orbit below. */
+  .home-img-marquee{
+    background: var(--off);
+    padding: 36px 0;
+    overflow: hidden;
+    border-top: 1px solid rgba(95,129,144,.12);
+    border-bottom: 1px solid rgba(95,129,144,.12);
+  }
+  .home-img-marquee-track{
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: max-content;
+    animation: home-img-marquee-scroll 90s linear infinite;
+  }
+  .home-img-marquee-track img{
+    height: 280px;
+    width: auto;
+    flex-shrink: 0;
+    object-fit: cover;
+    border-radius: 2px;
+    box-shadow: 0 8px 28px -12px rgba(28,43,58,.18);
+    /* Subtle hover deepens the shadow — feels alive on desktop */
+    transition: box-shadow .35s ease, transform .35s ease;
+  }
+  .home-img-marquee:hover .home-img-marquee-track{
+    /* Pause the loop on hover so the visitor can settle on a frame */
+    animation-play-state: paused;
+  }
+  .home-img-marquee-track img:hover{
+    box-shadow: 0 12px 36px -10px rgba(28,43,58,.28);
+    transform: translateY(-2px);
+  }
+  @keyframes home-img-marquee-scroll{
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .home-img-marquee-track{ animation: none; }
+  }
+  @media (max-width: 768px){
+    .home-img-marquee{ padding: 24px 0; }
+    .home-img-marquee-track{ gap: 12px; }
+    .home-img-marquee-track img{ height: 200px; }
   }
 
   /* === ORBIT (restored) === */
@@ -1096,6 +1147,25 @@
 <span class="dot">·</span>
 <span>Strategy without delivery is fiction</span>
 <span class="dot">·</span>
+</div>
+</section>
+
+<!-- IMAGE MARQUEE — looping editorial photo strip ──────────── -->
+<section class="home-img-marquee" aria-label="HIMARK imagery">
+<div class="home-img-marquee-track">
+<img src="images/about-hero.jpg" alt="" loading="lazy"/>
+<img src="images/method-hero.jpg" alt="" loading="lazy"/>
+<img src="images/team-hero.jpg" alt="" loading="lazy"/>
+<img src="images/airass-hero.jpg" alt="" loading="lazy"/>
+<img src="images/mandates-hero.jpg" alt="" loading="lazy"/>
+<img src="images/apply-hero.jpg" alt="" loading="lazy"/>
+<!-- Duplicate set — the -50% translate loops back here for seamless scroll -->
+<img src="images/about-hero.jpg" alt="" loading="lazy" aria-hidden="true"/>
+<img src="images/method-hero.jpg" alt="" loading="lazy" aria-hidden="true"/>
+<img src="images/team-hero.jpg" alt="" loading="lazy" aria-hidden="true"/>
+<img src="images/airass-hero.jpg" alt="" loading="lazy" aria-hidden="true"/>
+<img src="images/mandates-hero.jpg" alt="" loading="lazy" aria-hidden="true"/>
+<img src="images/apply-hero.jpg" alt="" loading="lazy" aria-hidden="true"/>
 </div>
 </section>
 

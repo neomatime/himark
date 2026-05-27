@@ -303,6 +303,12 @@
   .topnav-toggle > span{
     pointer-events: none;
   }
+
+  /* Checkbox-hack mobile menu — no JS, no race conditions, can't fail. */
+  .topnav-checkbox{ position:absolute; opacity:0; pointer-events:none; width:0; height:0; }
+  @media (max-width: 1024px){
+    #topnav-checkbox:checked ~ .topnav-list{ display: flex !important; }
+  }
 </style>
 
   <script src="images.config.js"></script>
@@ -319,9 +325,10 @@
 <a class="topnav-brand" href="home.html" aria-label="HIMARK · Home">
 <img class="topnav-brand-logo" src="images/himark-logo-nav.PNG" alt="HIMARK"/>
 </a>
-<button class="topnav-toggle" type="button" aria-expanded="false" aria-controls="topnav-list" aria-label="Open menu">
+<input type="checkbox" id="topnav-checkbox" class="topnav-checkbox" aria-hidden="true" tabindex="-1"/>
+<label class="topnav-toggle" for="topnav-checkbox" aria-label="Toggle menu" role="button" tabindex="0">
 <span></span><span></span><span></span>
-</button>
+</label>
 <ul class="topnav-list" id="topnav-list">
 <li><a href="about.html">About</a></li>
 <li><a href="services.html">Services</a></li>
@@ -511,7 +518,7 @@
 })();
 </script>
 
-<script src="main/main.js"></script>
+<script src="main/main.js?v=1779906181414"></script>
 
 <!-- MOBILE MENU INLINE SAFETY-NET ───────────────────────────────
      Wires the hamburger toggle directly from the page, independent

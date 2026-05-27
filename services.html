@@ -1370,5 +1370,38 @@
 })();
 </script>
 
+
+<!-- MOBILE MENU INLINE SAFETY-NET ───────────────────────────────
+     Wires the hamburger toggle directly from the page, independent
+     of main.js. Belt-and-braces: if main.js fails to load or is
+     stale-cached, the menu still works. The __himarkBound flag in
+     main.js prevents double-binding when both run. -->
+<script>
+(function(){
+  function wire(){
+    var t = document.querySelector('.topnav-toggle');
+    var l = document.getElementById('topnav-list');
+    if(!t || !l || t.__himarkBound) return;
+    t.__himarkBound = true;
+    t.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      var open = l.classList.toggle('open');
+      t.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    l.addEventListener('click', function(e){
+      if(e.target.tagName === 'A' && l.classList.contains('open')){
+        l.classList.remove('open');
+        t.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', wire);
+  } else {
+    wire();
+  }
+})();
+</script>
 </body>
 </html>

@@ -371,6 +371,601 @@
      page-wrapped layout. Keep them but ensure the footer connects
      cleanly to the anchor section above (no double background). */
   .footer{ background: var(--midnight); }
+
+  /* === ORBIT (restored) === */
+  .orbit-section{
+    background:var(--off);
+    padding:130px var(--gx) 110px;
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid var(--rule);
+  }
+  /* Subtle radial light at the center — pulls the eye to the orbit */
+  .orbit-section::before{
+    content:'';position:absolute;inset:0;
+    background:
+      radial-gradient(circle 480px at 50% 50%, rgba(95,129,144,.06), transparent 70%),
+      linear-gradient(to right, var(--grid) 1px, transparent 1px);
+    background-size:auto, calc((100vw - 128px)/6) 100%;
+    background-position:center, 64px 0;
+    pointer-events:none;
+    opacity:.85;
+  }
+  .orbit-section > *{position:relative;z-index:1;}
+
+  .orbit-coord-l{
+    position:absolute;top:48px;left:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:var(--ocean);z-index:2;
+  }
+  .orbit-coord-r{
+    position:absolute;top:48px;right:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:rgba(46,74,90,.68);z-index:2;
+  }
+
+  /* Intro — minimal copy, centred */
+  .orbit-intro{
+    text-align:center;
+    max-width:680px;
+    margin:0 auto 36px;
+  }
+  .orbit-eyebrow{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--ocean);
+    margin-bottom:18px;
+    display:flex;align-items:center;justify-content:center;gap:14px;
+  }
+  .orbit-eyebrow::before,
+  .orbit-eyebrow::after{
+    content:'';display:block;width:32px;height:1px;background:var(--ocean);
+  }
+  .orbit-hl{
+    font-family:var(--f-disp);font-size:clamp(32px,3.4vw,48px);
+    font-weight:800;line-height:1.05;color:var(--midnight);
+    letter-spacing:-.01em;margin-bottom:14px;
+  }
+  .orbit-hl em{font-style:italic;font-weight:300;color:var(--ocean);}
+  .orbit-sub{
+    font-family:var(--f-body);font-weight:400;font-size:14px;
+    color:var(--ink-mut);line-height:1.7;
+    max-width:520px;margin:0 auto;
+  }
+
+  /* Stage — SVG canvas wrapper */
+  .orbit-stage{
+    position:relative;
+    width:100%;
+    max-width:880px;
+    margin:0 auto;
+  }
+  .orbit-svg{
+    display:block;width:100%;height:auto;
+    user-select:none;-webkit-user-select:none;
+    overflow:visible;
+  }
+
+  /* Orbital ring — clearly visible against the off-white surface.
+     Previous opacity (.25) read as nearly transparent; bumped to .55
+     with slightly heavier stroke so the orbit reads as architecture. */
+  .orbit-ring{
+    fill:none;
+    stroke:rgba(46,74,90,.55);
+    stroke-width:1.5;
+    stroke-dasharray:3 5;
+    animation:orbit-ring-spin 90s linear infinite;
+    transform-origin:440px 270px;
+  }
+  @keyframes orbit-ring-spin{ to{ transform:rotate(360deg); } }
+
+  /* Orbital tick marks (decorative — show motion) */
+  .orbit-ticks{
+    transform-origin:440px 270px;
+    animation:orbit-ring-spin 120s linear infinite reverse;
+  }
+  .orbit-tick{fill:rgba(46,74,90,.75);}
+  .orbit-tick-sm{fill:rgba(46,74,90,.4);}
+
+  /* Connection lines from core to nodes — also bumped from .22 to .5 */
+  .orbit-link{
+    stroke:rgba(46,74,90,.5);
+    stroke-width:1.3;
+    stroke-dasharray:4 4;
+    transition:stroke .4s var(--ease), stroke-width .4s var(--ease);
+  }
+  .orbit-link.active{
+    stroke:var(--ocean);
+    stroke-width:1.5;
+    stroke-dasharray:none;
+  }
+
+  /* Orbit core — now a white tap-to-toggle circle. Click to
+     collapse the surrounding tier nodes; click again to expand. */
+  .orbit-core{
+    transform-origin:440px 270px;
+    animation:orbit-core-breathe 5s ease-in-out infinite;
+    cursor:none;outline:none;
+  }
+  @keyframes orbit-core-breathe{
+    0%, 100% { filter:drop-shadow(0 0 0 rgba(95,129,144,0)); }
+    50%      { filter:drop-shadow(0 0 14px rgba(95,129,144,.32)); }
+  }
+  .orbit-core-bg{
+    fill:var(--white);
+    stroke:rgba(28,43,58,.22);
+    stroke-width:1;
+    transition:stroke .35s var(--ease), stroke-width .35s var(--ease);
+  }
+  .orbit-core:hover .orbit-core-bg{
+    stroke:var(--midnight);
+    stroke-width:1.5;
+  }
+  .orbit-core:focus-visible .orbit-core-bg{
+    stroke:var(--ocean);
+    stroke-width:2;
+  }
+  /* Toggle icon — + (collapsed) rotates to × (expanded) on default */
+  .orbit-core-icon{
+    transform-origin:440px 262px;
+    transform:rotate(45deg);  /* default = expanded = × */
+    transition:transform .6s cubic-bezier(.65,0,.35,1);
+  }
+  .orbit-stage.collapsed .orbit-core-icon{
+    transform:rotate(0deg);   /* collapsed = + */
+  }
+  .orbit-core-line{
+    stroke:var(--midnight);
+    stroke-width:2.5;
+    stroke-linecap:round;
+    transition:stroke .35s var(--ease);
+  }
+  .orbit-core:hover .orbit-core-line{stroke:var(--ocean-dk);}
+  .orbit-core-label{
+    font-family:var(--f-mono);font-size:9px;font-weight:700;
+    letter-spacing:.28em;fill:rgba(46,74,90,.65);
+    transition:fill .35s var(--ease);
+  }
+  .orbit-core:hover .orbit-core-label{fill:var(--midnight);}
+
+  /* ============ COLLAPSED STATE ============ */
+  /* Tier nodes shrink toward the centre and fade */
+  .orbit-stage.collapsed .orbit-node{
+    opacity:0;
+    transform:scale(.15);
+    transform-box:fill-box;transform-origin:center;
+    pointer-events:none;
+    transition:
+      opacity .55s var(--ease),
+      transform .65s cubic-bezier(.65,0,.35,1);
+  }
+  /* Connecting links fade out */
+  .orbit-stage.collapsed .orbit-link,
+  .orbit-stage.collapsed .orbit-ticks{
+    opacity:0;
+    transition:opacity .4s var(--ease);
+  }
+  /* Detail panel below collapses cleanly */
+  .orbit-section .orbit-detail{
+    transition:
+      max-height .65s cubic-bezier(.65,0,.35,1),
+      opacity .4s var(--ease),
+      margin-top .5s var(--ease),
+      padding .5s var(--ease),
+      border-width .35s var(--ease);
+    max-height:800px;
+    overflow:hidden;
+  }
+  .orbit-stage.collapsed ~ .orbit-detail{
+    max-height:0 !important;
+    opacity:0 !important;
+    margin-top:0 !important;
+    padding-top:0 !important;
+    padding-bottom:0 !important;
+    border-width:0 !important;
+  }
+
+  /* ============ SHORTCUT PANEL ============
+     Appears in place of the detail panel when the orbit is collapsed.
+     Three editorial action cards mapping to the three real entry
+     paths into HIMARK. Pops in with a slight overshoot (back-out
+     curve) and staggered card delays for a tactile reveal. */
+  .orbit-shortcut{
+    max-width:920px;
+    margin:0 auto;
+    overflow:hidden;
+    opacity:0;
+    transform:translateY(20px) scale(.96);
+    max-height:0;
+    margin-top:0;
+    pointer-events:none;
+    transition:
+      transform .55s cubic-bezier(.34, 1.46, .64, 1) .25s,
+      opacity .4s var(--ease) .3s,
+      max-height .55s cubic-bezier(.22,1,.36,1) .25s,
+      margin-top .5s var(--ease) .25s;
+  }
+  .orbit-stage.collapsed ~ .orbit-shortcut{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    max-height:600px;
+    margin-top:60px;
+    pointer-events:auto;
+  }
+
+  .orbit-shortcut-eyebrow{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--ocean);
+    text-align:center;margin-bottom:28px;
+    display:flex;align-items:center;justify-content:center;gap:14px;
+  }
+  .orbit-shortcut-eyebrow::before,
+  .orbit-shortcut-eyebrow::after{
+    content:'';display:block;width:32px;height:1px;background:var(--ocean);
+  }
+  .orbit-shortcut-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:18px;
+  }
+  /* Staggered reveal — each card lands ~100ms after the previous */
+  .orbit-shortcut-card{
+    display:flex;flex-direction:column;
+    padding:30px 26px 26px;
+    background:var(--white);
+    border:1px solid var(--rule);
+    text-decoration:none;
+    cursor:none;
+    text-align:left;
+    font-family:inherit;
+    color:inherit;
+    position:relative;
+    opacity:0;
+    transform:translateY(12px);
+    transition:
+      opacity .45s var(--ease),
+      transform .55s cubic-bezier(.34, 1.46, .64, 1),
+      border-color .35s var(--ease),
+      box-shadow .35s var(--ease);
+  }
+  .orbit-stage.collapsed ~ .orbit-shortcut .orbit-shortcut-card{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .orbit-stage.collapsed ~ .orbit-shortcut .orbit-shortcut-card:nth-child(1){transition-delay:.4s, .4s, 0s, 0s;}
+  .orbit-stage.collapsed ~ .orbit-shortcut .orbit-shortcut-card:nth-child(2){transition-delay:.5s, .5s, 0s, 0s;}
+  .orbit-stage.collapsed ~ .orbit-shortcut .orbit-shortcut-card:nth-child(3){transition-delay:.6s, .6s, 0s, 0s;}
+
+  .orbit-shortcut-card:hover,
+  .orbit-shortcut-card:focus-visible{
+    transform:translateY(-4px);
+    border-color:var(--ocean);
+    box-shadow:0 24px 48px -24px rgba(28,43,58,.18);
+    outline:none;
+  }
+  .orbit-shortcut-card:focus-visible{
+    outline:2px solid var(--ocean);
+    outline-offset:2px;
+  }
+
+  .orbit-shortcut-card-top{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    margin-bottom:18px;
+  }
+  .orbit-shortcut-coord{
+    font-family:var(--f-mono);font-size:10px;font-weight:700;
+    letter-spacing:.22em;color:var(--ocean);
+  }
+  .orbit-shortcut-pill{
+    font-family:var(--f-mono);font-size:8.5px;font-weight:600;
+    letter-spacing:.16em;color:rgba(46,74,90,.68);
+    padding:3px 8px;
+    border:1px solid var(--rule);
+    border-radius:1px;
+    text-transform:uppercase;
+  }
+  .orbit-shortcut-name{
+    font-family:var(--f-disp);font-size:22px;font-weight:800;
+    color:var(--midnight);letter-spacing:-.005em;line-height:1.1;
+    margin-bottom:10px;
+  }
+  .orbit-shortcut-sub{
+    font-family:var(--f-body);font-weight:400;font-size:13px;
+    color:var(--ink-mut);line-height:1.6;
+    flex:1;margin-bottom:16px;
+  }
+  .orbit-shortcut-cta{
+    font-family:var(--f-mono);font-size:10px;font-weight:700;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--midnight);
+    display:inline-flex;align-items:center;gap:10px;
+    align-self:flex-start;
+    transition:gap .35s var(--ease), color .35s var(--ease);
+  }
+  .orbit-shortcut-card:hover .orbit-shortcut-cta{
+    color:var(--ocean-dk);
+    gap:14px;
+  }
+  .orbit-shortcut-arrow{font-size:14px;font-family:var(--f-mono);}
+
+  @media (max-width:768px){
+    .orbit-shortcut-grid{grid-template-columns:1fr;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .orbit-shortcut, .orbit-shortcut-card{transition:none;}
+  }
+
+  /* ============ SIDE IMAGES — appear when collapsed ============
+     Two tall vertical image panels that slide in from off-screen
+     when the orbit collapses. Each is a clickable navigation card
+     into a relevant page (Method on the left, Principals on the
+     right). Hidden on viewports below 1200px where the orbit
+     content already takes most of the width. */
+  .orbit-side{
+    position:absolute;
+    top:50%;
+    width:170px;
+    height:440px;
+    transform:translateY(-50%) translateX(var(--off));
+    opacity:0;
+    pointer-events:none;
+    z-index:5;
+    transition:
+      transform .75s cubic-bezier(.34, 1.46, .64, 1) .35s,
+      opacity .55s var(--ease) .4s;
+  }
+  .orbit-side-l{ left:32px;  --off:-260px; }
+  .orbit-side-r{ right:32px; --off:260px;  }
+  .orbit-stage.collapsed ~ .orbit-side{
+    --off:0px;
+    opacity:1;
+    pointer-events:auto;
+  }
+  .orbit-side-link{
+    display:block;
+    position:relative;
+    width:100%;height:100%;
+    text-decoration:none;
+    cursor:none;
+    overflow:hidden;
+    border:1px solid rgba(46,74,90,.18);
+    background:var(--midnight);
+    transition:border-color .35s var(--ease), transform .45s var(--ease), box-shadow .45s var(--ease);
+    box-shadow:0 30px 60px -30px rgba(28,43,58,.35);
+  }
+  .orbit-side-link:hover,
+  .orbit-side-link:focus-visible{
+    border-color:var(--ocean);
+    transform:translateY(-4px);
+    box-shadow:0 40px 70px -30px rgba(28,43,58,.45);
+  }
+  .orbit-side-link:focus-visible{
+    outline:2px solid var(--ocean-lt);
+    outline-offset:2px;
+  }
+  .orbit-side-coord{
+    position:absolute;
+    top:14px;left:14px;
+    font-family:var(--f-mono);font-size:9px;font-weight:700;
+    letter-spacing:.22em;color:var(--off);
+    background:rgba(14,24,34,.65);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    padding:5px 9px;
+    z-index:2;
+  }
+  .orbit-side-img{
+    position:absolute;
+    inset:0;
+    background-size:cover;
+    background-position:center;
+    filter:saturate(.85) brightness(.65) contrast(1.02);
+    transition:filter .55s var(--ease), transform .9s var(--ease);
+  }
+  .orbit-side-link:hover .orbit-side-img{
+    filter:saturate(1) brightness(.8) contrast(1.04);
+    transform:scale(1.05);
+  }
+  .orbit-side-caption{
+    position:absolute;
+    bottom:0;left:0;right:0;
+    padding:32px 16px 18px;
+    background:linear-gradient(to top,
+      rgba(14,24,34,.92) 0%,
+      rgba(14,24,34,.55) 55%,
+      transparent 100%);
+    z-index:1;
+  }
+  .orbit-side-tag{
+    display:block;
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ocean-lt);
+    margin-bottom:6px;
+  }
+  .orbit-side-name{
+    display:block;
+    font-family:var(--f-disp);font-size:18px;font-weight:800;
+    color:var(--off);letter-spacing:-.005em;line-height:1.1;
+  }
+  .orbit-side-arrow{
+    position:absolute;
+    bottom:18px;right:16px;
+    font-family:var(--f-mono);font-size:16px;font-weight:300;
+    color:var(--off);z-index:2;
+    transition:transform .35s var(--ease);
+  }
+  .orbit-side-link:hover .orbit-side-arrow{transform:translateX(4px);}
+
+  /* Hide on narrower viewports where there's no room beside the orbit */
+  @media (max-width:1200px){
+    .orbit-side{display:none;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .orbit-side{transition:none;}
+  }
+
+  /* Tier nodes */
+  .orbit-node{
+    cursor:none;outline:none;
+    transition:opacity .45s var(--ease);
+  }
+  .orbit-node-bg{
+    fill:var(--white);
+    stroke:rgba(28,43,58,.18);
+    stroke-width:1;
+    transition:fill .45s var(--ease), stroke .45s var(--ease), stroke-width .45s var(--ease);
+  }
+  .orbit-node-ring{
+    fill:none;
+    stroke:rgba(95,129,144,.25);
+    stroke-width:1;
+    transition:stroke .45s var(--ease), stroke-width .45s var(--ease);
+  }
+  .orbit-node-coord{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.14em;fill:var(--ocean);
+    pointer-events:none;
+    transition:fill .45s var(--ease);
+  }
+  .orbit-node-name{
+    font-family:var(--f-disp);font-size:14px;font-weight:800;
+    letter-spacing:.04em;fill:var(--midnight);
+    pointer-events:none;
+    transition:fill .45s var(--ease);
+  }
+  .orbit-node-pulse{
+    fill:none;stroke:var(--ocean);stroke-width:1;opacity:0;
+    transform-box:fill-box;transform-origin:center;
+  }
+
+  /* Hover state */
+  .orbit-node:hover .orbit-node-bg,
+  .orbit-node:focus-visible .orbit-node-bg{
+    stroke:var(--ocean);
+    stroke-width:1.5;
+  }
+  .orbit-node:hover .orbit-node-ring{
+    stroke:var(--ocean);
+    stroke-width:1.5;
+  }
+
+  /* Active state */
+  .orbit-node.active .orbit-node-bg{
+    fill:var(--midnight);
+    stroke:var(--midnight);
+    stroke-width:2;
+  }
+  .orbit-node.active .orbit-node-coord{fill:var(--ocean-lt);}
+  .orbit-node.active .orbit-node-name{fill:var(--off);}
+  .orbit-node.active .orbit-node-pulse{
+    animation:orbit-node-pulse 2.6s ease-out infinite;
+  }
+  @keyframes orbit-node-pulse{
+    0%   { opacity:.6; transform:scale(1); }
+    100% { opacity:0;  transform:scale(1.5); }
+  }
+
+  /* When one node is active, dim the others */
+  .orbit-stage.has-active .orbit-node:not(.active){opacity:.35;}
+
+  /* Detail panel — sits below the orbit */
+  .orbit-detail{
+    max-width:880px;
+    margin:48px auto 0;
+    background:var(--white);
+    border:1px solid var(--rule);
+    border-radius:4px;
+    padding:36px 40px 32px;
+    position:relative;
+    box-shadow:0 30px 60px -30px rgba(28,43,58,.15);
+  }
+  .orbit-detail-coord{
+    position:absolute;top:14px;right:20px;
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:var(--ocean);
+  }
+  .orbit-detail-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:48px;
+    align-items:start;
+  }
+  .orbit-detail-eyebrow{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--ocean);
+    margin-bottom:14px;
+  }
+  .orbit-detail-name{
+    font-family:var(--f-disp);font-size:clamp(28px,2.6vw,36px);
+    font-weight:800;color:var(--midnight);
+    letter-spacing:-.01em;line-height:1.05;
+    margin-bottom:8px;
+    transition:opacity .28s var(--ease);
+  }
+  .orbit-detail-class{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--ocean);
+    margin-bottom:20px;padding-bottom:16px;
+    border-bottom:1px solid var(--rule);
+    transition:opacity .28s var(--ease);
+  }
+  .orbit-detail-desc{
+    font-family:var(--f-body);font-weight:400;font-size:14px;
+    line-height:1.75;color:var(--ink);
+    transition:opacity .28s var(--ease);
+  }
+  .orbit-detail-right{display:flex;flex-direction:column;}
+  .orbit-detail-row{
+    padding:14px 0 16px;
+    border-bottom:1px solid var(--rule);
+  }
+  .orbit-detail-row:first-child{padding-top:0;}
+  .orbit-detail-l{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ocean);margin-bottom:6px;
+  }
+  .orbit-detail-v{
+    font-family:var(--f-body);font-weight:400;font-size:13.5px;
+    line-height:1.6;color:var(--ink);
+    transition:opacity .28s var(--ease);
+  }
+  .orbit-detail .fading{opacity:0;}
+  .orbit-detail-cta{
+    font-family:var(--f-nav);font-size:11px;font-weight:700;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--midnight);text-decoration:none;
+    align-self:flex-start;
+    padding:13px 22px;
+    border:1px solid var(--midnight);
+    margin-top:24px;
+    display:inline-flex;align-items:center;gap:12px;
+    transition:background .3s var(--ease), color .3s var(--ease), gap .3s var(--ease);
+    cursor:none;
+  }
+  .orbit-detail-cta:hover{
+    background:var(--midnight);color:var(--off);gap:18px;
+  }
+  .orbit-detail-arrow{font-size:14px;font-weight:300;}
+
+  @media (max-width:768px){
+    .orbit-section{padding:80px 22px 60px;}
+    .orbit-coord-l,.orbit-coord-r{top:24px;}
+    .orbit-coord-l{left:22px;}
+    .orbit-coord-r{right:22px;}
+    .orbit-intro{margin-bottom:24px;}
+    .orbit-detail{padding:28px 22px;margin-top:32px;}
+    .orbit-detail-grid{grid-template-columns:1fr;gap:24px;}
+  }
+
+  @media (max-width:560px){
+    .orbit-node-name{font-size:11px;}
+    .orbit-node-coord{font-size:8px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .orbit-ring,.orbit-ticks,
+    .orbit-core,.orbit-node-pulse{animation:none;}
+  }
 </style>
 
   <script src="images.config.js"></script>
@@ -412,18 +1007,38 @@
 </div>
 </aside>
 
-<!-- HERO ───────────────────────────────────────────────────── -->
-<section class="home-hero">
-<div class="home-hero-inner">
-<p class="home-hero-eyebrow">Principal-led · By application</p>
-<h1 class="home-hero-hl">An institution for<br/><em>founder-led growth.</em></h1>
-<p class="home-hero-sub">We design and operate the strategic infrastructure beneath founder-led businesses — brand, demand, AI, principal counsel. Built to compound, not to launch.</p>
-<a class="home-hero-cta" href="apply.html">
-<span>Apply for Engagement</span>
-<span class="home-hero-cta-arrow" aria-hidden="true">→</span>
-</a>
+<!-- HERO — restored kinetic scrolling landing -->
+<section class="hero snap-section">
+<!--<video class="hero-video" src="video/hero.mp4" autoplay loop muted playsinline preload="auto"></video>-->
+<canvas class="hero-canvas" aria-hidden="true"></canvas>
+<div class="hero-grid"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+<div class="hero-coords-top">
+<span class="hero-coord">[ 00.HOME ]</span>
+<div class="hero-coord-line"></div>
+<span class="hero-coord">Established in 2026  ·  RANDBURG · ZA</span>
+</div>
+<div class="hero-c">
+<p class="hero-eyebrow">Principal-led · By application</p>
+<h1 class="hero-hl">An institution for<span>founder-led growth.</span></h1>
+<div class="hero-meta-row">
+<p class="hero-meta-l">We design and operate the strategic infrastructure beneath founder-led businesses — brand, demand, AI, principal counsel. Built to compound, not to launch.</p>
+<div class="hero-meta-r">
+<a href="apply.html" class="home-hero-cta"><span>Apply for Engagement</span><span class="home-hero-cta-arrow" aria-hidden="true">→</span></a>
+</div>
+</div>
+</div>
+<div class="hero-coords-bottom">
+<span class="hero-coord">[ 00.HOME / 06.INDEX ]</span>
+<span class="hero-coord">SCROLL ↓</span>
 </div>
 </section>
+
+<!-- Scroll spacer for hero frame-sequence scrubbing. The hero (above) is
+     position:sticky, so it stays pinned while the user scrolls through this
+     spacer; meanwhile JS uses the spacer's scroll progress to advance the
+     canvas frame index. After the spacer ends, normal content resumes. -->
+<div class="hero-spacer" aria-hidden="true"></div>
+
 
 <!-- MARQUEE — looping doctrine phrases ─────────────────────── -->
 <section class="home-marquee" aria-label="HIMARK doctrine">
@@ -454,6 +1069,180 @@
 <span>Strategy without delivery is fiction</span>
 <span class="dot">·</span>
 </div>
+</section>
+
+<!-- ORBIT — restored interactive three-paths section -->
+<section class="orbit-section">
+<span class="orbit-coord-l">[ 01.C.01 · ORBIT ]</span>
+<span class="orbit-coord-r">THREE PATHS · ONE FIRM</span>
+
+<div class="orbit-intro">
+<p class="orbit-eyebrow">Engagement architecture</p>
+<h2 class="orbit-hl">Three engagement paths<em>· orbiting a single firm.</em></h2>
+<p class="orbit-sub">Each path enters HIMARK at a different depth. Engagement terms are confirmed directly. Tap any node to read its scope.</p>
+</div>
+
+<div class="orbit-stage" id="orbit-stage">
+<svg class="orbit-svg" viewBox="0 0 880 540" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Three orbiting engagement tiers around the HIMARK core">
+
+<!-- Faint orbital ring -->
+<circle cx="440" cy="270" r="200" class="orbit-ring"/>
+
+<!-- Slow rotating tick marks on the orbital ring -->
+<g class="orbit-ticks">
+<circle cx="440" cy="70"  r="2" class="orbit-tick"/>
+<circle cx="613" cy="370" r="2" class="orbit-tick"/>
+<circle cx="267" cy="370" r="2" class="orbit-tick"/>
+<circle cx="640" cy="270" r="1.5" class="orbit-tick-sm"/>
+<circle cx="240" cy="270" r="1.5" class="orbit-tick-sm"/>
+<circle cx="540" cy="100" r="1.5" class="orbit-tick-sm"/>
+<circle cx="340" cy="100" r="1.5" class="orbit-tick-sm"/>
+<circle cx="540" cy="440" r="1.5" class="orbit-tick-sm"/>
+<circle cx="340" cy="440" r="1.5" class="orbit-tick-sm"/>
+</g>
+
+<!-- Connection lines from core to each node -->
+<line x1="440" y1="270" x2="440" y2="70"  class="orbit-link" data-tier="0"/>
+<line x1="440" y1="270" x2="613" y2="370" class="orbit-link" data-tier="1"/>
+<line x1="440" y1="270" x2="267" y2="370" class="orbit-link" data-tier="2"/>
+
+<!-- ORBIT CORE — white tap-to-toggle circle. Click to collapse the
+     surrounding tier nodes inward; click again to expand them back.
+     The + icon rotates 45deg to become × when expanded (default). -->
+<g class="orbit-core" id="orbit-core" tabindex="0" role="button" aria-label="Toggle engagement paths" aria-pressed="true">
+<circle cx="440" cy="270" r="64" class="orbit-core-bg"/>
+<g class="orbit-core-icon">
+<line class="orbit-core-line" x1="425" y1="262" x2="455" y2="262"/>
+<line class="orbit-core-line" x1="440" y1="247" x2="440" y2="277"/>
+</g>
+<text class="orbit-core-label" x="440" y="300" text-anchor="middle">TAP</text>
+</g>
+
+<!-- TIER 01 — SIGNATURE (top) -->
+<g class="orbit-node" data-tier="0" tabindex="0" role="button" aria-label="Tier 01 Signature Partner">
+<circle class="orbit-node-pulse" cx="440" cy="70" r="60"/>
+<circle class="orbit-node-bg"    cx="440" cy="70" r="54"/>
+<circle class="orbit-node-ring"  cx="440" cy="70" r="54"/>
+<text x="440" y="62" text-anchor="middle" class="orbit-node-coord">[ TIER.01 ]</text>
+<text x="440" y="83" text-anchor="middle" class="orbit-node-name">SIGNATURE</text>
+</g>
+
+<!-- TIER 02 — GROWTH (lower right) -->
+<g class="orbit-node" data-tier="1" tabindex="0" role="button" aria-label="Tier 02 Growth Partner">
+<circle class="orbit-node-pulse" cx="613" cy="370" r="60"/>
+<circle class="orbit-node-bg"    cx="613" cy="370" r="54"/>
+<circle class="orbit-node-ring"  cx="613" cy="370" r="54"/>
+<text x="613" y="362" text-anchor="middle" class="orbit-node-coord">[ TIER.02 ]</text>
+<text x="613" y="383" text-anchor="middle" class="orbit-node-name">GROWTH</text>
+</g>
+
+<!-- TIER 03 — PRIVATE (lower left) -->
+<g class="orbit-node" data-tier="2" tabindex="0" role="button" aria-label="Tier 03 Private Partner">
+<circle class="orbit-node-pulse" cx="267" cy="370" r="60"/>
+<circle class="orbit-node-bg"    cx="267" cy="370" r="54"/>
+<circle class="orbit-node-ring"  cx="267" cy="370" r="54"/>
+<text x="267" y="362" text-anchor="middle" class="orbit-node-coord">[ TIER.03 ]</text>
+<text x="267" y="383" text-anchor="middle" class="orbit-node-name">PRIVATE</text>
+</g>
+
+</svg>
+</div>
+
+<!-- Detail panel — updates on node activation -->
+<div class="orbit-detail" id="orbit-detail">
+<div class="orbit-detail-coord">[ <span id="orb-coord">TIER.01</span> · <span id="orb-tag">SIGNATURE PARTNER</span> ]</div>
+<div class="orbit-detail-grid">
+<div class="orbit-detail-left">
+<p class="orbit-detail-eyebrow">Engagement path</p>
+<h3 class="orbit-detail-name" id="orb-name">Signature Partner</h3>
+<p class="orbit-detail-class" id="orb-class">Foundation · Professionalisation</p>
+<p class="orbit-detail-desc" id="orb-desc">Foundational growth and brand infrastructure for startups, SMEs, and service businesses ready to formalise their market presence. The launch-pad tier.</p>
+</div>
+<div class="orbit-detail-right">
+<div class="orbit-detail-row">
+<p class="orbit-detail-l">Cadence</p>
+<p class="orbit-detail-v" id="orb-cadence">Monthly strategy · Atlas advisory · Quarterly reviews</p>
+</div>
+<div class="orbit-detail-row">
+<p class="orbit-detail-l">Term</p>
+<p class="orbit-detail-v" id="orb-term">Quarterly minimum · Reviewed every 90 days</p>
+</div>
+<div class="orbit-detail-row">
+<p class="orbit-detail-l">Best fit</p>
+<p class="orbit-detail-v" id="orb-fit">Startups, SMEs, professional service firms establishing market presence</p>
+</div>
+<a class="orbit-detail-cta" href="#" data-page="intake">Apply for Engagement <span class="orbit-detail-arrow">→</span></a>
+</div>
+</div>
+</div>
+
+<!-- SHORTCUT PANEL — pops up when the orbit is collapsed. Three
+     direct entry paths into HIMARK, mapped to the three real channels
+     a visitor would use. Sibling of .orbit-stage so the CSS sibling
+     selector reveals it on .orbit-stage.collapsed. -->
+<div class="orbit-shortcut" id="orbit-shortcut">
+<p class="orbit-shortcut-eyebrow">Three ways to begin</p>
+<div class="orbit-shortcut-grid">
+
+<a href="#" data-page="intake" class="orbit-shortcut-card">
+<div class="orbit-shortcut-card-top">
+<span class="orbit-shortcut-coord">[ A ]</span>
+<span class="orbit-shortcut-pill">Retainer</span>
+</div>
+<h4 class="orbit-shortcut-name">Apply</h4>
+<p class="orbit-shortcut-sub">Formal engagement application for one of the three retainer tiers. Reviewed by a principal within five working days.</p>
+<span class="orbit-shortcut-cta">Apply for engagement <span class="orbit-shortcut-arrow">→</span></span>
+</a>
+
+<a href="#" data-page="sessions" class="orbit-shortcut-card">
+<div class="orbit-shortcut-card-top">
+<span class="orbit-shortcut-coord">[ B ]</span>
+<span class="orbit-shortcut-pill">90 min</span>
+</div>
+<h4 class="orbit-shortcut-name">Counsel</h4>
+<p class="orbit-shortcut-sub">A single principal session on a defined commercial question. No tier commitment, written one-pager afterward.</p>
+<span class="orbit-shortcut-cta">Book a session <span class="orbit-shortcut-arrow">→</span></span>
+</a><button type="button" class="orbit-shortcut-card" id="orbit-shortcut-atlas">
+<div class="orbit-shortcut-card-top">
+<span class="orbit-shortcut-coord">[ C ]</span>
+<span class="orbit-shortcut-pill">Live</span>
+</div>
+<h4 class="orbit-shortcut-name">Atlas</h4>
+<p class="orbit-shortcut-sub">Talk to HIMARK's principal-trained assistant. Get clarity on tier alignment before committing to anything.</p>
+<span class="orbit-shortcut-cta">Open Atlas <span class="orbit-shortcut-arrow">→</span></span>
+</button>
+
+</div>
+</div>
+
+<!-- SIDE IMAGES — vertical editorial panels that slide in when the
+     orbit collapses. Each is a clickable link into a relevant page.
+     Hidden by default; revealed via the .orbit-stage.collapsed
+     sibling selector. Hidden on viewports below 1200px. -->
+<aside class="orbit-side orbit-side-l">
+<a href="#" data-page="method" class="orbit-side-link">
+<span class="orbit-side-coord">[ 03 ]</span>
+<div class="orbit-side-img" data-bg-key="orbit.side.left" style="background-image:url('images/method-hero.jpg')"></div>
+<div class="orbit-side-caption">
+<span class="orbit-side-tag">Process</span>
+<span class="orbit-side-name">The Method</span>
+</div>
+<span class="orbit-side-arrow">→</span>
+</a>
+</aside>
+
+<aside class="orbit-side orbit-side-r">
+<a href="#" data-page="principals" class="orbit-side-link">
+<span class="orbit-side-coord">[ 05 ]</span>
+<div class="orbit-side-img" data-bg-key="orbit.side.right" style="background-image:url('images/team-hero.jpg')"></div>
+<div class="orbit-side-caption">
+<span class="orbit-side-tag">Team</span>
+<span class="orbit-side-name">The Principals</span>
+</div>
+<span class="orbit-side-arrow">→</span>
+</a>
+</aside>
+
 </section>
 
 <!-- ANCHOR ─────────────────────────────────────────────────── -->

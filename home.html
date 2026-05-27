@@ -1033,11 +1033,9 @@
 </div>
 </section>
 
-<!-- Scroll spacer for hero frame-sequence scrubbing. The hero (above) is
-     position:sticky, so it stays pinned while the user scrolls through this
-     spacer; meanwhile JS uses the spacer's scroll progress to advance the
-     canvas frame index. After the spacer ends, normal content resumes. -->
-<div class="hero-spacer" aria-hidden="true"></div>
+<!-- (hero-spacer removed — the canvas scroll-scrub animation it powered
+     no longer runs under the new navbar layout, so the spacer was just
+     creating ~300vh of dead white space between the hero and the marquee.) -->
 
 
 <!-- MARQUEE — looping doctrine phrases ─────────────────────── -->

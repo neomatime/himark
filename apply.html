@@ -255,30 +255,130 @@
   @media (prefers-reduced-motion: reduce){
     #page-intake .itk-submit, #page-intake .itk-input{ transition:none; }
   }
+
+  /* ── TOPNAV (site-wide) ─────────────────────────────── */
+  .topnav{
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--off);
+    border-bottom: 1px solid rgba(95,129,144,.18);
+  }
+  .topnav-inner{
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    position: relative;
+  }
+  .topnav-brand{
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 400;
+    font-size: 22px;
+    letter-spacing: .02em;
+    color: var(--midnight);
+    text-decoration: none;
+    line-height: 1;
+  }
+  .topnav-brand:hover{ color: var(--ocean-dk); }
+  .topnav-list{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .topnav-list a{
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--midnight);
+    text-decoration: none;
+    border-radius: 2px;
+    transition: background-color .18s ease, color .18s ease;
+  }
+  .topnav-list a:hover,
+  .topnav-list a:focus-visible{
+    background: rgba(95,129,144,.14);
+    color: var(--ocean-dk);
+    outline: none;
+  }
+  .topnav-list a[aria-current="page"]{
+    background: rgba(95,129,144,.14);
+    color: var(--ocean-dk);
+  }
+  .topnav-toggle{
+    display: none;
+    background: transparent;
+    border: 0;
+    width: 36px;
+    height: 36px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    padding: 0;
+  }
+  .topnav-toggle span{
+    display: block;
+    width: 20px;
+    height: 1.5px;
+    background: var(--midnight);
+  }
+  @media (max-width: 880px){
+    .topnav-inner{ padding: 0 24px; height: 60px; gap: 16px; }
+    .topnav-toggle{ display: inline-flex; }
+    .topnav-list{
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      background: var(--off);
+      border-bottom: 1px solid rgba(95,129,144,.18);
+      padding: 8px 0;
+      display: none;
+    }
+    .topnav-list.open{ display: flex; }
+    .topnav-list a{ padding: 14px 24px; }
+  }
 </style>
 
   <script src="images.config.js"></script>
   <script defer data-domain="himark.co.za" src="https://plausible.io/js/script.js"></script>
 </head>
 <body data-page="intake" data-location="root">
-<div id="cd"></div>
-<div id="cr"></div>
-<canvas id="cvs"></canvas>
-
-<!-- HIMARK wordmark — top center, alone -->
-<a href="#" id="brand-mark" data-page="home" aria-label="HIMARK">
-<img src="images/HIMARK.png" alt="HIMARK" class="brand-wm-img"/>
-</a>
-
-<!-- Right-edge menu trigger -->
-<div id="menu-trigger" class="mt-trigger">
-<span class="mt-num">[ 01—09 ]</span>
-<div class="mt-line"></div>
-<span class="mt-label">Index ↑</span>
+<!-- TOPNAV ─────────────────────────────────────────────────── -->
+<nav class="topnav" aria-label="Primary">
+<div class="topnav-inner">
+<a class="topnav-brand" href="home.html" aria-label="HIMARK · Home">HIMARK</a>
+<button class="topnav-toggle" type="button" aria-expanded="false" aria-controls="topnav-list" aria-label="Open menu">
+<span></span><span></span><span></span>
+</button>
+<ul class="topnav-list" id="topnav-list">
+<li><a href="about.html">About</a></li>
+<li><a href="services.html">Services</a></li>
+<li><a href="team.html">Team</a></li>
+<li><a href="apply.html">Apply</a></li>
+<li><a href="sessions.html">Counsel</a></li>
+<li><a href="contact.html">Contact</a></li>
+<li><a href="subscribe.html">Subscribe</a></li>
+</ul>
 </div>
+</nav>
 
-<!-- Menu overlay -->
-<div class="menu-overlay" id="menuOverlay"></div>
 <div class="prn-backdrop" id="prnBackdrop"></div>
 
 <!-- PRINCIPAL MODAL -->
@@ -316,34 +416,6 @@
 <button class="cb-btn cb-btn-primary" id="cb-accept">Accept All</button>
 </div>
 </aside>
-
-<!-- Side panel menu -->
-<div id="menu-panel">
-<div class="menu-bg-grid"></div>
-<span class="menu-coord-tl">[ INDEX / 09 ]</span>
-<span class="menu-coord-tr" id="menuClose">CLOSE [ × ]</span>
-<ul class="menu-list">
-<li><a href="#" class="menu-item" data-page="home"><span class="mi-num">[ 00 ]</span><span class="mi-name">Home <em>· Origin</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item" data-page="doctrine"><span class="mi-num">[ 01 ]</span><span class="mi-name">About <em>· Doctrine</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item" data-page="mandates"><span class="mi-num">[ 02 ]</span><span class="mi-name">Services <em>· Mandates</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item" data-page="principals"><span class="mi-num">[ 05 ]</span><span class="mi-name">Team <em>· Principals</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item" data-page="intake"><span class="mi-num">[ 08 ]</span><span class="mi-name">Apply <em>· Intake</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item menu-item-sub" data-page="sessions"><span class="mi-num">[ 08.A ]</span><span class="mi-name">Counsel <em>· Advisory session</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item" data-page="direct"><span class="mi-num">[ 09 ]</span><span class="mi-name">Contact <em>· Direct</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item menu-item-sub" data-page="subscribe"><span class="mi-num">[ 09.A ]</span><span class="mi-name">Subscribe <em>· Journal</em></span><span class="mi-arrow">→</span></a></li>
-</ul>
-<div class="menu-footer">
-<div class="mf-block">
-<div class="mf-label">[ 01 ]  Direct</div>
-<div class="mf-text"><a class="mf-link" href="mailto:info@himark.co.za">info@himark.co.za</a></div>
-<div class="mf-text" style="margin-top:6px">Randburg · Gauteng · ZA</div>
-</div>
-<div class="mf-block">
-<div class="mf-label">[ 02 ]  Group</div>
-<div class="mf-text" style="margin-top:6px">Est. 2026</div>
-</div>
-</div>
-</div>
 <div class="page" id="page-intake">
 <div style="padding-top:0">
 <section class="np-hero">

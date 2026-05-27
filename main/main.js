@@ -2061,4 +2061,38 @@ window.authSubmit=authSubmit;
   }
 })();
 
+/* ============================================================
+   TOPNAV — mobile hamburger toggle + active-page marker.
+   Wires up the new sticky white navbar that lives on every page
+   that has <nav class="topnav">. Defensive: no-ops cleanly on
+   pages that don't have the navbar markup yet.
+   ============================================================ */
+(function(){
+  const toggle = document.querySelector('.topnav-toggle');
+  const list   = document.getElementById('topnav-list');
+
+  if (toggle && list) {
+    toggle.addEventListener('click', () => {
+      const open = list.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    /* Close on link click (mobile only — desktop the menu isn't .open). */
+    list.addEventListener('click', (e) => {
+      if (e.target.tagName === 'A' && list.classList.contains('open')) {
+        list.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  /* Mark the current page's nav link with aria-current="page". */
+  let here = (location.pathname.split('/').pop() || 'home.html').toLowerCase();
+  if (here === '' || here === 'index.html') here = 'home.html';
+  document.querySelectorAll('.topnav-list a[href]').forEach((a) => {
+    const href = (a.getAttribute('href') || '').toLowerCase();
+    const base = href.split('/').pop();
+    if (base === here) a.setAttribute('aria-current', 'page');
+  });
+})();
+
 })();

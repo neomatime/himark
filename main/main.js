@@ -2072,38 +2072,60 @@ window.authSubmit=authSubmit;
   }
 })();
 
-/* ============================================================
-   TOPNAV — mobile hamburger toggle + active-page marker.
-   Wires up the new sticky white navbar that lives on every page
-   that has <nav class="topnav">. Defensive: no-ops cleanly on
-   pages that don't have the navbar markup yet.
-   ============================================================ */
-(function(){
-  const toggle = document.querySelector('.topnav-toggle');
-  const list   = document.getElementById('topnav-list');
-
-  if (toggle && list) {
-    toggle.addEventListener('click', () => {
-      const open = list.classList.toggle('open');
-      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-    });
-    /* Close on link click (mobile only — desktop the menu isn't .open). */
-    list.addEventListener('click', (e) => {
-      if (e.target.tagName === 'A' && list.classList.contains('open')) {
-        list.classList.remove('open');
-        toggle.setAttribute('aria-expanded', 'false');
-      }
-    });
-  }
-
-  /* Mark the current page's nav link with aria-current="page". */
-  let here = (location.pathname.split('/').pop() || 'home.html').toLowerCase();
-  if (here === '' || here === 'index.html') here = 'home.html';
-  document.querySelectorAll('.topnav-list a[href]').forEach((a) => {
-    const href = (a.getAttribute('href') || '').toLowerCase();
-    const base = href.split('/').pop();
-    if (base === here) a.setAttribute('aria-current', 'page');
-  });
 })();
 
+/* ============================================================
+   TOPNAV — mobile hamburger toggle + active-page marker.
+   DELIBERATELY at the top level (outside the outer IIFE above)
+   so that any error in the 2000+ lines of site-wide JS cannot
+   prevent the mobile menu from binding. Wrapped in
+   DOMContentLoaded for safety if main.js ever moves to <head>.
+   Defensive: no-ops cleanly on pages without navbar markup.
+   ============================================================ */
+(function topnavInit(){
+  function bind(){
+    var toggle = document.querySelector('.topnav-toggle');
+    var list   = document.getElementById('topnav-list');
+
+    if (toggle && list && !toggle.__himarkBound) {
+      toggle.__himarkBound = true;
+      toggle.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        var open = list.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      /* Close on link click (mobile only — desktop menu isn't .open). */
+      list.addEventListener('click', function(e){
+        if (e.target.tagName === 'A' && list.classList.contains('open')) {
+          list.classList.remove('open');
+          toggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+      /* Close when clicking outside the nav on mobile. */
+      document.addEventListener('click', function(e){
+        if (!list.classList.contains('open')) return;
+        if (toggle.contains(e.target) || list.contains(e.target)) return;
+        list.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    /* Mark the current page's nav link with aria-current="page". */
+    try {
+      var here = (location.pathname.split('/').pop() || 'home.html').toLowerCase();
+      if (here === '' || here === 'index.html') here = 'home.html';
+      document.querySelectorAll('.topnav-list a[href]').forEach(function(a){
+        var href = (a.getAttribute('href') || '').toLowerCase();
+        var base = href.split('/').pop();
+        if (base === here) a.setAttribute('aria-current', 'page');
+      });
+    } catch(_){}
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bind);
+  } else {
+    bind();
+  }
 })();

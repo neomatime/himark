@@ -1036,6 +1036,35 @@
     .orbit-ring,.orbit-ticks,
     .orbit-core,.orbit-node-pulse{animation:none;}
   }
+
+  /* iOS-menu-fix — bigger tap target, no iOS tap-highlight,
+     no swallowing by inner slat spans, no 300ms tap delay. */
+  .topnav-toggle{
+    min-width: 48px;
+    min-height: 48px;
+    width: 48px;
+    height: 48px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .topnav-toggle > span{
+    pointer-events: none;
+  }
+
+  /* iOS-marquee-fix — promote both marquee tracks to their own
+     GPU compositor layers so iOS Safari doesn't pause the loop
+     when the sticky hero scrolls over them. translateZ(0) is
+     the classic GPU-promotion trick; will-change makes it explicit. */
+  .home-marquee-track,
+  .home-img-marquee-track{
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
 </style>
 
   <script src="images.config.js"></script>

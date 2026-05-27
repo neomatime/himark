@@ -357,6 +357,22 @@
     .topnav-list a{ padding: 14px 24px; }
     .topnav-brand-logo{ height: 42px; }
   }
+
+  /* iOS-menu-fix — bigger tap target, no iOS tap-highlight,
+     no swallowing by inner slat spans, no 300ms tap delay. */
+  .topnav-toggle{
+    min-width: 48px;
+    min-height: 48px;
+    width: 48px;
+    height: 48px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .topnav-toggle > span{
+    pointer-events: none;
+  }
 </style>
 
   <script src="images.config.js"></script>

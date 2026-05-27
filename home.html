@@ -30,7 +30,6 @@
   "legalName": "HIMARK (Pty) Ltd",
   "url": "https://www.himark.co.za/",
   "description": "Premium strategic growth consultancy",
-  
   "foundingDate": "2026",
   "email": "info@himark.co.za",
   "address": {
@@ -66,1054 +65,345 @@
 }</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Roboto:ital,wght@0,300;0,400;1,300&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Roboto:ital,wght@0,300;0,400;1,300&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet"/>
 <link rel="icon" type="image/svg+xml" href="images/himark-favicon.svg"/><link rel="apple-touch-icon" href="images/himark-favicon.svg"/><link rel="manifest" href="manifest.json"/><link rel="icon" type="image/x-icon" href="images/himark-favicon.ico"/><link rel="stylesheet" href="styles/styles.css"/>
 
-<!-- ==========================================================
-     LIVING MARK — cursor-responsive HIMΛRK glyph as a kinetic
-     identity statement. Not a chart — a brand-as-motion moment
-     that punctuates the home page between archive and mandates.
-     ========================================================== -->
 <style>
-  .lm-section{
-    --mx:50%;
-    --my:50%;
-    background:
-      radial-gradient(circle 320px at var(--mx) var(--my), rgba(95,129,144,.18), transparent 60%),
-      var(--midnight);
-    padding:160px var(--gx) 140px;
-    position:relative;
-    overflow:hidden;
-    border-bottom:1px solid var(--rule-dk);
-    color:var(--off);
-    transition:background-position .25s linear;
-  }
-  /* dot grid backdrop */
-  .lm-section::before{
-    content:'';position:absolute;inset:0;
-    background-image:
-      radial-gradient(circle 1px at 50% 50%, rgba(138,173,184,.18) 1px, transparent 1.5px);
-    background-size:38px 38px;
-    pointer-events:none;
-    mask-image:radial-gradient(ellipse at center, black 30%, transparent 75%);
-    -webkit-mask-image:radial-gradient(ellipse at center, black 30%, transparent 75%);
-    opacity:.7;
-  }
-  .lm-section > *{position:relative;z-index:1;}
+  /* ============================================================
+     HOME PAGE — clean redesign
+     New top navbar (sticky white bar, misty-blue hover), stripped
+     hero with a single solid CTA, doctrine marquee, short anchor
+     paragraph, existing footer.
+     ============================================================ */
 
-  .lm-coord-l{
-    position:absolute;top:48px;left:var(--gx);
-    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
-    color:var(--ocean-lt);z-index:2;
-  }
-  .lm-coord-r{
-    position:absolute;top:48px;right:var(--gx);
-    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
-    color:rgba(138,173,184,.7);z-index:2;
+  /* Reset the body so the navbar can sit flush against the top.
+     The styles.css page-level paddings don't apply because this
+     page no longer uses the .page wrapper. */
+  body{
+    margin: 0;
+    background: var(--off);
+    color: var(--midnight);
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
   }
 
-  .lm-eyebrow{
-    font-family:var(--f-mono);font-size:10px;font-weight:600;
-    letter-spacing:.22em;text-transform:uppercase;
-    color:var(--ocean-lt);margin-bottom:18px;
-    display:flex;align-items:center;gap:14px;
-    justify-content:center;
+  /* ── TOPNAV ─────────────────────────────────────────────── */
+  .topnav{
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--off);
+    border-bottom: 1px solid rgba(95,129,144,.18);
   }
-  .lm-eyebrow::before,
-  .lm-eyebrow::after{
-    content:'';display:block;width:32px;height:1px;background:var(--ocean-lt);
+  .topnav-inner{
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    position: relative;
   }
-  .lm-hl{
-    font-family:var(--f-disp);font-size:clamp(20px,1.8vw,28px);
-    font-weight:600;line-height:1.4;color:rgba(226,240,240,.78);
-    text-align:center;letter-spacing:-.005em;
-    margin-bottom:72px;
-    max-width:520px;margin-left:auto;margin-right:auto;
+  .topnav-brand{
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 400;
+    font-size: 22px;
+    letter-spacing: .02em;
+    color: var(--midnight);
+    text-decoration: none;
+    line-height: 1;
   }
-  .lm-hl em{font-style:italic;font-weight:300;color:var(--ocean-lt);}
-
-  /* The glyph stage — perspective container.
-     Houses the framed-H glyph borrowed from the loading sequence:
-     four solid bars forming an H inside a 132x192 rectangular frame
-     that draws on via stroke-dashoffset when the section enters view. */
-  .lm-stage{
-    --rx:0deg;
-    --ry:0deg;
-    perspective:1200px;
-    display:flex;align-items:center;justify-content:center;
-    min-height:320px;
-    margin:0 auto;
-    max-width:880px;
+  .topnav-brand:hover{ color: var(--ocean-dk); }
+  .topnav-list{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 2px;
   }
-  .lm-glyph{
-    width:clamp(150px, 22vw, 240px);  /* taller aspect than wordmark — smaller width */
-    height:auto;
-    transform:rotateX(var(--rx)) rotateY(var(--ry));
-    transform-style:preserve-3d;
-    transition:transform .8s cubic-bezier(.22,1,.36,1);
-    will-change:transform;
-    animation:lm-breathe 5.5s ease-in-out infinite;
-    /* Hidden until JS adds .in-view (via IntersectionObserver) so the
-       reveal plays as the section scrolls into the viewport. */
+  .topnav-list a{
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--midnight);
+    text-decoration: none;
+    border-radius: 2px;
+    transition: background-color .18s ease, color .18s ease;
   }
-  @keyframes lm-breathe{
-    0%, 100% { filter:drop-shadow(0 0 0 rgba(95,129,144,0)); }
-    50%      { filter:drop-shadow(0 0 22px rgba(95,129,144,.4)); }
+  .topnav-list a:hover,
+  .topnav-list a:focus-visible{
+    background: rgba(95,129,144,.14);   /* misty blue */
+    color: var(--ocean-dk);
+    outline: none;
   }
-  /* The echo layer — parallax-shifts opposite for depth, no animation */
-  .lm-echo{
-    position:absolute;
-    width:clamp(150px, 22vw, 240px);
-    height:auto;
-    transform:rotateX(calc(var(--rx) * -1)) rotateY(calc(var(--ry) * -1));
-    transition:transform .8s cubic-bezier(.22,1,.36,1);
-    pointer-events:none;
-    filter:blur(2px);
-    z-index:0;
-    opacity:.18;
+  .topnav-list a[aria-current="page"]{
+    background: rgba(95,129,144,.14);
+    color: var(--ocean-dk);
   }
-
-  /* H bars — start invisible, fade in once .in-view fires */
-  .lm-h-glyph rect{
-    fill:var(--off);
-    opacity:0;
-    transform-origin:50% 100%;
-    transform:translateY(8px);
-    transition:
-      opacity   .9s cubic-bezier(.22,1,.36,1) .15s,
-      transform .9s cubic-bezier(.22,1,.36,1) .15s;
+  .topnav-toggle{
+    display: none;
+    background: transparent;
+    border: 0;
+    width: 36px;
+    height: 36px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    padding: 0;
   }
-  .lm-glyph.in-view .lm-h-glyph rect{
-    opacity:1;
-    transform:translateY(0);
-  }
-  /* Echo H — always rendered, dim ocean tint */
-  .lm-echo .lm-h-glyph rect{
-    fill:var(--ocean-lt);
-    opacity:.55;
-    transform:none;
-    transition:none;
+  .topnav-toggle span{
+    display: block;
+    width: 20px;
+    height: 1.5px;
+    background: var(--midnight);
   }
 
-  /* Frame — perimeter = 2*(132+192) = 648. Draws on with
-     stroke-dashoffset when .in-view fires, after the H has settled. */
-  .lm-frame{
-    fill:none;
-    stroke:var(--off);
-    stroke-dasharray:648;
-    stroke-dashoffset:648;
-    transition:stroke-dashoffset 1.5s cubic-bezier(.65,0,.35,1) .75s;
-  }
-  .lm-glyph.in-view .lm-frame{
-    stroke-dashoffset:0;
-  }
-  /* Echo frame — drawn permanently, ocean tinted */
-  .lm-echo .lm-frame{
-    stroke:var(--ocean-lt);
-    stroke-dasharray:none;
-    stroke-dashoffset:0;
-    opacity:.7;
-  }
-
-  .lm-foot{
-    margin-top:72px;
-    text-align:center;
-    font-family:var(--f-mono);font-size:10px;font-weight:500;
-    letter-spacing:.22em;text-transform:uppercase;
-    color:rgba(138,173,184,.7);
-  }
-  .lm-foot::before{
-    content:'';display:inline-block;width:20px;height:1px;
-    background:rgba(138,173,184,.4);
-    vertical-align:middle;margin-right:14px;
-  }
-  .lm-foot::after{
-    content:'';display:inline-block;width:20px;height:1px;
-    background:rgba(138,173,184,.4);
-    vertical-align:middle;margin-left:14px;
+  @media (max-width: 880px){
+    .topnav-inner{ padding: 0 24px; height: 60px; gap: 16px; }
+    .topnav-toggle{ display: inline-flex; }
+    .topnav-list{
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      background: var(--off);
+      border-bottom: 1px solid rgba(95,129,144,.18);
+      padding: 8px 0;
+      display: none;
+    }
+    .topnav-list.open{ display: flex; }
+    .topnav-list a{ padding: 14px 24px; }
   }
 
-  @media (max-width:768px){
-    .lm-section{padding:100px 22px 80px;}
-    .lm-coord-l,.lm-coord-r{top:24px;}
-    .lm-coord-l{left:22px;}
-    .lm-coord-r{right:22px;}
-    .lm-hl{margin-bottom:48px;font-size:18px;}
-    .lm-stage{min-height:200px;}
-    .lm-foot{margin-top:48px;font-size:9px;}
+  /* ── HERO ───────────────────────────────────────────────── */
+  .home-hero{
+    padding: 140px 32px 120px;
+    background: var(--off);
+  }
+  .home-hero-inner{
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .home-hero-eyebrow{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .22em;
+    color: var(--ocean);
+    text-transform: uppercase;
+    margin: 0 0 28px;
+  }
+  .home-hero-hl{
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    font-size: clamp(48px, 7vw, 104px);
+    line-height: .98;
+    letter-spacing: -.02em;
+    color: var(--midnight);
+    margin: 0 0 36px;
+    max-width: 14ch;
+  }
+  .home-hero-hl em{
+    font-style: italic;
+    font-weight: 300;
+    color: var(--ocean-dk);
+  }
+  .home-hero-sub{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--ocean-dk);
+    margin: 0 0 48px;
+    max-width: 580px;
+  }
+  .home-hero-cta{
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--off);
+    background: var(--midnight);
+    padding: 20px 32px;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: background-color .2s ease;
+  }
+  .home-hero-cta:hover,
+  .home-hero-cta:focus-visible{
+    background: var(--ocean-dk);
+    outline: none;
+  }
+  .home-hero-cta-arrow{
+    font-size: 16px;
+    transition: transform .25s ease;
+  }
+  .home-hero-cta:hover .home-hero-cta-arrow{
+    transform: translateX(6px);
   }
 
-  @media (prefers-reduced-motion:reduce){
-    .lm-glyph{animation:none;transition:none;}
-    .lm-echo{transition:none;display:none;}
-    .lm-section{transition:none;}
-  }
-</style>
-
-<!-- ==========================================================
-     MANDATE LEDGER — institutional vault aesthetic. Replaces the
-     image marquee. Editorial card grid with redacted-content bars,
-     status dots, tier badges. A rotating doctrine fragment above
-     anchors the section conceptually.
-     ========================================================== -->
-<style>
-  .mlr-section{
-    background:var(--off);
-    padding:120px var(--gx) 90px;
-    position:relative;
-    overflow:hidden;
-    border-top:1px solid var(--rule);
-    border-bottom:1px solid var(--rule);
-  }
-  .mlr-section::before{
-    content:'';position:absolute;inset:0;
-    background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px);
-    background-size:calc((100vw - 128px)/6) 100%;
-    background-position:64px 0;
-    pointer-events:none;opacity:.45;
-  }
-  .mlr-section > *{position:relative;z-index:1;}
-
-  .mlr-coord-l{
-    position:absolute;top:48px;left:var(--gx);
-    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
-    color:var(--ocean);z-index:2;
-  }
-  .mlr-coord-r{
-    position:absolute;top:48px;right:var(--gx);
-    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
-    color:rgba(46,74,90,.68);z-index:2;
+  @media (max-width: 768px){
+    .home-hero{ padding: 80px 24px 72px; }
+    .home-hero-sub{ font-size: 17px; margin-bottom: 36px; }
+    .home-hero-cta{ padding: 18px 26px; font-size: 11px; }
   }
 
-  /* Rotating doctrine fragment — large, centred, italic */
-  .mlr-eyebrow{
-    text-align:center;
-    font-family:var(--f-mono);font-size:10px;font-weight:600;
-    letter-spacing:.22em;text-transform:uppercase;color:var(--ocean);
-    margin-bottom:36px;
-    display:flex;align-items:center;justify-content:center;gap:14px;
+  /* ── MARQUEE ────────────────────────────────────────────── */
+  .home-marquee{
+    background: var(--midnight);
+    color: var(--off);
+    padding: 30px 0;
+    overflow: hidden;
+    border-top: 1px solid rgba(138,173,184,.18);
+    border-bottom: 1px solid rgba(138,173,184,.18);
   }
-  .mlr-eyebrow::before,
-  .mlr-eyebrow::after{
-    content:'';display:block;width:32px;height:1px;background:var(--ocean);
+  .home-marquee-track{
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    white-space: nowrap;
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    font-size: 24px;
+    letter-spacing: .03em;
+    color: var(--off);
+    animation: home-marquee-scroll 64s linear infinite;
+    width: max-content;
   }
-  .mlr-doctrine{
-    text-align:center;
-    font-family:var(--f-disp);
-    font-size:clamp(28px,3.6vw,52px);
-    font-weight:300;font-style:italic;
-    line-height:1.15;color:var(--midnight);
-    letter-spacing:-.005em;
-    max-width:880px;margin:0 auto;
-    transition:opacity .42s var(--ease);
+  .home-marquee-track > span{
+    flex-shrink: 0;
+    font-style: italic;
   }
-  .mlr-doctrine.fading{opacity:0;}
-  .mlr-doctrine-quote{
-    color:var(--ocean);
-    font-style:normal;
-    font-weight:400;
-    margin:0 .15em;
-    opacity:.6;
+  .home-marquee-track > span.dot{
+    color: var(--ocean-lt);
+    font-style: normal;
   }
-  .mlr-doctrine-attr{
-    text-align:center;
-    font-family:var(--f-mono);font-size:9px;
-    letter-spacing:.22em;
-    color:var(--ocean);
-    margin-top:28px;margin-bottom:80px;
+  @keyframes home-marquee-scroll{
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
-
-  /* Card grid — 3 cols desktop, 2 tablet, 1 mobile */
-  .mlr-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:18px;
-    max-width:1140px;margin:0 auto;
+  @media (prefers-reduced-motion: reduce){
+    .home-marquee-track{ animation: none; }
   }
-  @media (max-width:900px){ .mlr-grid{grid-template-columns:repeat(2,1fr);} }
-  @media (max-width:560px){ .mlr-grid{grid-template-columns:1fr;} }
-
-  /* Card — institutional white surface with subtle border */
-  .mlr-card{
-    background:var(--white);
-    border:1px solid var(--rule);
-    padding:22px 22px 18px;
-    position:relative;
-    transition:transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s var(--ease);
-  }
-  .mlr-card:hover{
-    transform:translateY(-3px);
-    box-shadow:0 18px 36px -18px rgba(28,43,58,.18);
-    border-color:rgba(95,129,144,.4);
-  }
-  .mlr-card-top{
-    display:flex;justify-content:space-between;align-items:center;
-    margin-bottom:16px;
-  }
-  .mlr-card-coord{
-    font-family:var(--f-mono);font-size:9px;font-weight:700;
-    letter-spacing:.14em;color:var(--ocean);
-  }
-  .mlr-card-status{
-    display:inline-flex;align-items:center;gap:7px;
-    font-family:var(--f-mono);font-size:9px;font-weight:600;
-    letter-spacing:.16em;
-  }
-  .mlr-status-dot{
-    width:6px;height:6px;border-radius:50%;
-    flex-shrink:0;
-  }
-  .mlr-status-active{ color:var(--ocean-dk); }
-  .mlr-status-active .mlr-status-dot{
-    background:var(--ocean);
-    box-shadow:0 0 0 0 rgba(95,129,144,.5);
-    animation:mlr-pulse 2.4s ease-out infinite;
-  }
-  .mlr-status-concluded{ color:rgba(46,74,90,.65); }
-  .mlr-status-concluded .mlr-status-dot{ background:rgba(46,74,90,.4); }
-  @keyframes mlr-pulse{
-    0%   { box-shadow:0 0 0 0 rgba(95,129,144,.55); }
-    100% { box-shadow:0 0 0 7px rgba(95,129,144,0); }
+  @media (max-width: 768px){
+    .home-marquee{ padding: 22px 0; }
+    .home-marquee-track{ font-size: 18px; gap: 22px; }
   }
 
-  .mlr-card-mid{
-    display:flex;justify-content:space-between;align-items:center;
-    margin-bottom:18px;
+  /* ── ANCHOR SECTION ─────────────────────────────────────── */
+  .home-anchor{
+    padding: 120px 32px;
+    background: var(--off);
   }
-  .mlr-card-tier{
-    font-family:var(--f-disp);font-size:18px;font-weight:800;
-    color:var(--midnight);letter-spacing:-.005em;
+  .home-anchor-inner{
+    max-width: 920px;
+    margin: 0 auto;
   }
-  .mlr-card-emb{
-    font-family:var(--f-mono);font-size:9px;font-weight:700;
-    letter-spacing:.2em;
-    color:var(--off);background:var(--midnight);
-    padding:4px 9px;border-radius:1px;
+  .home-anchor-eyebrow{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .22em;
+    color: var(--ocean);
+    text-transform: uppercase;
+    margin: 0 0 24px;
   }
-
-  /* Redacted content bars — diagonal hatch lines suggesting blocked text */
-  .mlr-card-redact{
-    display:flex;flex-direction:column;gap:5px;
-    padding:14px 0 16px;
-    margin-bottom:12px;
-    border-top:1px solid var(--rule);
+  .home-anchor-body{
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    font-size: clamp(24px, 2.6vw, 34px);
+    line-height: 1.38;
+    color: var(--midnight);
+    margin: 0 0 44px;
+    letter-spacing: -.005em;
   }
-  .mlr-redact-bar{
-    height:9px;
-    background:repeating-linear-gradient(
-      -45deg,
-      rgba(28,43,58,.05) 0,
-      rgba(28,43,58,.05) 5px,
-      rgba(28,43,58,.13) 5px,
-      rgba(28,43,58,.13) 10px
-    );
-    border-radius:1px;
-    display:block;
+  .home-anchor-body em{
+    font-style: italic;
+    color: var(--ocean-dk);
   }
-
-  .mlr-card-foot{
-    font-family:var(--f-body);font-style:italic;font-weight:300;
-    font-size:11px;color:var(--ink-mut);
-    padding-top:12px;border-top:1px solid var(--rule);
-    line-height:1.4;
+  .home-anchor-link{
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--midnight);
+    text-decoration: none;
+    border-bottom: 1px solid var(--midnight);
+    padding-bottom: 6px;
+    transition: color .2s ease, border-color .2s ease;
   }
-
-  /* Footer band */
-  .mlr-foot{
-    display:flex;justify-content:space-between;align-items:center;
-    margin:54px auto 0;
-    max-width:1140px;
-    padding-top:24px;
-    border-top:1px solid var(--rule);
-    gap:24px;
+  .home-anchor-link:hover,
+  .home-anchor-link:focus-visible{
+    color: var(--ocean-dk);
+    border-bottom-color: var(--ocean-dk);
+    outline: none;
   }
-  .mlr-foot-l{
-    font-family:var(--f-mono);font-size:10px;font-weight:600;
-    letter-spacing:.2em;color:var(--ocean);
+  .home-anchor-link-arrow{
+    transition: transform .25s ease;
   }
-  .mlr-foot-cta{
-    font-family:var(--f-nav);font-size:11px;font-weight:700;
-    letter-spacing:.18em;text-transform:uppercase;
-    color:var(--midnight);text-decoration:none;
-    display:inline-flex;align-items:center;gap:12px;
-    padding:13px 22px;
-    border:1px solid var(--midnight);
-    transition:background .3s var(--ease), color .3s var(--ease), gap .3s var(--ease);
-    cursor:none;
-  }
-  .mlr-foot-cta:hover{background:var(--midnight);color:var(--off);gap:18px;}
-  .mlr-foot-arrow{font-size:14px;font-weight:300;}
-
-  @media (max-width:768px){
-    .mlr-section{padding:80px 22px 60px;}
-    .mlr-coord-l,.mlr-coord-r{top:24px;}
-    .mlr-coord-l{left:22px;}
-    .mlr-coord-r{right:22px;}
-    .mlr-doctrine-attr{margin-bottom:48px;}
-    .mlr-foot{flex-direction:column;align-items:flex-start;gap:18px;}
+  .home-anchor-link:hover .home-anchor-link-arrow{
+    transform: translateX(6px);
   }
 
-  @media (prefers-reduced-motion:reduce){
-    .mlr-status-active .mlr-status-dot{animation:none;}
-    .mlr-doctrine{transition:none;}
-  }
-</style>
-
-
-<!-- ==========================================================
-     ORBIT — three engagement tiers orbiting the HIMARK core.
-     Replaces the static three-card layout on /home.html with
-     a minimal, spatial, interactive system. Per the brief:
-     reduce visual weight while increasing interaction depth.
-     ========================================================== -->
-<style>
-  .orbit-section{
-    background:var(--off);
-    padding:130px var(--gx) 110px;
-    position:relative;
-    overflow:hidden;
-    border-bottom:1px solid var(--rule);
-  }
-  /* Subtle radial light at the center — pulls the eye to the orbit */
-  .orbit-section::before{
-    content:'';position:absolute;inset:0;
-    background:
-      radial-gradient(circle 480px at 50% 50%, rgba(95,129,144,.06), transparent 70%),
-      linear-gradient(to right, var(--grid) 1px, transparent 1px);
-    background-size:auto, calc((100vw - 128px)/6) 100%;
-    background-position:center, 64px 0;
-    pointer-events:none;
-    opacity:.85;
-  }
-  .orbit-section > *{position:relative;z-index:1;}
-
-  .orbit-coord-l{
-    position:absolute;top:48px;left:var(--gx);
-    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
-    color:var(--ocean);z-index:2;
-  }
-  .orbit-coord-r{
-    position:absolute;top:48px;right:var(--gx);
-    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
-    color:rgba(46,74,90,.68);z-index:2;
+  @media (max-width: 768px){
+    .home-anchor{ padding: 72px 24px; }
   }
 
-  /* Intro — minimal copy, centred */
-  .orbit-intro{
-    text-align:center;
-    max-width:680px;
-    margin:0 auto 36px;
-  }
-  .orbit-eyebrow{
-    font-family:var(--f-mono);font-size:10px;font-weight:600;
-    letter-spacing:.22em;text-transform:uppercase;color:var(--ocean);
-    margin-bottom:18px;
-    display:flex;align-items:center;justify-content:center;gap:14px;
-  }
-  .orbit-eyebrow::before,
-  .orbit-eyebrow::after{
-    content:'';display:block;width:32px;height:1px;background:var(--ocean);
-  }
-  .orbit-hl{
-    font-family:var(--f-disp);font-size:clamp(32px,3.4vw,48px);
-    font-weight:800;line-height:1.05;color:var(--midnight);
-    letter-spacing:-.01em;margin-bottom:14px;
-  }
-  .orbit-hl em{font-style:italic;font-weight:300;color:var(--ocean);}
-  .orbit-sub{
-    font-family:var(--f-body);font-weight:400;font-size:14px;
-    color:var(--ink-mut);line-height:1.7;
-    max-width:520px;margin:0 auto;
-  }
-
-  /* Stage — SVG canvas wrapper */
-  .orbit-stage{
-    position:relative;
-    width:100%;
-    max-width:880px;
-    margin:0 auto;
-  }
-  .orbit-svg{
-    display:block;width:100%;height:auto;
-    user-select:none;-webkit-user-select:none;
-    overflow:visible;
-  }
-
-  /* Orbital ring — clearly visible against the off-white surface.
-     Previous opacity (.25) read as nearly transparent; bumped to .55
-     with slightly heavier stroke so the orbit reads as architecture. */
-  .orbit-ring{
-    fill:none;
-    stroke:rgba(46,74,90,.55);
-    stroke-width:1.5;
-    stroke-dasharray:3 5;
-    animation:orbit-ring-spin 90s linear infinite;
-    transform-origin:440px 270px;
-  }
-  @keyframes orbit-ring-spin{ to{ transform:rotate(360deg); } }
-
-  /* Orbital tick marks (decorative — show motion) */
-  .orbit-ticks{
-    transform-origin:440px 270px;
-    animation:orbit-ring-spin 120s linear infinite reverse;
-  }
-  .orbit-tick{fill:rgba(46,74,90,.75);}
-  .orbit-tick-sm{fill:rgba(46,74,90,.4);}
-
-  /* Connection lines from core to nodes — also bumped from .22 to .5 */
-  .orbit-link{
-    stroke:rgba(46,74,90,.5);
-    stroke-width:1.3;
-    stroke-dasharray:4 4;
-    transition:stroke .4s var(--ease), stroke-width .4s var(--ease);
-  }
-  .orbit-link.active{
-    stroke:var(--ocean);
-    stroke-width:1.5;
-    stroke-dasharray:none;
-  }
-
-  /* Orbit core — now a white tap-to-toggle circle. Click to
-     collapse the surrounding tier nodes; click again to expand. */
-  .orbit-core{
-    transform-origin:440px 270px;
-    animation:orbit-core-breathe 5s ease-in-out infinite;
-    cursor:none;outline:none;
-  }
-  @keyframes orbit-core-breathe{
-    0%, 100% { filter:drop-shadow(0 0 0 rgba(95,129,144,0)); }
-    50%      { filter:drop-shadow(0 0 14px rgba(95,129,144,.32)); }
-  }
-  .orbit-core-bg{
-    fill:var(--white);
-    stroke:rgba(28,43,58,.22);
-    stroke-width:1;
-    transition:stroke .35s var(--ease), stroke-width .35s var(--ease);
-  }
-  .orbit-core:hover .orbit-core-bg{
-    stroke:var(--midnight);
-    stroke-width:1.5;
-  }
-  .orbit-core:focus-visible .orbit-core-bg{
-    stroke:var(--ocean);
-    stroke-width:2;
-  }
-  /* Toggle icon — + (collapsed) rotates to × (expanded) on default */
-  .orbit-core-icon{
-    transform-origin:440px 262px;
-    transform:rotate(45deg);  /* default = expanded = × */
-    transition:transform .6s cubic-bezier(.65,0,.35,1);
-  }
-  .orbit-stage.collapsed .orbit-core-icon{
-    transform:rotate(0deg);   /* collapsed = + */
-  }
-  .orbit-core-line{
-    stroke:var(--midnight);
-    stroke-width:2.5;
-    stroke-linecap:round;
-    transition:stroke .35s var(--ease);
-  }
-  .orbit-core:hover .orbit-core-line{stroke:var(--ocean-dk);}
-  .orbit-core-label{
-    font-family:var(--f-mono);font-size:9px;font-weight:700;
-    letter-spacing:.28em;fill:rgba(46,74,90,.65);
-    transition:fill .35s var(--ease);
-  }
-  .orbit-core:hover .orbit-core-label{fill:var(--midnight);}
-
-  /* ============ COLLAPSED STATE ============ */
-  /* Tier nodes shrink toward the centre and fade */
-  .orbit-stage.collapsed .orbit-node{
-    opacity:0;
-    transform:scale(.15);
-    transform-box:fill-box;transform-origin:center;
-    pointer-events:none;
-    transition:
-      opacity .55s var(--ease),
-      transform .65s cubic-bezier(.65,0,.35,1);
-  }
-  /* Connecting links fade out */
-  .orbit-stage.collapsed .orbit-link,
-  .orbit-stage.collapsed .orbit-ticks{
-    opacity:0;
-    transition:opacity .4s var(--ease);
-  }
-  /* Detail panel below collapses cleanly */
-  .orbit-section .orbit-detail{
-    transition:
-      max-height .65s cubic-bezier(.65,0,.35,1),
-      opacity .4s var(--ease),
-      margin-top .5s var(--ease),
-      padding .5s var(--ease),
-      border-width .35s var(--ease);
-    max-height:800px;
-    overflow:hidden;
-  }
-  .orbit-stage.collapsed ~ .orbit-detail{
-    max-height:0 !important;
-    opacity:0 !important;
-    margin-top:0 !important;
-    padding-top:0 !important;
-    padding-bottom:0 !important;
-    border-width:0 !important;
-  }
-
-  /* ============ SHORTCUT PANEL ============
-     Appears in place of the detail panel when the orbit is collapsed.
-     Three editorial action cards mapping to the three real entry
-     paths into HIMARK. Pops in with a slight overshoot (back-out
-     curve) and staggered card delays for a tactile reveal. */
-  .orbit-shortcut{
-    max-width:920px;
-    margin:0 auto;
-    overflow:hidden;
-    opacity:0;
-    transform:translateY(20px) scale(.96);
-    max-height:0;
-    margin-top:0;
-    pointer-events:none;
-    transition:
-      transform .55s cubic-bezier(.34, 1.46, .64, 1) .25s,
-      opacity .4s var(--ease) .3s,
-      max-height .55s cubic-bezier(.22,1,.36,1) .25s,
-      margin-top .5s var(--ease) .25s;
-  }
-  .orbit-stage.collapsed ~ .orbit-shortcut{
-    opacity:1;
-    transform:translateY(0) scale(1);
-    max-height:600px;
-    margin-top:60px;
-    pointer-events:auto;
-  }
-
-  .orbit-shortcut-eyebrow{
-    font-family:var(--f-mono);font-size:10px;font-weight:600;
-    letter-spacing:.22em;text-transform:uppercase;color:var(--ocean);
-    text-align:center;margin-bottom:28px;
-    display:flex;align-items:center;justify-content:center;gap:14px;
-  }
-  .orbit-shortcut-eyebrow::before,
-  .orbit-shortcut-eyebrow::after{
-    content:'';display:block;width:32px;height:1px;background:var(--ocean);
-  }
-  .orbit-shortcut-grid{
-    display:grid;
-    grid-template-columns:repeat(3, 1fr);
-    gap:18px;
-  }
-  /* Staggered reveal — each card lands ~100ms after the previous */
-  .orbit-shortcut-card{
-    display:flex;flex-direction:column;
-    padding:30px 26px 26px;
-    background:var(--white);
-    border:1px solid var(--rule);
-    text-decoration:none;
-    cursor:none;
-    text-align:left;
-    font-family:inherit;
-    color:inherit;
-    position:relative;
-    opacity:0;
-    transform:translateY(12px);
-    transition:
-      opacity .45s var(--ease),
-      transform .55s cubic-bezier(.34, 1.46, .64, 1),
-      border-color .35s var(--ease),
-      box-shadow .35s var(--ease);
-  }
-  .orbit-stage.collapsed ~ .orbit-shortcut .orbit-shortcut-card{
-    opacity:1;
-    transform:translateY(0);
-  }
-  .orbit-stage.collapsed ~ .orbit-shortcut .orbit-shortcut-card:nth-child(1){transition-delay:.4s, .4s, 0s, 0s;}
-  .orbit-stage.collapsed ~ .orbit-shortcut .orbit-shortcut-card:nth-child(2){transition-delay:.5s, .5s, 0s, 0s;}
-  .orbit-stage.collapsed ~ .orbit-shortcut .orbit-shortcut-card:nth-child(3){transition-delay:.6s, .6s, 0s, 0s;}
-
-  .orbit-shortcut-card:hover,
-  .orbit-shortcut-card:focus-visible{
-    transform:translateY(-4px);
-    border-color:var(--ocean);
-    box-shadow:0 24px 48px -24px rgba(28,43,58,.18);
-    outline:none;
-  }
-  .orbit-shortcut-card:focus-visible{
-    outline:2px solid var(--ocean);
-    outline-offset:2px;
-  }
-
-  .orbit-shortcut-card-top{
-    display:flex;justify-content:space-between;align-items:flex-start;
-    margin-bottom:18px;
-  }
-  .orbit-shortcut-coord{
-    font-family:var(--f-mono);font-size:10px;font-weight:700;
-    letter-spacing:.22em;color:var(--ocean);
-  }
-  .orbit-shortcut-pill{
-    font-family:var(--f-mono);font-size:8.5px;font-weight:600;
-    letter-spacing:.16em;color:rgba(46,74,90,.68);
-    padding:3px 8px;
-    border:1px solid var(--rule);
-    border-radius:1px;
-    text-transform:uppercase;
-  }
-  .orbit-shortcut-name{
-    font-family:var(--f-disp);font-size:22px;font-weight:800;
-    color:var(--midnight);letter-spacing:-.005em;line-height:1.1;
-    margin-bottom:10px;
-  }
-  .orbit-shortcut-sub{
-    font-family:var(--f-body);font-weight:400;font-size:13px;
-    color:var(--ink-mut);line-height:1.6;
-    flex:1;margin-bottom:16px;
-  }
-  .orbit-shortcut-cta{
-    font-family:var(--f-mono);font-size:10px;font-weight:700;
-    letter-spacing:.22em;text-transform:uppercase;color:var(--midnight);
-    display:inline-flex;align-items:center;gap:10px;
-    align-self:flex-start;
-    transition:gap .35s var(--ease), color .35s var(--ease);
-  }
-  .orbit-shortcut-card:hover .orbit-shortcut-cta{
-    color:var(--ocean-dk);
-    gap:14px;
-  }
-  .orbit-shortcut-arrow{font-size:14px;font-family:var(--f-mono);}
-
-  @media (max-width:768px){
-    .orbit-shortcut-grid{grid-template-columns:1fr;}
-  }
-  @media (prefers-reduced-motion:reduce){
-    .orbit-shortcut, .orbit-shortcut-card{transition:none;}
-  }
-
-  /* ============ SIDE IMAGES — appear when collapsed ============
-     Two tall vertical image panels that slide in from off-screen
-     when the orbit collapses. Each is a clickable navigation card
-     into a relevant page (Method on the left, Principals on the
-     right). Hidden on viewports below 1200px where the orbit
-     content already takes most of the width. */
-  .orbit-side{
-    position:absolute;
-    top:50%;
-    width:170px;
-    height:440px;
-    transform:translateY(-50%) translateX(var(--off));
-    opacity:0;
-    pointer-events:none;
-    z-index:5;
-    transition:
-      transform .75s cubic-bezier(.34, 1.46, .64, 1) .35s,
-      opacity .55s var(--ease) .4s;
-  }
-  .orbit-side-l{ left:32px;  --off:-260px; }
-  .orbit-side-r{ right:32px; --off:260px;  }
-  .orbit-stage.collapsed ~ .orbit-side{
-    --off:0px;
-    opacity:1;
-    pointer-events:auto;
-  }
-  .orbit-side-link{
-    display:block;
-    position:relative;
-    width:100%;height:100%;
-    text-decoration:none;
-    cursor:none;
-    overflow:hidden;
-    border:1px solid rgba(46,74,90,.18);
-    background:var(--midnight);
-    transition:border-color .35s var(--ease), transform .45s var(--ease), box-shadow .45s var(--ease);
-    box-shadow:0 30px 60px -30px rgba(28,43,58,.35);
-  }
-  .orbit-side-link:hover,
-  .orbit-side-link:focus-visible{
-    border-color:var(--ocean);
-    transform:translateY(-4px);
-    box-shadow:0 40px 70px -30px rgba(28,43,58,.45);
-  }
-  .orbit-side-link:focus-visible{
-    outline:2px solid var(--ocean-lt);
-    outline-offset:2px;
-  }
-  .orbit-side-coord{
-    position:absolute;
-    top:14px;left:14px;
-    font-family:var(--f-mono);font-size:9px;font-weight:700;
-    letter-spacing:.22em;color:var(--off);
-    background:rgba(14,24,34,.65);
-    backdrop-filter:blur(6px);
-    -webkit-backdrop-filter:blur(6px);
-    padding:5px 9px;
-    z-index:2;
-  }
-  .orbit-side-img{
-    position:absolute;
-    inset:0;
-    background-size:cover;
-    background-position:center;
-    filter:saturate(.85) brightness(.65) contrast(1.02);
-    transition:filter .55s var(--ease), transform .9s var(--ease);
-  }
-  .orbit-side-link:hover .orbit-side-img{
-    filter:saturate(1) brightness(.8) contrast(1.04);
-    transform:scale(1.05);
-  }
-  .orbit-side-caption{
-    position:absolute;
-    bottom:0;left:0;right:0;
-    padding:32px 16px 18px;
-    background:linear-gradient(to top,
-      rgba(14,24,34,.92) 0%,
-      rgba(14,24,34,.55) 55%,
-      transparent 100%);
-    z-index:1;
-  }
-  .orbit-side-tag{
-    display:block;
-    font-family:var(--f-mono);font-size:9px;font-weight:600;
-    letter-spacing:.22em;text-transform:uppercase;
-    color:var(--ocean-lt);
-    margin-bottom:6px;
-  }
-  .orbit-side-name{
-    display:block;
-    font-family:var(--f-disp);font-size:18px;font-weight:800;
-    color:var(--off);letter-spacing:-.005em;line-height:1.1;
-  }
-  .orbit-side-arrow{
-    position:absolute;
-    bottom:18px;right:16px;
-    font-family:var(--f-mono);font-size:16px;font-weight:300;
-    color:var(--off);z-index:2;
-    transition:transform .35s var(--ease);
-  }
-  .orbit-side-link:hover .orbit-side-arrow{transform:translateX(4px);}
-
-  /* Hide on narrower viewports where there's no room beside the orbit */
-  @media (max-width:1200px){
-    .orbit-side{display:none;}
-  }
-  @media (prefers-reduced-motion:reduce){
-    .orbit-side{transition:none;}
-  }
-
-  /* Tier nodes */
-  .orbit-node{
-    cursor:none;outline:none;
-    transition:opacity .45s var(--ease);
-  }
-  .orbit-node-bg{
-    fill:var(--white);
-    stroke:rgba(28,43,58,.18);
-    stroke-width:1;
-    transition:fill .45s var(--ease), stroke .45s var(--ease), stroke-width .45s var(--ease);
-  }
-  .orbit-node-ring{
-    fill:none;
-    stroke:rgba(95,129,144,.25);
-    stroke-width:1;
-    transition:stroke .45s var(--ease), stroke-width .45s var(--ease);
-  }
-  .orbit-node-coord{
-    font-family:var(--f-mono);font-size:9px;font-weight:600;
-    letter-spacing:.14em;fill:var(--ocean);
-    pointer-events:none;
-    transition:fill .45s var(--ease);
-  }
-  .orbit-node-name{
-    font-family:var(--f-disp);font-size:14px;font-weight:800;
-    letter-spacing:.04em;fill:var(--midnight);
-    pointer-events:none;
-    transition:fill .45s var(--ease);
-  }
-  .orbit-node-pulse{
-    fill:none;stroke:var(--ocean);stroke-width:1;opacity:0;
-    transform-box:fill-box;transform-origin:center;
-  }
-
-  /* Hover state */
-  .orbit-node:hover .orbit-node-bg,
-  .orbit-node:focus-visible .orbit-node-bg{
-    stroke:var(--ocean);
-    stroke-width:1.5;
-  }
-  .orbit-node:hover .orbit-node-ring{
-    stroke:var(--ocean);
-    stroke-width:1.5;
-  }
-
-  /* Active state */
-  .orbit-node.active .orbit-node-bg{
-    fill:var(--midnight);
-    stroke:var(--midnight);
-    stroke-width:2;
-  }
-  .orbit-node.active .orbit-node-coord{fill:var(--ocean-lt);}
-  .orbit-node.active .orbit-node-name{fill:var(--off);}
-  .orbit-node.active .orbit-node-pulse{
-    animation:orbit-node-pulse 2.6s ease-out infinite;
-  }
-  @keyframes orbit-node-pulse{
-    0%   { opacity:.6; transform:scale(1); }
-    100% { opacity:0;  transform:scale(1.5); }
-  }
-
-  /* When one node is active, dim the others */
-  .orbit-stage.has-active .orbit-node:not(.active){opacity:.35;}
-
-  /* Detail panel — sits below the orbit */
-  .orbit-detail{
-    max-width:880px;
-    margin:48px auto 0;
-    background:var(--white);
-    border:1px solid var(--rule);
-    border-radius:4px;
-    padding:36px 40px 32px;
-    position:relative;
-    box-shadow:0 30px 60px -30px rgba(28,43,58,.15);
-  }
-  .orbit-detail-coord{
-    position:absolute;top:14px;right:20px;
-    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
-    color:var(--ocean);
-  }
-  .orbit-detail-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:48px;
-    align-items:start;
-  }
-  .orbit-detail-eyebrow{
-    font-family:var(--f-mono);font-size:9px;font-weight:600;
-    letter-spacing:.18em;text-transform:uppercase;color:var(--ocean);
-    margin-bottom:14px;
-  }
-  .orbit-detail-name{
-    font-family:var(--f-disp);font-size:clamp(28px,2.6vw,36px);
-    font-weight:800;color:var(--midnight);
-    letter-spacing:-.01em;line-height:1.05;
-    margin-bottom:8px;
-    transition:opacity .28s var(--ease);
-  }
-  .orbit-detail-class{
-    font-family:var(--f-mono);font-size:10px;font-weight:600;
-    letter-spacing:.16em;text-transform:uppercase;color:var(--ocean);
-    margin-bottom:20px;padding-bottom:16px;
-    border-bottom:1px solid var(--rule);
-    transition:opacity .28s var(--ease);
-  }
-  .orbit-detail-desc{
-    font-family:var(--f-body);font-weight:400;font-size:14px;
-    line-height:1.75;color:var(--ink);
-    transition:opacity .28s var(--ease);
-  }
-  .orbit-detail-right{display:flex;flex-direction:column;}
-  .orbit-detail-row{
-    padding:14px 0 16px;
-    border-bottom:1px solid var(--rule);
-  }
-  .orbit-detail-row:first-child{padding-top:0;}
-  .orbit-detail-l{
-    font-family:var(--f-mono);font-size:9px;font-weight:600;
-    letter-spacing:.18em;text-transform:uppercase;
-    color:var(--ocean);margin-bottom:6px;
-  }
-  .orbit-detail-v{
-    font-family:var(--f-body);font-weight:400;font-size:13.5px;
-    line-height:1.6;color:var(--ink);
-    transition:opacity .28s var(--ease);
-  }
-  .orbit-detail .fading{opacity:0;}
-  .orbit-detail-cta{
-    font-family:var(--f-nav);font-size:11px;font-weight:700;
-    letter-spacing:.18em;text-transform:uppercase;
-    color:var(--midnight);text-decoration:none;
-    align-self:flex-start;
-    padding:13px 22px;
-    border:1px solid var(--midnight);
-    margin-top:24px;
-    display:inline-flex;align-items:center;gap:12px;
-    transition:background .3s var(--ease), color .3s var(--ease), gap .3s var(--ease);
-    cursor:none;
-  }
-  .orbit-detail-cta:hover{
-    background:var(--midnight);color:var(--off);gap:18px;
-  }
-  .orbit-detail-arrow{font-size:14px;font-weight:300;}
-
-  @media (max-width:768px){
-    .orbit-section{padding:80px 22px 60px;}
-    .orbit-coord-l,.orbit-coord-r{top:24px;}
-    .orbit-coord-l{left:22px;}
-    .orbit-coord-r{right:22px;}
-    .orbit-intro{margin-bottom:24px;}
-    .orbit-detail{padding:28px 22px;margin-top:32px;}
-    .orbit-detail-grid{grid-template-columns:1fr;gap:24px;}
-  }
-
-  @media (max-width:560px){
-    .orbit-node-name{font-size:11px;}
-    .orbit-node-coord{font-size:8px;}
-  }
-
-  @media (prefers-reduced-motion:reduce){
-    .orbit-ring,.orbit-ticks,
-    .orbit-core,.orbit-node-pulse{animation:none;}
-  }
+  /* ── FOOTER OVERRIDES ───────────────────────────────────── */
+  /* The .footer styles in styles.css were designed for the prior
+     page-wrapped layout. Keep them but ensure the footer connects
+     cleanly to the anchor section above (no double background). */
+  .footer{ background: var(--midnight); }
 </style>
 
   <script src="images.config.js"></script>
   <script defer data-domain="himark.co.za" src="https://plausible.io/js/script.js"></script>
 </head>
 <body data-page="home" data-location="root">
-<div id="cd"></div>
-<div id="cr"></div>
-<canvas id="cvs"></canvas>
 
-<!-- HIMARK wordmark — top center, alone -->
-<a href="#" id="brand-mark" data-page="home" aria-label="HIMARK">
-<img src="images/HIMARK.png" alt="HIMARK" class="brand-wm-img"/>
-</a>
-
-<!-- Right-edge menu trigger -->
-<div id="menu-trigger" class="mt-trigger">
-<span class="mt-num">[ 01—09 ]</span>
-<div class="mt-line"></div>
-<span class="mt-label">Index ↑</span>
+<!-- TOPNAV ─────────────────────────────────────────────────── -->
+<nav class="topnav" aria-label="Primary">
+<div class="topnav-inner">
+<a class="topnav-brand" href="/" aria-label="HIMARK · Home">HIMARK</a>
+<button class="topnav-toggle" type="button" aria-expanded="false" aria-controls="topnav-list" aria-label="Open menu">
+<span></span><span></span><span></span>
+</button>
+<ul class="topnav-list" id="topnav-list">
+<li><a href="about.html">About</a></li>
+<li><a href="services.html">Services</a></li>
+<li><a href="team.html">Team</a></li>
+<li><a href="apply.html">Apply</a></li>
+<li><a href="sessions.html">Counsel</a></li>
+<li><a href="contact.html">Contact</a></li>
+<li><a href="subscribe.html">Subscribe</a></li>
+</ul>
 </div>
+</nav>
 
-<!-- Menu overlay -->
-<div class="menu-overlay" id="menuOverlay"></div>
-<div class="prn-backdrop" id="prnBackdrop"></div>
-
-<!-- PRINCIPAL MODAL -->
-<div class="prn-modal-backdrop" id="prnModalBackdrop"></div>
-<div class="prn-modal" id="prnModal" role="dialog" aria-modal="true" aria-hidden="true">
-<button class="prn-modal-close" id="prnModalClose" aria-label="Close">×</button>
-<div class="prn-modal-image">
-<span class="prn-modal-coord" id="prnModalCoord">[ 05.A.01 ]</span>
-<span class="prn-modal-status">On.Mandate</span>
-<div class="prn-modal-glyph" id="prnModalGlyph">NM</div>
-<span class="prn-modal-image-tag" id="prnModalImageTag">PRINCIPAL · DOSSIER</span>
-</div>
-<div class="prn-modal-body">
-<p class="prn-modal-eyebrow" id="prnModalEyebrow">Principal · Dossier</p>
-<h2 class="prn-modal-name" id="prnModalName">Neo Matime</h2>
-<p class="prn-modal-role" id="prnModalRole">Founder & Chief Executive</p>
-<div class="prn-modal-divider"></div>
-<p class="prn-modal-bio" id="prnModalBio"></p>
-<p class="prn-modal-bio" id="prnModalDoctrine" style="font-style:italic;color:var(--ocean-dk)"></p>
-<div class="prn-modal-tags" id="prnModalTags"></div>
-</div>
-</div>
-
-<!-- COOKIES BANNER -->
+<!-- COOKIES BANNER ─────────────────────────────────────────── -->
 <aside id="cookies-banner" role="region" aria-label="Cookie preferences">
 <span class="cb-coord">[ 09.A · COOKIES ]</span>
 <div class="cb-icon" aria-hidden="true"></div>
 <div class="cb-text">
-<span class="cb-eyebrow">Cookies & Tracking</span>
-<p class="cb-msg">HIMARK uses cookies to operate this site, measure performance, and remember your preferences. See our <a href="#" data-page="cookies">Cookies Policy</a> and <a href="#" data-page="privacy">Privacy Notice</a> for the full schedule.</p>
+<span class="cb-eyebrow">Cookies &amp; Tracking</span>
+<p class="cb-msg">HIMARK uses cookies to operate this site, measure performance, and remember your preferences. See our <a href="cookies.html">Cookies Policy</a> and <a href="privacy.html">Privacy Notice</a> for the full schedule.</p>
 </div>
 <div class="cb-actions">
 <button class="cb-btn cb-btn-ghost" id="cb-deny">Deny</button>
@@ -1122,474 +412,76 @@
 </div>
 </aside>
 
-<!-- Side panel menu -->
-<div id="menu-panel">
-<div class="menu-bg-grid"></div>
-<span class="menu-coord-tl">[ INDEX / 09 ]</span>
-<span class="menu-coord-tr" id="menuClose">CLOSE [ × ]</span>
-<ul class="menu-list">
-<li><a href="#" class="menu-item" data-page="home"><span class="mi-num">[ 00 ]</span><span class="mi-name">Home <em>· Origin</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item" data-page="doctrine"><span class="mi-num">[ 01 ]</span><span class="mi-name">About <em>· Doctrine</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item" data-page="mandates"><span class="mi-num">[ 02 ]</span><span class="mi-name">Services <em>· Mandates</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item" data-page="principals"><span class="mi-num">[ 05 ]</span><span class="mi-name">Team <em>· Principals</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item" data-page="intake"><span class="mi-num">[ 08 ]</span><span class="mi-name">Apply <em>· Intake</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item menu-item-sub" data-page="sessions"><span class="mi-num">[ 08.A ]</span><span class="mi-name">Counsel <em>· Advisory session</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item" data-page="direct"><span class="mi-num">[ 09 ]</span><span class="mi-name">Contact <em>· Direct</em></span><span class="mi-arrow">→</span></a></li>
-<li><a href="#" class="menu-item menu-item-sub" data-page="subscribe"><span class="mi-num">[ 09.A ]</span><span class="mi-name">Subscribe <em>· Journal</em></span><span class="mi-arrow">→</span></a></li>
-</ul>
-<div class="menu-footer">
-<div class="mf-block">
-<div class="mf-label">[ 01 ]  Direct</div>
-<div class="mf-text"><a class="mf-link" href="mailto:info@himark.co.za">info@himark.co.za</a></div>
-<div class="mf-text" style="margin-top:6px">Randburg · Gauteng · ZA</div>
-</div>
-<div class="mf-block">
-<div class="mf-label">[ 02 ]  Group</div>
-<div class="mf-text" style="margin-top:6px">Est. 2026</div>
-</div>
-</div>
-</div>
-<div class="page active" id="page-home">
-<section class="hero snap-section">
-<!--<video class="hero-video" src="video/hero.mp4" autoplay loop muted playsinline preload="auto"></video>-->
-<canvas class="hero-canvas" aria-hidden="true"></canvas>
-<div class="hero-grid"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-<div class="hero-coords-top">
-<span class="hero-coord">[ 00.HOME ]</span>
-<div class="hero-coord-line"></div>
-<span class="hero-coord">Established in 2026  ·  RANDBURG · ZA</span>
-</div>
-<div class="hero-c">
-<p class="hero-eyebrow">Principal-led · By application</p>
-<h1 class="hero-hl">An institution for<span>founder-led growth.</span></h1>
-<div class="hero-meta-row">
-<p class="hero-meta-l">We design and operate the strategic infrastructure beneath founder-led businesses — brand, demand, AI, principal counsel. Built to compound, not to launch.</p>
-<div class="hero-meta-r">
-<a href="#" class="btn-ghost" data-page="doctrine">The Doctrine</a>
-</div>
-</div>
-</div>
-<div class="hero-coords-bottom">
-<span class="hero-coord">[ 00.HOME / 06.INDEX ]</span>
-<span class="hero-coord">SCROLL ↓</span>
-</div>
-</section>
-
-<!-- Scroll spacer for hero frame-sequence scrubbing. The hero (above) is
-     position:sticky, so it stays pinned while the user scrolls through this
-     spacer; meanwhile JS uses the spacer's scroll progress to advance the
-     canvas frame index. After the spacer ends, normal content resumes. -->
-<div class="hero-spacer" aria-hidden="true"></div>
-
-<div class="s-num-bar"><span>01.A · POSITIONING</span><span>HIMARK / 01</span><span>RECORDED · ON.FILE</span></div>
-
-<section class="monolith snap-section">
-<span class="mono-coord-tl">[ 01.A.01 ]</span>
-<span class="mono-coord-tr">POSITIONING — STATEMENT</span>
-<span class="mono-coord-bl">PRECISION OVER VOLUME</span>
-<span class="mono-coord-br">[ END 01.A ]</span>
-<div class="mono-grid">
-<div class="r3d-l"><h2 class="mono-word"><span class="mono-line" data-line="0">PRECISION.</span><span class="mono-line mono-line-em" data-line="1">NOT</span><span class="mono-line mono-line-em" data-line="2">VOLUME.</span></h2></div>
-<div>
-<p class="mono-text mono-line">HIMARK operates with a deliberately restricted client portfolio. Each engagement receives principal-level attention and the full weight of our institutional capability.</p>
-<p class="mono-text mono-line">We do not scale headcount to accommodate demand. We restrict intake to protect quality. This is not a constraint — it is a standard.</p>
-<div class="mono-rule mono-line"></div>
-<p class="mono-mini mono-line">Selected engagements only · South Africa</p>
-</div>
-</div>
-</section>
-
-<section class="metrics">
-<div class="metrics-inner">
-<div class="metric-cell" data-idx="[01]"><div class="metric-n" data-count="5" data-suffix="+">0</div><div class="metric-l">Engagements</div></div>
-<div class="metric-cell" data-idx="[02]"><div class="metric-n" data-count="3">0</div><div class="metric-l">Engagement Tiers</div></div>
-<div class="metric-cell" data-idx="[03]"><div class="metric-n" data-count="5">0</div><div class="metric-l">Principals</div></div>
-<div class="metric-cell" data-idx="[04]"><div class="metric-n" data-count="100" data-suffix="%">0</div><div class="metric-l">Founder-Led</div></div>
-<div class="metric-cell" data-idx="[05]"><div class="metric-n" data-count="24" data-suffix="h">0</div><div class="metric-l">Response Time</div></div>
-</div>
-</section>
-
-<div class="s-num-bar"><span>01.B.01 · MANDATE LEDGER</span><span>HIMARK / WORK</span><span>ON RECORD · EMBARGOED</span></div>
-
-<!-- MANDATE LEDGER — institutional vault. Replaces the image marquee.
-     A rotating doctrine fragment up top, six redacted mandate cards
-     below (intentionally embargoed — content disclosed on admission),
-     and a small footer with the intake CTA. Each card uses status +
-     tier metadata only; client-identifying content is redacted via
-     diagonal-hatch bars. No fabricated mandates. -->
-<section class="mlr-section">
-<span class="mlr-coord-l">[ 01.B.01 · LEDGER ]</span>
-<span class="mlr-coord-r">ON RECORD · CONFIDENTIAL</span>
-
-<p class="mlr-eyebrow">The work</p>
-<h2 class="mlr-doctrine" id="mlr-doctrine">
-<span class="mlr-doctrine-quote">&ldquo;</span><span class="mlr-doctrine-text">Diagnosis precedes prescription.</span><span class="mlr-doctrine-quote">&rdquo;</span>
-</h2>
-<p class="mlr-doctrine-attr">— HIMARK · OPERATING DOCTRINE</p>
-
-<div class="mlr-grid">
-
-<article class="mlr-card r3d d1">
-<div class="mlr-card-top">
-<span class="mlr-card-coord">[ M.01 ]</span>
-<span class="mlr-card-status mlr-status-active"><span class="mlr-status-dot"></span>ACTIVE</span>
-</div>
-<div class="mlr-card-mid">
-<span class="mlr-card-tier">TIER 03</span>
-<span class="mlr-card-emb">EMBARGOED</span>
-</div>
-<div class="mlr-card-redact">
-<span class="mlr-redact-bar" style="width:88%"></span>
-<span class="mlr-redact-bar" style="width:72%"></span>
-<span class="mlr-redact-bar" style="width:84%"></span>
-<span class="mlr-redact-bar" style="width:64%"></span>
-</div>
-<div class="mlr-card-foot">Detail available to admitted clients</div>
-</article>
-
-<article class="mlr-card r3d d2">
-<div class="mlr-card-top">
-<span class="mlr-card-coord">[ M.02 ]</span>
-<span class="mlr-card-status mlr-status-active"><span class="mlr-status-dot"></span>ACTIVE</span>
-</div>
-<div class="mlr-card-mid">
-<span class="mlr-card-tier">TIER 02</span>
-<span class="mlr-card-emb">EMBARGOED</span>
-</div>
-<div class="mlr-card-redact">
-<span class="mlr-redact-bar" style="width:80%"></span>
-<span class="mlr-redact-bar" style="width:88%"></span>
-<span class="mlr-redact-bar" style="width:68%"></span>
-<span class="mlr-redact-bar" style="width:76%"></span>
-</div>
-<div class="mlr-card-foot">Detail available to admitted clients</div>
-</article>
-
-<article class="mlr-card r3d d3">
-<div class="mlr-card-top">
-<span class="mlr-card-coord">[ M.03 ]</span>
-<span class="mlr-card-status mlr-status-active"><span class="mlr-status-dot"></span>ACTIVE</span>
-</div>
-<div class="mlr-card-mid">
-<span class="mlr-card-tier">TIER 02</span>
-<span class="mlr-card-emb">EMBARGOED</span>
-</div>
-<div class="mlr-card-redact">
-<span class="mlr-redact-bar" style="width:84%"></span>
-<span class="mlr-redact-bar" style="width:60%"></span>
-<span class="mlr-redact-bar" style="width:80%"></span>
-<span class="mlr-redact-bar" style="width:72%"></span>
-</div>
-<div class="mlr-card-foot">Detail available to admitted clients</div>
-</article>
-
-<article class="mlr-card r3d d4">
-<div class="mlr-card-top">
-<span class="mlr-card-coord">[ M.04 ]</span>
-<span class="mlr-card-status mlr-status-concluded"><span class="mlr-status-dot"></span>CONCLUDED</span>
-</div>
-<div class="mlr-card-mid">
-<span class="mlr-card-tier">TIER 03</span>
-<span class="mlr-card-emb">EMBARGOED</span>
-</div>
-<div class="mlr-card-redact">
-<span class="mlr-redact-bar" style="width:72%"></span>
-<span class="mlr-redact-bar" style="width:84%"></span>
-<span class="mlr-redact-bar" style="width:64%"></span>
-<span class="mlr-redact-bar" style="width:80%"></span>
-</div>
-<div class="mlr-card-foot">Detail available to admitted clients</div>
-</article>
-
-<article class="mlr-card r3d d5">
-<div class="mlr-card-top">
-<span class="mlr-card-coord">[ M.05 ]</span>
-<span class="mlr-card-status mlr-status-concluded"><span class="mlr-status-dot"></span>CONCLUDED</span>
-</div>
-<div class="mlr-card-mid">
-<span class="mlr-card-tier">TIER 02</span>
-<span class="mlr-card-emb">EMBARGOED</span>
-</div>
-<div class="mlr-card-redact">
-<span class="mlr-redact-bar" style="width:80%"></span>
-<span class="mlr-redact-bar" style="width:72%"></span>
-<span class="mlr-redact-bar" style="width:88%"></span>
-<span class="mlr-redact-bar" style="width:64%"></span>
-</div>
-<div class="mlr-card-foot">Detail available to admitted clients</div>
-</article>
-
-<article class="mlr-card r3d d6">
-<div class="mlr-card-top">
-<span class="mlr-card-coord">[ M.06 ]</span>
-<span class="mlr-card-status mlr-status-active"><span class="mlr-status-dot"></span>ACTIVE</span>
-</div>
-<div class="mlr-card-mid">
-<span class="mlr-card-tier">TIER 01</span>
-<span class="mlr-card-emb">EMBARGOED</span>
-</div>
-<div class="mlr-card-redact">
-<span class="mlr-redact-bar" style="width:76%"></span>
-<span class="mlr-redact-bar" style="width:84%"></span>
-<span class="mlr-redact-bar" style="width:60%"></span>
-<span class="mlr-redact-bar" style="width:80%"></span>
-</div>
-<div class="mlr-card-foot">Detail available to admitted clients</div>
-</article>
-
-</div>
-
-<div class="mlr-foot">
-<span class="mlr-foot-l">06 MANDATES &middot; DETAILS DISCLOSED ON ADMISSION</span>
-<a class="mlr-foot-cta" href="#" data-page="intake">Apply for Engagement <span class="mlr-foot-arrow">&rarr;</span></a>
-</div>
-
-</section>
-
-<div class="s-num-bar dk"><span>01.B.02 · THE LIVING MARK</span><span>HIMARK / IDENTITY</span><span>RESPONSIVE · LIVE</span></div>
-
-<!-- LIVING MARK — cursor-responsive HIMΛRK glyph as a kinetic
-     identity moment. Ambient breath + cursor parallax + a soft
-     light-field that follows the pointer through the section. -->
-<section class="lm-section" id="lm-section">
-<span class="lm-coord-l">[ 01.B.02 ]</span>
-<span class="lm-coord-r">MARK · IN MOTION</span>
-
-<p class="lm-eyebrow">The mark</p>
-<h2 class="lm-hl">A consultancy is its principals — and<em>their mark on the work.</em></h2>
-
-<div class="lm-stage" id="lm-stage">
-<!-- Echo layer — same H+frame, parallax-shifts opposite, ocean-tinted -->
-<svg class="lm-echo" viewBox="0 0 140 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-<g class="lm-h-glyph">
-<rect x="14" y="14" width="38" height="170"/>
-<rect x="88" y="14" width="38" height="170"/>
-<rect x="52" y="85" width="16" height="30"/>
-<rect x="72" y="85" width="16" height="30"/>
-</g>
-<rect class="lm-frame" x="4" y="4" width="132" height="192" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter"/>
-</svg>
-<!-- Foreground glyph — the framed H, borrowed from the loading sequence.
-     viewBox 140x200, frame 132x192 with stroke-width 10. Four solid H
-     bars (left leg, right leg, two halves of the middle connector with
-     a 4-unit vertical split between them at x=68..72). -->
-<svg class="lm-glyph" id="lm-glyph" viewBox="0 0 140 200" preserveAspectRatio="xMidYMid meet" role="img" aria-label="HIMARK">
-<g class="lm-h-glyph">
-<rect x="14" y="14" width="38" height="170"/>
-<rect x="88" y="14" width="38" height="170"/>
-<rect x="52" y="85" width="16" height="30"/>
-<rect x="72" y="85" width="16" height="30"/>
-</g>
-<rect class="lm-frame" x="4" y="4" width="132" height="192" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter"/>
-</svg>
-</div>
-
-<p class="lm-foot">HIMARK · MMXXVI</p>
-</section>
-
-<div class="s-num-bar"><span>01.C · MANDATES</span><span>HIMARK / 02</span><span>03 · TIERS · STRUCTURED</span></div>
-
-<section class="orbit-section">
-<span class="orbit-coord-l">[ 01.C.01 · ORBIT ]</span>
-<span class="orbit-coord-r">THREE PATHS · ONE FIRM</span>
-
-<div class="orbit-intro">
-<p class="orbit-eyebrow">Engagement architecture</p>
-<h2 class="orbit-hl">Three engagement paths<em>· orbiting a single firm.</em></h2>
-<p class="orbit-sub">Each path enters HIMARK at a different depth. Engagement terms are confirmed directly. Tap any node to read its scope.</p>
-</div>
-
-<div class="orbit-stage" id="orbit-stage">
-<svg class="orbit-svg" viewBox="0 0 880 540" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Three orbiting engagement tiers around the HIMARK core">
-
-<!-- Faint orbital ring -->
-<circle cx="440" cy="270" r="200" class="orbit-ring"/>
-
-<!-- Slow rotating tick marks on the orbital ring -->
-<g class="orbit-ticks">
-<circle cx="440" cy="70"  r="2" class="orbit-tick"/>
-<circle cx="613" cy="370" r="2" class="orbit-tick"/>
-<circle cx="267" cy="370" r="2" class="orbit-tick"/>
-<circle cx="640" cy="270" r="1.5" class="orbit-tick-sm"/>
-<circle cx="240" cy="270" r="1.5" class="orbit-tick-sm"/>
-<circle cx="540" cy="100" r="1.5" class="orbit-tick-sm"/>
-<circle cx="340" cy="100" r="1.5" class="orbit-tick-sm"/>
-<circle cx="540" cy="440" r="1.5" class="orbit-tick-sm"/>
-<circle cx="340" cy="440" r="1.5" class="orbit-tick-sm"/>
-</g>
-
-<!-- Connection lines from core to each node -->
-<line x1="440" y1="270" x2="440" y2="70"  class="orbit-link" data-tier="0"/>
-<line x1="440" y1="270" x2="613" y2="370" class="orbit-link" data-tier="1"/>
-<line x1="440" y1="270" x2="267" y2="370" class="orbit-link" data-tier="2"/>
-
-<!-- ORBIT CORE — white tap-to-toggle circle. Click to collapse the
-     surrounding tier nodes inward; click again to expand them back.
-     The + icon rotates 45deg to become × when expanded (default). -->
-<g class="orbit-core" id="orbit-core" tabindex="0" role="button" aria-label="Toggle engagement paths" aria-pressed="true">
-<circle cx="440" cy="270" r="64" class="orbit-core-bg"/>
-<g class="orbit-core-icon">
-<line class="orbit-core-line" x1="425" y1="262" x2="455" y2="262"/>
-<line class="orbit-core-line" x1="440" y1="247" x2="440" y2="277"/>
-</g>
-<text class="orbit-core-label" x="440" y="300" text-anchor="middle">TAP</text>
-</g>
-
-<!-- TIER 01 — SIGNATURE (top) -->
-<g class="orbit-node" data-tier="0" tabindex="0" role="button" aria-label="Tier 01 Signature Partner">
-<circle class="orbit-node-pulse" cx="440" cy="70" r="60"/>
-<circle class="orbit-node-bg"    cx="440" cy="70" r="54"/>
-<circle class="orbit-node-ring"  cx="440" cy="70" r="54"/>
-<text x="440" y="62" text-anchor="middle" class="orbit-node-coord">[ TIER.01 ]</text>
-<text x="440" y="83" text-anchor="middle" class="orbit-node-name">SIGNATURE</text>
-</g>
-
-<!-- TIER 02 — GROWTH (lower right) -->
-<g class="orbit-node" data-tier="1" tabindex="0" role="button" aria-label="Tier 02 Growth Partner">
-<circle class="orbit-node-pulse" cx="613" cy="370" r="60"/>
-<circle class="orbit-node-bg"    cx="613" cy="370" r="54"/>
-<circle class="orbit-node-ring"  cx="613" cy="370" r="54"/>
-<text x="613" y="362" text-anchor="middle" class="orbit-node-coord">[ TIER.02 ]</text>
-<text x="613" y="383" text-anchor="middle" class="orbit-node-name">GROWTH</text>
-</g>
-
-<!-- TIER 03 — PRIVATE (lower left) -->
-<g class="orbit-node" data-tier="2" tabindex="0" role="button" aria-label="Tier 03 Private Partner">
-<circle class="orbit-node-pulse" cx="267" cy="370" r="60"/>
-<circle class="orbit-node-bg"    cx="267" cy="370" r="54"/>
-<circle class="orbit-node-ring"  cx="267" cy="370" r="54"/>
-<text x="267" y="362" text-anchor="middle" class="orbit-node-coord">[ TIER.03 ]</text>
-<text x="267" y="383" text-anchor="middle" class="orbit-node-name">PRIVATE</text>
-</g>
-
-</svg>
-</div>
-
-<!-- Detail panel — updates on node activation -->
-<div class="orbit-detail" id="orbit-detail">
-<div class="orbit-detail-coord">[ <span id="orb-coord">TIER.01</span> · <span id="orb-tag">SIGNATURE PARTNER</span> ]</div>
-<div class="orbit-detail-grid">
-<div class="orbit-detail-left">
-<p class="orbit-detail-eyebrow">Engagement path</p>
-<h3 class="orbit-detail-name" id="orb-name">Signature Partner</h3>
-<p class="orbit-detail-class" id="orb-class">Foundation · Professionalisation</p>
-<p class="orbit-detail-desc" id="orb-desc">Foundational growth and brand infrastructure for startups, SMEs, and service businesses ready to formalise their market presence. The launch-pad tier.</p>
-</div>
-<div class="orbit-detail-right">
-<div class="orbit-detail-row">
-<p class="orbit-detail-l">Cadence</p>
-<p class="orbit-detail-v" id="orb-cadence">Monthly strategy · Atlas advisory · Quarterly reviews</p>
-</div>
-<div class="orbit-detail-row">
-<p class="orbit-detail-l">Term</p>
-<p class="orbit-detail-v" id="orb-term">Quarterly minimum · Reviewed every 90 days</p>
-</div>
-<div class="orbit-detail-row">
-<p class="orbit-detail-l">Best fit</p>
-<p class="orbit-detail-v" id="orb-fit">Startups, SMEs, professional service firms establishing market presence</p>
-</div>
-<a class="orbit-detail-cta" href="#" data-page="intake">Apply for Engagement <span class="orbit-detail-arrow">→</span></a>
-</div>
-</div>
-</div>
-
-<!-- SHORTCUT PANEL — pops up when the orbit is collapsed. Three
-     direct entry paths into HIMARK, mapped to the three real channels
-     a visitor would use. Sibling of .orbit-stage so the CSS sibling
-     selector reveals it on .orbit-stage.collapsed. -->
-<div class="orbit-shortcut" id="orbit-shortcut">
-<p class="orbit-shortcut-eyebrow">Three ways to begin</p>
-<div class="orbit-shortcut-grid">
-
-<a href="#" data-page="intake" class="orbit-shortcut-card">
-<div class="orbit-shortcut-card-top">
-<span class="orbit-shortcut-coord">[ A ]</span>
-<span class="orbit-shortcut-pill">Retainer</span>
-</div>
-<h4 class="orbit-shortcut-name">Apply</h4>
-<p class="orbit-shortcut-sub">Formal engagement application for one of the three retainer tiers. Reviewed by a principal within five working days.</p>
-<span class="orbit-shortcut-cta">Apply for engagement <span class="orbit-shortcut-arrow">→</span></span>
+<!-- HERO ───────────────────────────────────────────────────── -->
+<section class="home-hero">
+<div class="home-hero-inner">
+<p class="home-hero-eyebrow">Principal-led · By application</p>
+<h1 class="home-hero-hl">An institution for<br/><em>founder-led growth.</em></h1>
+<p class="home-hero-sub">We design and operate the strategic infrastructure beneath founder-led businesses — brand, demand, AI, principal counsel. Built to compound, not to launch.</p>
+<a class="home-hero-cta" href="apply.html">
+<span>Apply for Engagement</span>
+<span class="home-hero-cta-arrow" aria-hidden="true">→</span>
 </a>
-
-<a href="#" data-page="sessions" class="orbit-shortcut-card">
-<div class="orbit-shortcut-card-top">
-<span class="orbit-shortcut-coord">[ B ]</span>
-<span class="orbit-shortcut-pill">90 min</span>
-</div>
-<h4 class="orbit-shortcut-name">Counsel</h4>
-<p class="orbit-shortcut-sub">A single principal session on a defined commercial question. No tier commitment, written one-pager afterward.</p>
-<span class="orbit-shortcut-cta">Book a session <span class="orbit-shortcut-arrow">→</span></span>
-</a><button type="button" class="orbit-shortcut-card" id="orbit-shortcut-atlas">
-<div class="orbit-shortcut-card-top">
-<span class="orbit-shortcut-coord">[ C ]</span>
-<span class="orbit-shortcut-pill">Live</span>
-</div>
-<h4 class="orbit-shortcut-name">Atlas</h4>
-<p class="orbit-shortcut-sub">Talk to HIMARK's principal-trained assistant. Get clarity on tier alignment before committing to anything.</p>
-<span class="orbit-shortcut-cta">Open Atlas <span class="orbit-shortcut-arrow">→</span></span>
-</button>
-
-</div>
-</div>
-
-<!-- SIDE IMAGES — vertical editorial panels that slide in when the
-     orbit collapses. Each is a clickable link into a relevant page.
-     Hidden by default; revealed via the .orbit-stage.collapsed
-     sibling selector. Hidden on viewports below 1200px. -->
-<aside class="orbit-side orbit-side-l">
-<a href="#" data-page="method" class="orbit-side-link">
-<span class="orbit-side-coord">[ 03 ]</span>
-<div class="orbit-side-img" data-bg-key="orbit.side.left" style="background-image:url('images/method-hero.jpg')"></div>
-<div class="orbit-side-caption">
-<span class="orbit-side-tag">Process</span>
-<span class="orbit-side-name">The Method</span>
-</div>
-<span class="orbit-side-arrow">→</span>
-</a>
-</aside>
-
-<aside class="orbit-side orbit-side-r">
-<a href="#" data-page="principals" class="orbit-side-link">
-<span class="orbit-side-coord">[ 05 ]</span>
-<div class="orbit-side-img" data-bg-key="orbit.side.right" style="background-image:url('images/team-hero.jpg')"></div>
-<div class="orbit-side-caption">
-<span class="orbit-side-tag">Team</span>
-<span class="orbit-side-name">The Principals</span>
-</div>
-<span class="orbit-side-arrow">→</span>
-</a>
-</aside>
-
-</section>
-
-<div class="s-num-bar dk"><span>01.D · PRINCIPAL STATEMENT</span><span>HIMARK / 03</span><span>QUOTED · ON.RECORD</span></div>
-
-<section class="quote-mono">
-<span class="quote-mono-coord-tl">[ 01.D.01 ]</span>
-<span class="quote-mono-coord-tr">PRINCIPAL — N. MATIME</span>
-<div class="quote-grid">
-<div class="quote-mark r3d">"</div>
-<div class="r3d d1">
-<p class="quote-body" data-typewriter-once>"The difference between a business that grows and one that stagnates is almost always clarity — of strategy, of positioning, of execution priority."</p>
-<div class="quote-attr"><div class="qa-line"></div><div><div class="qa-name">Neo Matime</div><div class="qa-role">Founder & Chief Executive, HIMARK</div></div></div>
-</div>
 </div>
 </section>
+
+<!-- MARQUEE — looping doctrine phrases ─────────────────────── -->
+<section class="home-marquee" aria-label="HIMARK doctrine">
+<div class="home-marquee-track">
+<span>Clarity precedes scale</span>
+<span class="dot">·</span>
+<span>Volume is a tax on quality</span>
+<span class="dot">·</span>
+<span>Engagements are earned, not won</span>
+<span class="dot">·</span>
+<span>Architecture compounds, campaigns expire</span>
+<span class="dot">·</span>
+<span>Positioning is destiny</span>
+<span class="dot">·</span>
+<span>Strategy without delivery is fiction</span>
+<span class="dot">·</span>
+<!-- Duplicate set — the -50% translate loops back here for seamless scroll -->
+<span>Clarity precedes scale</span>
+<span class="dot">·</span>
+<span>Volume is a tax on quality</span>
+<span class="dot">·</span>
+<span>Engagements are earned, not won</span>
+<span class="dot">·</span>
+<span>Architecture compounds, campaigns expire</span>
+<span class="dot">·</span>
+<span>Positioning is destiny</span>
+<span class="dot">·</span>
+<span>Strategy without delivery is fiction</span>
+<span class="dot">·</span>
+</div>
+</section>
+
+<!-- ANCHOR ─────────────────────────────────────────────────── -->
+<section class="home-anchor">
+<div class="home-anchor-inner">
+<p class="home-anchor-eyebrow">The Firm</p>
+<p class="home-anchor-body">We work with a deliberately limited number of founder-led businesses each quarter. Every engagement is anchored by a senior principal. The firm operates <em>by application</em> — there is no sales cycle.</p>
+<a class="home-anchor-link" href="about.html">
+<span>Read more about the firm</span>
+<span class="home-anchor-link-arrow" aria-hidden="true">→</span>
+</a>
+</div>
+</section>
+
+<!-- FOOTER ─────────────────────────────────────────────────── -->
 <footer class="footer">
 <span class="footer-coord-tl">[ END.DOCUMENT ]</span>
 <span class="footer-coord-tr">HIMARK / FOOTER</span>
 <div class="footer-top">
 <div><div class="ft-wm"><svg width="14" height="10" viewBox="0 0 292 200" fill="none"><rect x="0" y="0" width="28" height="200" fill="#5F8190"/><rect x="28" y="88" width="104" height="20" fill="#5F8190"/><rect x="132" y="0" width="28" height="200" fill="#5F8190"/><polygon points="160,0 182,0 212,120 201,120" fill="#5F8190"/><polygon points="242,0 264,0 223,120 212,120" fill="#5F8190"/><rect x="264" y="0" width="28" height="200" fill="#5F8190"/></svg>HIMARK</div><p class="ft-tag">Strategic Growth Consultancy</p><p class="ft-blurb">HIMARK (Pty) Ltd</p></div>
-<div><p class="ft-col-t">[ 01 ] Engagement</p><ul class="ft-links"><li><a href="#" data-page="mandates">Mandates</a></li><li><a href="#" data-page="intake">Apply</a></li><li><a href="#" data-page="sessions">Counsel</a></li></ul></div>
-<div><p class="ft-col-t">[ 02 ] Firm</p><ul class="ft-links"><li><a href="#" data-page="doctrine">Doctrine</a></li><li><a href="#" data-page="principals">Principals</a></li><li><a href="#" data-page="home">Origin</a></li></ul></div>
-<div><p class="ft-col-t">[ 03 ] Contact</p><ul class="ft-links"><li><a href="#">info@himark.co.za</a></li><li><a href="#" data-page="subscribe">Subscribe to The Journal</a></li><li><a href="#" data-page="signin">Client Portal</a></li></ul></div>
+<div><p class="ft-col-t">[ 01 ] Engagement</p><ul class="ft-links"><li><a href="services.html">Mandates</a></li><li><a href="apply.html">Apply</a></li><li><a href="sessions.html">Counsel</a></li></ul></div>
+<div><p class="ft-col-t">[ 02 ] Firm</p><ul class="ft-links"><li><a href="about.html">Doctrine</a></li><li><a href="team.html">Principals</a></li><li><a href="/">Origin</a></li></ul></div>
+<div><p class="ft-col-t">[ 03 ] Contact</p><ul class="ft-links"><li><a href="mailto:info@himark.co.za">info@himark.co.za</a></li><li><a href="subscribe.html">Subscribe to The Journal</a></li><li><a href="auth/signin.html">Client Portal</a></li></ul></div>
 </div>
-<div class="footer-bottom"><p class="ft-copy">© 2026  ·  HIMARK (PTY) LTD  ·  ALL RIGHTS RESERVED</p><div class="ft-legal"><a href="#" data-page="privacy">Privacy</a><a href="#" data-page="terms">Terms</a><a href="#" data-page="cookies">Cookies</a><a href="#" data-page="security">Security</a><a href="#" data-page="privacy">POPIA</a></div></div></footer></div>
-<!-- Floating widgets -->
-<button id="mute-btn" class="muted"><div class="aw"><span></span><span></span><span></span><span></span><span></span></div></button>
+<div class="footer-bottom"><p class="ft-copy">© 2026  ·  HIMARK (PTY) LTD</p><div class="ft-legal"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="cookies.html">Cookies</a><a href="security.html">Security</a></div></div>
+</footer>
 
-<!-- WhatsApp button moved to Intake page -->
-
+<!-- Floating Atlas chat widget (kept) ──────────────────────── -->
 <button class="chat-toggle-btn" id="chatTgl">
 <svg class="ico-ch" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F7F7F5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
 <svg class="ico-cl" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#F7F7F5" stroke-width="1.8" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -1626,315 +518,41 @@
 <button class="v-btn" id="vMic" onclick="tV()">START SPEAKING</button>
 </div>
 </div>
+
+<!-- Inline topnav script — mobile toggle + active-page marker ── -->
+<script>
+(function(){
+  'use strict';
+
+  /* Mobile hamburger toggle */
+  var toggle = document.querySelector('.topnav-toggle');
+  var list   = document.getElementById('topnav-list');
+  if (toggle && list) {
+    toggle.addEventListener('click', function(){
+      var open = list.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    /* Close on link click (mobile) */
+    list.addEventListener('click', function(e){
+      if (e.target.tagName === 'A' && list.classList.contains('open')) {
+        list.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  /* Mark the current page link with aria-current="page".
+     Compare basename of pathname to each link's pathname. */
+  var here = (location.pathname.split('/').pop() || 'home.html').toLowerCase();
+  if (here === '' || here === 'index.html') here = 'home.html';
+  document.querySelectorAll('.topnav-list a[href]').forEach(function(a){
+    var href = (a.getAttribute('href') || '').toLowerCase();
+    var base = href.split('/').pop();
+    if (base === here) a.setAttribute('aria-current', 'page');
+  });
+})();
+</script>
+
 <script src="main/main.js"></script>
-
-<!-- LIVING MARK — scroll-triggered reveal of the framed H + cursor-
-     following light field + glyph parallax. The framed-H borrows
-     the same animation language as the loading-page sequence:
-     H bars fade up first, then the frame draws on via stroke-
-     dashoffset. Plays once when the section enters the viewport. -->
-<script>
-(function(){
-  const section = document.getElementById('lm-section');
-  const stage   = document.getElementById('lm-stage');
-  const glyph   = document.getElementById('lm-glyph');
-  if(!section || !stage || !glyph) return;
-
-  const reduceMotion = window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-
-  // Scroll-trigger the reveal — IntersectionObserver fires once
-  // when the section is ~25% in view. Reduced-motion users get the
-  // final state instantly with no transition.
-  if(reduceMotion){
-    glyph.classList.add('in-view');
-  } else if('IntersectionObserver' in window){
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if(entry.isIntersecting){
-          glyph.classList.add('in-view');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.25 });
-    io.observe(section);
-  } else {
-    glyph.classList.add('in-view');
-  }
-
-  // Touch / no-hover devices: skip the pointer effects entirely.
-  const hasHover = window.matchMedia && window.matchMedia('(hover:hover)').matches;
-  if(!hasHover || reduceMotion) return;
-
-  let rafId = null;
-  let pending = null;
-
-  function applyPointer(){
-    if(!pending) return;
-    const { mx, my, sx, sy, sw, sh } = pending;
-    pending = null;
-    rafId = null;
-
-    // Light field — radial gradient follows the pointer over the section bg
-    section.style.setProperty('--mx', (mx / sw * 100) + '%');
-    section.style.setProperty('--my', (my / sh * 100) + '%');
-
-    // Glyph parallax — tilt towards the pointer relative to stage centre
-    const stageRect = stage.getBoundingClientRect();
-    const cx = stageRect.left + stageRect.width  / 2;
-    const cy = stageRect.top  + stageRect.height / 2;
-    const dx = (sx - cx) / (stageRect.width  / 2); // -1..1
-    const dy = (sy - cy) / (stageRect.height / 2); // -1..1
-    // Clamp so the parallax stays subtle
-    const ry = Math.max(-1.2, Math.min(1.2, dx)) *  7; // deg
-    const rx = Math.max(-1.2, Math.min(1.2, dy)) * -5; // deg
-    stage.style.setProperty('--rx', rx.toFixed(2) + 'deg');
-    stage.style.setProperty('--ry', ry.toFixed(2) + 'deg');
-  }
-
-  section.addEventListener('mousemove', (e) => {
-    const rect = section.getBoundingClientRect();
-    pending = {
-      mx: e.clientX - rect.left,
-      my: e.clientY - rect.top,
-      sx: e.clientX,
-      sy: e.clientY,
-      sw: rect.width,
-      sh: rect.height
-    };
-    if(!rafId) rafId = requestAnimationFrame(applyPointer);
-  });
-
-  section.addEventListener('mouseleave', () => {
-    section.style.setProperty('--mx', '50%');
-    section.style.setProperty('--my', '50%');
-    stage.style.setProperty('--rx', '0deg');
-    stage.style.setProperty('--ry', '0deg');
-  });
-})();
-</script>
-
-
-<!-- MANDATE LEDGER — doctrine fragment rotator. Cycles every 6.5s
-     with a soft opacity fade. Pauses when scrolled off-screen or
-     when the tab is hidden. Reduced-motion users get no rotation. -->
-<script>
-(function(){
-  const doctrineEl = document.getElementById('mlr-doctrine');
-  if(!doctrineEl) return;
-  const textEl = doctrineEl.querySelector('.mlr-doctrine-text');
-  if(!textEl) return;
-
-  const reduceMotion = window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  if(reduceMotion) return;
-
-  const fragments = [
-    'Diagnosis precedes prescription.',
-    'Volume is a tax on quality.',
-    'Engagements are earned \u2014 not won.',
-    'Strategy without execution is fiction.',
-    'Clarity precedes scale.',
-    'Cadence is the discipline that holds an engagement together.'
-  ];
-
-  let idx = 0;
-  let timer = null;
-  const INTERVAL = 6500;
-  const FADE = 420;
-
-  function next(){
-    doctrineEl.classList.add('fading');
-    setTimeout(function(){
-      idx = (idx + 1) % fragments.length;
-      textEl.textContent = fragments[idx];
-      doctrineEl.classList.remove('fading');
-    }, FADE);
-  }
-
-  function start(){ if(timer) clearInterval(timer); timer = setInterval(next, INTERVAL); }
-  function stop(){ if(timer){ clearInterval(timer); timer = null; } }
-
-  if('IntersectionObserver' in window){
-    const io = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if(entry.isIntersecting) start();
-        else stop();
-      });
-    }, { threshold: 0.1 });
-    io.observe(doctrineEl);
-  } else { start(); }
-
-  document.addEventListener('visibilitychange', function(){
-    if(document.hidden) stop();
-    else start();
-  });
-})();
-</script>
-
-
-<!-- ORBIT — node activation + auto-cycle + click-to-lock + viewport pause. -->
-<script>
-(function(){
-  const stage = document.getElementById('orbit-stage');
-  if(!stage) return;
-  const nodes = stage.querySelectorAll('.orbit-node');
-  const links = stage.querySelectorAll('.orbit-link');
-
-  const cCoord   = document.getElementById('orb-coord');
-  const cTag     = document.getElementById('orb-tag');
-  const cName    = document.getElementById('orb-name');
-  const cClass   = document.getElementById('orb-class');
-  const cDesc    = document.getElementById('orb-desc');
-  const cCadence = document.getElementById('orb-cadence');
-  const cTerm    = document.getElementById('orb-term');
-  const cFit     = document.getElementById('orb-fit');
-
-  const tiers = [
-    {
-      coord:'TIER.01', tag:'SIGNATURE PARTNER',
-      name:'Signature Partner',
-      cls:'Foundation · Professionalisation',
-      desc:'Foundational growth and brand infrastructure for startups, SMEs, and service businesses ready to formalise their market presence. The launch-pad tier — where most engagements begin.',
-      cadence:'Monthly strategy · Atlas advisory · Quarterly performance reviews',
-      term:'Quarterly minimum · Reviewed every 90 days',
-      fit:'Startups, SMEs, professional service firms establishing market presence'
-    },
-    {
-      coord:'TIER.02', tag:'GROWTH PARTNER',
-      name:'Growth Partner',
-      cls:'Core HIMARK Tier · Scale & Optimisation',
-      desc:'Scalable growth and operational integration — the core HIMARK tier. Where businesses begin relying on us strategically and operationally as part of the growth engine.',
-      cadence:'Weekly principal cadence · Live Slack/WhatsApp · Monthly board update',
-      term:'Six-month minimum · Reviewed every 90 days',
-      fit:'Scaling businesses, mid-sized companies, operationally heavy service firms'
-    },
-    {
-      coord:'TIER.03', tag:'PRIVATE PARTNER',
-      name:'Private Partner',
-      cls:'Executive Transformation · By Invitation',
-      desc:'Executive-level strategic transformation with a dedicated principal embedded with leadership. Enterprise AI, M&A architecture, capital strategy, executive branding. By invitation only.',
-      cadence:'Real-time access · Dedicated principal · Direct line to founder',
-      term:'12-month minimum · By invitation only',
-      fit:'High-growth firms, enterprise clients, executive-led businesses scaling aggressively'
-    }
-  ];
-
-  const valueEls = [cName, cClass, cDesc, cCadence, cTerm, cFit];
-
-  let activeIdx = 0;
-  let timer = null;
-  let userTookOver = false;
-  let resumeAfter = null;
-  const INTERVAL = 7000;
-  const FADE = 240;
-  const RESUME_DELAY = 14000;
-
-  function setActive(idx){
-    if(idx === activeIdx && stage.classList.contains('has-active')) return;
-    nodes.forEach(function(n,i){ n.classList.toggle('active', i === idx); });
-    links.forEach(function(l){ l.classList.toggle('active', l.getAttribute('data-tier') === String(idx)); });
-    stage.classList.add('has-active');
-
-    valueEls.forEach(function(el){ el.classList.add('fading'); });
-    setTimeout(function(){
-      const t = tiers[idx];
-      cCoord.textContent   = t.coord;
-      cTag.textContent     = t.tag;
-      cName.textContent    = t.name;
-      cClass.textContent   = t.cls;
-      cDesc.textContent    = t.desc;
-      cCadence.textContent = t.cadence;
-      cTerm.textContent    = t.term;
-      cFit.textContent     = t.fit;
-      valueEls.forEach(function(el){ el.classList.remove('fading'); });
-    }, FADE);
-
-    activeIdx = idx;
-  }
-
-  function nextTier(){ setActive((activeIdx + 1) % tiers.length); }
-  function startTimer(){ if(timer) clearInterval(timer); timer = setInterval(nextTier, INTERVAL); }
-  function stopTimer(){ if(timer){ clearInterval(timer); timer = null; } }
-
-  nodes.forEach(function(node, i){
-    function activate(){
-      userTookOver = true;
-      setActive(i);
-      stopTimer();
-      if(resumeAfter) clearTimeout(resumeAfter);
-      resumeAfter = setTimeout(function(){
-        userTookOver = false;
-        startTimer();
-      }, RESUME_DELAY);
-    }
-    node.addEventListener('click', activate);
-    node.addEventListener('keydown', function(e){
-      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); activate(); }
-    });
-  });
-
-  // IntersectionObserver — pause cycling when off-screen
-  if('IntersectionObserver' in window){
-    const io = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if(entry.isIntersecting){ if(!userTookOver) startTimer(); }
-        else stopTimer();
-      });
-    }, { threshold: 0.2 });
-    io.observe(stage);
-  } else { startTimer(); }
-
-  // Init — first tier active
-  setActive(0);
-
-  // Pause when tab is hidden
-  document.addEventListener('visibilitychange', function(){
-    if(document.hidden) stopTimer();
-    else if(!userTookOver && !stage.classList.contains('collapsed')) startTimer();
-  });
-
-  // Collapsible — clicking the centre toggles the surrounding orbit.
-  // When collapsed, the tier nodes shrink toward the core, connecting
-  // links fade, and the detail panel below collapses cleanly. Cycling
-  // is paused while collapsed so we don't lerp invisible state.
-  const core = document.getElementById('orbit-core');
-  if(core){
-    function toggleCollapse(){
-      const willCollapse = !stage.classList.contains('collapsed');
-      stage.classList.toggle('collapsed', willCollapse);
-      core.setAttribute('aria-pressed', willCollapse ? 'false' : 'true');
-      if(willCollapse){
-        stopTimer();
-      } else {
-        userTookOver = false;
-        startTimer();
-      }
-    }
-    core.addEventListener('click', function(e){
-      e.stopPropagation();
-      toggleCollapse();
-    });
-    core.addEventListener('keydown', function(e){
-      if(e.key === 'Enter' || e.key === ' '){
-        e.preventDefault();
-        toggleCollapse();
-      }
-    });
-  }
-
-  // Shortcut Atlas card — opens the floating chat widget.
-  const atlasBtn = document.getElementById('orbit-shortcut-atlas');
-  if(atlasBtn){
-    atlasBtn.addEventListener('click', function(){
-      const chatTgl = document.getElementById('chatTgl');
-      if(chatTgl && !document.body.classList.contains('ch')){
-        chatTgl.click();
-      }
-    });
-  }
-})();
-</script>
-
 </body>
 </html>

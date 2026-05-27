@@ -372,6 +372,32 @@
      cleanly to the anchor section above (no double background). */
   .footer{ background: var(--midnight); }
 
+  /* ── CINEMATIC STICKY HERO ────────────────────────────────
+     Mirrors what #page-home > .hero used to do in styles.css.
+     The hero stays pinned while the .hero-spacer below provides
+     300vh of scroll for the canvas animation. Sections after the
+     hero (marquee, orbit, anchor, footer) need z-index: 1 so they
+     occlude the sticky hero as they scroll up over it. */
+  body > .hero{
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    min-height: 100vh;
+    z-index: 0;
+  }
+  body > .home-marquee,
+  body > .orbit-section,
+  body > .home-anchor,
+  body > .footer{
+    position: relative;
+    z-index: 1;
+  }
+  /* The first section to arrive over the hero gets a soft top shadow
+     for the "lift" effect when it crosses the hero release point. */
+  body > .home-marquee{
+    box-shadow: 0 -24px 60px rgba(28,43,58,.10), 0 -1px 0 rgba(28,43,58,.06);
+  }
+
   /* === ORBIT (restored) === */
   .orbit-section{
     background:var(--off);
@@ -1033,9 +1059,12 @@
 </div>
 </section>
 
-<!-- (hero-spacer removed — the canvas scroll-scrub animation it powered
-     no longer runs under the new navbar layout, so the spacer was just
-     creating ~300vh of dead white space between the hero and the marquee.) -->
+<!-- 300vh scroll runway. The hero above is position:sticky and stays
+     pinned while the user scrolls through this spacer; meanwhile
+     main.js scrubs the canvas frame-sequence 0 → 299 against the
+     spacer's scroll progress. After the spacer ends, the marquee
+     scrolls up over the released hero. -->
+<div class="hero-spacer" aria-hidden="true"></div>
 
 
 <!-- MARQUEE — looping doctrine phrases ─────────────────────── -->

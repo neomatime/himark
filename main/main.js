@@ -882,11 +882,13 @@ window.submitIntake=submitIntake;
    - Falls back to the looping .hero-video if frames fail to load or when
      prefers-reduced-motion is set. */
 (function(){
-  const page=document.getElementById('page-home');
-  if(!page)return;
-  const hero=page.querySelector('.hero');
+  /* Query the hero/spacer directly — the home redesign removed the
+     #page-home wrapper, so we no longer scope through it. .hero is
+     unique to the home page (other pages use .np-hero), so this is
+     safe site-wide: on non-home pages the if-guard returns early. */
+  const hero=document.querySelector('.hero');
   const canvas=hero&&hero.querySelector('.hero-canvas');
-  const spacer=page.querySelector('.hero-spacer');
+  const spacer=document.querySelector('.hero-spacer');
   if(!hero||!canvas||!spacer)return;
 
   const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
@@ -995,7 +997,11 @@ window.submitIntake=submitIntake;
     // completes by the time scroll reaches spacer.offsetHeight, after
     // which the final frame holds while the sticky hero finishes releasing.
     const total=spacer.offsetHeight||1;
-    const scrolled=page.scrollTop;
+    /* Read window scroll directly. The old code read .page.scrollTop
+       because the home page was wrapped in a position:fixed .page
+       container that owned its own scroll. The redesign removed that
+       wrapper so scroll lives on the document/window. */
+    const scrolled=window.scrollY||document.documentElement.scrollTop||0;
     const t=Math.max(0,Math.min(1,scrolled/total));
     return t*(FRAME_COUNT-1);
   }
@@ -1022,7 +1028,8 @@ window.submitIntake=submitIntake;
   }
   function kick(){if(raf)return;raf=requestAnimationFrame(loop);}
 
-  page.addEventListener('scroll',kick,{passive:true});
+  /* Listen on window — the .page wrapper that used to be the scroller
+     was removed in the redesign. */
   window.addEventListener('scroll',kick,{passive:true});
 
   preloadAll();

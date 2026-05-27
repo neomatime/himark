@@ -372,29 +372,19 @@
      cleanly to the anchor section above (no double background). */
   .footer{ background: var(--midnight); }
 
-  /* ── CINEMATIC STICKY HERO ────────────────────────────────
-     Mirrors what #page-home > .hero used to do in styles.css.
-     The hero stays pinned while the .hero-spacer below provides
-     300vh of scroll for the canvas animation. Sections after the
-     hero (marquee, orbit, anchor, footer) need z-index: 1 so they
+  /* ── HOME SECTION LAYERING ────────────────────────────────
+     #page-home > .hero in styles.css makes the hero sticky.
+     Sections following the hero need z-index: 1 so they cleanly
      occlude the sticky hero as they scroll up over it. */
-  body > .hero{
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    min-height: 100vh;
-    z-index: 0;
-  }
-  body > .home-marquee,
-  body > .orbit-section,
-  body > .home-anchor,
-  body > .footer{
+  #page-home > .home-marquee,
+  #page-home > .orbit-section,
+  #page-home > .home-anchor,
+  #page-home > .footer{
     position: relative;
     z-index: 1;
   }
-  /* The first section to arrive over the hero gets a soft top shadow
-     for the "lift" effect when it crosses the hero release point. */
-  body > .home-marquee{
+  /* Soft top-shadow on the first section to arrive over the hero. */
+  #page-home > .home-marquee{
     box-shadow: 0 -24px 60px rgba(28,43,58,.10), 0 -1px 0 rgba(28,43,58,.06);
   }
 
@@ -999,6 +989,10 @@
 </head>
 <body data-page="home" data-location="root">
 
+<!-- Custom cursor follower (dot + ring) — body has cursor:none -->
+<div id="cd"></div>
+<div id="cr"></div>
+
 <!-- TOPNAV ─────────────────────────────────────────────────── -->
 <nav class="topnav" aria-label="Primary">
 <div class="topnav-inner">
@@ -1032,6 +1026,13 @@
 <button class="cb-btn cb-btn-primary" id="cb-accept">Accept All</button>
 </div>
 </aside>
+
+<!-- ── .page WRAPPER ───────────────────────────────────────
+     The home content lives inside this wrapper so the SPA's
+     #page-home > .hero sticky-scroll-scrub behavior + the
+     ".page.active" activation flow that main.js manages both
+     work without modification. -->
+<div class="page" id="page-home">
 
 <!-- HERO — restored kinetic scrolling landing -->
 <section class="hero snap-section">
@@ -1296,6 +1297,8 @@
 </div>
 <div class="footer-bottom"><p class="ft-copy">© 2026  ·  HIMARK (PTY) LTD</p><div class="ft-legal"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="cookies.html">Cookies</a><a href="security.html">Security</a></div></div>
 </footer>
+
+</div><!-- /.page#page-home -->
 
 <!-- Floating Atlas chat widget (kept) ──────────────────────── -->
 <button class="chat-toggle-btn" id="chatTgl">

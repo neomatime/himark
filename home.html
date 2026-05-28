@@ -1256,13 +1256,14 @@
   }
 
   /* ── Hero CTAs — primary (Apply) + soft secondary (Doctrine).
-     Soft outline pairs with the solid fill so browsers (not just
-     buyers) have a clear secondary pathway. */
+     Side-by-side on desktop; stack on narrow screens where they
+     would otherwise truncate. */
   #page-home .hero-meta-r{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 14px;
-    align-items: flex-start;
+    align-items: center;
   }
   #page-home .home-hero-cta-soft{
     background: transparent !important;
@@ -1275,8 +1276,13 @@
     border-color: rgba(247,247,245,.9);
     color: var(--off) !important;
   }
-  @media (max-width: 768px){
-    #page-home .hero-meta-r{ gap: 10px; }
+  @media (max-width: 520px){
+    #page-home .hero-meta-r{
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    #page-home .hero-meta-r .home-hero-cta{ width: 100%; justify-content: space-between; }
   }
 
   /* ── Hero headline — smaller per user request ──────────────

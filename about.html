@@ -454,6 +454,23 @@
     .dpl-grid-c4{ grid-template-columns: 1fr !important; }
     .dpl-cell-compact .dpl-img{ height: 140px; }
   }
+
+  /* nav-bold-override — make navbar links bolder and darker so
+     they read clearly against the white topnav background. */
+  .topnav-list a{
+    font-weight: 600 !important;
+    color: var(--midnight) !important;
+    letter-spacing: .12em !important;
+    font-size: 12px !important;
+  }
+  .topnav-list a:hover,
+  .topnav-list a:focus-visible{
+    color: var(--ocean-dk) !important;
+  }
+  .topnav-list a[aria-current="page"]{
+    color: var(--ocean-dk) !important;
+    font-weight: 700 !important;
+  }
 </style>
   <script src="images.config.js"></script>
   <script defer data-domain="himark.co.za" src="https://plausible.io/js/script.js"></script>
@@ -473,7 +490,7 @@
 <span></span><span></span><span></span>
 </button>
 <ul class="topnav-list" id="topnav-list">
-<li><a href="about.html">About</a></li>
+<li><a href="home.html">Home</a></li><li><a href="about.html">About</a></li>
 <li><a href="services.html">Services</a></li>
 <li><a href="team.html">Team</a></li>
 <li><a href="apply.html">Apply</a></li>

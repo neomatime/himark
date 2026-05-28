@@ -2090,6 +2090,26 @@ window.authSubmit=authSubmit;
     var list   = document.getElementById('topnav-list');
     var toggle = document.querySelector('.topnav-toggle');
 
+    /* CRITICAL iOS FIX: relocate .topnav-list based on viewport.
+       On mobile (≤1024px): move it to be a direct child of <body> so
+       position:fixed is truly relative to the viewport, not trapped by
+       the position:sticky .topnav parent (which on iOS Safari and even
+       desktop Chromium causes the dropdown to render under .page).
+       On desktop (>1024px): keep it inside .topnav-inner so the
+       horizontal navbar layout works naturally. */
+    var inner = document.querySelector('.topnav-inner');
+    function relocateMenu(){
+      if (!list || !inner) return;
+      var isMobile = window.innerWidth <= 1024;
+      if (isMobile && list.parentElement !== document.body) {
+        document.body.appendChild(list);
+      } else if (!isMobile && list.parentElement !== inner) {
+        inner.appendChild(list);
+      }
+    }
+    relocateMenu();
+    window.addEventListener('resize', relocateMenu);
+
     if (toggle && list) {
       /* Auto-close when a nav link is clicked. */
       list.addEventListener('click', function(e){

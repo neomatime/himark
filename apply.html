@@ -351,7 +351,7 @@
       background: var(--off);
       border-bottom: 1px solid rgba(95,129,144,.18);
       padding: 8px 0;
-      display: none; z-index: 50;
+      display: none; z-index: 99999;
     }
     .topnav-list.open{ display: flex; }
     .topnav-list a{ padding: 14px 24px; }
@@ -408,6 +408,19 @@
 </ul>
 </div>
 </nav>
+<script>
+/* topnav-relocate-inline — runs synchronously during HTML parse,
+   right after the </nav>, before user can possibly tap. */
+(function(){
+  try{
+    var l = document.getElementById('topnav-list');
+    if (l && document.body && window.innerWidth <= 1024 && l.parentElement !== document.body) {
+      document.body.appendChild(l);
+    }
+  }catch(_){}
+})();
+</script>
+
 
 <div class="prn-backdrop" id="prnBackdrop"></div>
 

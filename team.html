@@ -380,6 +380,72 @@
     box-shadow:none !important;
   }
 
+  /* ── Credentials block + LinkedIn pill — adds credibility
+     depth to each principal card. Sits below the existing tags. */
+  .pc-creds{
+    padding: 18px 28px 4px;
+    border-top: 1px solid rgba(95,129,144,.18);
+    margin-top: 18px;
+  }
+  .pc-creds-block{
+    margin-bottom: 14px;
+  }
+  .pc-creds-l{
+    display: block;
+    font-family: var(--f-mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--ocean);
+    margin-bottom: 6px;
+  }
+  .pc-creds-v{
+    font-family: var(--f-body);
+    font-size: 12.5px;
+    font-weight: 400;
+    line-height: 1.55;
+    color: var(--ink-mut);
+    margin: 0;
+  }
+  .pc-creds-v strong{
+    font-weight: 600;
+    color: var(--midnight);
+  }
+  .pc-socials{
+    padding: 0 28px 22px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .pc-linkedin{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    background: transparent;
+    border: 1px solid rgba(95,129,144,.4);
+    border-radius: 2px;
+    font-family: var(--f-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ocean-dk);
+    text-decoration: none;
+    transition: background .25s ease, color .25s ease, border-color .25s ease;
+  }
+  .pc-linkedin:hover,
+  .pc-linkedin:focus-visible{
+    background: var(--ocean);
+    color: var(--off);
+    border-color: var(--ocean);
+    outline: none;
+  }
+  .pc-linkedin svg{
+    flex-shrink: 0;
+  }
+
   /* ── TOPNAV (site-wide) ─────────────────────────────── */
   .topnav{
     position: sticky;
@@ -650,6 +716,24 @@
 <span class="pc-tag">Founder Office</span>
 <span class="pc-tag">Tier 03 Lead</span>
 </div>
+<!-- TODO: swap placeholder credentials below for Neo Matime's actual past roles. -->
+<div class="pc-creds">
+<div class="pc-creds-block">
+<span class="pc-creds-l">[ Previously ]</span>
+<p class="pc-creds-v"><strong>[ Past Role · Firm ]</strong> · <strong>[ Past Role · Firm ]</strong> · <strong>[ Past Role · Firm ]</strong></p>
+</div>
+<div class="pc-creds-block">
+<span class="pc-creds-l">[ Tenure ]</span>
+<p class="pc-creds-v">[ N ]+ years across strategic operations, brand, and growth infrastructure.</p>
+</div>
+</div>
+<div class="pc-socials">
+<!-- TODO: replace # with Neo Matime's LinkedIn URL -->
+<a href="#" target="_blank" rel="noopener" class="pc-linkedin" aria-label="Neo Matime on LinkedIn">
+<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+<span>LinkedIn</span>
+</a>
+</div>
 </div>
 <div class="principal-card" data-bio-full="Leads brand positioning, market communication, and demand architecture across HIMARK. Specialises in premium-tier market entry and architectural brand systems that hold under scrutiny long after the launch quarter." data-bio-extended="Believes that positioning is destiny. Believes brands earn premium pricing through restraint, not volume of message.">
 <div class="pc-photo pc-photo-has-img" data-idx="[ 02 ]">
@@ -671,6 +755,24 @@
 <span class="pc-tag">Positioning</span>
 <span class="pc-tag">GTM Strategy</span>
 <span class="pc-tag">Demand</span>
+</div>
+<!-- TODO: swap placeholder credentials below for Neo Mokgwadi's actual past roles. -->
+<div class="pc-creds">
+<div class="pc-creds-block">
+<span class="pc-creds-l">[ Previously ]</span>
+<p class="pc-creds-v"><strong>[ Past Role · Firm ]</strong> · <strong>[ Past Role · Firm ]</strong> · <strong>[ Past Role · Firm ]</strong></p>
+</div>
+<div class="pc-creds-block">
+<span class="pc-creds-l">[ Tenure ]</span>
+<p class="pc-creds-v">[ N ]+ years across brand architecture, positioning, and demand strategy for premium-tier markets.</p>
+</div>
+</div>
+<div class="pc-socials">
+<!-- TODO: replace # with Neo Mokgwadi's LinkedIn URL -->
+<a href="#" target="_blank" rel="noopener" class="pc-linkedin" aria-label="Neo Mokgwadi on LinkedIn">
+<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+<span>LinkedIn</span>
+</a>
 </div>
 </div>
 <div class="principal-card" data-bio-full="Architects operational delivery across all engagements. Owns the technology stack, the engagement protocol, the client onboarding rigour, and the institutional standard of HIMARK output. Responsible for the conditions under which precision is repeatable." data-bio-extended="Believes that process is the firm. Believes institutional output is the product of unforgiving operational discipline.">
@@ -694,6 +796,24 @@
 <span class="pc-tag">Onboarding</span>
 <span class="pc-tag">Delivery</span>
 </div>
+<!-- TODO: swap placeholder credentials below for Thelma Mothiba's actual past roles. -->
+<div class="pc-creds">
+<div class="pc-creds-block">
+<span class="pc-creds-l">[ Previously ]</span>
+<p class="pc-creds-v"><strong>[ Past Role · Firm ]</strong> · <strong>[ Past Role · Firm ]</strong> · <strong>[ Past Role · Firm ]</strong></p>
+</div>
+<div class="pc-creds-block">
+<span class="pc-creds-l">[ Tenure ]</span>
+<p class="pc-creds-v">[ N ]+ years architecting operational delivery, client engagement protocol, and institutional output standards.</p>
+</div>
+</div>
+<div class="pc-socials">
+<!-- TODO: replace # with Thelma Mothiba's LinkedIn URL -->
+<a href="#" target="_blank" rel="noopener" class="pc-linkedin" aria-label="Thelma Mothiba on LinkedIn">
+<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+<span>LinkedIn</span>
+</a>
+</div>
 </div>
 <div class="principal-card" data-bio-full="Owns the firm's technology architecture — from AI infrastructure and the Atlas assistant to the data platforms underpinning every client engagement. Engineers the systems that make precision repeatable, including the LeadSense framework and the AIRaaS product line." data-bio-extended="Believes that infrastructure is intelligence made permanent. Build the system right, the system holds.">
 <div class="pc-photo pc-photo-has-img" data-idx="[ 04 ]">
@@ -715,6 +835,24 @@
 <span class="pc-tag">Data</span>
 <span class="pc-tag">Platforms</span>
 <span class="pc-tag">Atlas</span>
+</div>
+<!-- TODO: swap placeholder credentials below for Sipho Dlamini's actual past roles. -->
+<div class="pc-creds">
+<div class="pc-creds-block">
+<span class="pc-creds-l">[ Previously ]</span>
+<p class="pc-creds-v"><strong>[ Past Role · Firm ]</strong> · <strong>[ Past Role · Firm ]</strong> · <strong>[ Past Role · Firm ]</strong></p>
+</div>
+<div class="pc-creds-block">
+<span class="pc-creds-l">[ Tenure ]</span>
+<p class="pc-creds-v">[ N ]+ years engineering AI infrastructure, data platforms, and engagement automation systems.</p>
+</div>
+</div>
+<div class="pc-socials">
+<!-- TODO: replace # with Sipho Dlamini's LinkedIn URL -->
+<a href="#" target="_blank" rel="noopener" class="pc-linkedin" aria-label="Sipho Dlamini on LinkedIn">
+<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+<span>LinkedIn</span>
+</a>
 </div>
 </div>
 </div>
@@ -897,10 +1035,10 @@
 <div id="cpanel">
 <div class="ch-msgs" id="chMsgs"></div>
 <div class="qreps" id="qr">
-<button class="qr" onclick="sQ(this)">Mandates</button>
-<button class="qr" onclick="sQ(this)">AIRaaS</button>
-<button class="qr" onclick="sQ(this)">Apply</button>
-<button class="qr" onclick="sQ(this)">Method</button>
+<button class="qr" onclick="sQ(this)">How does engagement work?</button>
+<button class="qr" onclick="sQ(this)">What's the investment range?</button>
+<button class="qr" onclick="sQ(this)">I'd like to apply</button>
+<button class="qr" onclick="sQ(this)">Tell me about AIRaaS</button>
 </div>
 <div class="ch-inbar">
 <input class="ch-inp" id="chIn" type="text" placeholder="Ask us anything…" autocomplete="off"/>

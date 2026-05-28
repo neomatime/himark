@@ -387,16 +387,34 @@ try{
     }
   }
 
-  /* TOGGLE — open/close the panel. The chat opens empty by design;
-     Atlas only speaks once the visitor initiates by sending the
-     first message (typed, or via a quick-reply chip). His first
-     reply naturally includes a brief self-introduction — handled
-     server-side via a per-turn instruction in /api/chat. */
+  /* GREETING — show a soft, principal-trained-assistant intro the
+     first time the panel opens. Without this, visitors stare at an
+     empty thread and either type something tentative or leave.
+     Greeting is local to this page-load (HIST.length === 0); it
+     fires exactly once and only on initial open. We push it into
+     HIST as an assistant turn so the server sees the visitor's
+     first reply as turn 2 — its first-turn auto-introduction
+     instruction therefore won't fire and Atlas won't introduce
+     himself twice. */
+  const GREETING = "Atlas here — HIMARK's principal-trained assistant. What brings you in today?";
+  function showGreetingIfNeeded(){
+    if(HIST.length > 0) return;
+    if(cMsgs.children.length > 0) return;
+    setTimeout(()=>{
+      aM('bot', GREETING);
+      HIST.push({role:'assistant', content: GREETING});
+    }, 380);
+  }
+
+  /* TOGGLE — open/close the panel. Greeting fires on first open. */
   cTgl.addEventListener('click',()=>{
     const willOpen=!cWin.classList.contains('open');
     cWin.classList.toggle('open',willOpen);
     cTgl.classList.toggle('open',willOpen);
-    if(willOpen) setTimeout(()=>cIn&&cIn.focus(),260);
+    if(willOpen){
+      showGreetingIfNeeded();
+      setTimeout(()=>cIn&&cIn.focus(),260);
+    }
     /* Closing the panel mid-conversation: kill any in-flight
        speech (premium or browser) and recognition so nothing
        keeps running behind a hidden panel. */

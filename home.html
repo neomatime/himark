@@ -1089,6 +1089,172 @@
     font-weight: 700 !important;
   }
 
+  /* ── CASE STUDY (below the orbit) ─────────────────────────
+     Anonymised engagement sample. Dark-tinted off background so
+     it reads as a substantial pause between the orbit and the
+     anchor paragraph below. */
+  .home-case{
+    position: relative;
+    background: var(--off);
+    padding: 110px var(--gx) 100px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    z-index: 1;
+  }
+  #page-home > .home-case{ position: relative; z-index: 1; }
+  .hc-coord-l,
+  .hc-coord-r{
+    position: absolute;
+    top: 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .14em;
+    color: var(--ocean);
+  }
+  .hc-coord-l{ left: var(--gx); }
+  .hc-coord-r{ right: var(--gx); color: rgba(95,129,144,.5); }
+  .hc-inner{
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .hc-eyebrow{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .22em;
+    color: var(--ocean);
+    text-transform: uppercase;
+    margin: 0 0 18px;
+  }
+  .hc-headline{
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    font-size: clamp(32px, 4.4vw, 60px);
+    line-height: 1.05;
+    letter-spacing: -.015em;
+    color: var(--midnight);
+    margin: 0 0 56px;
+    max-width: 22ch;
+  }
+  .hc-headline em{
+    font-style: italic;
+    font-weight: 300;
+    color: var(--ocean-dk);
+    display: block;
+  }
+  .hc-grid{
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 72px;
+    align-items: start;
+  }
+  .hc-body{
+    display: flex;
+    flex-direction: column;
+    gap: 38px;
+  }
+  .hc-block{
+    position: relative;
+    padding-left: 18px;
+    border-left: 1px solid rgba(95,129,144,.25);
+  }
+  .hc-label{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .18em;
+    color: var(--ocean);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .hc-text{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 15.5px;
+    line-height: 1.72;
+    color: var(--ocean-dk);
+    margin: 0;
+  }
+
+  /* Metrics column — three stacked highlight numbers + an
+     anonymised client attribution block at the bottom. */
+  .hc-metrics{
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: var(--midnight);
+    padding: 36px 32px;
+    border-radius: 2px;
+    color: var(--off);
+  }
+  .hc-metric{
+    padding: 24px 0;
+    border-bottom: 1px solid rgba(138,173,184,.18);
+  }
+  .hc-metric:first-child{ padding-top: 8px; }
+  .hc-metric-v{
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    font-size: clamp(32px, 3.4vw, 44px);
+    line-height: 1;
+    letter-spacing: -.015em;
+    color: var(--off);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .hc-metric-arr{
+    color: var(--ocean-lt);
+    font-weight: 200;
+    font-size: .85em;
+  }
+  .hc-metric-l{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: rgba(138,173,184,.85);
+  }
+  .hc-attr{
+    margin-top: 22px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(138,173,184,.18);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .hc-attr-tag{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--ocean-lt);
+  }
+  .hc-attr-name{
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 400;
+    font-size: 17px;
+    color: var(--off);
+  }
+  .hc-attr-meta{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    color: rgba(138,173,184,.7);
+    line-height: 1.55;
+  }
+  @media (max-width: 980px){
+    .home-case{ padding: 80px 28px 72px; }
+    .hc-grid{ grid-template-columns: 1fr; gap: 36px; }
+    .hc-metrics{ padding: 28px 24px; }
+    .hc-coord-l, .hc-coord-r{ display: none; }
+  }
+  @media (max-width: 640px){
+    .home-case{ padding: 64px 22px 56px; }
+    .hc-headline{ margin-bottom: 36px; }
+  }
+
   /* ── Hero headline — smaller per user request ──────────────
      Original was clamp(54px, 8vw, 128px) — overpowered the
      space. Trimmed to roughly half. */
@@ -1542,6 +1708,56 @@
 
 </section>
 
+<!-- CASE STUDY — anonymised work sample. One concrete engagement
+     surfaces the firm's results without breaking the "by application"
+     posture. Pan-African retail group, anonymised at client request. -->
+<section class="home-case" aria-labelledby="home-case-hl">
+<span class="hc-coord-l">[ 04.A · ENGAGEMENT.01 ]</span>
+<span class="hc-coord-r">CASE · ANONYMISED</span>
+
+<div class="hc-inner">
+<p class="hc-eyebrow">Selected work · Private Partner</p>
+<h2 class="hc-headline" id="home-case-hl">Built a direct-to-consumer arm<em>without breaking wholesale.</em></h2>
+
+<div class="hc-grid">
+<div class="hc-body">
+<div class="hc-block">
+<div class="hc-label">[ Brief ]</div>
+<p class="hc-text">A 12-year-old premium retail group had hit its margin ceiling. A small set of wholesalers held pricing leverage. Direct-to-consumer was theorised internally for years but never attempted — leadership feared cannibalising the channel relationships that built the business.</p>
+</div>
+<div class="hc-block">
+<div class="hc-label">[ Intervention ]</div>
+<p class="hc-text">Fourteen-week brand-architecture rebuild. Repositioned the parent as the founder's investment vehicle and launched two market-facing sub-brands aligned strictly by channel — one wholesale-only, one DTC-only. Built the demand engine, payment rails and fulfilment infrastructure for the DTC arm from zero. Principal sat in weekly leadership rooms through the entire build.</p>
+</div>
+<div class="hc-block">
+<div class="hc-label">[ Outcome ]</div>
+<p class="hc-text">DTC moved from 4% to 31% of group revenue inside eleven months. Wholesale relationships intact. Average order value lifted 64% as the DTC brand earned its own premium positioning. Founder retained pricing authority on both sides of the architecture.</p>
+</div>
+</div>
+
+<div class="hc-metrics">
+<div class="hc-metric">
+<div class="hc-metric-v">4% <span class="hc-metric-arr">→</span> 31%</div>
+<div class="hc-metric-l">DTC share of group revenue</div>
+</div>
+<div class="hc-metric">
+<div class="hc-metric-v">+64%</div>
+<div class="hc-metric-l">Average order value</div>
+</div>
+<div class="hc-metric">
+<div class="hc-metric-v">11 mo</div>
+<div class="hc-metric-l">Brief to outcome</div>
+</div>
+<div class="hc-attr">
+<span class="hc-attr-tag">Client profile</span>
+<span class="hc-attr-name">Pan-African premium retail group</span>
+<span class="hc-attr-meta">ZAR 240M turnover · Tier 03 Private Partner · Anonymised at client request</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+
 <!-- ANCHOR ─────────────────────────────────────────────────── -->
 <section class="home-anchor">
 <div class="home-anchor-inner">
@@ -1627,10 +1843,10 @@
 <div id="cpanel">
 <div class="ch-msgs" id="chMsgs"></div>
 <div class="qreps" id="qr">
-<button class="qr" onclick="sQ(this)">Mandates</button>
-<button class="qr" onclick="sQ(this)">AIRaaS</button>
-<button class="qr" onclick="sQ(this)">Apply</button>
-<button class="qr" onclick="sQ(this)">Method</button>
+<button class="qr" onclick="sQ(this)">How does engagement work?</button>
+<button class="qr" onclick="sQ(this)">What's the investment range?</button>
+<button class="qr" onclick="sQ(this)">I'd like to apply</button>
+<button class="qr" onclick="sQ(this)">Tell me about AIRaaS</button>
 </div>
 <div class="ch-inbar">
 <input class="ch-inp" id="chIn" type="text" placeholder="Ask us anything…" autocomplete="off"/>

@@ -1106,33 +1106,36 @@
   }
 
   /* ── Footer wordmark — full landing-page lockup: framed-H +
-     IMARK image side-by-side. No literal "HIMARK" text. */
+     IMARK image flush together (gap:0, same as index.html). */
   .footer .ft-wm{
     align-items: center;
     gap: 0;
-    font-size: 0; /* collapse any whitespace */
+    font-size: 0;
     line-height: 1;
     display: inline-flex;
-    height: 38px;
+    height: 32px;
+    margin-bottom: 16px;
   }
   .footer .ft-wm-mark{
-    width: 27px;
-    height: 38px;
+    width: 23px;
+    height: 32px;
     display: inline-block;
     flex-shrink: 0;
-    margin-right: 8px;
+    /* Pull the IMARK image hard against the H — matches the
+       landing-page lockup where they read as one word. */
+    margin-right: -2px;
   }
   .footer .ft-wm-mark svg{
     width: 100%;
     height: 100%;
     display: block;
+    /* Same optical-centre nudge as index.html's .hmark svg */
+    margin-top: -1px;
   }
   .footer .ft-wm-imark{
-    height: 30px;
+    height: 24px;
     width: auto;
     display: block;
-    /* IMARK.png is light-on-transparent. The loading page renders
-       it white on the dark intro background; mirror that here. */
     filter: brightness(1.06);
   }
 

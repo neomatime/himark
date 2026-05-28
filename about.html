@@ -376,6 +376,84 @@
   @media (max-width: 1024px){
     #topnav-checkbox:checked ~ .topnav-list{ display: flex !important; }
   }
+
+  /* ── DOCTRINE / 03 COMPACT (Four Principles) ─────────────────
+     User request: smaller section, image per card, tight spacing. */
+  .doc-pillars-compact{
+    padding: 60px var(--gx) 50px !important;
+  }
+  .doc-pillars-compact .eyebrow{
+    margin-bottom: 4px;
+  }
+  .dpl-grid-c4{
+    grid-template-columns: repeat(4, 1fr) !important;
+    margin-top: 28px !important;
+    gap: 0;
+  }
+  .dpl-cell-compact{
+    padding: 24px 22px 26px !important;
+    text-align: left;
+  }
+  .dpl-cell-compact::before{
+    top: 12px !important;
+    right: 14px !important;
+    font-size: 8px !important;
+  }
+  .dpl-cell-compact .dpl-img{
+    width: 100%;
+    height: 110px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    background: var(--midnight);
+    border-radius: 1px;
+  }
+  .dpl-cell-compact .dpl-img img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: .82;
+    transition: opacity .35s ease, transform .8s cubic-bezier(.2,.7,.15,1);
+  }
+  .dpl-cell-compact:hover .dpl-img img{
+    opacity: 1;
+    transform: scale(1.04);
+  }
+  .dpl-cell-compact .dpl-num{
+    font-size: 28px !important;
+    margin-bottom: 6px !important;
+    color: rgba(95,129,144,.32) !important;
+  }
+  .dpl-cell-compact .dpl-title{
+    font-size: 11px !important;
+    margin-bottom: 8px !important;
+    letter-spacing: .12em;
+  }
+  .dpl-cell-compact .dpl-desc{
+    font-size: 12.5px !important;
+    line-height: 1.6 !important;
+    max-width: none !important;
+  }
+  /* Kill the puzzle-detach hover on compact cells — they're too small for it */
+  .dpl-cell-compact:hover,
+  .dpl-grid-c4 > .dpl-cell-compact:nth-child(n):hover{
+    transform: none !important;
+    box-shadow: 0 1px 2px rgba(28,43,58,.04), 0 8px 18px rgba(28,43,58,.06) !important;
+    border-right-color: var(--rule) !important;
+    border-bottom-color: var(--rule) !important;
+    background: var(--white) !important;
+  }
+  /* Mobile: 2 columns */
+  @media (max-width: 880px){
+    .doc-pillars-compact{ padding: 48px 22px 40px !important; }
+    .dpl-grid-c4{ grid-template-columns: 1fr 1fr !important; }
+    .dpl-cell-compact{ padding: 20px 18px 22px !important; }
+    .dpl-cell-compact .dpl-img{ height: 90px; }
+  }
+  @media (max-width: 520px){
+    .dpl-grid-c4{ grid-template-columns: 1fr !important; }
+    .dpl-cell-compact .dpl-img{ height: 140px; }
+  }
 </style>
   <script src="images.config.js"></script>
   <script defer data-domain="himark.co.za" src="https://plausible.io/js/script.js"></script>
@@ -489,13 +567,33 @@
 
 <div class="s-num-bar"><span>01.C · CORE PRINCIPLES</span><span>DOCTRINE / 03</span><span>04 · STRUCTURED</span></div>
 
-<section class="doc-pillars">
-<p class="eyebrow r3d">The Four Principles</p>
-<div class="dpl-grid">
-<div class="dpl-cell r3d d1" data-idx="[01]"><div class="dpl-num">01</div><div class="dpl-title">Strategic Clarity</div><p class="dpl-desc">We diagnose before we prescribe. Every engagement begins with a commercial audit to surface real constraints — not symptoms.</p></div>
-<div class="dpl-cell r3d d2" data-idx="[02]"><div class="dpl-title">Execution Partnership</div><div class="dpl-num">02</div><div class="dpl-title">Execution Partnership</div><p class="dpl-desc">Strategy without execution is fiction. We sit alongside leadership to ensure recommendations become measurable results.</p></div>
-<div class="dpl-cell r3d d3" data-idx="[03]"><div class="dpl-num">03</div><div class="dpl-title">Technology Integration</div><p class="dpl-desc">From AI infrastructure to CRM architecture, we build the operational backbone that scales with ambition.</p></div>
-<div class="dpl-cell r3d d4" data-idx="[04]"><div class="dpl-num">04</div><div class="dpl-title">Market Positioning</div><p class="dpl-desc">We help businesses occupy the premium end of their market through differentiation and brand authority.</p></div>
+<section class="doc-pillars doc-pillars-compact">
+<p class="eyebrow">The Four Principles</p>
+<div class="dpl-grid dpl-grid-c4">
+<div class="dpl-cell dpl-cell-compact" data-idx="[01]">
+<div class="dpl-img"><img src="images/method-hero.jpg" alt="" loading="lazy"/></div>
+<div class="dpl-num">01</div>
+<div class="dpl-title">Strategic Clarity</div>
+<p class="dpl-desc">We diagnose before we prescribe. Every engagement begins with a commercial audit to surface real constraints — not symptoms.</p>
+</div>
+<div class="dpl-cell dpl-cell-compact" data-idx="[02]">
+<div class="dpl-img"><img src="images/mandates-hero.jpg" alt="" loading="lazy"/></div>
+<div class="dpl-num">02</div>
+<div class="dpl-title">Execution Partnership</div>
+<p class="dpl-desc">Strategy without execution is fiction. We sit alongside leadership to ensure recommendations become measurable results.</p>
+</div>
+<div class="dpl-cell dpl-cell-compact" data-idx="[03]">
+<div class="dpl-img"><img src="images/airass-hero.jpg" alt="" loading="lazy"/></div>
+<div class="dpl-num">03</div>
+<div class="dpl-title">Technology Integration</div>
+<p class="dpl-desc">From AI infrastructure to CRM architecture, we build the operational backbone that scales with ambition.</p>
+</div>
+<div class="dpl-cell dpl-cell-compact" data-idx="[04]">
+<div class="dpl-img"><img src="images/about-hero.jpg" alt="" loading="lazy"/></div>
+<div class="dpl-num">04</div>
+<div class="dpl-title">Market Positioning</div>
+<p class="dpl-desc">We help businesses occupy the premium end of their market through differentiation and brand authority.</p>
+</div>
 </div>
 </section>
 

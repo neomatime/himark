@@ -325,6 +325,41 @@
     .pg-prn-pulse{animation:none;}
   }
 
+  /* ── Panel animations off — per user request ─────────
+     Disable all reveal / line-art / underline animations on the
+     principal cards so panels render static and immediately. */
+  .principal-card,
+  .principal-card.in-view,
+  .principal-card.r3d,
+  .principal-card.r3d.in{
+    opacity:1 !important;
+    transform:none !important;
+    transition:none !important;
+    animation:none !important;
+  }
+  .principal-card::before,
+  .principal-card.in-view::before{
+    display:none !important;
+  }
+  .principal-card .pc-line-art svg path,
+  .principal-card .pc-line-art svg line,
+  .principal-card .pc-line-art svg polyline,
+  .principal-card .pc-line-art svg circle,
+  .principal-card.in-view .pc-line-art svg path,
+  .principal-card.in-view .pc-line-art svg line,
+  .principal-card.in-view .pc-line-art svg polyline,
+  .principal-card.in-view .pc-line-art svg circle{
+    animation:none !important;
+    transition:none !important;
+    opacity:1 !important;
+    stroke-dasharray:none !important;
+    stroke-dashoffset:0 !important;
+  }
+  .principal-card:hover{
+    transform:none !important;
+    box-shadow:none !important;
+  }
+
   /* ── TOPNAV (site-wide) ─────────────────────────────── */
   .topnav{
     position: sticky;
@@ -557,7 +592,7 @@
 </div>
 </div>
 <div class="prn-grid">
-<div class="principal-card r3d d1" data-bio-full="Co-Founder of HIMARK. Operates across commercial strategy, brand architecture, and AI integration for founder-led businesses pursuing premium-tier market positions. Personally leads Tier 03 Private Partner engagements." data-bio-extended="Believes that clarity precedes scale. Believes that volume is a tax on quality. Believes that engagements should be earned, not won.">
+<div class="principal-card" data-bio-full="Co-Founder of HIMARK. Operates across commercial strategy, brand architecture, and AI integration for founder-led businesses pursuing premium-tier market positions. Personally leads Tier 03 Private Partner engagements." data-bio-extended="Believes that clarity precedes scale. Believes that volume is a tax on quality. Believes that engagements should be earned, not won.">
 <div class="pc-photo" data-idx="[ 01 ]">
 <span class="pc-status">ON.MANDATE</span>
 <span class="pc-photo-glyph" style="left:50%;top:50%;transform:translate(-50%,-50%)">NM</span>
@@ -591,7 +626,7 @@
 <span class="pc-tag">Tier 03 Lead</span>
 </div>
 </div>
-<div class="principal-card r3d d2" data-bio-full="Leads brand positioning, market communication, and demand architecture across HIMARK. Specialises in premium-tier market entry and architectural brand systems that hold under scrutiny long after the launch quarter." data-bio-extended="Believes that positioning is destiny. Believes brands earn premium pricing through restraint, not volume of message.">
+<div class="principal-card" data-bio-full="Leads brand positioning, market communication, and demand architecture across HIMARK. Specialises in premium-tier market entry and architectural brand systems that hold under scrutiny long after the launch quarter." data-bio-extended="Believes that positioning is destiny. Believes brands earn premium pricing through restraint, not volume of message.">
 <div class="pc-photo" data-idx="[ 02 ]">
 <span class="pc-status">ON.MANDATE</span>
 <span class="pc-photo-glyph" style="left:50%;top:50%;transform:translate(-50%,-50%)">NM</span>
@@ -626,7 +661,7 @@
 <span class="pc-tag">Demand</span>
 </div>
 </div>
-<div class="principal-card r3d d3" data-bio-full="Architects operational delivery across all engagements. Owns the technology stack, the engagement protocol, the client onboarding rigour, and the institutional standard of HIMARK output. Responsible for the conditions under which precision is repeatable." data-bio-extended="Believes that process is the firm. Believes institutional output is the product of unforgiving operational discipline.">
+<div class="principal-card" data-bio-full="Architects operational delivery across all engagements. Owns the technology stack, the engagement protocol, the client onboarding rigour, and the institutional standard of HIMARK output. Responsible for the conditions under which precision is repeatable." data-bio-extended="Believes that process is the firm. Believes institutional output is the product of unforgiving operational discipline.">
 <div class="pc-photo" data-idx="[ 03 ]">
 <span class="pc-status">ON.MANDATE</span>
 <span class="pc-photo-glyph" style="left:50%;top:50%;transform:translate(-50%,-50%)">TM</span>
@@ -660,7 +695,7 @@
 <span class="pc-tag">Delivery</span>
 </div>
 </div>
-<div class="principal-card r3d d4" data-bio-full="Owns the firm's technology architecture — from AI infrastructure and the Atlas assistant to the data platforms underpinning every client engagement. Engineers the systems that make precision repeatable, including the LeadSense framework and the AIRaaS product line." data-bio-extended="Believes that infrastructure is intelligence made permanent. Build the system right, the system holds.">
+<div class="principal-card" data-bio-full="Owns the firm's technology architecture — from AI infrastructure and the Atlas assistant to the data platforms underpinning every client engagement. Engineers the systems that make precision repeatable, including the LeadSense framework and the AIRaaS product line." data-bio-extended="Believes that infrastructure is intelligence made permanent. Build the system right, the system holds.">
 <div class="pc-photo" data-idx="[ 04 ]">
 <span class="pc-status">ON.MANDATE</span>
 <span class="pc-photo-glyph" style="left:50%;top:50%;transform:translate(-50%,-50%)">NC</span>

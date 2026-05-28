@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- HIMARK · Client logo placeholder.
+     Used in the home-page marquee until real client logos are
+     uploaded. To swap a real logo in: replace the <img src> on
+     the respective .ilm-cell with the client's logo file. The
+     .ilm-cell container has uniform dimensions and object-fit
+     contain — any aspect ratio works without cropping. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" preserveAspectRatio="xMidYMid meet">
+  <!-- Subtle frame -->
+  <rect x="1" y="1" width="198" height="78" fill="none" stroke="rgba(95,129,144,0.28)" stroke-width="1"/>
+  <!-- Corner ticks -->
+  <g stroke="rgba(95,129,144,0.5)" stroke-width="1.2" fill="none">
+    <polyline points="6,6 12,6 12,12"/>
+    <polyline points="194,6 188,6 188,12"/>
+    <polyline points="6,74 12,74 12,68"/>
+    <polyline points="194,74 188,74 188,68"/>
+  </g>
+  <!-- Centred caption -->
+  <text x="100" y="46" text-anchor="middle"
+        font-family="'JetBrains Mono', monospace"
+        font-size="10" letter-spacing="2.5"
+        fill="rgba(95,129,144,0.65)">[ CLIENT · LOGO ]</text>
+</svg>

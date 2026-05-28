@@ -392,42 +392,65 @@
     box-shadow: 0 -24px 60px rgba(28,43,58,.10), 0 -1px 0 rgba(28,43,58,.06);
   }
 
-  /* ── IMAGE MARQUEE — editorial photo strip ─────────────────
-     Mirrors the doctrine marquee's pattern but with images. A
-     horizontal infinite-scroll band of the firm's hero photography,
-     looping continuously. Compact (single band, no clutter),
-     visually warm without competing with the orbit below. */
+  /* ── CLIENT LOGO MARQUEE ───────────────────────────────────
+     Uniform-sized cells (200x80) that loop horizontally. Real
+     client logos go in via <img class="ilm-logo"> inside each
+     .ilm-cell. object-fit:contain ensures any aspect ratio fits
+     centred without cropping. Eyebrow above reads "Engagements"
+     so visitors know this is a client strip, not stock imagery. */
   .home-img-marquee{
     background: var(--off);
-    padding: 36px 0;
+    padding: 40px 0 44px;
     overflow: hidden;
     border-top: 1px solid rgba(95,129,144,.12);
     border-bottom: 1px solid rgba(95,129,144,.12);
   }
+  .ilm-eyebrow{
+    display: block;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .28em;
+    color: var(--ocean);
+    text-transform: uppercase;
+    margin: 0 0 22px;
+  }
   .home-img-marquee-track{
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 28px;
     width: max-content;
     animation: home-img-marquee-scroll 90s linear infinite;
   }
-  .home-img-marquee-track img{
-    height: 280px;
-    width: auto;
+  .ilm-cell{
+    width: 200px;
+    height: 80px;
     flex-shrink: 0;
-    object-fit: cover;
-    border-radius: 2px;
-    box-shadow: 0 8px 28px -12px rgba(28,43,58,.18);
-    /* Subtle hover deepens the shadow — feels alive on desktop */
-    transition: box-shadow .35s ease, transform .35s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    padding: 14px 18px;
+    transition: opacity .35s ease, filter .35s ease;
+    opacity: .72;
+    filter: grayscale(1);
   }
+  .ilm-cell img{
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
+  /* Pause and lift saturation on hover for browse-ability */
   .home-img-marquee:hover .home-img-marquee-track{
-    /* Pause the loop on hover so the visitor can settle on a frame */
     animation-play-state: paused;
   }
-  .home-img-marquee-track img:hover{
-    box-shadow: 0 12px 36px -10px rgba(28,43,58,.28);
-    transform: translateY(-2px);
+  .home-img-marquee:hover .ilm-cell{
+    opacity: 1;
+    filter: grayscale(0);
   }
   @keyframes home-img-marquee-scroll{
     0%   { transform: translateX(0); }
@@ -437,9 +460,10 @@
     .home-img-marquee-track{ animation: none; }
   }
   @media (max-width: 768px){
-    .home-img-marquee{ padding: 24px 0; }
-    .home-img-marquee-track{ gap: 12px; }
-    .home-img-marquee-track img{ height: 200px; }
+    .home-img-marquee{ padding: 28px 0 32px; }
+    .home-img-marquee-track{ gap: 18px; }
+    .ilm-cell{ width: 150px; height: 64px; padding: 10px 14px; }
+    .ilm-eyebrow{ font-size: 9px; margin-bottom: 18px; }
   }
 
   /* === ORBIT (restored) === */
@@ -1404,22 +1428,32 @@
 </div>
 </section>
 
-<!-- IMAGE MARQUEE — looping editorial photo strip ──────────── -->
-<section class="home-img-marquee" aria-label="HIMARK imagery">
+<!-- CLIENT LOGO MARQUEE — uniform-sized cells.
+     Currently shows placeholder cells. To swap a real client logo
+     in: change the <img src> inside any .ilm-cell to that client's
+     logo file (e.g. images/clients/acme.svg). The cell handles
+     the sizing; object-fit:contain centres any aspect ratio
+     without cropping. -->
+<section class="home-img-marquee" aria-label="Selected engagements — client logos">
+<span class="ilm-eyebrow">Engagements · select clients</span>
 <div class="home-img-marquee-track">
-<img src="images/about-hero.jpg" alt="" loading="lazy"/>
-<img src="images/method-hero.jpg" alt="" loading="lazy"/>
-<img src="images/team-hero.jpg" alt="" loading="lazy"/>
-<img src="images/airass-hero.jpg" alt="" loading="lazy"/>
-<img src="images/mandates-hero.jpg" alt="" loading="lazy"/>
-<img src="images/apply-hero.jpg" alt="" loading="lazy"/>
+<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
+<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
+<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
+<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
+<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
+<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
+<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
+<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
 <!-- Duplicate set — the -50% translate loops back here for seamless scroll -->
-<img src="images/about-hero.jpg" alt="" loading="lazy" aria-hidden="true"/>
-<img src="images/method-hero.jpg" alt="" loading="lazy" aria-hidden="true"/>
-<img src="images/team-hero.jpg" alt="" loading="lazy" aria-hidden="true"/>
-<img src="images/airass-hero.jpg" alt="" loading="lazy" aria-hidden="true"/>
-<img src="images/mandates-hero.jpg" alt="" loading="lazy" aria-hidden="true"/>
-<img src="images/apply-hero.jpg" alt="" loading="lazy" aria-hidden="true"/>
+<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
 </div>
 </section>
 

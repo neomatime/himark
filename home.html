@@ -1526,7 +1526,6 @@
 <div class="hero-meta-r">
 <a href="apply.html" class="home-hero-cta"><span>Apply for Engagement</span><span class="home-hero-cta-arrow" aria-hidden="true">→</span></a>
 <button type="button" class="home-hero-cta home-hero-cta-soft" data-open-booking><span>Book a Call</span><span class="home-hero-cta-arrow" aria-hidden="true">→</span></button>
-<a href="about.html" class="home-hero-cta home-hero-cta-soft"><span>Read the Doctrine</span><span class="home-hero-cta-arrow" aria-hidden="true">→</span></a>
 </div>
 </div>
 </div>
@@ -2115,7 +2114,16 @@
 </button>
 </header>
 
+<div class="bm-steps" aria-hidden="true">
+<span class="bm-step is-active" data-step-pill="1">01 · Brief</span>
+<span class="bm-step-sep">·</span>
+<span class="bm-step" data-step-pill="2">02 · Time</span>
+</div>
+
 <form id="bm-form" class="bm-form" novalidate>
+
+<!-- ─── SCREEN 1 · BRIEF (LeadSense) ─────────────────────── -->
+<div class="bm-screen is-active" data-screen="1">
 
 <div class="bm-row">
 <div class="bm-cell">
@@ -2174,11 +2182,50 @@
 </div>
 </div>
 
-<div class="bm-row">
-<div class="bm-cell">
-<label class="bm-label" for="bm-window">Preferred window <em>for the call</em></label>
-<input class="bm-input" id="bm-window" name="window" type="text" maxlength="200" placeholder="e.g. next two weeks, mornings preferred"/>
+<footer class="bm-foot">
+<button type="button" class="bm-submit" id="bm-next" data-bm-next>
+<span class="bm-submit-l">Next — pick a time</span>
+<span aria-hidden="true">→</span>
+</button>
+<p class="bm-fine">Eight quick questions. We use them to brief the right principal before the call.</p>
+</footer>
 </div>
+
+<!-- ─── SCREEN 2 · CALENDAR + TIME ──────────────────────── -->
+<div class="bm-screen" data-screen="2">
+
+<div class="bm-cal-head">
+<button type="button" class="bm-back" data-bm-prev aria-label="Back to brief">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+<span>Back to brief</span>
+</button>
+<div class="bm-cal-monthnav">
+<button type="button" class="bm-cal-nav" id="bm-cal-prev" aria-label="Previous month">‹</button>
+<span class="bm-cal-monthlabel" id="bm-cal-month"></span>
+<button type="button" class="bm-cal-nav" id="bm-cal-next" aria-label="Next month">›</button>
+</div>
+</div>
+
+<p class="bm-cal-help">Pick a weekday and a slot below. All times are SAST (UTC+2). A principal will confirm the chosen slot or propose the next-closest one within one working day.</p>
+
+<div class="bm-cal" id="bm-cal" aria-label="Available dates">
+<div class="bm-cal-dows"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+<div class="bm-cal-grid" id="bm-cal-grid"></div>
+</div>
+
+<div class="bm-times" id="bm-times">
+<p class="bm-times-l">Available slots</p>
+<div class="bm-times-grid" id="bm-times-grid">
+<p class="bm-times-empty">Pick a date above to see available time slots.</p>
+</div>
+</div>
+
+<div class="bm-summary" id="bm-summary" hidden>
+<p class="bm-summary-l">Selected</p>
+<p class="bm-summary-v" id="bm-summary-v"></p>
+</div>
+
+<div class="bm-row">
 <div class="bm-cell">
 <label class="bm-label" for="bm-format">Format</label>
 <select class="bm-select" id="bm-format" name="format">
@@ -2187,15 +2234,20 @@
 <option value="in-person">In person (venue confirmed by principal)</option>
 </select>
 </div>
+<div class="bm-cell">
+<label class="bm-label" for="bm-window">Anything else? <em>optional</em></label>
+<input class="bm-input" id="bm-window" name="window" type="text" maxlength="200" placeholder="e.g. flexible if needed"/>
+</div>
 </div>
 
 <footer class="bm-foot">
-<button type="submit" class="bm-submit" id="bm-submit">
-<span class="bm-submit-l">Request the call</span>
+<button type="submit" class="bm-submit" id="bm-submit" disabled>
+<span class="bm-submit-l">Book the call</span>
 <span aria-hidden="true">→</span>
 </button>
-<p class="bm-fine">A principal will reach out within one working day to confirm a slot. The call is closed-door and NDA-respecting.</p>
+<p class="bm-fine">A principal will reach out within one working day to confirm. Closed-door and NDA-respecting.</p>
 </footer>
+</div>
 
 <div class="bm-status" id="bm-status" role="status" aria-live="polite"></div>
 </form>
@@ -2274,6 +2326,22 @@
   background:rgba(247,247,245,.08);color:#F7F7F5;border-color:rgba(247,247,245,.85);outline:none;
 }
 
+/* Step pills */
+.bm-steps{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:24px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(138,173,184,.55);
+}
+.bm-step{transition:color .25s ease;}
+.bm-step.is-active{color:#F7F7F5;}
+.bm-step-sep{color:rgba(138,173,184,.35);}
+
+/* Screens — only one visible at a time */
+.bm-screen{display:none;flex-direction:column;gap:22px;}
+.bm-screen.is-active{display:flex;animation:bmRise .25s cubic-bezier(.2,.7,.15,1);}
+
 .bm-form{display:flex;flex-direction:column;gap:22px;}
 .bm-row{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
 .bm-cell{display:flex;flex-direction:column;gap:8px;}
@@ -2331,36 +2399,155 @@
 .bm-status.is-success{color:#6FCF97;}
 .bm-status.is-error{color:#e57373;}
 
+/* Calendar header */
+.bm-cal-head{
+  display:flex;justify-content:space-between;align-items:center;gap:16px;
+  margin-bottom:4px;
+}
+.bm-back{
+  display:inline-flex;align-items:center;gap:8px;
+  background:transparent;border:0;padding:6px 0;cursor:pointer;
+  color:#8AADB8;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  transition:color .2s ease;
+}
+.bm-back:hover{color:#F7F7F5;}
+.bm-cal-monthnav{display:inline-flex;align-items:center;gap:6px;}
+.bm-cal-nav{
+  background:transparent;border:1px solid rgba(138,173,184,.3);
+  width:28px;height:28px;border-radius:2px;
+  color:#8AADB8;cursor:pointer;font-size:14px;line-height:1;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:background .2s ease,color .2s ease,border-color .2s ease;
+}
+.bm-cal-nav:hover{background:rgba(247,247,245,.06);color:#F7F7F5;border-color:rgba(247,247,245,.55);}
+.bm-cal-monthlabel{
+  font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:15px;
+  color:#F7F7F5;letter-spacing:.01em;min-width:140px;text-align:center;
+}
+.bm-cal-help{
+  font-family:'Roboto',sans-serif;font-weight:300;font-size:12.5px;line-height:1.6;
+  color:rgba(226,240,240,.6);margin:0;
+}
+
+/* Calendar grid */
+.bm-cal{
+  border:1px solid rgba(138,173,184,.18);
+  padding:14px;border-radius:2px;
+}
+.bm-cal-dows{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.16em;
+  text-transform:uppercase;color:rgba(138,173,184,.55);
+  margin-bottom:8px;text-align:center;
+}
+.bm-cal-grid{
+  display:grid;grid-template-columns:repeat(7,1fr);gap:4px;
+}
+.bm-cal-day{
+  background:transparent;border:1px solid transparent;border-radius:2px;
+  padding:10px 0;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;
+  color:#F7F7F5;
+  transition:background .15s ease,color .15s ease,border-color .15s ease;
+  text-align:center;
+}
+.bm-cal-day:hover{background:rgba(247,247,245,.08);}
+.bm-cal-day.is-out{color:rgba(138,173,184,.25);cursor:default;}
+.bm-cal-day.is-out:hover{background:transparent;}
+.bm-cal-day.is-past,
+.bm-cal-day.is-weekend{
+  color:rgba(138,173,184,.28);cursor:not-allowed;
+}
+.bm-cal-day.is-past:hover,
+.bm-cal-day.is-weekend:hover{background:transparent;}
+.bm-cal-day.is-today{
+  border-color:rgba(138,173,184,.35);
+}
+.bm-cal-day.is-selected{
+  background:#F7F7F5;color:#1C2B3A;border-color:#F7F7F5;font-weight:700;
+}
+.bm-cal-day.is-selected:hover{background:#F7F7F5;color:#1C2B3A;}
+
+/* Time slot picker */
+.bm-times{display:flex;flex-direction:column;gap:10px;}
+.bm-times-l{
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;
+  letter-spacing:.14em;color:#8AADB8;text-transform:uppercase;margin:0;
+}
+.bm-times-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:8px;
+}
+.bm-time{
+  background:transparent;border:1px solid rgba(138,173,184,.3);border-radius:2px;
+  padding:11px 14px;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;letter-spacing:.06em;
+  color:#F7F7F5;
+  transition:background .15s ease,color .15s ease,border-color .15s ease;
+  text-align:center;
+}
+.bm-time:hover{background:rgba(247,247,245,.06);border-color:rgba(247,247,245,.55);}
+.bm-time.is-selected{background:#F7F7F5;color:#1C2B3A;border-color:#F7F7F5;}
+.bm-times-empty{
+  font-family:'Roboto',sans-serif;font-weight:300;font-size:13px;
+  color:rgba(226,240,240,.55);margin:0;
+  grid-column:1/-1;padding:6px 0;
+}
+
+/* Booking summary line */
+.bm-summary{
+  display:flex;flex-direction:column;gap:4px;
+  padding:14px 16px;
+  background:rgba(95,129,144,.12);
+  border:1px solid rgba(138,173,184,.22);border-radius:2px;
+}
+.bm-summary-l{
+  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;
+  letter-spacing:.18em;color:#8AADB8;text-transform:uppercase;margin:0;
+}
+.bm-summary-v{
+  font-family:'Source Sans 3',sans-serif;font-size:16px;color:#F7F7F5;margin:0;font-weight:600;
+}
+
+.bm-submit[disabled]{opacity:.4;cursor:not-allowed;}
+
 @media (max-width:640px){
   .booking-modal{padding:0;}
   .booking-modal-card{max-height:100vh;border-radius:0;border:0;padding:28px 22px;}
   .bm-row{grid-template-columns:1fr;}
   .bm-head{margin-bottom:24px;padding-bottom:20px;}
+  .bm-cal-head{flex-wrap:wrap;}
+  .bm-times-grid{grid-template-columns:repeat(auto-fill,minmax(92px,1fr));}
 }
 /* Lock body scroll when modal is open */
 body.bm-open{overflow:hidden;}
 </style>
 
 <script>
-/* Booking modal — open / close / submit. Exposes
-   window.openBookingModal() so any button site-wide can trigger it.
-   data-open-booking on any element auto-wires the click handler. */
+/* Booking modal — two-screen flow (Brief → Time).
+   - Screen 1 captures LeadSense fields with inline validation.
+   - Screen 2 shows a month calendar + time-slot grid. Selected
+     date/time is bundled into the brief and posted to /api/apply.
+   - Exposes window.openBookingModal(); any [data-open-booking]
+     element triggers it. */
 (function(){
   var modal  = document.getElementById('booking-modal');
   var form   = document.getElementById('bm-form');
   var status = document.getElementById('bm-status');
-  var btn    = document.getElementById('bm-submit');
-  if(!modal || !form || !status || !btn) return;
+  if(!modal || !form || !status) return;
 
   var EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   var lastFocus = null;
 
+  /* ── OPEN / CLOSE ──────────────────────────────────────── */
   function open(){
     lastFocus = document.activeElement;
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden','false');
     document.body.classList.add('bm-open');
-    /* Move focus into the modal for keyboard users */
+    /* Always start on screen 1 */
+    showScreen(1);
     setTimeout(function(){
       var firstField = form.querySelector('input,textarea,select,button');
       if(firstField) firstField.focus();
@@ -2372,22 +2559,30 @@ body.bm-open{overflow:hidden;}
     document.body.classList.remove('bm-open');
     if(lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
   }
-
-  /* Expose openBookingModal globally */
   window.openBookingModal = open;
 
-  /* Close on backdrop, X, or Escape */
   modal.addEventListener('click', function(e){
     if(e.target.matches('[data-bm-close]')) close();
   });
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape' && modal.classList.contains('is-open')) close();
   });
-  /* Any element marked data-open-booking opens the modal */
   document.addEventListener('click', function(e){
     var el = e.target.closest('[data-open-booking]');
     if(el){ e.preventDefault(); open(); }
   });
+
+  /* ── SCREEN NAVIGATION ─────────────────────────────────── */
+  function showScreen(n){
+    form.querySelectorAll('.bm-screen').forEach(function(s){
+      s.classList.toggle('is-active', s.getAttribute('data-screen') === String(n));
+    });
+    modal.querySelectorAll('[data-step-pill]').forEach(function(p){
+      p.classList.toggle('is-active', p.getAttribute('data-step-pill') === String(n));
+    });
+    /* Scroll modal card to top whenever screen changes */
+    modal.querySelector('.booking-modal-card').scrollTop = 0;
+  }
 
   function setError(el, msg){
     if(el) el.classList.add('is-error');
@@ -2415,49 +2610,217 @@ body.bm-open{overflow:hidden;}
     };
   }
 
+  function validateScreen1(){
+    clearErrors();
+    var f = fields();
+    if(!f.name.value.trim())                 { setError(f.name,    'Please share your name.');     return false; }
+    if(!EMAIL_RX.test(f.email.value.trim())) { setError(f.email,   'Please enter a valid email.'); return false; }
+    if(!f.role.value.trim())                 { setError(f.role,    'Please share your role.');     return false; }
+    if(!f.company.value.trim())              { setError(f.company, 'Please share your company.');  return false; }
+    if(!f.outcome.value.trim())              { setError(f.outcome, 'Please describe the outcome you\'re after.'); return false; }
+    if(!f.constraint.value.trim())           { setError(f.constraint, 'Please describe the constraint blocking you.'); return false; }
+    var briefLen = (f.outcome.value + f.constraint.value).length;
+    if(briefLen < 80){
+      setError(f.constraint, 'Add a bit more detail in outcome / constraint.');
+      return false;
+    }
+    return true;
+  }
+
+  /* "Next" button → validate screen 1 then go to screen 2 */
+  form.addEventListener('click', function(e){
+    var next = e.target.closest('[data-bm-next]');
+    if(next){
+      e.preventDefault();
+      if(!validateScreen1()) return;
+      showScreen(2);
+      /* Ensure the calendar reflects today on first reveal */
+      renderCalendar();
+    }
+    var prev = e.target.closest('[data-bm-prev]');
+    if(prev){
+      e.preventDefault();
+      showScreen(1);
+    }
+  });
+
+  /* ── CALENDAR ──────────────────────────────────────────── */
+  var TODAY = new Date(); TODAY.setHours(0,0,0,0);
+  /* viewMonth: the month currently shown (always normalised to day 1) */
+  var viewMonth = new Date(TODAY.getFullYear(), TODAY.getMonth(), 1);
+  var selectedDate = null; /* Date instance */
+  var selectedTime = null; /* string e.g. "10:00" */
+
+  /* Business-hour slots */
+  var SLOTS = ['09:00','10:00','11:00','12:00','14:00','15:00','16:00','17:00'];
+  /* Booking horizon — don't allow > 8 weeks out */
+  var MAX_DATE = new Date(TODAY); MAX_DATE.setDate(TODAY.getDate() + 8*7);
+
+  var monthEl   = document.getElementById('bm-cal-month');
+  var gridEl    = document.getElementById('bm-cal-grid');
+  var prevBtn   = document.getElementById('bm-cal-prev');
+  var nextBtn   = document.getElementById('bm-cal-next');
+  var timesEl   = document.getElementById('bm-times-grid');
+  var summaryEl = document.getElementById('bm-summary');
+  var summaryV  = document.getElementById('bm-summary-v');
+  var submitBtn = document.getElementById('bm-submit');
+
+  var MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  function isSameDay(a, b){
+    return a && b && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  }
+
+  function renderCalendar(){
+    monthEl.textContent = MONTH_NAMES[viewMonth.getMonth()] + ' ' + viewMonth.getFullYear();
+    gridEl.innerHTML = '';
+
+    /* Monday-first week — getDay(): Sun=0..Sat=6 → ((day+6)%7) */
+    var first = new Date(viewMonth);
+    var leading = (first.getDay() + 6) % 7;
+    var startDay = new Date(first); startDay.setDate(first.getDate() - leading);
+
+    /* Disable prev nav if at current month */
+    prevBtn.disabled = viewMonth.getFullYear() === TODAY.getFullYear() && viewMonth.getMonth() === TODAY.getMonth();
+    /* Disable next nav past the 8-week horizon's month */
+    var maxMonthIdx = MAX_DATE.getFullYear()*12 + MAX_DATE.getMonth();
+    var viewMonthIdx = viewMonth.getFullYear()*12 + viewMonth.getMonth();
+    nextBtn.disabled = viewMonthIdx >= maxMonthIdx;
+
+    /* 6 weeks × 7 days = 42 cells covers any month */
+    for(var i = 0; i < 42; i++){
+      var d = new Date(startDay);
+      d.setDate(startDay.getDate() + i);
+      var cell = document.createElement('button');
+      cell.type = 'button';
+      cell.className = 'bm-cal-day';
+      cell.textContent = String(d.getDate());
+
+      var isOutOfMonth = d.getMonth() !== viewMonth.getMonth();
+      var isPast       = d < TODAY;
+      var isBeyond     = d > MAX_DATE;
+      var dow          = d.getDay();
+      var isWeekend    = (dow === 0 || dow === 6);
+      var isToday      = isSameDay(d, TODAY);
+
+      if(isOutOfMonth) cell.classList.add('is-out');
+      if(isPast)       cell.classList.add('is-past');
+      if(isWeekend)    cell.classList.add('is-weekend');
+      if(isToday)      cell.classList.add('is-today');
+      if(isSameDay(d, selectedDate)) cell.classList.add('is-selected');
+
+      var disabled = isOutOfMonth || isPast || isBeyond || isWeekend;
+      if(disabled){ cell.disabled = true; }
+
+      (function(date, disabled){
+        cell.addEventListener('click', function(e){
+          if(disabled) return;
+          selectedDate = date;
+          /* Reset time when a new date is picked */
+          selectedTime = null;
+          renderCalendar();
+          renderTimes();
+          renderSummary();
+        });
+      })(d, disabled);
+
+      gridEl.appendChild(cell);
+    }
+
+    /* If selected date no longer in view, leave it; renderTimes
+       will still work because it uses selectedDate directly. */
+  }
+
+  function renderTimes(){
+    timesEl.innerHTML = '';
+    if(!selectedDate){
+      var p = document.createElement('p');
+      p.className = 'bm-times-empty';
+      p.textContent = 'Pick a date above to see available time slots.';
+      timesEl.appendChild(p);
+      return;
+    }
+    SLOTS.forEach(function(t){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'bm-time';
+      b.textContent = t;
+      if(t === selectedTime) b.classList.add('is-selected');
+      b.addEventListener('click', function(){
+        selectedTime = t;
+        renderTimes();
+        renderSummary();
+      });
+      timesEl.appendChild(b);
+    });
+  }
+
+  function fmtDateLong(d){
+    var dows = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    return dows[d.getDay()] + ', ' + MONTH_NAMES[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+  }
+
+  function renderSummary(){
+    if(selectedDate && selectedTime){
+      summaryEl.hidden = false;
+      summaryV.textContent = fmtDateLong(selectedDate) + ' at ' + selectedTime + ' SAST';
+      submitBtn.removeAttribute('disabled');
+    } else {
+      summaryEl.hidden = true;
+      submitBtn.setAttribute('disabled','true');
+    }
+  }
+
+  prevBtn.addEventListener('click', function(){
+    if(prevBtn.disabled) return;
+    viewMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1);
+    renderCalendar();
+  });
+  nextBtn.addEventListener('click', function(){
+    if(nextBtn.disabled) return;
+    viewMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1);
+    renderCalendar();
+  });
+
+  /* ── SUBMIT ────────────────────────────────────────────── */
   function composeBrief(f){
-    /* Tag the brief so HubSpot principals can filter booking
-       requests separately from the standard apply submissions. */
     var lines = ['[ BOOKING REQUEST ]'];
     lines.push('OUTCOME: ' + f.outcome.value.trim());
     lines.push('CONSTRAINT: ' + f.constraint.value.trim());
     if(f.timeline.value) lines.push('TIMELINE: ' + f.timeline.options[f.timeline.selectedIndex].text);
     if(f.budget.value)   lines.push('BUDGET: '   + f.budget.options[f.budget.selectedIndex].text);
-    if(f.window.value.trim()) lines.push('PREFERRED WINDOW: ' + f.window.value.trim());
-    if(f.format.value)        lines.push('FORMAT: ' + f.format.options[f.format.selectedIndex].text);
+    if(selectedDate && selectedTime){
+      lines.push('REQUESTED SLOT: ' + fmtDateLong(selectedDate) + ' at ' + selectedTime + ' SAST');
+    }
+    if(f.format.value)         lines.push('FORMAT: ' + f.format.options[f.format.selectedIndex].text);
+    if(f.window.value.trim())  lines.push('NOTE: ' + f.window.value.trim());
     return lines.join('\n\n');
   }
 
   form.addEventListener('submit', function(e){
     e.preventDefault();
+    if(!validateScreen1()){ showScreen(1); return; }
+    if(!selectedDate || !selectedTime){
+      status.className = 'bm-status is-error';
+      status.textContent = 'Pick a date and a time slot above to book the call.';
+      return;
+    }
     clearErrors();
     var f = fields();
-
-    if(!f.name.value.trim())                 return setError(f.name,    'Please share your name.');
-    if(!EMAIL_RX.test(f.email.value.trim())) return setError(f.email,   'Please enter a valid email.');
-    if(!f.role.value.trim())                 return setError(f.role,    'Please share your role.');
-    if(!f.company.value.trim())              return setError(f.company, 'Please share your company.');
-    if(!f.outcome.value.trim())              return setError(f.outcome, 'Please describe the outcome you\'re after.');
-    if(!f.constraint.value.trim())           return setError(f.constraint, 'Please describe the constraint blocking you.');
-
     var brief = composeBrief(f);
-    if(brief.length < 200){
-      return setError(f.constraint, 'Add a bit more detail in outcome / constraint — minimum 200 characters between the two.');
-    }
-
     var payload = {
       name:             f.name.value.trim(),
       email:            f.email.value.trim().toLowerCase(),
       position_company: f.role.value.trim() + ' · ' + f.company.value.trim(),
-      tier:             '',  /* unset on booking; principal sets after the call */
+      tier:             '',
       brief:            brief,
       pageUri:          location.href,
       pageName:         'Booking modal · ' + document.title
     };
 
-    btn.setAttribute('disabled','true');
-    var origLabel = btn.querySelector('.bm-submit-l').textContent;
-    btn.querySelector('.bm-submit-l').textContent = 'Sending…';
+    submitBtn.setAttribute('disabled','true');
+    var origLabel = submitBtn.querySelector('.bm-submit-l').textContent;
+    submitBtn.querySelector('.bm-submit-l').textContent = 'Sending…';
 
     fetch('/api/apply', {
       method: 'POST',
@@ -2468,22 +2831,24 @@ body.bm-open{overflow:hidden;}
     .then(function(res){
       if(res.ok && res.j && res.j.ok){
         status.className = 'bm-status is-success';
-        status.textContent = 'Booking received. Reference ' + (res.j.reference || '—') + '. A principal will reach out within one working day.';
+        status.textContent = 'Booking received. Reference ' + (res.j.reference || '—') + '. A principal will confirm your slot within one working day.';
         form.reset();
-        btn.querySelector('.bm-submit-l').textContent = 'Sent';
+        selectedDate = null; selectedTime = null;
+        renderCalendar(); renderTimes(); renderSummary();
+        submitBtn.querySelector('.bm-submit-l').textContent = 'Sent';
       } else {
         var err = (res.j && res.j.error) || 'upstream-failed';
         status.className = 'bm-status is-error';
         status.textContent = 'Submission failed (' + err + '). Please try again, or email info@himark.co.za.';
-        btn.removeAttribute('disabled');
-        btn.querySelector('.bm-submit-l').textContent = origLabel;
+        submitBtn.removeAttribute('disabled');
+        submitBtn.querySelector('.bm-submit-l').textContent = origLabel;
       }
     })
     .catch(function(){
       status.className = 'bm-status is-error';
       status.textContent = 'Network issue — try again in a moment, or email info@himark.co.za.';
-      btn.removeAttribute('disabled');
-      btn.querySelector('.bm-submit-l').textContent = origLabel;
+      submitBtn.removeAttribute('disabled');
+      submitBtn.querySelector('.bm-submit-l').textContent = origLabel;
     });
   });
 })();

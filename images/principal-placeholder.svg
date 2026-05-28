@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- HIMARK · Principal photo placeholder.
+     Used in team.html until real principal photos are uploaded.
+     To swap in a real photo: change the <img src> on the
+     respective .principal-card from this SVG to the photo file
+     (e.g. images/principal-neo-matime.jpg). The container has
+     object-fit:cover so any aspect ratio works. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" preserveAspectRatio="xMidYMid slice">
+  <!-- Dark midnight background, mirrors the brand palette -->
+  <rect width="240" height="240" fill="#1C2B3A"/>
+
+  <!-- Fine grid overlay for editorial texture -->
+  <g stroke="rgba(95,129,144,0.08)" stroke-width="1" fill="none">
+    <line x1="60"  y1="0" x2="60"  y2="240"/>
+    <line x1="120" y1="0" x2="120" y2="240"/>
+    <line x1="180" y1="0" x2="180" y2="240"/>
+    <line x1="0" y1="60"  x2="240" y2="60"/>
+    <line x1="0" y1="120" x2="240" y2="120"/>
+    <line x1="0" y1="180" x2="240" y2="180"/>
+  </g>
+
+  <!-- Silhouette: head + shoulders. Drawn in muted ocean. -->
+  <g fill="rgba(95,129,144,0.32)" stroke="rgba(95,129,144,0.55)" stroke-width="1.4">
+    <!-- Head -->
+    <circle cx="120" cy="98" r="32"/>
+    <!-- Shoulders / torso -->
+    <path d="M 60 198
+             C 60 162, 88 142, 120 142
+             C 152 142, 180 162, 180 198
+             L 180 240 L 60 240 Z"/>
+  </g>
+
+  <!-- Bottom mono caption -->
+  <text x="120" y="222"
+        text-anchor="middle"
+        font-family="'JetBrains Mono', monospace"
+        font-size="8"
+        letter-spacing="2"
+        fill="rgba(95,129,144,0.6)">PHOTO · PLACEHOLDER</text>
+
+  <!-- Corner ticks for editorial framing -->
+  <g stroke="rgba(95,129,144,0.5)" stroke-width="1.2" fill="none">
+    <polyline points="12,12 22,12 22,22"/>
+    <polyline points="218,12 228,12 228,22"/>
+    <polyline points="22,228 12,228 12,218"/>
+    <polyline points="218,228 228,228 228,218"/>
+  </g>
+</svg>

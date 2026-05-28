@@ -325,6 +325,26 @@
     .pg-prn-pulse{animation:none;}
   }
 
+  /* ── Photo placeholder image fills the .pc-photo container.
+     Swap the <img src> on each card to a real photo file when
+     uploaded — object-fit:cover handles any aspect ratio. */
+  .pc-photo-has-img .pc-photo-img{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    z-index: 1;
+    transition: transform .6s cubic-bezier(.2,.7,.15,1), opacity .4s ease;
+  }
+  .pc-photo-has-img:hover .pc-photo-img{
+    transform: scale(1.03);
+  }
+  /* Status badge stays on top of the placeholder image */
+  .pc-photo-has-img .pc-status{ z-index: 3; }
+  .pc-photo-has-img::after{ z-index: 3; }
+
   /* ── Panel animations off — per user request ─────────
      Disable all reveal / line-art / underline animations on the
      principal cards so panels render static and immediately. */
@@ -593,21 +613,9 @@
 </div>
 <div class="prn-grid">
 <div class="principal-card" data-bio-full="Co-Founder of HIMARK. Operates across commercial strategy, brand architecture, and AI integration for founder-led businesses pursuing premium-tier market positions. Personally leads Tier 03 Private Partner engagements." data-bio-extended="Believes that clarity precedes scale. Believes that volume is a tax on quality. Believes that engagements should be earned, not won.">
-<div class="pc-photo" data-idx="[ 01 ]">
+<div class="pc-photo pc-photo-has-img" data-idx="[ 01 ]">
 <span class="pc-status">ON.MANDATE</span>
-<span class="pc-photo-glyph" style="left:50%;top:50%;transform:translate(-50%,-50%)">NM</span>
-<div class="pc-line-art">
-<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-<polyline points="20,140 60,40 100,140 140,60 180,140"/>
-<line x1="20" y1="140" x2="180" y2="140"/>
-<line x1="60" y1="40" x2="60" y2="20"/>
-<line x1="140" y1="60" x2="140" y2="20"/>
-<line x1="20" y1="20" x2="180" y2="20"/>
-<circle cx="60" cy="20" r="3"/>
-<circle cx="140" cy="20" r="3"/>
-<circle cx="100" cy="140" r="3"/>
-</svg>
-</div>
+<img class="pc-photo-img" src="images/principal-placeholder.svg" alt="Neo Matime · Photo placeholder" loading="lazy"/>
 </div>
 <div class="pc-meta">
 <div class="pc-name">Neo Matime</div>
@@ -627,22 +635,9 @@
 </div>
 </div>
 <div class="principal-card" data-bio-full="Leads brand positioning, market communication, and demand architecture across HIMARK. Specialises in premium-tier market entry and architectural brand systems that hold under scrutiny long after the launch quarter." data-bio-extended="Believes that positioning is destiny. Believes brands earn premium pricing through restraint, not volume of message.">
-<div class="pc-photo" data-idx="[ 02 ]">
+<div class="pc-photo pc-photo-has-img" data-idx="[ 02 ]">
 <span class="pc-status">ON.MANDATE</span>
-<span class="pc-photo-glyph" style="left:50%;top:50%;transform:translate(-50%,-50%)">NM</span>
-<div class="pc-line-art">
-<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-<rect x="30" y="30" width="60" height="100"/>
-<rect x="110" y="60" width="60" height="70"/>
-<line x1="30" y1="130" x2="170" y2="130"/>
-<line x1="60" y1="30" x2="60" y2="20"/>
-<line x1="140" y1="60" x2="140" y2="20"/>
-<line x1="30" y1="20" x2="170" y2="20"/>
-<polyline points="90,80 110,80 110,100"/>
-<circle cx="60" cy="20" r="3"/>
-<circle cx="140" cy="20" r="3"/>
-</svg>
-</div>
+<img class="pc-photo-img" src="images/principal-placeholder.svg" alt="Neo Mokgwadi · Photo placeholder" loading="lazy"/>
 </div>
 <div class="pc-meta">
 <div class="pc-name">Neo Mokgwadi</div>
@@ -662,21 +657,9 @@
 </div>
 </div>
 <div class="principal-card" data-bio-full="Architects operational delivery across all engagements. Owns the technology stack, the engagement protocol, the client onboarding rigour, and the institutional standard of HIMARK output. Responsible for the conditions under which precision is repeatable." data-bio-extended="Believes that process is the firm. Believes institutional output is the product of unforgiving operational discipline.">
-<div class="pc-photo" data-idx="[ 03 ]">
+<div class="pc-photo pc-photo-has-img" data-idx="[ 03 ]">
 <span class="pc-status">ON.MANDATE</span>
-<span class="pc-photo-glyph" style="left:50%;top:50%;transform:translate(-50%,-50%)">TM</span>
-<div class="pc-line-art">
-<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-<polyline points="30,130 30,80 70,80 70,50 130,50 130,30 170,30"/>
-<polyline points="30,130 170,130 170,30"/>
-<line x1="70" y1="80" x2="70" y2="130"/>
-<line x1="130" y1="50" x2="130" y2="130"/>
-<circle cx="30" cy="80" r="3"/>
-<circle cx="70" cy="50" r="3"/>
-<circle cx="130" cy="30" r="3"/>
-<circle cx="170" cy="30" r="3"/>
-</svg>
-</div>
+<img class="pc-photo-img" src="images/principal-placeholder.svg" alt="Thelma Mothiba · Photo placeholder" loading="lazy"/>
 </div>
 <div class="pc-meta">
 <div class="pc-name">Thelma Mothiba</div>
@@ -696,27 +679,9 @@
 </div>
 </div>
 <div class="principal-card" data-bio-full="Owns the firm's technology architecture — from AI infrastructure and the Atlas assistant to the data platforms underpinning every client engagement. Engineers the systems that make precision repeatable, including the LeadSense framework and the AIRaaS product line." data-bio-extended="Believes that infrastructure is intelligence made permanent. Build the system right, the system holds.">
-<div class="pc-photo" data-idx="[ 04 ]">
+<div class="pc-photo pc-photo-has-img" data-idx="[ 04 ]">
 <span class="pc-status">ON.MANDATE</span>
-<span class="pc-photo-glyph" style="left:50%;top:50%;transform:translate(-50%,-50%)">NC</span>
-<div class="pc-line-art">
-<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-<circle cx="100" cy="80" r="20"/>
-<circle cx="100" cy="80" r="50"/>
-<line x1="100" y1="30" x2="100" y2="50"/>
-<line x1="100" y1="110" x2="100" y2="130"/>
-<line x1="50" y1="80" x2="80" y2="80"/>
-<line x1="120" y1="80" x2="150" y2="80"/>
-<line x1="65" y1="45" x2="80" y2="60"/>
-<line x1="120" y1="100" x2="135" y2="115"/>
-<line x1="65" y1="115" x2="80" y2="100"/>
-<line x1="120" y1="60" x2="135" y2="45"/>
-<circle cx="100" cy="30" r="2"/>
-<circle cx="100" cy="130" r="2"/>
-<circle cx="50" cy="80" r="2"/>
-<circle cx="150" cy="80" r="2"/>
-</svg>
-</div>
+<img class="pc-photo-img" src="images/principal-placeholder.svg" alt="Nathanael Cammay · Photo placeholder" loading="lazy"/>
 </div>
 <div class="pc-meta">
 <div class="pc-name">Nathanael Cammay</div>

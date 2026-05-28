@@ -690,6 +690,43 @@
     text-transform:uppercase;margin-bottom:18px;
     padding-bottom:14px;border-bottom:1px solid rgba(138,173,184,.18);
   }
+  /* Investment pill — tier pricing floor. Sits above the
+     description so visitors can self-qualify at a glance. */
+  .svc-tier-price{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    margin-bottom:22px;
+    padding-bottom:18px;
+    border-bottom:1px solid rgba(138,173,184,.14);
+  }
+  .svc-tier-price-l{
+    font-family:var(--f-mono);
+    font-size:9px;
+    font-weight:600;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:rgba(138,173,184,.7);
+  }
+  .svc-tier-price-v{
+    font-family:var(--f-disp);
+    font-size:28px;
+    font-weight:300;
+    line-height:1;
+    color:var(--off);
+    letter-spacing:-.01em;
+    display:inline-flex;
+    align-items:baseline;
+    gap:6px;
+  }
+  .svc-tier-price-unit{
+    font-family:var(--f-mono);
+    font-size:10px;
+    font-weight:500;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:rgba(138,173,184,.65);
+  }
   .svc-tier-desc{
     font-family:var(--f-body);font-weight:400;font-size:13.5px;
     color:rgba(226,240,240,.82);line-height:1.7;flex:1;margin-bottom:24px;
@@ -1170,6 +1207,10 @@
 </div>
 <h3 class="svc-tier-name">Signature Partner</h3>
 <p class="svc-tier-class">Foundation · Professionalisation</p>
+<div class="svc-tier-price">
+<span class="svc-tier-price-l">Investment from</span>
+<span class="svc-tier-price-v">R 50,000<span class="svc-tier-price-unit">/ mo</span></span>
+</div>
 <p class="svc-tier-desc">Foundational growth infrastructure for startups, SMEs, and professional service firms ready to formalise. Monthly principal strategy, advisory via Atlas, quarterly performance reviews.</p>
 <a class="svc-tier-cta" href="#" data-page="intake">Apply →</a>
 </article>
@@ -1181,6 +1222,10 @@
 </div>
 <h3 class="svc-tier-name">Growth Partner</h3>
 <p class="svc-tier-class">Core HIMARK tier · Scale &amp; optimisation</p>
+<div class="svc-tier-price">
+<span class="svc-tier-price-l">Investment from</span>
+<span class="svc-tier-price-v">R 80,000<span class="svc-tier-price-unit">/ mo</span></span>
+</div>
 <p class="svc-tier-desc">The core tier. Scalable growth infrastructure with weekly principal cadence, full marketing systems, CRM optimisation, founder authority positioning, and live direct-line access to the engagement team.</p>
 <a class="svc-tier-cta" href="#" data-page="intake">Apply →</a>
 </article>
@@ -1192,6 +1237,10 @@
 </div>
 <h3 class="svc-tier-name">Private Partner</h3>
 <p class="svc-tier-class">Executive transformation · Strategic embed</p>
+<div class="svc-tier-price">
+<span class="svc-tier-price-l">Investment from</span>
+<span class="svc-tier-price-v">R 150,000<span class="svc-tier-price-unit">/ mo</span></span>
+</div>
 <p class="svc-tier-desc">Executive-level strategic transformation with a dedicated principal embedded with leadership. Enterprise AI infrastructure, M&amp;A architecture, capital strategy, executive branding. By invitation only.</p>
 <a class="svc-tier-cta" href="#" data-page="intake">Apply →</a>
 </article>

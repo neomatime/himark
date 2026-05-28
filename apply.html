@@ -396,6 +396,181 @@
     color: var(--ocean-dk) !important;
     font-weight: 700 !important;
   }
+
+  /* ── Structured LeadSense form (sits below the Atlas card)
+     Inherits the dark .itk-form base styles but adds layout for
+     the rows/cells, submit button, and status messaging. */
+  #page-intake .itk-section-divider{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    max-width: 1280px;
+    margin: 64px auto 32px;
+    color: var(--ocean-lt);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+  }
+  #page-intake .itk-section-divider::before,
+  #page-intake .itk-section-divider::after{
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(138,173,184,.18);
+  }
+  #page-intake .itk-form-structured{
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  #page-intake .itk-form-intro{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.7;
+    color: rgba(226,240,240,.78);
+    margin: 0 0 36px;
+    max-width: 60ch;
+  }
+  #page-intake .itk-form-structured .itk-fields{
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+  }
+  #page-intake .itk-row{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 26px;
+  }
+  #page-intake .itk-cell{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  #page-intake .itk-form-structured .itk-input,
+  #page-intake .itk-form-structured .itk-select,
+  #page-intake .itk-form-structured .itk-textarea{
+    width: 100%;
+    background: transparent;
+    color: var(--off);
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    border: 0;
+    border-bottom: 1px solid rgba(138,173,184,.3);
+    padding: 12px 0 10px;
+    outline: none;
+    border-radius: 0;
+    transition: border-bottom-color .2s ease;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  #page-intake .itk-form-structured .itk-input:focus,
+  #page-intake .itk-form-structured .itk-select:focus,
+  #page-intake .itk-form-structured .itk-textarea:focus{
+    border-bottom-color: var(--off);
+  }
+  #page-intake .itk-form-structured .itk-textarea{
+    resize: vertical;
+    min-height: 80px;
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+  }
+  #page-intake .itk-form-structured .itk-select{
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%238AADB8' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 4px center;
+    padding-right: 24px;
+    cursor: pointer;
+  }
+  #page-intake .itk-form-structured .itk-select option{
+    background: var(--midnight);
+    color: var(--off);
+  }
+  #page-intake .itk-form-structured .itk-field-label{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .14em;
+    color: var(--ocean-lt);
+    text-transform: uppercase;
+  }
+  #page-intake .itk-form-structured .itk-field-label em{
+    font-style: normal;
+    color: rgba(138,173,184,.6);
+    font-weight: 400;
+    letter-spacing: .12em;
+    margin-left: 6px;
+  }
+  /* Field marked invalid by the form submit handler */
+  #page-intake .itk-form-structured .itk-input.is-error,
+  #page-intake .itk-form-structured .itk-select.is-error,
+  #page-intake .itk-form-structured .itk-textarea.is-error{
+    border-bottom-color: #e57373;
+  }
+  /* Form footer */
+  #page-intake .itk-form-structured .itk-form-foot{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(138,173,184,.18);
+    margin-top: 12px;
+  }
+  #page-intake .itk-form-structured .itk-submit{
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--midnight);
+    background: var(--off);
+    border: 1px solid var(--off);
+    padding: 18px 30px;
+    cursor: pointer;
+    border-radius: 2px;
+    min-height: 44px;
+    transition: background-color .22s ease, color .22s ease, transform .2s ease;
+  }
+  #page-intake .itk-form-structured .itk-submit:hover,
+  #page-intake .itk-form-structured .itk-submit:focus-visible{
+    background: var(--ocean-lt);
+    border-color: var(--ocean-lt);
+    transform: translateX(2px);
+    outline: none;
+  }
+  #page-intake .itk-form-structured .itk-submit[disabled]{
+    opacity: .55;
+    cursor: progress;
+    transform: none;
+  }
+  #page-intake .itk-form-structured .itk-form-fine{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: rgba(226,240,240,.55);
+    margin: 0;
+  }
+  /* Status messaging */
+  #page-intake .itk-form-status{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-top: 8px;
+    min-height: 22px;
+  }
+  #page-intake .itk-form-status.is-success{ color: #6FCF97; }
+  #page-intake .itk-form-status.is-error{   color: #e57373; }
+  @media (max-width: 720px){
+    #page-intake .itk-row{ grid-template-columns: 1fr; }
+    #page-intake .itk-section-divider{ margin: 48px auto 24px; }
+  }
 </style>
 
   <script src="images.config.js"></script>
@@ -608,6 +783,101 @@ Prefer email? Write directly to <strong style="color:var(--ocean-lt);">info@hima
 </aside>
 </div>
 
+<!-- STRUCTURED APPLICATION FORM — LeadSense-aligned. Capture
+     the same eight fields Atlas asks for in conversation, in a
+     single form for visitors who'd rather submit than chat.
+     Submits to /api/apply which proxies to HubSpot Forms API. -->
+<div class="itk-section-divider"><span>OR</span></div>
+
+<section class="itk-form itk-form-structured" id="ap-form-section" aria-labelledby="ap-form-title">
+<div class="itk-form-header">
+<span class="itk-form-title" id="ap-form-title">Application via form</span>
+<span class="itk-form-meta">[ FORM.06.02 ]  ·  CONFIDENTIAL</span>
+</div>
+
+<p class="itk-form-intro">For visitors who'd rather submit than chat. Same eight questions Atlas would ask you, in one form. A principal reads every submission within five working days.</p>
+
+<form id="ap-lead-form" class="itk-fields" novalidate>
+
+<div class="itk-row">
+<div class="itk-cell">
+<label class="itk-field-label" for="ap-name">Full name <em>required</em></label>
+<input class="itk-input" type="text" id="ap-name" name="name" required autocomplete="name" maxlength="200"/>
+</div>
+<div class="itk-cell">
+<label class="itk-field-label" for="ap-email">Email <em>required</em></label>
+<input class="itk-input" type="email" id="ap-email" name="email" required autocomplete="email" maxlength="200"/>
+</div>
+</div>
+
+<div class="itk-row">
+<div class="itk-cell">
+<label class="itk-field-label" for="ap-role">Role / Title <em>required</em></label>
+<input class="itk-input" type="text" id="ap-role" name="role" required maxlength="120" placeholder="e.g. Founder / CEO"/>
+</div>
+<div class="itk-cell">
+<label class="itk-field-label" for="ap-company">Company <em>required</em></label>
+<input class="itk-input" type="text" id="ap-company" name="company" required autocomplete="organization" maxlength="200"/>
+</div>
+</div>
+
+<div class="itk-row">
+<div class="itk-cell">
+<label class="itk-field-label" for="ap-tier">Tier you're considering</label>
+<select class="itk-select" id="ap-tier" name="tier">
+<option value="unsure">Not sure — recommend a fit</option>
+<option value="signature">Signature Partner · from R 50K / mo</option>
+<option value="growth">Growth Partner · from R 80K / mo</option>
+<option value="private">Private Partner · from R 150K / mo</option>
+</select>
+</div>
+<div class="itk-cell">
+<label class="itk-field-label" for="ap-timeline">Timeline</label>
+<select class="itk-select" id="ap-timeline" name="timeline">
+<option value="">Select…</option>
+<option value="immediate">Immediate (next 30 days)</option>
+<option value="this-quarter">This quarter</option>
+<option value="next-quarter">Next quarter</option>
+<option value="exploratory">Exploratory — no fixed timeline</option>
+</select>
+</div>
+</div>
+
+<div class="itk-cell">
+<label class="itk-field-label" for="ap-budget">Budget you've set aside <em>monthly</em></label>
+<select class="itk-select" id="ap-budget" name="budget">
+<option value="">Select…</option>
+<option value="under-50k">Under R 50,000 / mo</option>
+<option value="50-80k">R 50K – R 80K / mo</option>
+<option value="80-120k">R 80K – R 120K / mo</option>
+<option value="120-200k">R 120K – R 200K / mo</option>
+<option value="200k-plus">R 200K+ / mo</option>
+<option value="open">Open / flexible</option>
+</select>
+</div>
+
+<div class="itk-cell">
+<label class="itk-field-label" for="ap-outcome">The commercial outcome you're trying to land <em>required</em></label>
+<textarea class="itk-textarea" id="ap-outcome" name="outcome" required rows="3" maxlength="2000" placeholder="One or two sentences — what does success look like?"></textarea>
+</div>
+
+<div class="itk-cell">
+<label class="itk-field-label" for="ap-constraint">The constraint that's blocking you <em>required</em></label>
+<textarea class="itk-textarea" id="ap-constraint" name="constraint" required rows="3" maxlength="2000" placeholder="What's actually stopping you from getting there?"></textarea>
+</div>
+
+<div class="itk-form-foot">
+<button class="itk-submit" type="submit" id="ap-submit">
+<span class="itk-submit-l">Submit application</span>
+<span aria-hidden="true">→</span>
+</button>
+<p class="itk-form-fine">A principal reads every brief directly. You'll hear back within five working days regardless of outcome.</p>
+</div>
+
+<div class="itk-form-status" id="ap-form-status" role="status" aria-live="polite"></div>
+</form>
+</section>
+
 <div class="itk-meta-row" style="grid-template-columns:repeat(2,1fr)">
 <div class="itk-meta-cell" data-idx="[01]">
 <div class="itk-meta-l">[ Headquarters ]</div>
@@ -681,6 +951,134 @@ Prefer email? Write directly to <strong style="color:var(--ocean-lt);">info@hima
   }
 })();
 </script>
+
+<script>
+/* LeadSense-aligned structured form — posts to /api/apply
+   (HubSpot Forms proxy). Same eight fields Atlas asks for in
+   conversation: company, role, outcome, constraint, timeline,
+   budget, name, email. Submitted as a single brief composed
+   from the LeadSense answers. */
+(function(){
+  var form   = document.getElementById('ap-lead-form');
+  var status = document.getElementById('ap-form-status');
+  var btn    = document.getElementById('ap-submit');
+  if (!form || !status || !btn) return;
+
+  var EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function fieldsByName(){
+    return {
+      name:       form.querySelector('#ap-name'),
+      email:      form.querySelector('#ap-email'),
+      role:       form.querySelector('#ap-role'),
+      company:    form.querySelector('#ap-company'),
+      tier:       form.querySelector('#ap-tier'),
+      timeline:   form.querySelector('#ap-timeline'),
+      budget:     form.querySelector('#ap-budget'),
+      outcome:    form.querySelector('#ap-outcome'),
+      constraint: form.querySelector('#ap-constraint')
+    };
+  }
+
+  function clearErrors(){
+    form.querySelectorAll('.is-error').forEach(function(el){
+      el.classList.remove('is-error');
+    });
+    status.className = 'itk-form-status';
+    status.textContent = '';
+  }
+
+  function setError(el, msg){
+    if (el) el.classList.add('is-error');
+    status.className = 'itk-form-status is-error';
+    status.textContent = msg;
+  }
+
+  function setSuccess(reference){
+    status.className = 'itk-form-status is-success';
+    status.textContent = 'Application received. Reference ' + (reference || '—') + '. A principal will follow up within five working days.';
+  }
+
+  function composeBrief(f){
+    /* Combine the four narrative answers into a single brief
+       that satisfies /api/apply's >= 200 char requirement and
+       reads cleanly when a principal opens the HubSpot contact. */
+    var parts = [];
+    parts.push('OUTCOME: ' + f.outcome.value.trim());
+    parts.push('CONSTRAINT: ' + f.constraint.value.trim());
+    if (f.timeline.value) parts.push('TIMELINE: ' + f.timeline.options[f.timeline.selectedIndex].text);
+    if (f.budget.value)   parts.push('BUDGET: '   + f.budget.options[f.budget.selectedIndex].text);
+    return parts.join('\n\n');
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    clearErrors();
+
+    var f = fieldsByName();
+    if (!f.name.value.trim())                    return setError(f.name,       'Please share your name.');
+    if (!EMAIL_RX.test(f.email.value.trim()))    return setError(f.email,      'Please enter a valid email.');
+    if (!f.role.value.trim())                    return setError(f.role,       'Please share your role.');
+    if (!f.company.value.trim())                 return setError(f.company,    'Please share your company.');
+    if (!f.outcome.value.trim())                 return setError(f.outcome,    'Please describe the outcome you\'re after.');
+    if (!f.constraint.value.trim())              return setError(f.constraint, 'Please describe the constraint blocking you.');
+
+    var brief = composeBrief(f);
+    if (brief.length < 200){
+      return setError(f.constraint, 'Add a bit more detail in outcome / constraint — minimum 200 characters between the two.');
+    }
+
+    /* Map tier select value (signature/growth/private/unsure)
+       to the tier-XX format /api/apply expects in HubSpot. */
+    var tierMap = { signature: 'tier-01', growth: 'tier-02', private: 'tier-03', unsure: '' };
+    var tierVal = tierMap[f.tier.value] || '';
+
+    var payload = {
+      name:             f.name.value.trim(),
+      email:            f.email.value.trim().toLowerCase(),
+      position_company: f.role.value.trim() + ' · ' + f.company.value.trim(),
+      tier:             tierVal,
+      brief:            brief,
+      pageUri:          location.href,
+      pageName:         document.title
+    };
+
+    btn.setAttribute('disabled', 'true');
+    var originalLabel = btn.querySelector('.itk-submit-l').textContent;
+    btn.querySelector('.itk-submit-l').textContent = 'Submitting…';
+    status.className = 'itk-form-status';
+    status.textContent = '';
+
+    fetch('/api/apply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return {ok: r.ok, j: j}; }); })
+    .then(function(res){
+      if (res.ok && res.j && res.j.ok){
+        setSuccess(res.j.reference);
+        form.reset();
+        btn.querySelector('.itk-submit-l').textContent = 'Submitted';
+      } else {
+        var err = (res.j && res.j.error) || 'upstream-failed';
+        var msg = 'Submission failed (' + err + '). Try again, or email info@himark.co.za directly.';
+        status.className = 'itk-form-status is-error';
+        status.textContent = msg;
+        btn.removeAttribute('disabled');
+        btn.querySelector('.itk-submit-l').textContent = originalLabel;
+      }
+    })
+    .catch(function(){
+      status.className = 'itk-form-status is-error';
+      status.textContent = 'Network issue — try again in a moment, or email info@himark.co.za.';
+      btn.removeAttribute('disabled');
+      btn.querySelector('.itk-submit-l').textContent = originalLabel;
+    });
+  });
+})();
+</script>
+
 <script src="main/main.js?v=1779906181414"></script>
 
 </body>

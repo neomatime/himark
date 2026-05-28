@@ -472,13 +472,29 @@
     font-weight: 700 !important;
   }
 
-  /* ── Dossier PDF download CTA in the about hero. */
+  /* ── Tighten the about-hero so the dossier CTA + meta grid
+     both fit comfortably inside the viewport. The styles.css
+     defaults (h1 clamp 64-128, doc-meta margin-top 80px,
+     doc-left padding 160 top) are tuned for a hero with no CTA;
+     adding the CTA pushes the meta grid below the fold. */
+  #page-doctrine .doc-left{
+    padding-top: 120px;
+    padding-bottom: 72px;
+  }
+  #page-doctrine .doc-hl{
+    font-size: clamp(56px, 6.4vw, 96px) !important;
+  }
+  #page-doctrine .doc-sub{ margin-top: 26px; }
+  #page-doctrine .doc-meta{ margin-top: 36px; padding-top: 26px; }
+
+  /* ── Dossier PDF download CTA in the about hero.
+     Sits below the paragraph; meta grid follows tight underneath. */
   .doc-dossier-cta{
     display: inline-flex;
     align-items: center;
     gap: 14px;
-    margin-top: 8px;
-    margin-bottom: 36px;
+    margin-top: 22px;
+    margin-bottom: 0;
     padding: 14px 22px 14px 18px;
     background: var(--white);
     border: 1px solid var(--rule);

@@ -1255,6 +1255,30 @@
     .hc-headline{ margin-bottom: 36px; }
   }
 
+  /* ── Hero CTAs — primary (Apply) + soft secondary (Doctrine).
+     Soft outline pairs with the solid fill so browsers (not just
+     buyers) have a clear secondary pathway. */
+  #page-home .hero-meta-r{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  #page-home .home-hero-cta-soft{
+    background: transparent !important;
+    color: var(--off) !important;
+    border: 1px solid rgba(247,247,245,.5);
+  }
+  #page-home .home-hero-cta-soft:hover,
+  #page-home .home-hero-cta-soft:focus-visible{
+    background: rgba(247,247,245,.08) !important;
+    border-color: rgba(247,247,245,.9);
+    color: var(--off) !important;
+  }
+  @media (max-width: 768px){
+    #page-home .hero-meta-r{ gap: 10px; }
+  }
+
   /* ── Hero headline — smaller per user request ──────────────
      Original was clamp(54px, 8vw, 128px) — overpowered the
      space. Trimmed to roughly half. */
@@ -1468,6 +1492,7 @@
 <p class="hero-meta-l">We design and operate the strategic infrastructure beneath founder-led businesses — brand, demand, AI, principal counsel. Built to compound, not to launch.</p>
 <div class="hero-meta-r">
 <a href="apply.html" class="home-hero-cta"><span>Apply for Engagement</span><span class="home-hero-cta-arrow" aria-hidden="true">→</span></a>
+<a href="about.html" class="home-hero-cta home-hero-cta-soft"><span>Read the Doctrine</span><span class="home-hero-cta-arrow" aria-hidden="true">→</span></a>
 </div>
 </div>
 </div>
@@ -1814,7 +1839,7 @@
 </a>
 </div>
 
-<div class="footer-bottom"><p class="ft-copy">© 2026  ·  HIMARK (PTY) LTD</p><div class="ft-legal"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="cookies.html">Cookies</a><a href="security.html">Security</a></div></div>
+<div class="footer-bottom"><p class="ft-copy">© <span class="ft-year">2026</span>  ·  HIMARK (PTY) LTD</p><div class="ft-legal"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="cookies.html">Cookies</a><a href="security.html">Security</a></div></div>
 </footer>
 
 </div><!-- /.page#page-home -->

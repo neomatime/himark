@@ -2163,3 +2163,22 @@ window.authSubmit=authSubmit;
     bind();
   }
 })();
+
+/* ============================================================
+   AUTO-YEAR FOOTER — stamp the current year into every
+   <span class="ft-year"> on the page. Source HTML carries the
+   build-time year so the page still reads correctly before JS
+   runs / if JS is blocked; this just keeps it fresh forever. */
+(function(){
+  function stamp(){
+    var y = String(new Date().getFullYear());
+    document.querySelectorAll('.ft-year').forEach(function(el){
+      if (el.textContent !== y) el.textContent = y;
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', stamp);
+  } else {
+    stamp();
+  }
+})();

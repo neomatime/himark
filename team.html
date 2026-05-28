@@ -410,8 +410,8 @@
     .topnav-inner{ padding: 0 24px; height: 60px; gap: 16px; }
     .topnav-toggle{ display: inline-flex; }
     .topnav-list{
-      position: absolute;
-      top: 100%;
+      position: fixed;
+      top:  60px;
       left: 0;
       right: 0;
       flex-direction: column;
@@ -420,7 +420,7 @@
       background: var(--off);
       border-bottom: 1px solid rgba(95,129,144,.18);
       padding: 8px 0;
-      display: none;
+      display: none; z-index: 50;
     }
     .topnav-list.open{ display: flex; }
     .topnav-list a{ padding: 14px 24px; }
@@ -463,10 +463,9 @@
 <a class="topnav-brand" href="home.html" aria-label="HIMARK · Home">
 <img class="topnav-brand-logo" src="images/himark-logo-nav.PNG" alt="HIMARK"/>
 </a>
-<input type="checkbox" id="topnav-checkbox" class="topnav-checkbox" aria-hidden="true" tabindex="-1"/>
-<label class="topnav-toggle" for="topnav-checkbox" aria-label="Toggle menu" role="button" tabindex="0">
+<button class="topnav-toggle" type="button" aria-label="Toggle menu" onclick="var l=document.getElementById('topnav-list');var o=l.classList.toggle('open');this.setAttribute('aria-expanded',o?'true':'false');">
 <span></span><span></span><span></span>
-</label>
+</button>
 <ul class="topnav-list" id="topnav-list">
 <li><a href="about.html">About</a></li>
 <li><a href="services.html">Services</a></li>
@@ -1006,37 +1005,5 @@
 </script>
 
 
-<!-- MOBILE MENU INLINE SAFETY-NET ───────────────────────────────
-     Wires the hamburger toggle directly from the page, independent
-     of main.js. Belt-and-braces: if main.js fails to load or is
-     stale-cached, the menu still works. The __himarkBound flag in
-     main.js prevents double-binding when both run. -->
-<script>
-(function(){
-  function wire(){
-    var t = document.querySelector('.topnav-toggle');
-    var l = document.getElementById('topnav-list');
-    if(!t || !l || t.__himarkBound) return;
-    t.__himarkBound = true;
-    t.addEventListener('click', function(e){
-      e.preventDefault();
-      e.stopPropagation();
-      var open = l.classList.toggle('open');
-      t.setAttribute('aria-expanded', open ? 'true' : 'false');
-    });
-    l.addEventListener('click', function(e){
-      if(e.target.tagName === 'A' && l.classList.contains('open')){
-        l.classList.remove('open');
-        t.setAttribute('aria-expanded', 'false');
-      }
-    });
-  }
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', wire);
-  } else {
-    wire();
-  }
-})();
-</script>
 </body>
 </html>

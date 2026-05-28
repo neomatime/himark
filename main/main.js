@@ -2075,34 +2075,30 @@ window.authSubmit=authSubmit;
 })();
 
 /* ============================================================
-   TOPNAV — mobile hamburger toggle + active-page marker.
-   DELIBERATELY at the top level (outside the outer IIFE above)
-   so that any error in the 2000+ lines of site-wide JS cannot
-   prevent the mobile menu from binding. Wrapped in
-   DOMContentLoaded for safety if main.js ever moves to <head>.
-   Defensive: no-ops cleanly on pages without navbar markup.
+   TOPNAV — pure-CSS checkbox hack drives the mobile menu now.
+   JS only handles two UX niceties:
+     1. Mark current page link with aria-current.
+     2. Uncheck the checkbox when a nav link is clicked or when
+        the user clicks outside the menu (auto-close).
+   No JS click handler on the toggle itself — the label/checkbox
+   does it natively. That makes the menu work even before main.js
+   loads (race-condition-proof) and on iOS Safari where some JS
+   click handlers fail on first tap.
    ============================================================ */
 (function topnavInit(){
   function bind(){
-    var toggle = document.querySelector('.topnav-toggle');
     var list   = document.getElementById('topnav-list');
+    var toggle = document.querySelector('.topnav-toggle');
 
-    if (toggle && list && !toggle.__himarkBound) {
-      toggle.__himarkBound = true;
-      toggle.addEventListener('click', function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        var open = list.classList.toggle('open');
-        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      });
-      /* Close on link click (mobile only — desktop menu isn't .open). */
+    if (toggle && list) {
+      /* Auto-close when a nav link is clicked. */
       list.addEventListener('click', function(e){
         if (e.target.tagName === 'A' && list.classList.contains('open')) {
           list.classList.remove('open');
           toggle.setAttribute('aria-expanded', 'false');
         }
       });
-      /* Close when clicking outside the nav on mobile. */
+      /* Auto-close when clicking outside the menu/toggle. */
       document.addEventListener('click', function(e){
         if (!list.classList.contains('open')) return;
         if (toggle.contains(e.target) || list.contains(e.target)) return;

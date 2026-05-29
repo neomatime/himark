@@ -207,12 +207,80 @@ async function pushToHubSpot(record, kind, fromPhone){
 }
 
 /* ============================================================
+   WHATSAPP MEDIA DOWNLOAD
+   Voice notes arrive as a media id on the webhook. To pass them to
+   Gemini we need the raw bytes — Graph requires a two-step dance:
+     1. GET /v18.0/{media_id} → returns a temporary signed URL
+     2. GET that URL with the access token → returns the audio bytes
+   Returns { base64, mimeType } or null on any failure.
+   ============================================================ */
+async function fetchWhatsAppMediaBase64(mediaId){
+  const accessToken = process.env.WHATSAPP_ACCESS_TOKEN;
+  if (!mediaId || !accessToken) return null;
+
+  /* Step 1 — fetch the media metadata (gives us a signed download URL) */
+  let urlRes;
+  try {
+    urlRes = await fetch(`https://graph.facebook.com/${WA_GRAPH_VERSION}/${mediaId}`, {
+      headers: { 'Authorization': `Bearer ${accessToken}` }
+    });
+  } catch (err) {
+    console.error('[wa] media url fetch threw',
+      err && err.message,
+      'cause:', err && err.cause && (err.cause.message || err.cause.code || String(err.cause)));
+    return null;
+  }
+  if (!urlRes.ok) {
+    const t = await urlRes.text().catch(() => '');
+    console.error('[wa] media url fetch failed', urlRes.status, t.slice(0, 300));
+    return null;
+  }
+  const meta = await urlRes.json().catch(() => null);
+  if (!meta || !meta.url) {
+    console.error('[wa] media metadata missing url', meta);
+    return null;
+  }
+
+  /* Step 2 — download the actual bytes from the signed URL.
+     The signed URL still requires the bearer token; without it
+     Graph returns 401 even though the URL itself looks complete. */
+  let mediaRes;
+  try {
+    mediaRes = await fetch(meta.url, {
+      headers: { 'Authorization': `Bearer ${accessToken}` }
+    });
+  } catch (err) {
+    console.error('[wa] media download threw',
+      err && err.message,
+      'cause:', err && err.cause && (err.cause.message || err.cause.code || String(err.cause)));
+    return null;
+  }
+  if (!mediaRes.ok) {
+    console.error('[wa] media download failed', mediaRes.status);
+    return null;
+  }
+  const arr = await mediaRes.arrayBuffer();
+  const buf = Buffer.from(arr);
+  /* Gemini inline_data limit is ~20MB; WhatsApp voice notes are
+     typically <500KB so we don't expect to hit this in practice.
+     Bail early if we ever do, rather than silently truncating. */
+  if (buf.byteLength > 18 * 1024 * 1024) {
+    console.error('[wa] media too large for inline gemini call', buf.byteLength);
+    return null;
+  }
+  return {
+    base64: buf.toString('base64'),
+    mimeType: (meta.mime_type || 'audio/ogg').split(';')[0].trim()
+  };
+}
+
+/* ============================================================
    ATLAS BRAIN — Gemini call, same model/prompt as api/chat.js
    with a WhatsApp-specific tone overlay (short, plain text, no
    markdown, no "let's chat on WhatsApp" filler since we ARE on
    WhatsApp).
    ============================================================ */
-async function askAtlas(history){
+async function askAtlas(history, extraParts){
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return null;
 
@@ -226,7 +294,8 @@ async function askAtlas(history){
     + '- Plain text only. No markdown, no asterisks for emphasis, no bullet symbols, no URLs unless absolutely necessary (and then make them clickable plain — "https://...").\n'
     + '- Speak naturally as if you were a real principal\'s assistant typing on a phone. Sentence case. Don\'t shout.\n'
     + '- Pronunciation: the brand is "HIMARK" — write it normally.\n'
-    + '- If the visitor wants to apply, walk them through LeadSense conversationally one question at a time. Don\'t dump a form.';
+    + '- If the visitor wants to apply, walk them through LeadSense conversationally one question at a time. Don\'t dump a form.\n'
+    + '- If the visitor sends a voice note, listen to it and respond to what they said as if they had typed it. Don\'t parrot a transcription back. Don\'t say "I heard you" — just answer naturally.';
 
   if (isFirstTurn) {
     systemForThisTurn += '\n\n----------------------------------------\n'
@@ -237,10 +306,22 @@ async function askAtlas(history){
       + '- Do NOT mention that you\'re an AI / model. You are Atlas.';
   }
 
-  const contents = history.slice(-HISTORY_LIMIT).map(m => ({
-    role: m.role === 'assistant' ? 'model' : 'user',
-    parts: [{ text: String(m.content || '').slice(0, 4000) }]
-  }));
+  /* Build the contents array. For the LAST user turn, if extraParts
+     were passed (a voice note as inline_data), append them so Gemini
+     receives the audio alongside the textual context of prior turns. */
+  const window = history.slice(-HISTORY_LIMIT);
+  const lastIdx = window.length - 1;
+  const contents = window.map((m, i) => {
+    const isLastUserTurn = i === lastIdx && m.role !== 'assistant';
+    const textValue = String(m.content || '').slice(0, 4000);
+    const baseParts = textValue ? [{ text: textValue }] : [];
+    return {
+      role: m.role === 'assistant' ? 'model' : 'user',
+      parts: (isLastUserTurn && Array.isArray(extraParts) && extraParts.length)
+        ? [...baseParts, ...extraParts]
+        : baseParts
+    };
+  });
 
   let res;
   try {
@@ -357,27 +438,48 @@ async function markRead(messageId){
    sends the visitor-facing reply.
    ============================================================ */
 async function handleMessage(message){
-  if (!message || message.type !== 'text') {
-    /* For non-text (images, audio, contacts, etc.) we currently
-       reply with a short note. Future: route audio → Whisper. */
-    if (message && message.from) {
-      await sendWhatsAppText(message.from,
-        "I can read text messages here for now. If you can describe what you'd like in a message I'll take it from there — or reach the team at info@himark.co.za.");
+  if (!message || !message.from) return;
+  const from = message.from;            // e.g. "27821234567"
+
+  /* Resolve the user turn:
+       - text       → plain user text
+       - audio (VN) → download bytes, pass to Gemini as inline_data
+       - anything else (image / doc / sticker / etc.) → polite decline
+     We always log what we saw so it's visible in Vercel even if
+     a turn ends without reaching Gemini. */
+  let userText = '';
+  let mediaParts = null;
+
+  if (message.type === 'text') {
+    userText = (message.text && message.text.body) || '';
+    if (!userText) return;
+  } else if (message.type === 'audio' && message.audio && message.audio.id) {
+    console.log('[wa] audio inbound', { from, mediaId: message.audio.id, mimeHint: message.audio.mime_type });
+    const media = await fetchWhatsAppMediaBase64(message.audio.id);
+    if (!media) {
+      await sendWhatsAppText(from,
+        "I had trouble loading that voice note — could you resend it, or type the message instead?");
+      return;
     }
+    /* Placeholder text stored in history so future turns see that a
+       voice note happened; the actual audio bytes are only attached
+       to THIS turn via mediaParts (we don't re-upload past audio). */
+    userText = '[voice note]';
+    mediaParts = [{ inline_data: { mime_type: media.mimeType, data: media.base64 } }];
+  } else {
+    await sendWhatsAppText(from,
+      "I can read text and listen to voice notes here. For images, documents or other formats, just describe what you'd like in a message — or reach the team at info@himark.co.za.");
     return;
   }
-  const from = message.from;            // e.g. "27821234567"
-  const text = (message.text && message.text.body) || '';
-  if (!from || !text) return;
 
-  console.log('[wa] handleMessage start', { from, preview: text.slice(0, 80) });
+  console.log('[wa] handleMessage start', { from, type: message.type, preview: userText.slice(0, 80) });
 
   markRead(message.id).catch(() => {});
 
-  appendHistory(from, 'user', text);
+  appendHistory(from, 'user', userText);
   const history = getHistory(from);
 
-  const raw = await askAtlas(history);
+  const raw = await askAtlas(history, mediaParts);
   console.log('[wa] askAtlas done', { rawLen: raw ? raw.length : 0, rawPreview: raw && raw.slice(0, 120) });
   if (!raw) {
     const fb = await sendWhatsAppText(from,

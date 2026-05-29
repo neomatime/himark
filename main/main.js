@@ -333,6 +333,11 @@ try{
     return new Date().toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'});
   }
 
+  function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+  function chunkPauseMs(nextChunk){
+    return Math.min(1500, 400 + (nextChunk || '').length * 8);
+  }
+
   /* Append a message bubble. role = 'bot' | 'user' (matches existing CSS) */
   function aM(role,text){
     const d=document.createElement('div');
@@ -375,9 +380,28 @@ try{
       const data=await res.json().catch(()=>({reply:'Reach us at info@himark.co.za.'}));
       rmT();
       const reply=(data&&data.reply)||"I'm not able to respond just now. Please email info@himark.co.za.";
+      /* The backend may also return a `chunks` array — each chunk
+         becomes its own bubble with a typing-dot pause between, so
+         the rhythm feels like a real person texting. Falls back to
+         a single bubble if the response shape is missing chunks
+         (older deploys, error paths). Voice mode forces a single
+         chunk on the server side. */
+      const chunks = (data && Array.isArray(data.chunks) && data.chunks.length)
+        ? data.chunks
+        : [reply];
       HIST.push({role:'assistant',content:reply});
-      aM('bot',reply);
-      /* Read out the reply only when the user is on the voice tab. */
+      /* Render first chunk immediately, then for each remaining
+         chunk show the typing indicator, pause, hide it, render. */
+      aM('bot', chunks[0]);
+      for (let i = 1; i < chunks.length; i++) {
+        shT();
+        await sleep(chunkPauseMs(chunks[i]));
+        rmT();
+        aM('bot', chunks[i]);
+      }
+      /* Read out the reply only when the user is on the voice tab.
+         Always use the joined reply so TTS speaks continuously
+         regardless of any chunks the server returned. */
       if(inVoice) speak(reply);
     }catch(_){
       rmT();

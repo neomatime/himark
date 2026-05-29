@@ -242,28 +242,36 @@ async function askAtlas(history){
     parts: [{ text: String(m.content || '').slice(0, 4000) }]
   }));
 
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${encodeURIComponent(apiKey)}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: systemForThisTurn }] },
-        contents,
-        generationConfig: {
-          temperature: 0.65,
-          topP: 0.9,
-          maxOutputTokens: 350
-        },
-        safetySettings: [
-          { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_ONLY_HIGH' },
-          { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_ONLY_HIGH' },
-          { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_ONLY_HIGH' },
-          { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' }
-        ]
-      })
-    }
-  );
+  let res;
+  try {
+    res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${encodeURIComponent(apiKey)}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: systemForThisTurn }] },
+          contents,
+          generationConfig: {
+            temperature: 0.65,
+            topP: 0.9,
+            maxOutputTokens: 350
+          },
+          safetySettings: [
+            { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_ONLY_HIGH' },
+            { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_ONLY_HIGH' },
+            { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_ONLY_HIGH' },
+            { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' }
+          ]
+        })
+      }
+    );
+  } catch (err) {
+    console.error('[wa] gemini fetch threw',
+      err && err.message,
+      'cause:', err && err.cause && (err.cause.message || err.cause.code || String(err.cause)));
+    return null;
+  }
   if (!res.ok) {
     const t = await res.text().catch(() => '');
     console.error('[wa] gemini error', res.status, t.slice(0, 300));
@@ -291,20 +299,28 @@ async function sendWhatsAppText(to, body){
   const text = String(body || '').slice(0, 4000);
   if (!text) return { error: 'empty-body' };
 
-  const res = await fetch(`https://graph.facebook.com/${WA_GRAPH_VERSION}/${phoneNumberId}/messages`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      messaging_product: 'whatsapp',
-      recipient_type: 'individual',
-      to,
-      type: 'text',
-      text: { preview_url: false, body: text }
-    })
-  });
+  let res;
+  try {
+    res = await fetch(`https://graph.facebook.com/${WA_GRAPH_VERSION}/${phoneNumberId}/messages`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        recipient_type: 'individual',
+        to,
+        type: 'text',
+        text: { preview_url: false, body: text }
+      })
+    });
+  } catch (err) {
+    console.error('[wa] send fetch threw',
+      err && err.message,
+      'cause:', err && err.cause && (err.cause.message || err.cause.code || String(err.cause)));
+    return { error: 'fetch-threw' };
+  }
   if (!res.ok) {
     const t = await res.text().catch(() => '');
     console.error('[wa] send failed', res.status, t.slice(0, 400));
@@ -444,7 +460,10 @@ module.exports = async (req, res) => {
         await handleMessage(m);
       }
     } catch (err) {
-      console.error('[wa] handler exception', err && err.message);
+      console.error('[wa] handler exception',
+        err && err.message,
+        'cause:', err && err.cause && (err.cause.message || err.cause.code || String(err.cause)),
+        'stack:', err && err.stack && err.stack.split('\n').slice(0, 4).join(' | '));
     }
     return;
   }

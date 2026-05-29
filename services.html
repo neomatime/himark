@@ -861,7 +861,7 @@
     color: var(--ocean-dk);
     outline: none;
   }
-  .topnav-list a[aria-current="page"]{
+  .topnav-list.topnav-list a[aria-current="page"]{
     background: rgba(95,129,144,.14);
     color: var(--ocean-dk);
   }
@@ -912,10 +912,81 @@
       -webkit-overflow-scrolling: touch;
     }
     .topnav-list.open{ transform: translateX(0); }
-    .topnav-list a{
-      padding: 16px 32px;
-      font-size: 13px !important;
-      border-bottom: 1px solid rgba(95,129,144,.08);
+    /* Interesting menu items — bigger, mixed case, slide-and-arrow
+       hover that fires on tap too. Stagger-in when drawer opens. */
+    .topnav-list.topnav-list a{
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 22px 32px;
+      font-family: 'Source Sans 3', sans-serif !important;
+      font-size: 19px !important;
+      font-weight: 500 !important;
+      letter-spacing: 0 !important;
+      text-transform: none !important;
+      color: var(--midnight) !important;
+      border-bottom: 1px solid rgba(95,129,144,.1);
+      overflow: hidden;
+      transition:
+        padding-left .35s cubic-bezier(.32,.72,0,1),
+        color .25s ease,
+        background-color .25s ease;
+    }
+    .topnav-list.topnav-list a::after{
+      content: '→';
+      position: absolute;
+      right: 32px;
+      top: 50%;
+      transform: translateY(-50%) translateX(-12px);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      color: var(--ocean);
+      opacity: 0;
+      transition:
+        opacity .25s ease,
+        transform .35s cubic-bezier(.32,.72,0,1);
+    }
+    .topnav-list.topnav-list a:hover,
+    .topnav-list.topnav-list a:focus-visible,
+    .topnav-list.topnav-list a:active{
+      padding-left: 46px;
+      background-color: rgba(95,129,144,.08) !important;
+      color: var(--ocean-dk) !important;
+    }
+    .topnav-list.topnav-list a:hover::after,
+    .topnav-list.topnav-list a:focus-visible::after,
+    .topnav-list.topnav-list a:active::after{
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+    }
+    /* Current page — quietly emphasised */
+    .topnav-list.topnav-list a[aria-current="page"]{
+      color: var(--ocean-dk) !important;
+      font-weight: 700 !important;
+      background-color: rgba(95,129,144,.06) !important;
+    }
+    .topnav-list.topnav-list a[aria-current="page"]::after{
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+    }
+
+    /* Stagger items in when the drawer slides open. backwards
+       fill-mode keeps them invisible before their delay starts. */
+    .topnav-list.open li{ animation: drawerItemIn .55s cubic-bezier(.32,.72,0,1) backwards; }
+    .topnav-list.open li:nth-child(1){ animation-delay: .12s; }
+    .topnav-list.open li:nth-child(2){ animation-delay: .18s; }
+    .topnav-list.open li:nth-child(3){ animation-delay: .24s; }
+    .topnav-list.open li:nth-child(4){ animation-delay: .30s; }
+    .topnav-list.open li:nth-child(5){ animation-delay: .36s; }
+    .topnav-list.open li:nth-child(6){ animation-delay: .42s; }
+    .topnav-list.open li:nth-child(7){ animation-delay: .48s; }
+    @keyframes drawerItemIn{
+      from{ opacity: 0; transform: translateX(28px); }
+      to  { opacity: 1; transform: none; }
+    }
+    @media (prefers-reduced-motion: reduce){
+      .topnav-list.open li{ animation: none; }
+      .topnav-list a, .topnav-list.topnav-list a::after{ transition: none; }
     }
     .topnav-brand{ height: 34px; }
     .topnav-brand-mark{ width: 24px; height: 34px; }
@@ -1094,7 +1165,7 @@
   .topnav-list a:focus-visible{
     color: var(--ocean-dk) !important;
   }
-  .topnav-list a[aria-current="page"]{
+  .topnav-list.topnav-list a[aria-current="page"]{
     color: var(--ocean-dk) !important;
     font-weight: 700 !important;
   }

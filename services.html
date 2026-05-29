@@ -667,6 +667,28 @@
   .svc-tier-card-mid{
     background:rgba(95,129,144,.12);
     border-color:rgba(138,173,184,.3);
+    position:relative;
+  }
+  /* "Most engaged" badge — anchored to the top-right of the Growth
+     Partner card. Floats above the top border so it reads as a
+     stamped indicator, not part of the card body. */
+  .svc-tier-badge{
+    position:absolute;
+    top:-12px;
+    right:18px;
+    display:inline-flex;
+    align-items:center;
+    padding:5px 11px 4px;
+    font-family:var(--f-mono);
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--midnight);
+    background:var(--ocean-lt);
+    border-radius:2px;
+    box-shadow:0 4px 12px -4px rgba(28,43,58,.4);
+    white-space:nowrap;
   }
   .svc-tier-top{
     display:flex;justify-content:space-between;align-items:center;
@@ -1273,6 +1295,7 @@
 </article>
 
 <article class="svc-tier-card svc-tier-card-mid">
+<span class="svc-tier-badge">Most engaged</span>
 <div class="svc-tier-top">
 <span class="svc-tier-coord">[ TIER.02 ]</span>
 <span class="svc-tier-term">Six-month minimum</span>

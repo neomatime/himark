@@ -55,6 +55,30 @@ const GEMINI_MODEL = 'gemini-flash-lite-latest';
 const WA_GRAPH_VERSION = 'v18.0';
 
 /* ============================================================
+   CHUNKING — paragraph breaks → separate WhatsApp messages
+   Atlas inserts `\n\n` at natural pause points in his reply
+   (see atlas-knowledge.js §1). We split on those and send each
+   paragraph as its own Graph message, with a short pause between,
+   so the rhythm feels like a real person texting rather than a
+   wall-of-text reply.
+   Cap at 3 chunks — protects against runaway / malformed output.
+   Pause formula: 400ms base + 8ms per char of the NEXT chunk,
+   capped at 1500ms. Short chunks land snappy; long chunks get
+   a touch more breathing room before they appear.
+   ============================================================ */
+function splitIntoChunks(text){
+  const parts = String(text || '')
+    .split(/\n\s*\n/)
+    .map(s => s.trim())
+    .filter(Boolean);
+  return parts.slice(0, 3);
+}
+function chunkPauseMs(nextChunk){
+  return Math.min(1500, 400 + (nextChunk || '').length * 8);
+}
+function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+/* ============================================================
    CONVERSATION HISTORY
    In-memory Map keyed by sender phone number. Survives within a
    warm Vercel instance for the life of that instance; clears on
@@ -410,6 +434,38 @@ async function sendWhatsAppText(to, body){
   return { sent: true };
 }
 
+/* Chunked variant — splits the body on `\n\n` and sends each piece
+   as a separate WhatsApp message, with a short pause between, so
+   the rhythm feels like real texting. Single-chunk replies fall
+   through to a regular single send so there is zero extra latency
+   when Atlas didn't choose to split.
+   Returns { chunks, results } where results is an array of the
+   individual sendWhatsAppText return values, in send order. If the
+   first send fails we abort the rest to avoid posting partial junk. */
+async function sendWhatsAppTextChunks(to, body){
+  const chunks = splitIntoChunks(body);
+  if (chunks.length === 0) {
+    return { chunks: 0, error: 'empty-body' };
+  }
+  if (chunks.length === 1) {
+    const result = await sendWhatsAppText(to, chunks[0]);
+    return { chunks: 1, results: [result] };
+  }
+  const results = [];
+  for (let i = 0; i < chunks.length; i++) {
+    const result = await sendWhatsAppText(to, chunks[i]);
+    results.push(result);
+    if (result && result.error && i === 0) {
+      console.error('[wa] first chunk failed, aborting remaining', chunks.length - 1);
+      return { chunks: chunks.length, results, aborted: true };
+    }
+    if (i < chunks.length - 1) {
+      await sleep(chunkPauseMs(chunks[i + 1]));
+    }
+  }
+  return { chunks: chunks.length, results };
+}
+
 /* Mark the inbound message as read — purely a UX nicety so the
    visitor sees the blue ticks while we compute the reply. */
 async function markRead(messageId){
@@ -496,8 +552,8 @@ async function handleMessage(message){
 
   const visible = stripBlocks(raw) || "I'm not able to respond to that just now. Please reach us at info@himark.co.za.";
   appendHistory(from, 'assistant', visible);
-  const sendResult = await sendWhatsAppText(from, visible);
-  console.log('[wa] reply send result', sendResult, 'replyPreview:', visible.slice(0, 100));
+  const sendResult = await sendWhatsAppTextChunks(from, visible);
+  console.log('[wa] reply send result', { chunks: sendResult.chunks, aborted: sendResult.aborted || false }, 'replyPreview:', visible.slice(0, 100));
 }
 
 /* ============================================================

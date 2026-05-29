@@ -388,6 +388,227 @@
     box-shadow:none !important;
   }
 
+  /* ── Compact panel — image-led. All textual detail moves to
+     the modal so the grid reads as portrait tiles rather than
+     dense info blocks. */
+  .principal-card{
+    cursor: pointer;
+  }
+  .principal-card .pc-photo,
+  .principal-card .pc-photo-has-img{
+    height: 360px !important;
+  }
+  .principal-card .pc-bio,
+  .principal-card .pc-doctrine,
+  .principal-card .pc-domains,
+  .principal-card .pc-creds,
+  .principal-card .pc-socials{
+    display: none !important;
+  }
+  .principal-card .pc-meta{
+    padding: 22px 24px 4px !important;
+  }
+  .principal-card .pc-name{
+    font-size: 22px !important;
+  }
+  .principal-card .pc-role{
+    font-size: 12px !important;
+    color: var(--ocean-dk);
+    margin-top: 2px;
+  }
+  /* "View profile" CTA at the bottom of each panel */
+  .pc-view{
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 16px 24px 22px;
+    padding: 10px 14px;
+    background: transparent;
+    border: 1px solid rgba(95,129,144,.32);
+    border-radius: 2px;
+    font-family: var(--f-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .18em;
+    color: var(--ocean-dk);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background .25s ease, color .25s ease, border-color .25s ease;
+  }
+  .pc-view:hover,
+  .principal-card:hover .pc-view{
+    background: var(--ocean-dk);
+    color: var(--off);
+    border-color: var(--ocean-dk);
+  }
+  .pc-view span:last-child{ font-size: 12px; }
+
+  /* ── Principal modal — opens with the clicked panel's full
+     detail content rendered cleanly. */
+  .principal-modal{
+    position: fixed; inset: 0;
+    z-index: 99999;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .principal-modal.is-open{ display: flex; }
+  .principal-modal-backdrop{
+    position: absolute; inset: 0;
+    background: rgba(6,12,18,.82);
+    -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+    cursor: none;
+    animation: pmFade .25s ease forwards;
+  }
+  .principal-modal-card{
+    position: relative;
+    background: #1C2B3A;
+    color: #F7F7F5;
+    width: 100%; max-width: 880px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border: 1px solid rgba(138,173,184,.22);
+    box-shadow: 0 30px 60px -10px rgba(0,0,0,.55), 0 0 0 1px rgba(95,129,144,.18);
+    padding: 40px;
+    border-radius: 2px;
+    animation: pmRise .3s cubic-bezier(.2,.7,.15,1) forwards;
+  }
+  @keyframes pmFade{ from{opacity:0;} to{opacity:1;} }
+  @keyframes pmRise{ from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:none;} }
+
+  .pm-close{
+    position: absolute; top: 18px; right: 18px;
+    background: transparent;
+    border: 1px solid rgba(138,173,184,.3);
+    width: 36px; height: 36px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #8AADB8; cursor: pointer;
+    transition: background .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .pm-close:hover, .pm-close:focus-visible{
+    background: rgba(247,247,245,.08); color: #F7F7F5;
+    border-color: rgba(247,247,245,.85); outline: none;
+  }
+
+  .pm-head{
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 28px;
+    align-items: center;
+    margin-bottom: 32px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid rgba(138,173,184,.2);
+  }
+  .pm-img{
+    width: 220px; height: 220px;
+    background: #1C2B3A;
+    border: 1px solid rgba(138,173,184,.18);
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .pm-img img{
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+  }
+  .pm-meta-eyebrow{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: .22em;
+    color: #8AADB8; text-transform: uppercase;
+    margin: 0 0 12px;
+  }
+  .pm-name{
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 700;
+    font-size: clamp(28px, 3.4vw, 36px);
+    line-height: 1.05;
+    margin: 0 0 8px;
+    color: #F7F7F5;
+  }
+  .pm-role{
+    font-family: 'Roboto', sans-serif; font-weight: 300;
+    font-size: 16px; line-height: 1.5;
+    color: rgba(226,240,240,.78);
+    margin: 0 0 20px;
+  }
+  .pm-linkedin{
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    background: transparent;
+    border: 1px solid rgba(138,173,184,.45);
+    border-radius: 2px;
+    font-family: var(--f-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: #F7F7F5;
+    text-decoration: none;
+    transition: background .22s ease, border-color .22s ease, color .22s ease;
+  }
+  .pm-linkedin:hover, .pm-linkedin:focus-visible{
+    background: #F7F7F5; color: #1C2B3A; border-color: #F7F7F5; outline: none;
+  }
+
+  .pm-body{ display: flex; flex-direction: column; gap: 28px; }
+  .pm-block-l{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: .18em; color: #8AADB8;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .pm-bio{
+    font-family: 'Roboto', sans-serif; font-weight: 300;
+    font-size: 15px; line-height: 1.7;
+    color: rgba(226,240,240,.85);
+    margin: 0;
+  }
+  .pm-doctrine{
+    background: rgba(95,129,144,.1);
+    border-left: 2px solid #8AADB8;
+    padding: 18px 20px;
+  }
+  .pm-doctrine-q{
+    font-family: 'Source Sans 3', sans-serif;
+    font-style: italic; font-weight: 300;
+    font-size: 17px; line-height: 1.55;
+    color: #F7F7F5; margin: 0;
+  }
+  .pm-creds-v{
+    font-family: 'Roboto', sans-serif; font-weight: 400;
+    font-size: 14px; line-height: 1.65;
+    color: rgba(226,240,240,.78);
+    margin: 0 0 14px;
+  }
+  .pm-creds-v strong{ font-weight: 600; color: #F7F7F5; }
+  .pm-domains{ display: flex; flex-wrap: wrap; gap: 8px; }
+  .pm-tag{
+    display: inline-flex;
+    padding: 6px 12px;
+    border: 1px solid rgba(138,173,184,.3);
+    border-radius: 2px;
+    font-family: var(--f-mono);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: .14em;
+    color: rgba(226,240,240,.85);
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 720px){
+    .principal-card .pc-photo,
+    .principal-card .pc-photo-has-img{ height: 300px !important; }
+    .principal-modal{ padding: 0; }
+    .principal-modal-card{ max-height: 100vh; border-radius: 0; border: 0; padding: 28px 22px; }
+    .pm-head{ grid-template-columns: 1fr; gap: 18px; }
+    .pm-img{ width: 100%; height: 240px; max-width: 280px; }
+  }
+  body.pm-open{ overflow: hidden; }
+
   /* ── Credentials block + LinkedIn pill — adds credibility
      depth to each principal card. Sits below the existing tags. */
   .pc-creds{
@@ -762,6 +983,7 @@
 <span>LinkedIn</span>
 </a>
 </div>
+<button type="button" class="pc-view" data-open-profile aria-label="View principal profile"><span>View profile</span><span aria-hidden="true">→</span></button>
 </div>
 <div class="principal-card" data-bio-full="Leads brand positioning, market communication, and demand architecture across HIMARK. Specialises in premium-tier market entry and architectural brand systems that hold under scrutiny long after the launch quarter." data-bio-extended="Believes that positioning is destiny. Believes brands earn premium pricing through restraint, not volume of message.">
 <div class="pc-photo pc-photo-has-img" data-idx="[ 02 ]">
@@ -801,6 +1023,7 @@
 <span>LinkedIn</span>
 </a>
 </div>
+<button type="button" class="pc-view" data-open-profile aria-label="View principal profile"><span>View profile</span><span aria-hidden="true">→</span></button>
 </div>
 <div class="principal-card" data-bio-full="Architects operational delivery across all engagements. Owns the technology stack, the engagement protocol, the client onboarding rigour, and the institutional standard of HIMARK output. Responsible for the conditions under which precision is repeatable." data-bio-extended="Believes that process is the firm. Believes institutional output is the product of unforgiving operational discipline.">
 <div class="pc-photo pc-photo-has-img" data-idx="[ 03 ]">
@@ -840,6 +1063,7 @@
 <span>LinkedIn</span>
 </a>
 </div>
+<button type="button" class="pc-view" data-open-profile aria-label="View principal profile"><span>View profile</span><span aria-hidden="true">→</span></button>
 </div>
 <div class="principal-card" data-bio-full="Owns the firm's technology architecture — from AI infrastructure and the Atlas assistant to the data platforms underpinning every client engagement. Engineers the systems that make precision repeatable, including the LeadSense framework and the AIRaaS product line." data-bio-extended="Believes that infrastructure is intelligence made permanent. Build the system right, the system holds.">
 <div class="pc-photo pc-photo-has-img" data-idx="[ 04 ]">
@@ -879,6 +1103,7 @@
 <span>LinkedIn</span>
 </a>
 </div>
+<button type="button" class="pc-view" data-open-profile aria-label="View principal profile"><span>View profile</span><span aria-hidden="true">→</span></button>
 </div>
 </div>
 </section>
@@ -1209,6 +1434,159 @@
 })();
 </script>
 
+<!-- ============================================================
+     PRINCIPAL PROFILE MODAL — opens when a card is clicked.
+     Pulls bio / doctrine / credentials / tags / LinkedIn from
+     the clicked .principal-card via DOM cloning.
+     ============================================================ -->
+<div class="principal-modal" id="principal-modal" role="dialog" aria-modal="true" aria-labelledby="pm-name" aria-hidden="true">
+<div class="principal-modal-backdrop" data-pm-close></div>
+<div class="principal-modal-card" role="document">
+<button type="button" class="pm-close" data-pm-close aria-label="Close profile">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+</button>
+
+<div class="pm-head">
+<div class="pm-img"><img id="pm-img" src="images/principal-placeholder.svg" alt=""/></div>
+<div>
+<p class="pm-meta-eyebrow" id="pm-idx">[ 01 · PRINCIPAL ]</p>
+<h2 class="pm-name" id="pm-name">Principal Name</h2>
+<p class="pm-role" id="pm-role">Role / Title</p>
+<a class="pm-linkedin" id="pm-linkedin" href="#" target="_blank" rel="noopener">
+<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+<span>View on LinkedIn</span>
+</a>
+</div>
+</div>
+
+<div class="pm-body">
+<div>
+<p class="pm-block-l">[ Operating brief ]</p>
+<p class="pm-bio" id="pm-bio">…</p>
+</div>
+<div class="pm-doctrine">
+<p class="pm-block-l">[ Operating doctrine ]</p>
+<p class="pm-doctrine-q" id="pm-doctrine">…</p>
+</div>
+<div>
+<p class="pm-block-l">[ Previously ]</p>
+<p class="pm-creds-v" id="pm-prev">…</p>
+<p class="pm-block-l" style="margin-top:14px;">[ Tenure ]</p>
+<p class="pm-creds-v" id="pm-tenure">…</p>
+</div>
+<div>
+<p class="pm-block-l">[ Domains ]</p>
+<div class="pm-domains" id="pm-domains"></div>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+/* Principal profile modal — populates from the clicked
+   .principal-card's existing DOM. */
+(function(){
+  var modal = document.getElementById('principal-modal');
+  if(!modal) return;
+  var pmImg     = document.getElementById('pm-img');
+  var pmIdx     = document.getElementById('pm-idx');
+  var pmName    = document.getElementById('pm-name');
+  var pmRole    = document.getElementById('pm-role');
+  var pmLink    = document.getElementById('pm-linkedin');
+  var pmBio     = document.getElementById('pm-bio');
+  var pmDoct    = document.getElementById('pm-doctrine');
+  var pmPrev    = document.getElementById('pm-prev');
+  var pmTenure  = document.getElementById('pm-tenure');
+  var pmDomains = document.getElementById('pm-domains');
+
+  var lastFocus = null;
+  function open(card){
+    if(!card) return;
+    lastFocus = document.activeElement;
+
+    /* Photo */
+    var img = card.querySelector('.pc-photo-img');
+    pmImg.src = img ? img.getAttribute('src') : 'images/principal-placeholder.svg';
+    pmImg.alt = img ? (img.getAttribute('alt') || '') : '';
+
+    /* Index pill */
+    var photo = card.querySelector('.pc-photo');
+    var idx = photo ? photo.getAttribute('data-idx') : '';
+    pmIdx.textContent = idx ? idx + ' · PRINCIPAL' : '[ PRINCIPAL ]';
+
+    /* Name + role */
+    var nameEl = card.querySelector('.pc-name');
+    var roleEl = card.querySelector('.pc-role');
+    pmName.textContent = nameEl ? nameEl.textContent.trim() : 'Principal';
+    pmRole.textContent = roleEl ? roleEl.textContent.trim() : '';
+
+    /* LinkedIn — pull href + aria-label from the card's pc-linkedin */
+    var lk = card.querySelector('.pc-linkedin');
+    if(lk){
+      pmLink.href = lk.getAttribute('href') || '#';
+      pmLink.setAttribute('aria-label', lk.getAttribute('aria-label') || 'LinkedIn');
+      pmLink.hidden = false;
+    } else {
+      pmLink.hidden = true;
+    }
+
+    /* Bio — prefer data-bio-full on the card (richer); fallback
+       to .pc-bio text. */
+    var bioFull = card.getAttribute('data-bio-full');
+    var bioEl   = card.querySelector('.pc-bio');
+    pmBio.textContent = bioFull || (bioEl ? bioEl.textContent.trim() : '');
+
+    /* Doctrine — pulled from .pc-doctrine-q's data-quote attr */
+    var dq = card.querySelector('.pc-doctrine-q');
+    var quote = dq ? (dq.getAttribute('data-quote') || dq.textContent.trim()) : '';
+    pmDoct.textContent = quote ? '"' + quote + '"' : '';
+
+    /* Credentials — parse the two pc-creds-block paragraphs */
+    var credBlocks = card.querySelectorAll('.pc-creds .pc-creds-block .pc-creds-v');
+    pmPrev.innerHTML   = credBlocks[0] ? credBlocks[0].innerHTML : '';
+    pmTenure.innerHTML = credBlocks[1] ? credBlocks[1].innerHTML : '';
+
+    /* Domain tags — copy the existing tags */
+    pmDomains.innerHTML = '';
+    card.querySelectorAll('.pc-domains .pc-tag').forEach(function(t){
+      var s = document.createElement('span');
+      s.className = 'pm-tag';
+      s.textContent = t.textContent.trim();
+      pmDomains.appendChild(s);
+    });
+
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.classList.add('pm-open');
+    /* Focus on close button so Escape lands intuitively */
+    setTimeout(function(){
+      var x = modal.querySelector('.pm-close');
+      if(x) x.focus();
+    }, 200);
+  }
+  function close(){
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('pm-open');
+    if(lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+  }
+
+  /* Click anywhere on a principal-card opens its profile.
+     Clicks INSIDE the modal don't propagate up. */
+  document.addEventListener('click', function(e){
+    if(e.target.closest('.principal-modal')) return;
+    var card = e.target.closest('.principal-card');
+    if(card){ e.preventDefault(); open(card); }
+  });
+
+  modal.addEventListener('click', function(e){
+    if(e.target.matches('[data-pm-close]') || e.target.closest('[data-pm-close]')) close();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && modal.classList.contains('is-open')) close();
+  });
+})();
+</script>
 
 </body>
 </html>

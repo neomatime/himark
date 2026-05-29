@@ -878,28 +878,10 @@
 </script>
 
 
-<div class="prn-backdrop" id="prnBackdrop"></div>
-
-<!-- PRINCIPAL MODAL -->
-<div class="prn-modal-backdrop" id="prnModalBackdrop"></div>
-<div class="prn-modal" id="prnModal" role="dialog" aria-modal="true" aria-hidden="true">
-<button class="prn-modal-close" id="prnModalClose" aria-label="Close">×</button>
-<div class="prn-modal-image">
-<span class="prn-modal-coord" id="prnModalCoord">[ 05.A.01 ]</span>
-<span class="prn-modal-status">On.Mandate</span>
-<div class="prn-modal-glyph" id="prnModalGlyph">NM</div>
-<span class="prn-modal-image-tag" id="prnModalImageTag">PRINCIPAL · DOSSIER</span>
-</div>
-<div class="prn-modal-body">
-<p class="prn-modal-eyebrow" id="prnModalEyebrow">Principal · Dossier</p>
-<h2 class="prn-modal-name" id="prnModalName">Neo Matime</h2>
-<p class="prn-modal-role" id="prnModalRole">Founder & Chief Executive</p>
-<div class="prn-modal-divider"></div>
-<p class="prn-modal-bio" id="prnModalBio"></p>
-<p class="prn-modal-bio" id="prnModalDoctrine" style="font-style:italic;color:var(--ocean-dk)"></p>
-<div class="prn-modal-tags" id="prnModalTags"></div>
-</div>
-</div>
+<!-- Legacy prn-backdrop + prn-modal removed — replaced by the new
+     .principal-modal at the bottom of <body>. Detail content now
+     lives in the new modal (Operating brief / Operating doctrine /
+     Previously + Tenure / Domains) sourced from each card's DOM. -->
 
 <!-- COOKIES BANNER -->
 <aside id="cookies-banner" role="region" aria-label="Cookie preferences">

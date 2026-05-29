@@ -353,6 +353,10 @@ try{
     cMsgs.scrollTop=cMsgs.scrollHeight;
   }
   function shT(){
+    /* Defensive: never let two #ti indicators stack. Task 5's chunked
+       loop calls shT()/rmT() once per chunk, so any future bug that
+       skips an rmT() would otherwise leave a stale indicator on screen. */
+    const stale=document.getElementById('ti'); if(stale)stale.remove();
     const d=document.createElement('div');
     d.className='msg bot typing-i'; d.id='ti';
     d.innerHTML='<div class="typ-d"><span></span><span></span><span></span></div>';

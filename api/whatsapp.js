@@ -52,6 +52,11 @@
 const SYSTEM_PROMPT = require('./atlas-knowledge');
 
 const GEMINI_MODEL = 'gemini-flash-lite-latest';
+/* Audio turns need the FULL Flash variant — gemini-flash-lite-latest is
+   text + image only and returns 500 on audio inline_data. We pay slightly
+   more per audio turn but voice notes are the minority of traffic and the
+   alternative is silently dropping them with a fallback message. */
+const GEMINI_MODEL_AUDIO = 'gemini-flash-latest';
 const WA_GRAPH_VERSION = 'v18.0';
 
 /* ============================================================
@@ -347,10 +352,17 @@ async function askAtlas(history, extraParts){
     };
   });
 
+  /* Pick model: text-only turns use the cheap Lite alias; audio
+     inline_data parts must go to the full Flash variant because Lite
+     500s on audio. We sniff extraParts for any audio/* mime type. */
+  const hasAudio = Array.isArray(extraParts) && extraParts.some(p =>
+    p && p.inline_data && String(p.inline_data.mime_type || '').startsWith('audio/'));
+  const model = hasAudio ? GEMINI_MODEL_AUDIO : GEMINI_MODEL;
+
   let res;
   try {
     res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${encodeURIComponent(apiKey)}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

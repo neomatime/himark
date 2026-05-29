@@ -452,8 +452,13 @@ module.exports = async (req, res) => {
     const finalReply = visibleReply || "I'm not able to respond on that just now. Please reach us at info@himark.co.za.";
     /* Voice mode: force a single chunk regardless of paragraph breaks
        — TTS speaks the whole reply continuously, so we render one
-       bubble and call speak() on the joined string. */
-    const finalChunks = (mode === 'voice') ? [finalReply] : (splitIntoChunks(finalReply).length ? splitIntoChunks(finalReply) : [finalReply]);
+       bubble and call speak() on the joined string.
+       Text mode: split on \n\n; fall back to a single chunk if the
+       split produced nothing (edge case: malformed reply). */
+    const rawChunks = splitIntoChunks(finalReply);
+    const finalChunks = (mode === 'voice')
+      ? [finalReply]
+      : (rawChunks.length ? rawChunks : [finalReply]);
     res.statusCode = 200;
     return res.end(JSON.stringify({
       reply: finalReply,

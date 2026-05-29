@@ -521,6 +521,34 @@
   #page-doctrine .doc-sub{ margin-top: 26px; }
   #page-doctrine .doc-meta{ margin-top: 36px; padding-top: 26px; }
 
+  /* ── Mobile fix: let the hero grow naturally with its content.
+     The styles.css defaults put min-height:100vh on .doc-split
+     and overflow:hidden on .doc-left — combined, those clip the
+     dossier CTA + meta grid on phones because the grid row stays
+     at 100vh and anything past that is hidden. Force auto sizing
+     and visible overflow on mobile so all content renders. */
+  @media (max-width: 880px){
+    #page-doctrine .doc-split{
+      min-height: 0 !important;
+      height: auto !important;
+    }
+    #page-doctrine .doc-left{
+      overflow: visible !important;
+      min-height: 0 !important;
+      height: auto !important;
+      padding-top: 96px;
+      padding-bottom: 56px;
+    }
+    #page-doctrine .doc-meta{ margin-top: 28px; padding-top: 20px; }
+    #page-doctrine .doc-dossier-cta{ margin-top: 18px; }
+    /* Dossier CTA — let it shrink and wrap text on tight phones */
+    .doc-dossier-cta{
+      max-width: 100%;
+      width: auto;
+    }
+    .doc-dossier-name{ font-size: 12.5px; }
+  }
+
   /* ── Dossier PDF download CTA in the about hero.
      Sits below the paragraph; meta grid follows tight underneath. */
   .doc-dossier-cta{

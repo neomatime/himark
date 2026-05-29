@@ -459,6 +459,9 @@ async function sendWhatsAppTextChunks(to, body){
       console.error('[wa] first chunk failed, aborting remaining', chunks.length - 1);
       return { chunks: chunks.length, results, aborted: true };
     }
+    if (result && result.error && i > 0) {
+      console.warn('[wa] chunk', i, 'failed (chunks 0..' + (i - 1) + ' already sent)', result.error);
+    }
     if (i < chunks.length - 1) {
       await sleep(chunkPauseMs(chunks[i + 1]));
     }

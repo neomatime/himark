@@ -447,13 +447,13 @@ module.exports = async (req, res) => {
     }
     if (!body || typeof body !== 'object') body = {};
 
-    /* ACK FAST — Meta times out at 20s and will retry, which
-       results in duplicate replies. We always 200 immediately,
-       then process the message asynchronously. */
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify({ ok: true }));
-
+    /* NOTE: We do NOT ACK Meta early any more.
+       On Vercel serverless, calling res.end() terminates the function —
+       any awaited work after that (Gemini call, Graph send) gets killed
+       mid-flight before fetches can leave the box. So we process the
+       message synchronously, send the reply via Graph, THEN 200 Meta.
+       Atlas typically completes a turn in 3–5s; Meta's webhook timeout
+       is 20s, so we have comfortable headroom. */
     try {
       const entry   = body.entry && body.entry[0];
       const change  = entry && entry.changes && entry.changes[0];
@@ -480,6 +480,9 @@ module.exports = async (req, res) => {
         'cause:', err && err.cause && (err.cause.message || err.cause.code || String(err.cause)),
         'stack:', err && err.stack && err.stack.split('\n').slice(0, 4).join(' | '));
     }
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ ok: true }));
     return;
   }
 

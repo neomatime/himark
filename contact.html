@@ -571,7 +571,52 @@
 .footer-subscribe-arrow{font-size:14px;transition:transform .25s ease;}
 .footer-subscribe-cta:hover .footer-subscribe-arrow{transform:translateX(2px);}
 @media (max-width:720px){.footer-subscribe{flex-direction:column;align-items:flex-start;gap:18px;padding:28px 0 24px;margin-top:40px;}.footer-actions{width:100%;flex-direction:column;gap:10px;}.footer-subscribe-cta{width:100%;justify-content:space-between;}}
-</style>
+
+    /* Drawer close button — only visible on mobile (where the
+       drawer pattern is active). Positioned absolute at the
+       top-right of the drawer's 84px top padding area so it
+       doesn't push the menu rows down. */
+    .topnav-close-li{
+      display: none;
+    }
+    @media (max-width: 1024px){
+      .topnav-close-li{
+        display: block;
+        position: absolute;
+        top: 20px;
+        right: 24px;
+        padding: 0 !important;
+        margin: 0;
+        list-style: none;
+        border: 0 !important;
+        animation: none !important;
+      }
+      .topnav-close{
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        background: transparent;
+        border: 1px solid rgba(95,129,144,.28);
+        border-radius: 50%;
+        color: var(--midnight);
+        cursor: pointer;
+        transition: background .22s ease, color .22s ease, border-color .22s ease, transform .22s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .topnav-close:hover,
+      .topnav-close:focus-visible,
+      .topnav-close:active{
+        background: var(--midnight);
+        color: var(--off);
+        border-color: var(--midnight);
+        transform: rotate(90deg);
+        outline: none;
+      }
+    }
+  </style>
 
   <script src="images.config.js"></script>
   <script defer data-domain="himark.co.za" src="https://plausible.io/js/script.js"></script>
@@ -593,6 +638,7 @@
 <span></span><span></span><span></span>
 </button>
 <ul class="topnav-list" id="topnav-list">
+<li class="topnav-close-li" role="presentation"><button type="button" class="topnav-close" aria-label="Close menu" onclick="var l=document.getElementById('topnav-list');l.classList.remove('open');var cb=document.getElementById('topnav-checkbox');if(cb)cb.checked=false;var t=document.querySelector('.topnav-toggle');if(t)t.setAttribute('aria-expanded','false');"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button></li>
 <li><a href="home.html">Home</a></li><li><a href="about.html">About</a></li>
 <li><a href="services.html">Services</a></li>
 <li><a href="team.html">Team</a></li>

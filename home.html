@@ -389,12 +389,12 @@
 
   /* ── MARQUEE ────────────────────────────────────────────── */
   .home-marquee{
-    background: var(--midnight);
-    color: var(--off);
+    background: var(--ocean-lt);
+    color: var(--midnight);
     padding: 30px 0;
     overflow: hidden;
-    border-top: 1px solid rgba(138,173,184,.18);
-    border-bottom: 1px solid rgba(138,173,184,.18);
+    border-top: 1px solid rgba(28,43,58,.08);
+    border-bottom: 1px solid rgba(28,43,58,.08);
   }
   .home-marquee-track{
     display: flex;
@@ -405,7 +405,7 @@
     font-weight: 300;
     font-size: 24px;
     letter-spacing: .03em;
-    color: var(--off);
+    color: var(--midnight);
     animation: home-marquee-scroll 64s linear infinite;
     width: max-content;
   }
@@ -414,8 +414,9 @@
     font-style: italic;
   }
   .home-marquee-track > span.dot{
-    color: var(--ocean-lt);
+    color: var(--ocean-dk);
     font-style: normal;
+    opacity: .6;
   }
   @keyframes home-marquee-scroll{
     0%   { transform: translateX(0); }

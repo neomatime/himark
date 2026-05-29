@@ -285,9 +285,41 @@
     line-height: 1;
   }
   .topnav-brand:hover{ color: var(--ocean-dk); }
-  .topnav-brand-logo{ height: 52px; width: auto; display: block; }
-  .topnav-brand:hover .topnav-brand-logo{ opacity: .85; transition: opacity .18s ease; }
-  .topnav-list{
+  /* Loading-page-style lockup: framed-H + IMARK rendered in
+     midnight via CSS mask so it darkens cleanly on the white nav. */
+  .topnav-brand{
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    height: 40px;
+    line-height: 1;
+  }
+  .topnav-brand-mark{
+    width: 29px;
+    height: 40px;
+    display: inline-block;
+    flex-shrink: 0;
+    margin-right: -2px;
+  }
+  .topnav-brand-mark svg{
+    width: 100%;
+    height: 100%;
+    display: block;
+    margin-top: -1px;
+  }
+  .topnav-brand-imark{
+    display: inline-block;
+    width: 110px;
+    height: 28px;
+    background-color: var(--midnight);
+    -webkit-mask: url('images/IMARK.png') no-repeat center / contain;
+            mask: url('images/IMARK.png') no-repeat center / contain;
+  }
+  .topnav-brand:hover .topnav-brand-mark svg g rect,
+  .topnav-brand:hover .topnav-brand-mark svg > rect{ fill: var(--ocean-dk); }
+  .topnav-brand:hover .topnav-brand-mark svg > rect[fill="none"]{ stroke: var(--ocean-dk); }
+  .topnav-brand:hover .topnav-brand-imark{ background-color: var(--ocean-dk); }
+.topnav-list{
     list-style: none;
     margin: 0;
     padding: 0;
@@ -355,7 +387,9 @@
     }
     .topnav-list.open{ display: flex; }
     .topnav-list a{ padding: 14px 24px; }
-    .topnav-brand-logo{ height: 42px; }
+        .topnav-brand{ height: 34px; }
+    .topnav-brand-mark{ width: 24px; height: 34px; }
+    .topnav-brand-imark{ width: 92px; height: 22px; }
   }
 
   /* iOS-menu-fix — bigger tap target, no iOS tap-highlight,
@@ -606,7 +640,9 @@
 <nav class="topnav" aria-label="Primary">
 <div class="topnav-inner">
 <a class="topnav-brand" href="home.html" aria-label="HIMARK · Home">
-<img class="topnav-brand-logo" src="images/himark-logo-nav.PNG" alt="HIMARK"/>
+<span class="topnav-brand-mark" aria-hidden="true">
+<svg viewBox="0 0 140 200" xmlns="http://www.w3.org/2000/svg"><g fill="#1C2B3A"><rect x="14" y="14" width="38" height="170"/><rect x="88" y="14" width="38" height="170"/><rect x="52" y="85" width="16" height="30"/><rect x="72" y="85" width="16" height="30"/></g><rect x="4" y="4" width="132" height="192" fill="none" stroke="#1C2B3A" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+</span><span class="topnav-brand-imark" aria-label="HIMARK"></span>
 </a>
 <button class="topnav-toggle" type="button" aria-label="Toggle menu" onclick="var l=document.getElementById('topnav-list');var o=l.classList.toggle('open');this.setAttribute('aria-expanded',o?'true':'false');">
 <span></span><span></span><span></span>

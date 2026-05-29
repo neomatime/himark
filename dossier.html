@@ -170,13 +170,34 @@
     text-align: center;
     padding: 0 0.95in;
   }
+  /* Loading-page-style lockup: framed-H + IMARK in off-white.
+     Mirrors the cover construction used on index.html so the
+     dossier's first impression matches the site intro. */
   .cover-wm{
-    font-family: 'Source Sans 3', sans-serif;
-    font-weight: 300;
-    font-size: 84px;
-    letter-spacing: -.02em;
-    color: var(--off);
-    margin: 0 0 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    margin: 0 0 18px;
+    height: 96px;
+    line-height: 1;
+  }
+  .cover-wm-mark{
+    width: 68px;
+    height: 96px;
+    display: inline-block;
+    flex-shrink: 0;
+    margin-right: -8px;
+  }
+  .cover-wm-mark svg{
+    width: 100%;
+    height: 100%;
+    display: block;
+    margin-top: -2px;
+  }
+  .cover-wm-imark{
+    height: 72px;
+    width: auto;
+    display: block;
   }
   .cover-strap{
     font-family: 'JetBrains Mono', monospace;
@@ -274,7 +295,19 @@
 <section class="dossier-page cover" data-coord="[ DOSSIER · 2026 ]">
 <div class="cover-frame"></div>
 <div class="cover-stack">
-<h1 class="cover-wm">HIMARK</h1>
+<h1 class="cover-wm" aria-label="HIMARK">
+<span class="cover-wm-mark" aria-hidden="true">
+<svg viewBox="0 0 140 200" xmlns="http://www.w3.org/2000/svg">
+<g fill="#F7F7F5">
+<rect x="14" y="14" width="38" height="170"/>
+<rect x="88" y="14" width="38" height="170"/>
+<rect x="52" y="85" width="16" height="30"/>
+<rect x="72" y="85" width="16" height="30"/>
+</g>
+<rect x="4" y="4" width="132" height="192" fill="none" stroke="#F7F7F5" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter"/>
+</svg>
+</span><img class="cover-wm-imark" src="images/IMARK.png" alt=""/>
+</h1>
 <p class="cover-strap">[ DOSSIER · 2026 ]</p>
 <p class="cover-title">Engagement <em>Dossier</em></p>
 </div>

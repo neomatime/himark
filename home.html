@@ -360,16 +360,17 @@
     font-size: 12px;
     letter-spacing: .2em;
     text-transform: uppercase;
-    color: var(--off);
-    background: var(--midnight);
+    color: var(--midnight);
+    background: var(--ocean-lt);
     padding: 20px 32px;
     text-decoration: none;
     border-radius: 2px;
-    transition: background-color .2s ease;
+    transition: background-color .2s ease, color .2s ease;
   }
   .home-hero-cta:hover,
   .home-hero-cta:focus-visible{
-    background: var(--ocean-dk);
+    background: var(--off);
+    color: var(--midnight);
     outline: none;
   }
   .home-hero-cta-arrow{

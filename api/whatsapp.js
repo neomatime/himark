@@ -370,15 +370,19 @@ async function handleMessage(message){
   const text = (message.text && message.text.body) || '';
   if (!from || !text) return;
 
+  console.log('[wa] handleMessage start', { from, preview: text.slice(0, 80) });
+
   markRead(message.id).catch(() => {});
 
   appendHistory(from, 'user', text);
   const history = getHistory(from);
 
   const raw = await askAtlas(history);
+  console.log('[wa] askAtlas done', { rawLen: raw ? raw.length : 0, rawPreview: raw && raw.slice(0, 120) });
   if (!raw) {
-    await sendWhatsAppText(from,
+    const fb = await sendWhatsAppText(from,
       "Atlas is having a brief connectivity issue — please try again in a moment, or reach us at info@himark.co.za.");
+    console.log('[wa] fallback send result', fb);
     return;
   }
 
@@ -390,7 +394,8 @@ async function handleMessage(message){
 
   const visible = stripBlocks(raw) || "I'm not able to respond to that just now. Please reach us at info@himark.co.za.";
   appendHistory(from, 'assistant', visible);
-  await sendWhatsAppText(from, visible);
+  const sendResult = await sendWhatsAppText(from, visible);
+  console.log('[wa] reply send result', sendResult, 'replyPreview:', visible.slice(0, 100));
 }
 
 /* ============================================================
@@ -454,6 +459,16 @@ module.exports = async (req, res) => {
       const change  = entry && entry.changes && entry.changes[0];
       const value   = change && change.value;
       const messages = (value && value.messages) || [];
+      const statuses = (value && value.statuses) || [];
+      console.log('[wa] POST received', {
+        hasEntry: !!entry,
+        field: change && change.field,
+        messagesCount: messages.length,
+        statusesCount: statuses.length,
+        firstMessageType: messages[0] && messages[0].type,
+        firstMessageFrom: messages[0] && messages[0].from,
+        firstMessagePreview: messages[0] && messages[0].text && messages[0].text.body && messages[0].text.body.slice(0, 80)
+      });
       for (const m of messages) {
         /* Await each one sequentially so HubSpot writes and reply
            ordering stay clean within a single visitor's burst. */

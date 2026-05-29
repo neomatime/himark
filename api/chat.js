@@ -27,6 +27,22 @@
      answering FAQs and running LeadSense. */
 const GEMINI_MODEL = 'gemini-flash-lite-latest';
 
+/* ============================================================
+   CHUNKING — paragraph breaks → separate chat bubbles
+   Atlas inserts `\n\n` at natural pause points in his reply
+   (see atlas-knowledge.js §1). We split on those and return the
+   pieces as a `chunks` array; the widget renders each as its own
+   bubble with a brief typing-dot pause between, so the rhythm
+   feels like a real person texting. Mirrored in api/whatsapp.js.
+   ============================================================ */
+function splitIntoChunks(text){
+  const parts = String(text || '')
+    .split(/\n\s*\n/)
+    .map(s => s.trim())
+    .filter(Boolean);
+  return parts.slice(0, 3);
+}
+
 /* ATLAS SYSTEM PROMPT — extracted to its own file so you can edit
    the knowledge base, voice rules, and qualification flow without
    touching this function. See api/atlas-knowledge.js for the
@@ -357,7 +373,7 @@ module.exports = async (req, res) => {
   let systemForThisTurn = SYSTEM_PROMPT;
 
   if (mode === 'voice') {
-    systemForThisTurn += '\n\n----------------------------------------\nTHIS TURN: VOICE MODE — live phone-call-style conversation\n----------------------------------------\n- This is a LIVE voice call. The visitor speaks, you speak back, the mic re-opens automatically, they speak again. Behave like you would on a real call.\n- Keep replies to 1–2 short sentences. No more. Brevity is the whole point.\n- Write the way you would SPEAK: no URLs, no markdown, no asterisks, no parentheses, no quoted dialogue, no labels like "Q:" or "A:".\n- End with a question or a natural beat that hands the turn back to the visitor. Never end with a monologue.\n- Never refer the visitor to text ("see the chat", "check the text response", "as I wrote above"). They cannot see while in voice mode. Just answer them.\n- If you need to ask for an email or company name, ask once, briefly, the way a person would on a call.\n- Pronunciation hint: the brand "HIMARK" is spoken as "Highmark" — the front-end substitutes it automatically, so write "HIMARK" normally and it will sound right.';
+    systemForThisTurn += '\n\n----------------------------------------\nTHIS TURN: VOICE MODE — live phone-call-style conversation\n----------------------------------------\n- This is a LIVE voice call. The visitor speaks, you speak back, the mic re-opens automatically, they speak again. Behave like you would on a real call.\n- Keep replies to 1–2 short sentences. No more. Brevity is the whole point.\n- Write the way you would SPEAK: no URLs, no markdown, no asterisks, no parentheses, no quoted dialogue, no labels like "Q:" or "A:".\n- End with a question or a natural beat that hands the turn back to the visitor. Never end with a monologue.\n- Never refer the visitor to text ("see the chat", "check the text response", "as I wrote above"). They cannot see while in voice mode. Just answer them.\n- If you need to ask for an email or company name, ask once, briefly, the way a person would on a call.\n- Pronunciation hint: the brand "HIMARK" is spoken as "Highmark" — the front-end substitutes it automatically, so write "HIMARK" normally and it will sound right.\n- Do NOT use paragraph breaks (\\n\\n) in this turn. The reply is spoken aloud as one continuous response, so chunking is meaningless and will break the cadence.';
   }
 
   if (isFirstTurn) {
@@ -433,9 +449,15 @@ module.exports = async (req, res) => {
       pushToHubSpot(session, 'session').catch(e => console.error('[atlas] hubspot push exception (session)', e && e.message));
     }
 
+    const finalReply = visibleReply || "I'm not able to respond on that just now. Please reach us at info@himark.co.za.";
+    /* Voice mode: force a single chunk regardless of paragraph breaks
+       — TTS speaks the whole reply continuously, so we render one
+       bubble and call speak() on the joined string. */
+    const finalChunks = (mode === 'voice') ? [finalReply] : (splitIntoChunks(finalReply).length ? splitIntoChunks(finalReply) : [finalReply]);
     res.statusCode = 200;
     return res.end(JSON.stringify({
-      reply: visibleReply || "I'm not able to respond on that just now. Please reach us at info@himark.co.za.",
+      reply: finalReply,
+      chunks: finalChunks,
       leadCaptured: !!lead,
       sessionBooked: !!session
     }));

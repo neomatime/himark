@@ -848,6 +848,64 @@
     z-index: 2;
   }
 
+  /* ── DOCTRINE → ORBIT BRIDGE — editorial chapter break ────────
+     Bold + thin rules sandwich an italic transitional line. Sits
+     inside the doctrine-stage with the same z-index as orbit, so
+     it slides over the sticky doctrine as the user scrolls. Short
+     enough to feel like punctuation, not a full section. */
+  .doctrine-stage > .doctrine-orbit-bridge{
+    position: relative;
+    z-index: 2;
+    background: var(--off);
+    padding: clamp(40px, 5vw, 64px) clamp(24px, 6vw, 96px);
+    margin: 0;
+  }
+  .dob-rule{
+    display: block;
+    width: 100%;
+    background: var(--midnight);
+  }
+  .dob-rule-bold{ height: 4px; }
+  .dob-rule-thin{ height: 1px; opacity: .35; }
+  .dob-meta{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: clamp(20px, 2vw, 28px) 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    color: var(--ocean-dk);
+  }
+  .dob-meta-r{ color: rgba(46,74,90,.62); }
+  .dob-meta-foot .dob-meta-l{ color: var(--midnight); font-weight: 600; }
+  .dob-meta-foot .dob-meta-r{
+    font-family: 'JetBrains Mono', monospace;
+    font-feature-settings: 'tnum' 1;
+  }
+  .dob-line{
+    text-align: center;
+    margin: 0;
+    padding: clamp(40px, 5vw, 72px) 0;
+    font-family: 'Roboto', sans-serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(28px, 4.8vw, 60px);
+    line-height: 1.08;
+    letter-spacing: -.015em;
+    color: var(--midnight);
+  }
+  .dob-line em{
+    font-style: italic;
+  }
+  @media (max-width: 600px){
+    .doctrine-stage > .doctrine-orbit-bridge{ padding: 32px 22px; }
+    .dob-meta{ font-size: 9px; letter-spacing: .22em; }
+    .dob-line{ font-size: 22px; padding: 28px 0; line-height: 1.15; }
+  }
+
   /* ── CLIENT LOGO MARQUEE ───────────────────────────────────
      Uniform-sized cells (200x80) that loop horizontally. Real
      client logos go in via <img class="ilm-logo"> inside each
@@ -1946,6 +2004,29 @@
 </div>
 </div>
 </section>
+
+<!-- DOCTRINE → ORBIT BRIDGE — editorial chapter break.
+     Bold + thin horizontal rules sandwich a big italic transitional
+     line. Sits inside the doctrine-stage with z-index:2 (same as
+     orbit), so as the user scrolls past the sticky doctrine, this
+     bridge appears first — then the orbit follows. The whole thing
+     reads as one continuous scroll event from belief → architecture
+     with a brief editorial pause in between. -->
+<aside class="doctrine-orbit-bridge" aria-label="Chapter break: principle to architecture">
+<div class="dob-rule dob-rule-bold" aria-hidden="true"></div>
+<div class="dob-meta">
+<span class="dob-meta-l">[ 01.D.X · INTERLUDE ]</span>
+<span class="dob-meta-r">PRINCIPLE &rarr; ARCHITECTURE</span>
+</div>
+<div class="dob-rule dob-rule-thin" aria-hidden="true"></div>
+<p class="dob-line"><em>Three paths.<br/>Same firm.<br/>One engagement at a time.</em></p>
+<div class="dob-rule dob-rule-thin" aria-hidden="true"></div>
+<div class="dob-meta dob-meta-foot">
+<span class="dob-meta-l">SCROLL TO ENTER</span>
+<span class="dob-meta-r">&darr;&nbsp;&nbsp;&nbsp;01 / 03</span>
+</div>
+<div class="dob-rule dob-rule-bold" aria-hidden="true"></div>
+</aside>
 
 <!-- ORBIT — restored interactive three-paths section.
      Sits INSIDE the doctrine-stage as the natural scroll runway:

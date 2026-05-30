@@ -550,6 +550,33 @@
     color: #fff;
     padding: clamp(96px, 12vw, 160px) clamp(24px, 6vw, 96px);
     overflow: hidden;
+    position: relative;
+  }
+  /* Soft top edge — graduates the off-white above into the midnight
+     here so the section change isn't a hard slab edge. Sits above
+     the inner content; pointer-events:none keeps it click-through. */
+  .home-deep-dive::before{
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: clamp(72px, 9vw, 128px);
+    background: linear-gradient(to bottom,
+      var(--off) 0%,
+      rgba(247,247,245,.55) 35%,
+      rgba(247,247,245,0) 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+  /* Coord tags on the midnight background need light colors and
+     enough breathing room above the soft gradient (z-index:3 puts
+     them on top of the gradient so they read cleanly). */
+  .home-deep-dive .hdd-coord-l,
+  .home-deep-dive .hdd-coord-r{
+    z-index: 3;
+    color: rgba(255,255,255,.62);
+  }
+  .home-deep-dive .hdd-coord-r{
+    color: rgba(255,255,255,.45);
   }
   .home-deep-dive-inner{
     max-width: 1280px;
@@ -698,6 +725,7 @@
   .home-anchor{
     padding: 120px 32px;
     background: var(--off);
+    position: relative;
   }
   .home-anchor-inner{
     max-width: 920px;
@@ -1893,6 +1921,8 @@
      the bottom of the page, which uses IntersectionObserver to
      fire the reveal once when the section enters the viewport. -->
 <section class="home-doctrine" aria-label="HIMARK doctrine">
+<span class="orbit-coord-l">[ 01.D.01 · DOCTRINE ]</span>
+<span class="orbit-coord-r">FOUR PILLARS · ONE FIRM</span>
 <div class="home-doctrine-inner">
 <p class="home-doctrine-eyebrow">— The Doctrine</p>
 <div class="home-doctrine-grid">
@@ -2116,6 +2146,8 @@
      the same IIFE that handles the doctrine reveal). Swap the
      <img src> for a real principal-at-work photo when available. -->
 <section class="home-deep-dive" aria-label="Operating belief — Volume is a tax on quality">
+<span class="orbit-coord-l hdd-coord-l">[ 01.B.01 · BELIEF ]</span>
+<span class="orbit-coord-r hdd-coord-r">OPERATING TRUTH · 01 / 04</span>
 <div class="home-deep-dive-inner">
 <figure class="hdd-figure">
 <div class="hdd-image-wrap">
@@ -2171,6 +2203,8 @@
 
 <!-- ANCHOR ─────────────────────────────────────────────────── -->
 <section class="home-anchor">
+<span class="orbit-coord-l">[ 01.F.01 · THE FIRM ]</span>
+<span class="orbit-coord-r">BY APPLICATION</span>
 <div class="home-anchor-inner">
 <p class="home-anchor-eyebrow">The Firm</p>
 <p class="home-anchor-body">We work with a deliberately limited number of founder-led businesses each quarter. Every engagement is anchored by a senior principal. The firm operates <em>by application</em> — there is no sales cycle.</p>

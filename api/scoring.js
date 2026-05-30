@@ -35,7 +35,7 @@ const BUCKET_CLOSING_LINES = {
 };
 
 const DEFAULT_SUBSTITUTION_TARGET =
-  'A principal will follow up directly within five working days.';
+  'Thank you. A principal will follow up directly within five working days.';
 
 /* ── Tier match ────────────────────────────────────────────── */
 function scoreTier(tier){
@@ -96,10 +96,10 @@ function scoreTimeline(timeline){
 /* ── Role seniority ────────────────────────────────────────── */
 function scoreRole(role){
   const r = String(role || '').toLowerCase();
-  if (/founder|ceo|co[- ]?founder|owner|managing director/.test(r))  return 15;
-  if (/cmo|coo|cfo|cto|cpo|cro|chief/.test(r))                       return 12;
-  if (/director|vp|vice president|head of/.test(r))                  return 10;
-  if (/manager/.test(r))                                             return 5;
+  if (/\b(founder|ceo|co[- ]?founder|owner|managing director)\b/.test(r)) return 15;
+  if (/\b(cmo|coo|cfo|cto|cpo|cro|chief)\b/.test(r))                      return 12;
+  if (/\b(director|vp|vice president|head of)\b/.test(r))                 return 10;
+  if (/\bmanager\b/.test(r))                                              return 5;
   return 0;
 }
 
@@ -130,9 +130,9 @@ function scoreNegatives(record){
   const email = String(record && record.email || '').toLowerCase();
   const tier  = String(record && record.tier  || '').toLowerCase();
   let neg = 0;
-  if (/send (me )?(a )?proposal|\brfp\b|quotation|please quote/.test(brief)) neg -= 15;
+  if (/send (me )?(a )?proposal|\brfp\b|\bquote\b|quotation|please quote/.test(brief)) neg -= 15;
   if (/we need help|interested|can you help|tell me more/.test(brief) && brief.length < 80) neg -= 10;
-  if (/discount|cheaper|reduce(d)? (fee|price|rate)|negotiate/.test(brief)) neg -= 10;
+  if (/\bdiscount\b|\bcheaper\b|reduce(d)? (fee|price|rate)|negotiate/.test(brief)) neg -= 10;
   if (tier === 'private' && /@(gmail|yahoo|hotmail|outlook|live|icloud)\./.test(email)) neg -= 5;
   return neg;
 }

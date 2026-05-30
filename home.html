@@ -885,25 +885,61 @@
     font-family: 'JetBrains Mono', monospace;
     font-feature-settings: 'tnum' 1;
   }
-  .dob-line{
-    text-align: center;
+  /* Cinematic image strip — wide letterbox photo with the italic
+     transitional line overlaid in white. Dark gradient veil keeps
+     the type readable on any photo. */
+  .dob-figure{
+    position: relative;
+    width: 100%;
+    margin: clamp(18px, 2vw, 28px) 0;
+    aspect-ratio: 21 / 9;
+    overflow: hidden;
+    background: var(--midnight);
+  }
+  .dob-figure img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: brightness(.78) saturate(.85) contrast(1.04);
+  }
+  .dob-figure-veil{
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+      rgba(28,43,58,.40) 0%,
+      rgba(28,43,58,.62) 50%,
+      rgba(28,43,58,.40) 100%);
+    pointer-events: none;
+  }
+  .dob-figure-text{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: 0;
-    padding: clamp(40px, 5vw, 72px) 0;
+    padding: clamp(20px, 3vw, 56px);
+    text-align: center;
     font-family: 'Roboto', sans-serif;
     font-style: italic;
     font-weight: 300;
     font-size: clamp(28px, 4.8vw, 60px);
-    line-height: 1.08;
+    line-height: 1.1;
     letter-spacing: -.015em;
-    color: var(--midnight);
+    color: #fff;
+    text-shadow: 0 1px 24px rgba(28,43,58,.45);
   }
-  .dob-line em{
+  .dob-figure-text em{
     font-style: italic;
+  }
+  @media (max-width: 720px){
+    .dob-figure{ aspect-ratio: 4 / 3; }
+    .dob-figure-text{ font-size: 22px; line-height: 1.18; }
   }
   @media (max-width: 600px){
     .doctrine-stage > .doctrine-orbit-bridge{ padding: 32px 22px; }
     .dob-meta{ font-size: 9px; letter-spacing: .22em; }
-    .dob-line{ font-size: 22px; padding: 28px 0; line-height: 1.15; }
   }
 
   /* ── CLIENT LOGO MARQUEE ───────────────────────────────────
@@ -2019,7 +2055,20 @@
 <span class="dob-meta-r">PRINCIPLE &rarr; ARCHITECTURE</span>
 </div>
 <div class="dob-rule dob-rule-thin" aria-hidden="true"></div>
-<p class="dob-line"><em>Three paths.<br/>Same firm.<br/>One engagement at a time.</em></p>
+
+<!-- Cinematic image strip with the italic transitional line
+     overlaid. The veil layers a subtle dark gradient so the white
+     italic copy stays readable regardless of which image lands
+     here. Swap the <img src> for any photo with editorial weight
+     (cityscape, blueprint, ledger, working desk). -->
+<figure class="dob-figure">
+<img src="images/method-hero.jpg" alt="" loading="lazy"/>
+<div class="dob-figure-veil" aria-hidden="true"></div>
+<figcaption class="dob-figure-text">
+<em>Three paths.<br/>Same firm.<br/>One engagement at a time.</em>
+</figcaption>
+</figure>
+
 <div class="dob-rule dob-rule-thin" aria-hidden="true"></div>
 <div class="dob-meta dob-meta-foot">
 <span class="dob-meta-l">SCROLL TO ENTER</span>

@@ -793,17 +793,13 @@
      #page-home > .hero in styles.css makes the hero sticky.
      Sections following the hero need z-index: 1 so they cleanly
      occlude the sticky hero as they scroll up over it. */
-  /* Every post-hero section gets relative + z-index in INCREASING
-     order so each scrolls cleanly over the one before it. Sticky
-     doctrine inside .doctrine-stage stays at z-index:1, and orbit
-     (z-index:2) slides up over it as the stage scrolls past. */
+  /* Post-hero sections layered in ascending z-index order. The
+     doctrine-stage holds BOTH the sticky doctrine and the orbit
+     together — orbit is the runway, so it scrolls up over the
+     pinned doctrine with zero dead time between them. */
   #page-home > .doctrine-stage{
     position: relative;
     z-index: 1;
-  }
-  #page-home > .orbit-section{
-    position: relative;
-    z-index: 2;
   }
   #page-home > .home-deep-dive{
     position: relative;
@@ -821,20 +817,24 @@
     position: relative;
     z-index: 6;
   }
-  /* Soft top-shadow on the doctrine stage so it lifts off the
-     released hero with a subtle edge. */
+  /* Soft top-shadow on the stage so it lifts off the released
+     hero with a subtle edge. */
   #page-home > .doctrine-stage{
     box-shadow: 0 -24px 60px rgba(28,43,58,.10), 0 -1px 0 rgba(28,43,58,.06);
   }
 
   /* ── DOCTRINE STAGE — sticky scroll-over mechanic ─────────────
-     The stage is just a tall container. Inside it the doctrine
-     section is position:sticky so it pins to the top of the
-     viewport for the duration of the stage. The .doctrine-overscroll
-     spacer adds scroll runway. When the user keeps scrolling past
-     the stage's bottom edge, the doctrine releases naturally and
-     the orbit (next section, higher z-index) is already coming up
-     over it. */
+     The stage wraps BOTH the doctrine grid AND the orbit section.
+     Inside, the doctrine is position:sticky so it pins to the top
+     of the viewport. The orbit (immediately below in flow) acts
+     as the natural scroll runway — as the user keeps scrolling
+     past the pinned doctrine, the orbit comes up and slides over
+     it (z-index:2 beats doctrine's z-index:1). No spacer, no gap,
+     no dead time: the handoff is the orbit itself moving up.
+     When the stage's bottom edge eventually reaches the top of
+     the viewport, the doctrine releases naturally — but by then
+     the orbit has already fully covered it, so the release is
+     invisible to the user. */
   .doctrine-stage{
     position: relative;
   }
@@ -843,12 +843,9 @@
     top: 0;
     z-index: 1;
   }
-  .doctrine-overscroll{
-    height: 90vh;
-    pointer-events: none;
-  }
-  @media (max-width: 720px){
-    .doctrine-overscroll{ height: 60vh; }
+  .doctrine-stage > .orbit-section{
+    position: relative;
+    z-index: 2;
   }
 
   /* ── CLIENT LOGO MARQUEE ───────────────────────────────────
@@ -1950,17 +1947,12 @@
 </div>
 </section>
 
-<!-- Overscroll runway — pads the stage so the sticky doctrine has
-     scroll distance to be visible before the orbit slides over it.
-     ~90vh gives ~1 viewport of "pinned doctrine" reading time. -->
-<div class="doctrine-overscroll" aria-hidden="true"></div>
-
-</div><!-- /.doctrine-stage -->
-
 <!-- ORBIT — restored interactive three-paths section.
-     Sits in flow AFTER the doctrine stage so it naturally scrolls
-     up over the still-sticky doctrine. Higher z-index in the
-     #page-home > .orbit-section rule keeps it visually on top. -->
+     Sits INSIDE the doctrine-stage as the natural scroll runway:
+     the moment doctrine pins at the top, scrolling immediately
+     brings the orbit up over it. No overscroll spacer, no dead
+     time, no gap. The .doctrine-stage > .orbit-section rule
+     gives it z-index:2 so it covers the sticky doctrine (z-index:1). -->
 <section class="orbit-section">
 <span class="orbit-coord-l">[ 01.C.01 · ORBIT ]</span>
 <span class="orbit-coord-r">THREE PATHS · ONE FIRM</span>
@@ -2136,6 +2128,8 @@
 </aside>
 
 </section>
+
+</div><!-- /.doctrine-stage : doctrine pinned while orbit scrolled over it -->
 
 
 <!-- DEEP-DIVE — editorial spread on operating belief.

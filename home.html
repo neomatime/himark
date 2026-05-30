@@ -538,6 +538,162 @@
     }
   }
 
+  /* ── DEEP-DIVE — editorial spread on operating belief ─────────
+     Appears after the orbit scrolls past the doctrine. Image-left
+     / copy-right magazine layout on desktop. The image has a thin
+     dark veil that fades out when the section enters the viewport,
+     giving it a "developing print" feel. The headline uses Roboto
+     italic-300 (matches the doctrine line typography) at display
+     size; body copy uses Source Sans 3. ─────────────────────── */
+  .home-deep-dive{
+    background: var(--midnight);
+    color: #fff;
+    padding: clamp(96px, 12vw, 160px) clamp(24px, 6vw, 96px);
+    overflow: hidden;
+  }
+  .home-deep-dive-inner{
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: clamp(36px, 5vw, 96px);
+    align-items: center;
+  }
+  /* IMAGE side ──────────────────────────────────────────────── */
+  .hdd-figure{
+    position: relative;
+    margin: 0;
+    opacity: 0;
+    transform: translateX(-18px);
+    transition: opacity 900ms ease, transform 900ms cubic-bezier(.2,.7,.2,1);
+  }
+  .home-deep-dive.in-view .hdd-figure{
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .hdd-image-wrap{
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    background: var(--ocean-dk);
+  }
+  .hdd-image-wrap img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: saturate(.85) contrast(1.04);
+  }
+  .hdd-image-veil{
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+      rgba(28,43,58,.55) 0%,
+      rgba(28,43,58,.25) 100%);
+    transition: opacity 1400ms ease 200ms;
+    pointer-events: none;
+  }
+  .home-deep-dive.in-view .hdd-image-veil{ opacity: 0; }
+  .hdd-caption{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.55);
+    margin-top: 16px;
+    text-align: right;
+  }
+  /* TEXT side ──────────────────────────────────────────────── */
+  .hdd-text{
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 800ms ease 300ms, transform 800ms cubic-bezier(.2,.7,.2,1) 300ms;
+  }
+  .home-deep-dive.in-view .hdd-text{
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .hdd-eyebrow{
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    color: var(--ocean-lt);
+    margin-bottom: clamp(24px, 3vw, 40px);
+  }
+  .hdd-headline{
+    font-family: 'Roboto', sans-serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(36px, 5.4vw, 72px);
+    line-height: 1.05;
+    letter-spacing: -.015em;
+    color: #fff;
+    margin: 0 0 clamp(28px, 3.5vw, 44px) 0;
+  }
+  .hdd-body{
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: clamp(15px, 1.1vw, 17px);
+    line-height: 1.65;
+    color: rgba(255,255,255,.82);
+    margin: 0 0 18px 0;
+    max-width: 56ch;
+  }
+  .hdd-body:last-of-type{
+    margin-bottom: clamp(32px, 4vw, 48px);
+  }
+  .hdd-link{
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: #fff;
+    text-decoration: none;
+    padding: 14px 0;
+    border-top: 1px solid rgba(255,255,255,.22);
+    border-bottom: 1px solid rgba(255,255,255,.22);
+    transition: color 240ms ease, border-color 240ms ease, gap 240ms ease;
+  }
+  .hdd-link:hover,
+  .hdd-link:focus-visible{
+    color: var(--ocean-lt);
+    border-color: var(--ocean-lt);
+    gap: 18px;
+    outline: none;
+  }
+  .hdd-link-arrow{
+    font-size: 14px;
+    transition: transform 240ms ease;
+  }
+  .hdd-link:hover .hdd-link-arrow{ transform: translateX(4px); }
+
+  @media (max-width: 900px){
+    .home-deep-dive-inner{
+      grid-template-columns: 1fr;
+      gap: 44px;
+    }
+    .hdd-figure{ max-width: 480px; }
+    .hdd-caption{ text-align: left; }
+  }
+  @media (max-width: 560px){
+    .home-deep-dive{ padding: 72px 24px; }
+    .hdd-image-wrap{ aspect-ratio: 3 / 4; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .hdd-figure, .hdd-text{
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+    .hdd-image-veil{ opacity: 0; transition: none; }
+  }
+
   /* ── ANCHOR SECTION ─────────────────────────────────────── */
   .home-anchor{
     padding: 120px 32px;
@@ -609,17 +765,62 @@
      #page-home > .hero in styles.css makes the hero sticky.
      Sections following the hero need z-index: 1 so they cleanly
      occlude the sticky hero as they scroll up over it. */
-  #page-home > .home-doctrine,
-  #page-home > .home-img-marquee,
-  #page-home > .orbit-section,
-  #page-home > .home-anchor,
-  #page-home > .footer{
+  /* Every post-hero section gets relative + z-index in INCREASING
+     order so each scrolls cleanly over the one before it. Sticky
+     doctrine inside .doctrine-stage stays at z-index:1, and orbit
+     (z-index:2) slides up over it as the stage scrolls past. */
+  #page-home > .doctrine-stage{
     position: relative;
     z-index: 1;
   }
-  /* Soft top-shadow on the first section to arrive over the hero. */
-  #page-home > .home-doctrine{
+  #page-home > .orbit-section{
+    position: relative;
+    z-index: 2;
+  }
+  #page-home > .home-deep-dive{
+    position: relative;
+    z-index: 3;
+  }
+  #page-home > .home-img-marquee{
+    position: relative;
+    z-index: 4;
+  }
+  #page-home > .home-anchor{
+    position: relative;
+    z-index: 5;
+  }
+  #page-home > .footer{
+    position: relative;
+    z-index: 6;
+  }
+  /* Soft top-shadow on the doctrine stage so it lifts off the
+     released hero with a subtle edge. */
+  #page-home > .doctrine-stage{
     box-shadow: 0 -24px 60px rgba(28,43,58,.10), 0 -1px 0 rgba(28,43,58,.06);
+  }
+
+  /* ── DOCTRINE STAGE — sticky scroll-over mechanic ─────────────
+     The stage is just a tall container. Inside it the doctrine
+     section is position:sticky so it pins to the top of the
+     viewport for the duration of the stage. The .doctrine-overscroll
+     spacer adds scroll runway. When the user keeps scrolling past
+     the stage's bottom edge, the doctrine releases naturally and
+     the orbit (next section, higher z-index) is already coming up
+     over it. */
+  .doctrine-stage{
+    position: relative;
+  }
+  .doctrine-stage > .home-doctrine{
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  .doctrine-overscroll{
+    height: 90vh;
+    pointer-events: none;
+  }
+  @media (max-width: 720px){
+    .doctrine-overscroll{ height: 60vh; }
   }
 
   /* ── CLIENT LOGO MARQUEE ───────────────────────────────────
@@ -1676,13 +1877,21 @@
 <div class="hero-spacer" aria-hidden="true"></div>
 
 
+<!-- DOCTRINE STAGE — sticky scroll-over.
+     The stage wraps the doctrine grid plus an overscroll spacer.
+     Inside, .home-doctrine is position:sticky so it stays pinned
+     at the top of the viewport for the duration of the stage. The
+     orbit section below has a higher z-index, so as the user keeps
+     scrolling the orbit slides up and over the pinned doctrine.
+     When the stage scrolls past, the doctrine releases naturally. -->
+<div class="doctrine-stage">
+
 <!-- DOCTRINE — four-pillar editorial grid, scroll-revealed.
-     Replaces the older looping doctrine marquee. Numerals are
-     JetBrains Mono for that "structured" feel; doctrine lines
-     are Roboto italic-light for editorial weight. The .in-view
-     class is toggled by the small inline IIFE near the bottom
-     of the page, which uses IntersectionObserver to fire the
-     reveal once when the section enters the viewport. ────── -->
+     Numerals are JetBrains Mono for that "structured" feel;
+     doctrine lines are Roboto italic-light for editorial weight.
+     The .in-view class is toggled by the small inline IIFE near
+     the bottom of the page, which uses IntersectionObserver to
+     fire the reveal once when the section enters the viewport. -->
 <section class="home-doctrine" aria-label="HIMARK doctrine">
 <div class="home-doctrine-inner">
 <p class="home-doctrine-eyebrow">— The Doctrine</p>
@@ -1711,36 +1920,17 @@
 </div>
 </section>
 
-<!-- CLIENT LOGO MARQUEE — uniform-sized cells.
-     Currently shows placeholder cells. To swap a real client logo
-     in: change the <img src> inside any .ilm-cell to that client's
-     logo file (e.g. images/clients/acme.svg). The cell handles
-     the sizing; object-fit:contain centres any aspect ratio
-     without cropping. -->
-<section class="home-img-marquee" aria-label="Selected engagements — client logos">
-<span class="ilm-eyebrow">Engagements · select clients</span>
-<div class="home-img-marquee-track">
-<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
-<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
-<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
-<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
-<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
-<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
-<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
-<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
-<!-- Duplicate set — the -50% translate loops back here for seamless scroll -->
-<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
-<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
-<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
-<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
-<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
-<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
-<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
-<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
-</div>
-</section>
+<!-- Overscroll runway — pads the stage so the sticky doctrine has
+     scroll distance to be visible before the orbit slides over it.
+     ~90vh gives ~1 viewport of "pinned doctrine" reading time. -->
+<div class="doctrine-overscroll" aria-hidden="true"></div>
 
-<!-- ORBIT — restored interactive three-paths section -->
+</div><!-- /.doctrine-stage -->
+
+<!-- ORBIT — restored interactive three-paths section.
+     Sits in flow AFTER the doctrine stage so it naturally scrolls
+     up over the still-sticky doctrine. Higher z-index in the
+     #page-home > .orbit-section rule keeps it visually on top. -->
 <section class="orbit-section">
 <span class="orbit-coord-l">[ 01.C.01 · ORBIT ]</span>
 <span class="orbit-coord-r">THREE PATHS · ONE FIRM</span>
@@ -1915,6 +2105,67 @@
 </a>
 </aside>
 
+</section>
+
+
+<!-- DEEP-DIVE — editorial spread on operating belief.
+     Appears once the orbit has fully scrolled over the doctrine.
+     Image left / copy right on desktop; image first, copy below
+     on mobile. The hdd-image-wrap has a dark overlay that fades
+     out as the section scrolls into view (.in-view toggled by
+     the same IIFE that handles the doctrine reveal). Swap the
+     <img src> for a real principal-at-work photo when available. -->
+<section class="home-deep-dive" aria-label="Operating belief — Volume is a tax on quality">
+<div class="home-deep-dive-inner">
+<figure class="hdd-figure">
+<div class="hdd-image-wrap">
+<img src="images/mandates-hero.jpg" alt="A working desk inside a HIMARK strategy session" loading="lazy"/>
+<div class="hdd-image-veil" aria-hidden="true"></div>
+</div>
+<figcaption class="hdd-caption">Mandate room · Randburg HQ</figcaption>
+</figure>
+<div class="hdd-text">
+<span class="hdd-eyebrow">Operating belief · 01</span>
+<h2 class="hdd-headline">&ldquo;Volume is a tax<br/>on quality.&rdquo;</h2>
+<p class="hdd-body">Most growth firms scale by adding clients. We scale by raising the bar.</p>
+<p class="hdd-body">Each mandate we accept reshapes who we work with next &mdash; not the other way around. We don't pitch. We don't bid on RFPs. We don't take work that doesn't sharpen the firm's edge.</p>
+<p class="hdd-body">It's why every recommendation is on the record. It's why our principals never lose track of an engagement. It's why our calendar fills six months ahead.</p>
+<a class="hdd-link" href="dossier.html">
+<span>Read the doctrine in full</span>
+<span class="hdd-link-arrow" aria-hidden="true">&rarr;</span>
+</a>
+</div>
+</div>
+</section>
+
+
+<!-- CLIENT LOGO MARQUEE — uniform-sized cells.
+     Moved below the deep-dive so the new flow reads as:
+     doctrine -> orbit -> belief -> social proof. To swap a real
+     client logo in: change the <img src> inside any .ilm-cell to
+     that client's logo file (e.g. images/clients/acme.svg).
+     object-fit:contain centres any aspect ratio without cropping. -->
+<section class="home-img-marquee" aria-label="Selected engagements — client logos">
+<span class="ilm-eyebrow">Engagements · select clients</span>
+<div class="home-img-marquee-track">
+<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
+<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
+<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
+<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
+<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
+<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
+<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
+<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
+<!-- Duplicate set — the -50% translate loops back here for seamless scroll -->
+<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
+</div>
 </section>
 
 
@@ -2957,28 +3208,31 @@ body.bm-open{overflow:hidden;}
 </script>
 
 <script>
-/* Doctrine section reveal — single-shot IntersectionObserver that
-   adds `.in-view` to .home-doctrine the first time it crosses the
-   viewport threshold. The CSS does the rest (rule draws, eyebrow
-   fades in, four cells stagger up at 120ms intervals). Idempotent —
-   if the API isn't available, the section just shows its end state
-   immediately (graceful degradation). */
+/* Scroll reveal — single-shot IntersectionObserver that adds
+   `.in-view` to each target the first time it crosses the
+   viewport threshold. The CSS does the rest:
+     - .home-doctrine: rule draws, eyebrow fades in, four cells
+                       stagger up at 120ms intervals
+     - .home-deep-dive: figure slides in from the left, text
+                       slides up, image veil fades out
+   Idempotent — if the API isn't available, every target just
+   shows its end state immediately (graceful degradation). */
 (function(){
-  var el = document.querySelector('.home-doctrine');
-  if (!el) return;
+  var targets = document.querySelectorAll('.home-doctrine, .home-deep-dive');
+  if (!targets.length) return;
   if (!('IntersectionObserver' in window)) {
-    el.classList.add('in-view');
+    targets.forEach(function(el){ el.classList.add('in-view'); });
     return;
   }
   var io = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
       if (entry.isIntersecting) {
-        el.classList.add('in-view');
-        io.unobserve(el);
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
       }
     });
   }, { threshold: 0.18, rootMargin: '0px 0px -10% 0px' });
-  io.observe(el);
+  targets.forEach(function(el){ io.observe(el); });
 })();
 </script>
 

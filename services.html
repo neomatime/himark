@@ -1068,197 +1068,242 @@
   }
   .svc-cats-sub strong{ font-weight: 700; color: var(--midnight); }
 
-  /* ── 6-tile editorial grid ──────────────────────────────────
-     All info visible by default — large numeral, name, full
-     description, tag. No images (six photos competing in a grid
-     reads cluttered). Instead each tile leans on a massive
-     numeral as the visual anchor: 64px Cormorant-italic-style
-     in JetBrains Mono so each one feels graphic, not just
-     decorative text. Subtle hairline borders, generous internal
-     padding, hover state = soft lift + accent.
+  /* ── HORIZONTAL PORTFOLIO SCROLLER ──────────────────────────
+     Six full-viewport-wide panels arranged in a horizontal flex
+     row. Each panel is one service, treated like a magazine
+     spread — huge italic numeral on the left, large editorial
+     name + description on the right, geometric mark stamped in
+     the corner. CSS scroll-snap pins each panel to the viewport
+     edge as you scroll/swipe through.
 
-     Pattern: typography hierarchy carries the visual weight
-     where images previously did. Premium magazine feel, fast
-     to scan, no interaction required to see what's on offer. */
+     Navigation: prev/next arrow buttons, 6 dot indicators, and
+     a "01 / 06" counter, all in a control bar below the scroller.
+     Small inline IIFE at the bottom of the page wires the controls
+     to .scrollTo() with smooth behaviour.
+
+     Mobile: scroller works natively via touch swipe. Same panels,
+     scaled-down typography, controls collapse to dots-only. */
   .svc-cats-grid{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: rgba(28,43,58,.10);
-    border: 1px solid rgba(28,43,58,.10);
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    background: transparent;
+    border: none;
+    gap: 0;
   }
+  .svc-cats-grid::-webkit-scrollbar{ display: none; }
+  /* Each panel takes the full width of the section */
   .svc-cat{
+    flex: 0 0 100%;
+    width: 100%;
+    min-height: 72vh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
     position: relative;
     background: var(--off);
-    padding: 40px 32px 36px;
-    display: flex;
-    flex-direction: column;
-    min-height: 340px;
-    transition: background .35s ease, transform .35s ease, box-shadow .35s ease;
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    align-items: center;
+    gap: clamp(40px, 5vw, 100px);
+    padding: clamp(60px, 8vw, 120px);
+    border-right: 1px solid rgba(28,43,58,.08);
     isolation: isolate;
   }
-  /* Thin top hairline accent — full-width ocean rule at top of each tile */
-  .svc-cat::before{
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: var(--ocean);
-    opacity: .5;
-    transition: background .35s ease, opacity .35s ease;
-  }
+  .svc-cat:last-child{ border-right: none; }
   .svc-cat-img{ display: none; }
-  /* Icon — custom abstract SVG mark per service, top of tile */
-  .svc-cat-icon{
-    display: block;
-    width: 38px;
-    height: 38px;
-    stroke: var(--midnight);
-    stroke-width: 1.4;
-    fill: none;
-    margin: 0 0 28px 0;
-    transition: stroke .35s ease;
+  /* LEFT half: giant numeral + horizontal rule + geometric mark */
+  .svc-cat-left{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(28px, 3vw, 44px);
   }
-  .svc-cat-icon circle.dot{
-    fill: var(--midnight);
-    stroke: none;
-    transition: fill .35s ease;
-  }
-  /* Smaller italic numeral — Roboto-300 italic for editorial weight */
   .svc-cat-num{
     display: block;
     font-family: 'Roboto', sans-serif;
     font-style: italic;
     font-weight: 300;
-    font-size: clamp(22px, 2.4vw, 30px);
-    letter-spacing: -.005em;
+    font-size: clamp(96px, 14vw, 200px);
+    line-height: .85;
+    letter-spacing: -.04em;
     color: var(--midnight);
-    text-transform: none;
-    line-height: 1;
-    margin: 0 0 18px 0;
+    margin: 0;
     padding: 0;
-    opacity: .9;
+    text-transform: none;
+    opacity: .94;
     font-feature-settings: 'tnum' 1;
-    transition: color .35s ease, opacity .35s ease;
   }
-  .svc-cat-num::after{
-    content: "";
+  .svc-cat-num-prefix{
     display: block;
-    width: 32px;
+    font-size: .42em;
+    line-height: 1;
+    opacity: .65;
+    margin-bottom: .08em;
+  }
+  .svc-cat-num-digit{
+    display: block;
+    line-height: 1;
+  }
+  .svc-cat-rule{
+    width: clamp(48px, 6vw, 96px);
     height: 1px;
     background: var(--ocean);
-    margin-top: 14px;
-    transition: width .35s ease, background .35s ease;
+    margin: 0;
+  }
+  .svc-cat-icon{
+    display: block;
+    width: clamp(48px, 5vw, 72px);
+    height: clamp(48px, 5vw, 72px);
+    stroke: var(--midnight);
+    stroke-width: 1.3;
+    fill: none;
+    opacity: .55;
+  }
+  .svc-cat-icon circle.dot{
+    fill: var(--midnight);
+    stroke: none;
+  }
+  /* RIGHT half: name + description + tag */
+  .svc-cat-right{
+    display: flex;
+    flex-direction: column;
+    gap: clamp(20px, 2vw, 32px);
+    max-width: 580px;
   }
   .svc-cat-name{
-    font-family: var(--f-nav);
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: .12em;
-    text-transform: uppercase;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: clamp(32px, 4vw, 56px);
+    line-height: 1.08;
+    letter-spacing: -.018em;
     color: var(--midnight);
-    margin: 0 0 14px 0;
+    margin: 0;
     padding: 0;
-    line-height: 1.3;
-    transition: color .35s ease;
+    text-transform: none;
   }
   .svc-cat-desc{
-    font-family: var(--f-body);
-    font-size: 14px;
-    line-height: 1.6;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: clamp(15px, 1.15vw, 18px);
+    line-height: 1.65;
     color: var(--ink-mut);
-    margin: 0 0 22px 0;
-    flex: 1;
-    transition: color .35s ease;
+    margin: 0;
+    font-weight: 400;
   }
   .svc-cat-tag{
     display: inline-block;
     align-self: flex-start;
-    font-family: var(--f-mono);
-    font-size: 9px;
-    letter-spacing: .22em;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .26em;
     text-transform: uppercase;
-    color: var(--ocean-dk);
-    background: rgba(95,129,144,.10);
-    padding: 6px 11px;
+    color: var(--ocean);
+    background: transparent;
+    border: 1px solid var(--ocean);
+    padding: 8px 14px;
     border-radius: 1px;
     margin: 0;
-    transition: color .35s ease, background .35s ease;
   }
-  /* HOVER — dramatic dark inversion. Tile flips to midnight, all
-     text inverts, icon turns white, accent rule extends + shifts
-     to ocean-lt. The whole tile reads as a "stamped" dark card. */
-  .svc-cat:hover,
-  .svc-cat:focus-visible{
+
+  /* ── NAVIGATION CONTROLS — dots + counter + arrows ──────── */
+  .svc-cats-controls{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(20px, 3vw, 40px);
+    padding: 36px clamp(24px, 4vw, 64px);
+    background: var(--off);
+    border-top: 1px solid rgba(28,43,58,.10);
+    border-bottom: 1px solid rgba(28,43,58,.10);
+  }
+  .svc-cats-arrow{
+    background: transparent;
+    border: 1px solid rgba(28,43,58,.25);
+    width: 46px;
+    height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    color: var(--midnight);
+    cursor: pointer;
+    border-radius: 1px;
+    transition: background .25s ease, border-color .25s ease, color .25s ease, transform .15s ease, opacity .25s ease;
+    padding: 0;
+  }
+  .svc-cats-arrow:hover:not(:disabled){
     background: var(--midnight);
-    transform: translateY(-5px);
-    box-shadow: 0 30px 60px -18px rgba(28,43,58,.38);
-    outline: none;
-  }
-  .svc-cat:hover::before,
-  .svc-cat:focus-visible::before{
-    background: var(--ocean-lt);
-    opacity: 1;
-  }
-  .svc-cat:hover .svc-cat-icon,
-  .svc-cat:focus-visible .svc-cat-icon{
-    stroke: #fff;
-  }
-  .svc-cat:hover .svc-cat-icon circle.dot,
-  .svc-cat:focus-visible .svc-cat-icon circle.dot{
-    fill: #fff;
-  }
-  .svc-cat:hover .svc-cat-num,
-  .svc-cat:focus-visible .svc-cat-num{
-    color: var(--ocean-lt);
-    opacity: 1;
-  }
-  .svc-cat:hover .svc-cat-num::after,
-  .svc-cat:focus-visible .svc-cat-num::after{
-    width: 64px;
-    background: var(--ocean-lt);
-  }
-  .svc-cat:hover .svc-cat-name,
-  .svc-cat:focus-visible .svc-cat-name{
     color: #fff;
+    border-color: var(--midnight);
   }
-  .svc-cat:hover .svc-cat-desc,
-  .svc-cat:focus-visible .svc-cat-desc{
-    color: rgba(255,255,255,.78);
+  .svc-cats-arrow:active:not(:disabled){
+    transform: scale(.94);
   }
-  .svc-cat:hover .svc-cat-tag,
-  .svc-cat:focus-visible .svc-cat-tag{
-    color: rgba(255,255,255,.7);
-    background: rgba(255,255,255,.10);
+  .svc-cats-arrow:disabled{
+    opacity: .25;
+    cursor: not-allowed;
+  }
+  .svc-cats-dots{
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .svc-cats-dot{
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid rgba(28,43,58,.32);
+    padding: 0;
+    cursor: pointer;
+    transition: background .25s ease, border-color .25s ease, transform .25s ease;
+  }
+  .svc-cats-dot:hover{ border-color: var(--midnight); }
+  .svc-cats-dot.active{
+    background: var(--midnight);
+    border-color: var(--midnight);
+    transform: scale(1.25);
+  }
+  .svc-cats-counter{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .22em;
+    color: var(--ocean-dk);
+    font-variant-numeric: tabular-nums;
+    min-width: 80px;
+    text-align: center;
   }
 
   @media (max-width: 1024px){
-    .svc-cats-section{ padding: 72px 28px 60px; }
-    .svc-cats-grid{ grid-template-columns: repeat(2, 1fr); }
-    .svc-cats-coord-l, .svc-cats-coord-r{ display: none; }
+    .svc-cats-section{ padding: 72px 0 0 0; }
+    .svc-cats-section .svc-cats-coord-l,
+    .svc-cats-section .svc-cats-coord-r{ display: none; }
+    .svc-cats-section .svc-cats-eyebrow,
+    .svc-cats-section .svc-cats-hl,
+    .svc-cats-section .svc-cats-sub{ padding-left: 28px; padding-right: 28px; }
+    .svc-cat{ padding: clamp(48px, 7vw, 80px); grid-template-columns: 1fr; gap: 32px; min-height: 64vh; }
+    .svc-cat-num{ font-size: clamp(72px, 12vw, 120px); }
+    .svc-cat-name{ font-size: clamp(28px, 4vw, 40px); }
   }
   @media (max-width: 640px){
-    .svc-cats-section{ padding: 56px 22px 48px; }
-    .svc-cats-grid{ grid-template-columns: 1fr; }
-    .svc-cat{ min-height: 0; padding: 32px 24px 28px; }
-    .svc-cat-icon{ width: 32px; height: 32px; margin-bottom: 22px; }
-    .svc-cat-num{ font-size: 22px; margin-bottom: 14px; }
-    .svc-cat-num::after{ margin-top: 10px; }
+    .svc-cat{ padding: 56px 24px; min-height: 60vh; }
+    .svc-cat-num{ font-size: 88px; }
+    .svc-cat-name{ font-size: 26px; }
+    .svc-cat-icon{ width: 44px; height: 44px; }
+    .svc-cats-controls{ padding: 24px 16px; gap: 14px; }
+    .svc-cats-counter{ font-size: 10px; min-width: 64px; }
+    .svc-cats-arrow{ width: 42px; height: 42px; }
   }
   @media (prefers-reduced-motion: reduce){
-    .svc-cat,
-    .svc-cat::before,
-    .svc-cat-icon,
-    .svc-cat-icon circle.dot,
-    .svc-cat-num,
-    .svc-cat-num::after,
-    .svc-cat-name,
-    .svc-cat-desc,
-    .svc-cat-tag{
-      transition: none !important;
-    }
+    .svc-cats-grid{ scroll-behavior: auto; }
+    .svc-cats-arrow,
+    .svc-cats-dot{ transition: none !important; }
   }
 
   /* nav-bold-override — make navbar links bolder and darker so
@@ -1453,52 +1498,67 @@
 <h2 class="svc-cats-hl">Six categories ·<em>one mandate.</em></h2>
 <p class="svc-cats-sub">The HIMARK service surface. Each category is available <strong>standalone</strong> or built into a tier engagement.</p>
 
-<div class="svc-cats-grid">
-<article class="svc-cat" tabindex="0">
-<div class="svc-cat-img"><img src="images/mandates-hero.jpg" alt="" loading="lazy"/></div>
-<!-- Icon: framed square with diagonal — architectural frame motif -->
+<!-- Horizontal portfolio scroller: 6 full-viewport panels with
+     scroll-snap. Each panel is a magazine spread for one service.
+     Navigation controls (dots + arrows + counter) sit below the
+     scroller, wired up by the inline IIFE near the page bottom. -->
+<div class="svc-cats-grid" id="svcCatsScroller" aria-label="Service category panels">
+
+<article class="svc-cat" aria-label="Service S.01 Brand Architecture">
+<div class="svc-cat-left">
+<span class="svc-cat-num"><span class="svc-cat-num-prefix">S.</span><span class="svc-cat-num-digit">01</span></span>
+<div class="svc-cat-rule" aria-hidden="true"></div>
 <svg class="svc-cat-icon" viewBox="0 0 32 32" aria-hidden="true">
 <rect x="4" y="4" width="24" height="24"/>
 <line x1="4" y1="28" x2="28" y2="4"/>
 </svg>
-<span class="svc-cat-num">S.01</span>
+</div>
+<div class="svc-cat-right">
 <h3 class="svc-cat-name">Brand Architecture</h3>
 <p class="svc-cat-desc">Identity systems, market positioning, and executive personal branding. Where most engagements begin — because brand is the surface every commercial decision is measured against.</p>
 <span class="svc-cat-tag">Standalone or in tier</span>
+</div>
 </article>
 
-<article class="svc-cat" tabindex="0">
-<div class="svc-cat-img"><img src="images/airass-hero.jpg" alt="" loading="lazy"/></div>
-<!-- Icon: three stacked horizontal lines of varying width — layered infrastructure -->
+<article class="svc-cat" aria-label="Service S.02 Digital Infrastructure">
+<div class="svc-cat-left">
+<span class="svc-cat-num"><span class="svc-cat-num-prefix">S.</span><span class="svc-cat-num-digit">02</span></span>
+<div class="svc-cat-rule" aria-hidden="true"></div>
 <svg class="svc-cat-icon" viewBox="0 0 32 32" aria-hidden="true">
 <line x1="4" y1="9" x2="28" y2="9"/>
 <line x1="4" y1="16" x2="22" y2="16"/>
 <line x1="4" y1="23" x2="26" y2="23"/>
 </svg>
-<span class="svc-cat-num">S.02</span>
+</div>
+<div class="svc-cat-right">
 <h3 class="svc-cat-name">Digital Infrastructure</h3>
 <p class="svc-cat-desc">Website, SEO, CRM, lead capture, automation and enterprise systems. The operational pipe everything else runs through.</p>
 <span class="svc-cat-tag">Standalone or in tier</span>
+</div>
 </article>
 
-<article class="svc-cat" tabindex="0">
-<div class="svc-cat-img"><img src="images/method-hero.jpg" alt="" loading="lazy"/></div>
-<!-- Icon: four ascending bars — growth / demand curve -->
+<article class="svc-cat" aria-label="Service S.03 Marketing and Demand">
+<div class="svc-cat-left">
+<span class="svc-cat-num"><span class="svc-cat-num-prefix">S.</span><span class="svc-cat-num-digit">03</span></span>
+<div class="svc-cat-rule" aria-hidden="true"></div>
 <svg class="svc-cat-icon" viewBox="0 0 32 32" aria-hidden="true">
 <line x1="6" y1="28" x2="6" y2="22"/>
 <line x1="13" y1="28" x2="13" y2="18"/>
 <line x1="20" y1="28" x2="20" y2="12"/>
 <line x1="27" y1="28" x2="27" y2="6"/>
 </svg>
-<span class="svc-cat-num">S.03</span>
+</div>
+<div class="svc-cat-right">
 <h3 class="svc-cat-name">Marketing &amp; Demand</h3>
 <p class="svc-cat-desc">Demand strategy, lead generation, content systems and channel architecture. Built for sustained pipeline, not one-quarter spikes.</p>
 <span class="svc-cat-tag">Standalone or in tier</span>
+</div>
 </article>
 
-<article class="svc-cat" tabindex="0">
-<div class="svc-cat-img"><img src="images/algos.jpeg" alt="" loading="lazy"/></div>
-<!-- Icon: three connected nodes in a triangle — neural / network -->
+<article class="svc-cat" aria-label="Service S.04 AI and Operational Systems">
+<div class="svc-cat-left">
+<span class="svc-cat-num"><span class="svc-cat-num-prefix">S.</span><span class="svc-cat-num-digit">04</span></span>
+<div class="svc-cat-rule" aria-hidden="true"></div>
 <svg class="svc-cat-icon" viewBox="0 0 32 32" aria-hidden="true">
 <line x1="16" y1="7" x2="6" y2="24"/>
 <line x1="16" y1="7" x2="26" y2="24"/>
@@ -1507,38 +1567,63 @@
 <circle class="dot" cx="6" cy="24" r="2.2"/>
 <circle class="dot" cx="26" cy="24" r="2.2"/>
 </svg>
-<span class="svc-cat-num">S.04</span>
+</div>
+<div class="svc-cat-right">
 <h3 class="svc-cat-name">AI &amp; Operational Systems</h3>
 <p class="svc-cat-desc">AIRaaS deployment, workflow automation, intelligent routing. AI as compounding leverage — not novelty.</p>
 <span class="svc-cat-tag">Standalone or in tier</span>
+</div>
 </article>
 
-<article class="svc-cat" tabindex="0">
-<div class="svc-cat-img"><img src="images/team-hero.jpg" alt="" loading="lazy"/></div>
-<!-- Icon: triangle outline with center dot — strategic apex / summit -->
+<article class="svc-cat" aria-label="Service S.05 Strategic Advisory">
+<div class="svc-cat-left">
+<span class="svc-cat-num"><span class="svc-cat-num-prefix">S.</span><span class="svc-cat-num-digit">05</span></span>
+<div class="svc-cat-rule" aria-hidden="true"></div>
 <svg class="svc-cat-icon" viewBox="0 0 32 32" aria-hidden="true">
 <polygon points="16,4 28,26 4,26"/>
 <circle class="dot" cx="16" cy="19" r="2.4"/>
 </svg>
-<span class="svc-cat-num">S.05</span>
+</div>
+<div class="svc-cat-right">
 <h3 class="svc-cat-name">Strategic Advisory</h3>
 <p class="svc-cat-desc">Principal-level advisory — workshops, weekly reviews, and continuous access. The thinking layer above all of the above.</p>
 <span class="svc-cat-tag">In-tier only</span>
+</div>
 </article>
 
-<article class="svc-cat" tabindex="0">
-<div class="svc-cat-img"><img src="images/about-hero.jpg" alt="" loading="lazy"/></div>
-<!-- Icon: square overlapping a diamond — shape transformation -->
+<article class="svc-cat" aria-label="Service S.06 Executive and Transformation">
+<div class="svc-cat-left">
+<span class="svc-cat-num"><span class="svc-cat-num-prefix">S.</span><span class="svc-cat-num-digit">06</span></span>
+<div class="svc-cat-rule" aria-hidden="true"></div>
 <svg class="svc-cat-icon" viewBox="0 0 32 32" aria-hidden="true">
 <rect x="4" y="8" width="14" height="14"/>
 <polygon points="22,8 30,16 22,24 14,16"/>
 </svg>
-<span class="svc-cat-num">S.06</span>
+</div>
+<div class="svc-cat-right">
 <h3 class="svc-cat-name">Executive &amp; Transformation</h3>
 <p class="svc-cat-desc">M&amp;A architecture, capital strategy, pricing design, and the work that reshapes a business rather than refines it.</p>
 <span class="svc-cat-tag">Selected · Private tier</span>
-</article>
 </div>
+</article>
+
+</div>
+
+<!-- Navigation: prev/next arrows, 6 dots, counter. Wired by IIFE
+     at the bottom of the page. -->
+<nav class="svc-cats-controls" aria-label="Service categories navigation">
+<button type="button" class="svc-cats-arrow" data-svc-dir="prev" aria-label="Previous service">←</button>
+<div class="svc-cats-dots" role="tablist" aria-label="Service category indicator">
+<button type="button" class="svc-cats-dot active" data-svc-index="0" aria-label="Service 1 of 6" role="tab"></button>
+<button type="button" class="svc-cats-dot" data-svc-index="1" aria-label="Service 2 of 6" role="tab"></button>
+<button type="button" class="svc-cats-dot" data-svc-index="2" aria-label="Service 3 of 6" role="tab"></button>
+<button type="button" class="svc-cats-dot" data-svc-index="3" aria-label="Service 4 of 6" role="tab"></button>
+<button type="button" class="svc-cats-dot" data-svc-index="4" aria-label="Service 5 of 6" role="tab"></button>
+<button type="button" class="svc-cats-dot" data-svc-index="5" aria-label="Service 6 of 6" role="tab"></button>
+</div>
+<span class="svc-cats-counter" id="svcCatsCounter" aria-live="polite">01 / 06</span>
+<button type="button" class="svc-cats-arrow" data-svc-dir="next" aria-label="Next service">→</button>
+</nav>
 
 </section>
 
@@ -1783,6 +1868,82 @@
   }
 
   update();
+})();
+</script>
+
+<script>
+/* Services scroller — wire prev/next arrows, dot indicators,
+   counter and arrow-key navigation to the horizontal scroller.
+   Smooth-scroll via .scrollTo(); state derived by rounding
+   scroller.scrollLeft / clientWidth. Graceful no-op if the
+   scroller isn't on this page. */
+(function(){
+  var scroller = document.getElementById('svcCatsScroller');
+  if (!scroller) return;
+  var panels  = scroller.querySelectorAll('.svc-cat');
+  var dots    = document.querySelectorAll('.svc-cats-dot');
+  var counter = document.getElementById('svcCatsCounter');
+  var prevBtn = document.querySelector('.svc-cats-arrow[data-svc-dir="prev"]');
+  var nextBtn = document.querySelector('.svc-cats-arrow[data-svc-dir="next"]');
+  var total   = panels.length;
+  if (!total) return;
+
+  var current = 0;
+
+  function pad2(n){ return (n < 10 ? '0' : '') + n; }
+
+  function update(idx){
+    current = Math.max(0, Math.min(total - 1, idx));
+    for (var i = 0; i < dots.length; i++){
+      if (i === current) dots[i].classList.add('active');
+      else dots[i].classList.remove('active');
+    }
+    if (counter) counter.textContent = pad2(current + 1) + ' / ' + pad2(total);
+    if (prevBtn) prevBtn.disabled = (current === 0);
+    if (nextBtn) nextBtn.disabled = (current === total - 1);
+  }
+
+  function go(idx){
+    if (idx < 0 || idx >= total) return;
+    scroller.scrollTo({ left: panels[idx].offsetLeft, behavior: 'smooth' });
+    update(idx);
+  }
+
+  if (prevBtn) prevBtn.addEventListener('click', function(){ go(current - 1); });
+  if (nextBtn) nextBtn.addEventListener('click', function(){ go(current + 1); });
+  for (var i = 0; i < dots.length; i++){
+    (function(idx){
+      dots[idx].addEventListener('click', function(){ go(idx); });
+    })(i);
+  }
+
+  /* Sync state when the user swipes/scrolls manually. Debounce
+     so we update once the scroll settles, not on every pixel. */
+  var scrollTimer;
+  scroller.addEventListener('scroll', function(){
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(function(){
+      var idx = Math.round(scroller.scrollLeft / scroller.clientWidth);
+      if (idx !== current) update(idx);
+    }, 90);
+  });
+
+  /* Arrow-key nav when the scroller (or any focused element inside
+     it) is the active region. Avoids hijacking arrow keys when the
+     user is far from the section. */
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    var rect = scroller.getBoundingClientRect();
+    var inViewport = rect.top < window.innerHeight * 0.8 && rect.bottom > window.innerHeight * 0.2;
+    if (!inViewport) return;
+    /* Don't fight inputs / textareas / native scrollers */
+    var tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+    e.preventDefault();
+    go(current + (e.key === 'ArrowRight' ? 1 : -1));
+  });
+
+  update(0);
 })();
 </script>
 

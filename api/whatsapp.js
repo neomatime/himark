@@ -50,6 +50,7 @@
 */
 
 const SYSTEM_PROMPT = require('./atlas-knowledge');
+const { scoreLead, BUCKET_CLOSING_LINES, DEFAULT_SUBSTITUTION_TARGET, BUCKET_STANDARD } = require('./scoring');
 
 const GEMINI_MODEL = 'gemini-flash-lite-latest';
 /* Audio turns need the FULL Flash variant — gemini-flash-lite-latest is
@@ -559,13 +560,33 @@ async function handleMessage(message){
     return;
   }
 
-  /* HubSpot push (fire-and-forget) */
+  /* Extract lead/session blocks for scoring + downstream CRM push */
   const lead    = extractLead(raw);
   const session = extractSession(raw);
+
+  /* Score the lead and adapt the closing line if bucket ≠ Standard.
+     Same mechanism as api/chat.js — see that file for the rationale. */
+  let scoring = null;
+  if (lead) {
+    try { scoring = scoreLead(lead, 'atlas-whatsapp'); }
+    catch (e) { console.error('[wa] scoreLead threw (lead)', e && e.message); }
+  } else if (session) {
+    try { scoring = scoreLead({ ...session, tier: 'Session' }, 'atlas-whatsapp'); }
+    catch (e) { console.error('[wa] scoreLead threw (session)', e && e.message); }
+  }
+
+  let visible = stripBlocks(raw) || "I'm not able to respond to that just now. Please reach us at info@himark.co.za.";
+  if (scoring && scoring.bucket !== BUCKET_STANDARD) {
+    const adapted = BUCKET_CLOSING_LINES[scoring.bucket];
+    if (adapted) {
+      visible = visible.replace(DEFAULT_SUBSTITUTION_TARGET, adapted);
+    }
+    console.log('[wa] lead scored', { bucket: scoring.bucket, score: scoring.score });
+  }
+
+  /* HubSpot push (fire-and-forget) — unchanged in Phase A */
   if (lead)    pushToHubSpot(lead,    'lead',    from).catch(e => console.error('[wa] hubspot lead', e && e.message));
   if (session) pushToHubSpot(session, 'session', from).catch(e => console.error('[wa] hubspot session', e && e.message));
-
-  const visible = stripBlocks(raw) || "I'm not able to respond to that just now. Please reach us at info@himark.co.za.";
   appendHistory(from, 'assistant', visible);
   const sendResult = await sendWhatsAppTextChunks(from, visible);
   console.log('[wa] reply send result', { chunks: sendResult.chunks, aborted: sendResult.aborted || false }, 'replyPreview:', visible.slice(0, 100));

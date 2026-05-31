@@ -623,23 +623,31 @@
     100%      { transform: scaleX(1); opacity: 0; }
   }
 
-  /* 04 — continuously translating sine wave */
-  .hd-graphic-wave{
+  /* 04 — ledger: three short hairlines drawing in sequentially.
+     Like attributable log entries being recorded. */
+  .hd-graphic-ledger{
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 9px;
   }
-  .hd-graphic-wave svg{
-    width: 200%;
-    height: 28px;
-    stroke: var(--midnight);
-    stroke-width: 1.2;
-    fill: none;
-    opacity: .55;
-    animation: hd-wave-shift 4.5s linear infinite;
+  .hd-graphic-ledger > span{
+    display: block;
+    height: 1.5px;
+    background: var(--midnight);
+    transform-origin: left center;
+    transform: scaleX(0);
+    opacity: 0;
+    animation: hd-ledger-draw 5.4s ease-in-out infinite;
   }
-  @keyframes hd-wave-shift{
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
+  .hd-graphic-ledger > span:nth-child(1){ width: 60%; animation-delay: 0s; }
+  .hd-graphic-ledger > span:nth-child(2){ width: 82%; animation-delay: 0.6s; }
+  .hd-graphic-ledger > span:nth-child(3){ width: 44%; animation-delay: 1.2s; }
+  @keyframes hd-ledger-draw{
+    0%        { transform: scaleX(0); opacity: 0; }
+    12%       { opacity: .6; }
+    35%, 65%  { transform: scaleX(1); opacity: .6; }
+    85%, 100% { transform: scaleX(1); opacity: 0; }
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -647,11 +655,12 @@
     .hd-graphic-rings::before,
     .hd-graphic-rings::after,
     .hd-graphic-line::before,
-    .hd-graphic-wave svg{
+    .hd-graphic-ledger > span{
       animation: none !important;
     }
-    /* Settle the line into its drawn end state instead of invisible */
+    /* Settle the line and ledger into their drawn end states */
     .hd-graphic-line::before{ transform: scaleX(1); opacity: .65; }
+    .hd-graphic-ledger > span{ transform: scaleX(1); opacity: .6; }
   }
 
   @media (max-width: 900px){
@@ -2186,12 +2195,12 @@
 <span class="hd-num" aria-hidden="true">04</span>
 <h3 class="hd-line">On.record.</h3>
 <p class="hd-body">What we sign, we stand behind. Every recommendation, attributable.</p>
-<!-- Graphic 04 — on the record: a continuously translating sine
-     wave. Recording / signature / always-on signal. -->
-<div class="hd-graphic hd-graphic-wave" aria-hidden="true">
-<svg viewBox="0 0 144 16" preserveAspectRatio="none">
-<path d="M0,8 Q4,0 8,8 T16,8 T24,8 T32,8 T40,8 T48,8 T56,8 T64,8 T72,8 T80,8 T88,8 T96,8 T104,8 T112,8 T120,8 T128,8 T136,8 T144,8"/>
-</svg>
+<!-- Graphic 04 — on the record: three stacked hairlines drawing
+     in sequentially with varying widths, like log entries being
+     recorded onto a ledger. Editorial / documented feel —
+     distinct from cell 03's single sweeping line. -->
+<div class="hd-graphic hd-graphic-ledger" aria-hidden="true">
+<span></span><span></span><span></span>
 </div>
 </article>
 </div>

@@ -1068,215 +1068,133 @@
   }
   .svc-cats-sub strong{ font-weight: 700; color: var(--midnight); }
 
-  /* ── 6-tile hover-to-reveal grid ────────────────────────────
-     Default state on desktop: six clean text-only tiles showing
-     only the S.XX numeral and the service name. No images. No
-     descriptions. Generous whitespace, reads as an architecture
-     firm's wordmark grid.
+  /* ── 6-tile editorial grid ──────────────────────────────────
+     All info visible by default — large numeral, name, full
+     description, tag. No images (six photos competing in a grid
+     reads cluttered). Instead each tile leans on a massive
+     numeral as the visual anchor: 64px Cormorant-italic-style
+     in JetBrains Mono so each one feels graphic, not just
+     decorative text. Subtle hairline borders, generous internal
+     padding, hover state = soft lift + accent.
 
-     Hover (or keyboard focus) any tile: the image fades in as a
-     background, a dark veil drops over it so the text reads
-     white, the description and tag fade up from beneath. The
-     other five tiles dim to .35 opacity (via :has()) so the eye
-     stays on the focused tile.
-
-     Mobile / touch / no-hover devices: hover dance is bypassed —
-     description and tag are always visible, image is hidden
-     (touch screens can't reveal them and dark overlays read
-     muddy at phone scale). Behaviour matches the existing card
-     layout the page already shipped. */
+     Pattern: typography hierarchy carries the visual weight
+     where images previously did. Premium magazine feel, fast
+     to scan, no interaction required to see what's on offer. */
   .svc-cats-grid{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 28px;
+    gap: 1px;
+    background: rgba(28,43,58,.10);
+    border: 1px solid rgba(28,43,58,.10);
   }
   .svc-cat{
     position: relative;
     background: var(--off);
-    border: 1px solid rgba(28,43,58,.10);
-    padding: 40px 28px 34px;
-    min-height: 240px;
-    overflow: hidden;
-    cursor: pointer;
+    padding: 44px 32px 38px;
+    display: flex;
+    flex-direction: column;
+    min-height: 320px;
+    transition: background .3s ease, transform .35s ease;
     isolation: isolate;
-    transition: transform .4s ease, box-shadow .4s ease, border-color .4s ease, opacity .3s ease;
   }
-  /* Image becomes an absolute background layer, hidden by default */
+  /* Hide the old image wrapper completely — we're typography-led now */
   .svc-cat-img{
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    opacity: 0;
-    transition: opacity .5s ease;
-    pointer-events: none;
+    display: none;
   }
-  .svc-cat-img img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transform: scale(1.06);
-    transition: transform .9s cubic-bezier(.2,.7,.15,1);
-    filter: saturate(.9) contrast(1.04);
-  }
-  /* Dark veil — sits between image and text, only visible on hover */
-  .svc-cat::before{
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(28,43,58,.42) 0%, rgba(28,43,58,.82) 100%);
-    z-index: 1;
-    opacity: 0;
-    transition: opacity .5s ease;
-    pointer-events: none;
-  }
-  /* All text content sits above image + veil */
-  .svc-cat-num,
-  .svc-cat-name,
-  .svc-cat-desc,
-  .svc-cat-tag{
-    position: relative;
-    z-index: 2;
-    transition: color .35s ease, opacity .4s ease, transform .4s ease;
-  }
+  /* Massive mono numeral is the visual anchor */
   .svc-cat-num{
     display: block;
     font-family: var(--f-mono);
-    font-size: 10px;
-    letter-spacing: .22em;
-    color: var(--ocean);
-    text-transform: uppercase;
-    margin: 0 0 24px 0;
+    font-size: clamp(48px, 5.2vw, 68px);
+    font-weight: 400;
+    letter-spacing: -.02em;
+    color: var(--midnight);
+    text-transform: none;
+    line-height: 1;
+    margin: 0 0 28px 0;
     padding: 0;
+    opacity: .92;
+    font-feature-settings: 'tnum' 1;
+    transition: color .3s ease;
+  }
+  /* Thin hairline beneath the numeral acts like a section rule */
+  .svc-cat-num::after{
+    content: "";
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--ocean);
+    margin-top: 16px;
+    transition: width .35s ease, background .3s ease;
   }
   .svc-cat-name{
     font-family: var(--f-nav);
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
-    letter-spacing: .08em;
+    letter-spacing: .12em;
     text-transform: uppercase;
     color: var(--midnight);
-    margin: 0;
+    margin: 0 0 16px 0;
     padding: 0;
-    line-height: 1.25;
+    line-height: 1.3;
   }
-  /* Description + tag hidden by default, revealed on hover */
   .svc-cat-desc{
     font-family: var(--f-body);
     font-size: 14px;
-    line-height: 1.55;
-    color: rgba(255,255,255,.92);
-    margin: 18px 0 14px 0;
-    opacity: 0;
-    transform: translateY(8px);
-    flex: none;
+    line-height: 1.6;
+    color: var(--ink-mut);
+    margin: 0 0 24px 0;
+    flex: 1;
   }
   .svc-cat-tag{
     display: inline-block;
     align-self: flex-start;
     font-family: var(--f-mono);
-    font-size: 10px;
+    font-size: 9px;
     letter-spacing: .22em;
     text-transform: uppercase;
-    color: rgba(255,255,255,.72);
-    background: rgba(255,255,255,.10);
-    padding: 5px 10px;
-    margin: 0;
+    color: var(--ocean-dk);
+    background: rgba(95,129,144,.10);
+    padding: 6px 11px;
     border-radius: 1px;
-    opacity: 0;
-    transform: translateY(8px);
+    margin: 0;
   }
-  /* HOVER / FOCUS state */
+  /* HOVER: tile background subtly shifts, the accent rule extends */
   .svc-cat:hover,
   .svc-cat:focus-visible{
-    border-color: var(--midnight);
-    transform: translateY(-3px);
-    box-shadow: 0 24px 60px -12px rgba(28,43,58,.22);
+    background: #fff;
     outline: none;
-  }
-  .svc-cat:hover .svc-cat-img,
-  .svc-cat:focus-visible .svc-cat-img{
-    opacity: 1;
-  }
-  .svc-cat:hover .svc-cat-img img,
-  .svc-cat:focus-visible .svc-cat-img img{
-    transform: scale(1);
-  }
-  .svc-cat:hover::before,
-  .svc-cat:focus-visible::before{
-    opacity: 1;
   }
   .svc-cat:hover .svc-cat-num,
   .svc-cat:focus-visible .svc-cat-num{
-    color: rgba(255,255,255,.78);
-  }
-  .svc-cat:hover .svc-cat-name,
-  .svc-cat:focus-visible .svc-cat-name{
-    color: #fff;
-  }
-  .svc-cat:hover .svc-cat-desc,
-  .svc-cat:focus-visible .svc-cat-desc{
+    color: var(--ocean);
     opacity: 1;
-    transform: translateY(0);
   }
-  .svc-cat:hover .svc-cat-tag,
-  .svc-cat:focus-visible .svc-cat-tag{
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: .12s;
+  .svc-cat:hover .svc-cat-num::after,
+  .svc-cat:focus-visible .svc-cat-num::after{
+    width: 96px;
+    background: var(--midnight);
   }
-  /* Dim other tiles when one is hovered (modern :has() support) */
-  .svc-cats-grid:has(.svc-cat:hover) .svc-cat:not(:hover){
-    opacity: .38;
+  .svc-cat:focus-visible{
+    box-shadow: inset 0 0 0 2px var(--ocean);
   }
 
   @media (max-width: 1024px){
     .svc-cats-section{ padding: 72px 28px 60px; }
-    .svc-cats-grid{ grid-template-columns: repeat(2, 1fr); gap: 22px; }
+    .svc-cats-grid{ grid-template-columns: repeat(2, 1fr); }
     .svc-cats-coord-l, .svc-cats-coord-r{ display: none; }
-  }
-  /* Mobile / touch / no-hover: skip hover dance, show all copy
-     by default, hide image (too small for overlay legibility). */
-  @media (hover: none), (max-width: 720px){
-    .svc-cat{
-      min-height: 0;
-      padding: 28px 24px 26px;
-    }
-    .svc-cat-img,
-    .svc-cat::before{
-      display: none;
-    }
-    .svc-cat-desc{
-      opacity: 1;
-      transform: none;
-      color: var(--ink-mut);
-      font-size: 14px;
-      margin-top: 14px;
-    }
-    .svc-cat-tag{
-      opacity: 1;
-      transform: none;
-      color: var(--ocean-dk);
-      background: rgba(95,129,144,.10);
-      margin-top: 10px;
-    }
-    .svc-cats-grid:has(.svc-cat:hover) .svc-cat:not(:hover){
-      opacity: 1;
-    }
   }
   @media (max-width: 640px){
     .svc-cats-section{ padding: 56px 22px 48px; }
-    .svc-cats-grid{ grid-template-columns: 1fr; gap: 18px; }
+    .svc-cats-grid{ grid-template-columns: 1fr; }
+    .svc-cat{ min-height: 0; padding: 36px 24px 30px; }
+    .svc-cat-num{ font-size: 42px; margin-bottom: 22px; }
+    .svc-cat-num::after{ margin-top: 12px; }
   }
   @media (prefers-reduced-motion: reduce){
     .svc-cat,
-    .svc-cat-img,
-    .svc-cat-img img,
-    .svc-cat::before,
     .svc-cat-num,
-    .svc-cat-name,
-    .svc-cat-desc,
-    .svc-cat-tag{
+    .svc-cat-num::after{
       transition: none !important;
     }
   }

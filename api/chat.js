@@ -48,6 +48,7 @@ function splitIntoChunks(text){
    touching this function. See api/atlas-knowledge.js for the
    content. */
 const SYSTEM_PROMPT = require('./atlas-knowledge');
+const { scoreLead, BUCKET_CLOSING_LINES, DEFAULT_SUBSTITUTION_TARGET, BUCKET_STANDARD } = require('./scoring');
 
 /* ============================================================
    LEAD + SESSION EXTRACTION
@@ -440,7 +441,28 @@ module.exports = async (req, res) => {
        visitor's reply has either block stripped. */
     const lead    = extractLead(rawReply);
     const session = extractSession(rawReply);
-    const visibleReply = stripLeadBlock(rawReply);
+    let visibleReply = stripLeadBlock(rawReply);
+
+    /* Score the lead (or session) and adapt the closing line if the
+       bucket is anything other than Standard. The substitution looks
+       for the exact phrase Atlas was told to use in §15 of
+       atlas-knowledge.js — if Gemini paraphrased, the replace is a
+       no-op and the default 5-day SLA stays. Safe fallback. */
+    let scoring = null;
+    if (lead) {
+      try { scoring = scoreLead(lead, 'atlas-chat'); }
+      catch (e) { console.error('[atlas] scoreLead threw (lead)', e && e.message); }
+    } else if (session) {
+      try { scoring = scoreLead({ ...session, tier: 'Session' }, 'atlas-chat'); }
+      catch (e) { console.error('[atlas] scoreLead threw (session)', e && e.message); }
+    }
+    if (scoring && scoring.bucket !== BUCKET_STANDARD) {
+      const adapted = BUCKET_CLOSING_LINES[scoring.bucket];
+      if (adapted) {
+        visibleReply = visibleReply.replace(DEFAULT_SUBSTITUTION_TARGET, adapted);
+      }
+      console.log('[atlas] lead scored', { bucket: scoring.bucket, score: scoring.score });
+    }
 
     if (lead) {
       pushToHubSpot(lead, 'lead').catch(e => console.error('[atlas] hubspot push exception (lead)', e && e.message));

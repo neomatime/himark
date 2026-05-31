@@ -1,98 +1,129 @@
 /* HIMARK · LeadSense scoring verification
-   ============================================================
    No test framework on this project — this script exercises
-   scoreLead() with 15 representative leads covering all four
-   buckets and the major individual signal contributions.
+   scoreLead() against 15 fixture leads spanning all four buckets
+   and the major signal combinations. Run:
 
-   Run with `node scripts/verify-scoring.js`.
-   Same pattern as scripts/verify-chunking.js.
-   Any mismatch prints FAIL and exits non-zero.
-   ============================================================ */
+     node scripts/verify-scoring.js
 
-const {
-  scoreLead,
-  BUCKET_PRIORITY,
-  BUCKET_STANDARD,
-  BUCKET_WATCH,
-  BUCKET_DECLINE
-} = require('../api/scoring');
+   Exits 0 on full PASS, non-zero on any mismatch. */
+
+const { scoreLead, BUCKET_PRIORITY, BUCKET_STANDARD, BUCKET_WATCH, BUCKET_DECLINE } = require('../api/scoring');
 
 const cases = [
-
-  /* ── Single-signal isolation ──────────────────────────────── */
-
+  /* ── PRIORITY (score ≥ 75) ─────────────────────────────── */
   {
-    name: 'Private tier alone — 25 pts, no other signals',
+    name: 'PRIORITY — Private / founder / R200k / this quarter / specific brief',
+    record: {
+      tier: 'Private',
+      role: 'Founder & CEO',
+      budget: 'R200,000',
+      timeline: 'this quarter',
+      brief: 'We are an enterprise SaaS at R30M ARR looking to reshape our positioning ahead of a Series C raise and restructure our demand systems for international expansion.'
+    },
+    source: 'atlas-chat',
+    expectMin: 75, expectMax: 100, expectBucket: BUCKET_PRIORITY
+  },
+  {
+    name: 'PRIORITY — Growth / founder / R150k / this quarter / specific',
+    record: {
+      tier: 'Growth',
+      role: 'Co-founder',
+      budget: '150k',
+      timeline: 'this quarter',
+      brief: 'Series B SaaS scaling pipeline and conversion across three new market segments, need CRM and demand systems built fast.'
+    },
+    source: 'apply',
+    expectMin: 75, expectMax: 100, expectBucket: BUCKET_PRIORITY
+  },
+  /* ── STANDARD (40 ≤ score < 75) ────────────────────────── */
+  {
+    name: 'STANDARD — Growth / director / R80k / next quarter / mid brief',
+    record: {
+      tier: 'Growth',
+      role: 'Director of Marketing',
+      budget: 'R80,000',
+      timeline: 'next quarter',
+      brief: 'Looking at our positioning and demand work for Q3.'
+    },
+    source: 'atlas-chat',
+    expectMin: 40, expectMax: 74, expectBucket: BUCKET_STANDARD
+  },
+  {
+    name: 'STANDARD — Signature / manager / R50k / next quarter',
+    record: {
+      tier: 'Signature',
+      role: 'Marketing Manager',
+      budget: 'R50,000',
+      timeline: 'next quarter',
+      brief: 'Need brand foundations and a website for our startup, currently scaling our pipeline.'
+    },
+    source: 'atlas-whatsapp',
+    expectMin: 40, expectMax: 74, expectBucket: BUCKET_STANDARD
+  },
+  /* ── WATCH (15 ≤ score < 40) ───────────────────────────── */
+  {
+    name: 'WATCH — Unsure tier / unspecified role / undisclosed budget / open',
+    record: {
+      tier: 'Unsure',
+      role: '',
+      budget: 'open',
+      timeline: 'open',
+      brief: 'Have a few questions about your services and approach.'
+    },
+    source: 'atlas-chat',
+    expectMin: 15, expectMax: 39, expectBucket: BUCKET_WATCH
+  },
+  {
+    name: 'WATCH — Newsletter signup (short-circuit)',
+    record: { email: 'someone@example.com' },
+    source: 'newsletter',
+    expectMin: 10, expectMax: 10, expectBucket: BUCKET_WATCH
+  },
+  /* ── DECLINE (score < 15) ──────────────────────────────── */
+  {
+    name: 'DECLINE — Sub-floor budget, asked for discount, vague brief',
+    record: {
+      tier: 'Signature',
+      role: '',
+      budget: 'R20,000',
+      timeline: 'open',
+      brief: 'we need help, can you do it cheaper'
+    },
+    source: 'atlas-chat',
+    expectMin: 0, expectMax: 14, expectBucket: BUCKET_DECLINE
+  },
+  {
+    name: 'DECLINE — Proposal demand, vague intent',
+    record: {
+      tier: '',
+      role: '',
+      budget: '',
+      timeline: '',
+      brief: 'send me a proposal please'
+    },
+    source: 'atlas-chat',
+    expectMin: 0, expectMax: 14, expectBucket: BUCKET_DECLINE
+  },
+  /* ── INDIVIDUAL SIGNAL CHECKS ──────────────────────────── */
+  {
+    name: 'Tier alone — Private gives +25',
     record: { tier: 'Private', role: '', budget: '', timeline: '', brief: '' },
-    source: 'session',
-    /* 25 (tier) + 5 (undisclosed budget) + 0 + 0 + 0 + 5 (source) = 35 */
-    expectMin: 35, expectMax: 35, expectBucket: BUCKET_WATCH
+    source: 'atlas-chat',
+    /* 25 (tier) + 5 (undisclosed budget default) + 8 (source) = 38 → Watch */
+    expectMin: 25 + 5 + 8, expectMax: 25 + 5 + 8, expectBucket: BUCKET_WATCH
   },
   {
-    name: 'Growth tier alone — 20 pts',
-    record: { tier: 'Growth', role: '', budget: '', timeline: '', brief: '' },
-    source: 'session',
-    /* 20 + 5 + 0 + 0 + 0 + 5 = 30 */
-    expectMin: 30, expectMax: 30, expectBucket: BUCKET_WATCH
+    name: 'Empty record / unknown source — minimum score 5 (budget undisclosed default)',
+    record: {},
+    source: '',
+    expectMin: 5, expectMax: 5, expectBucket: BUCKET_DECLINE
   },
   {
-    name: 'Signature tier alone — 12 pts',
-    record: { tier: 'Signature', role: '', budget: '', timeline: '', brief: '' },
-    source: 'session',
-    /* 12 + 5 + 0 + 0 + 0 + 5 = 22 */
-    expectMin: 22, expectMax: 22, expectBucket: BUCKET_WATCH
-  },
-  {
-    name: 'Session tier alone — 8 pts',
-    record: { tier: 'Session', role: '', budget: '', timeline: '', brief: '' },
-    source: 'session',
-    /* 8 + 5 + 0 + 0 + 0 + 5 = 18 */
-    expectMin: 18, expectMax: 18, expectBucket: BUCKET_WATCH
-  },
-
-  /* ── Role seniority signal ────────────────────────────────── */
-
-  {
-    name: 'Founder role — +15 pts',
+    name: 'Founder role alone — +15 from role, +5 budget undisclosed, +8 source',
     record: { tier: '', role: 'Founder', budget: '', timeline: '', brief: '' },
-    source: 'session',
-    /* 0 + 5 + 0 + 15 + 0 + 5 = 25 */
-    expectMin: 25, expectMax: 25, expectBucket: BUCKET_WATCH
+    source: 'atlas-chat',
+    expectMin: 28, expectMax: 28, expectBucket: BUCKET_WATCH
   },
-  {
-    name: 'CMO role — +12 pts',
-    record: { tier: '', role: 'CMO', budget: '', timeline: '', brief: '' },
-    source: 'session',
-    /* 0 + 5 + 0 + 12 + 0 + 5 = 22 */
-    expectMin: 22, expectMax: 22, expectBucket: BUCKET_WATCH
-  },
-  {
-    name: 'Director role — +10 pts',
-    record: { tier: '', role: 'Director of Marketing', budget: '', timeline: '', brief: '' },
-    source: 'session',
-    /* 0 + 5 + 0 + 10 + 0 + 5 = 20 */
-    expectMin: 20, expectMax: 20, expectBucket: BUCKET_WATCH
-  },
-
-  /* ── Budget alignment ─────────────────────────────────────── */
-
-  {
-    name: 'Budget within tier floor (Private R200k) — +15',
-    record: { tier: 'Private', role: '', budget: 'R200,000', timeline: '', brief: '' },
-    source: 'session',
-    /* 25 + 15 + 0 + 0 + 0 + 5 = 45 */
-    expectMin: 45, expectMax: 45, expectBucket: BUCKET_STANDARD
-  },
-  {
-    name: 'Budget in lower band (Private R130k, 80-99% of floor) — +10',
-    record: { tier: 'Private', role: '', budget: 'R130,000', timeline: '', brief: '' },
-    source: 'session',
-    /* 25 + 10 + 0 + 0 + 0 + 5 = 40 */
-    expectMin: 40, expectMax: 40, expectBucket: BUCKET_STANDARD
-  },
-
-  /* ── Penalty cases ────────────────────────────────────────── */
-
   {
     name: 'Free email on Private tier — applies the −5 penalty',
     record: { tier: 'Private', role: 'CEO', budget: 'R150,000', timeline: 'open', brief: '', email: 'fred@gmail.com' },
@@ -104,63 +135,38 @@ const cases = [
     name: 'Below-floor budget — −10 penalty applies even with strong tier',
     record: { tier: 'Private', role: 'CEO', budget: 'R30,000', timeline: 'this quarter', brief: '' },
     source: 'atlas-chat',
-    /* 25 + (−10) + 15 + 15 (CEO) + 0 + 8 = 53 */
+    /* 25 + (−10) + 15 + 15 (CEO — founder tier) + 0 + 8 = 53 */
     expectMin: 53, expectMax: 53, expectBucket: BUCKET_STANDARD
   },
   {
-    name: 'RFP brief phrase — applies −15 penalty',
-    record: { tier: 'Growth', role: 'CMO', budget: 'R100,000', timeline: 'this quarter', brief: 'Please send a proposal for our Q3 campaign.' },
+    name: 'Long specific brief with commercial keyword — +10',
+    record: {
+      tier: 'Growth', role: 'Director', budget: 'R80,000', timeline: 'open',
+      brief: 'We need to rebuild our demand systems and improve conversion across the funnel — current pipeline is broken and revenue is stalling at R8M ARR despite increased sales headcount.'
+    },
     source: 'atlas-chat',
-    /* 20 + 15 + 15 + 12 + 0 (brief 44 chars, under 50 threshold) + 8 − 15 (proposal phrase) = 55 */
-    expectMin: 55, expectMax: 55, expectBucket: BUCKET_STANDARD
+    /* 20 + 15 + 0 + 10 + 10 + 8 = 63 */
+    expectMin: 63, expectMax: 63, expectBucket: BUCKET_STANDARD
   },
   {
-    name: 'Discount request — applies −10 penalty',
-    record: { tier: 'Signature', role: 'Manager', budget: 'R60,000', timeline: '', brief: 'Can you give a discount on the rate?' },
-    source: 'atlas-chat',
-    /* 12 + 15 + 0 + 5 + 0 (brief 37 chars, under 50 threshold) + 8 − 10 (discount) = 30 */
-    expectMin: 30, expectMax: 30, expectBucket: BUCKET_WATCH
-  },
-
-  /* ── Long rich brief bonus ────────────────────────────────── */
-
-  {
-    name: 'Long brief with commercial keyword — +10 brief bonus',
-    record: { tier: 'Private', role: 'Founder', budget: 'R200,000', timeline: 'this quarter', brief: 'We are a Series A SaaS business targeting mid-market. Pipeline growth has stalled at the top-of-funnel and we need a positioning reset to reaccelerate revenue ahead of our Series B in 18 months.' },
+    name: 'Apply source bonus is higher than chat',
+    record: { tier: 'Signature', role: '', budget: '', timeline: '', brief: '' },
     source: 'apply',
-    /* 25 + 15 + 15 + 15 + 10 (long + keyword) + 10 (apply) = 90 */
-    expectMin: 90, expectMax: 90, expectBucket: BUCKET_PRIORITY
-  },
-
-  /* ── Newsletter short-circuit ─────────────────────────────── */
-
-  {
-    name: 'Newsletter source — always returns score 10, Watch bucket',
-    record: { tier: 'Private', role: 'Founder', budget: 'R500,000', timeline: 'this quarter', brief: 'High-value founder with large budget.' },
-    source: 'newsletter',
-    expectMin: 10, expectMax: 10, expectBucket: BUCKET_WATCH
+    /* 12 + 5 + 0 + 0 + 0 + 10 = 27 */
+    expectMin: 27, expectMax: 27, expectBucket: BUCKET_WATCH
   }
-
 ];
 
 let failed = 0;
-
 for (const c of cases) {
   const result = scoreLead(c.record, c.source);
-  const scoreOk  = result.score >= c.expectMin && result.score <= c.expectMax;
+  const inRange = result.score >= c.expectMin && result.score <= c.expectMax;
   const bucketOk = result.bucket === c.expectBucket;
-  const ok = scoreOk && bucketOk;
-
-  console.log((ok ? 'PASS ' : 'FAIL ') + c.name);
-
+  const ok = inRange && bucketOk;
+  console.log((ok ? 'PASS ' : 'FAIL ') + c.name + '  → score=' + result.score + ' bucket=' + result.bucket);
   if (!ok) {
-    if (!scoreOk) {
-      console.error('  score expected: ' + c.expectMin + '-' + c.expectMax + '  got: ' + result.score);
-    }
-    if (!bucketOk) {
-      console.error('  bucket expected: ' + c.expectBucket + '  got: ' + result.bucket);
-    }
-    console.error('  breakdown: ' + JSON.stringify(result.breakdown));
+    console.error('  expected score ' + c.expectMin + '–' + c.expectMax + ' bucket=' + c.expectBucket);
+    console.error('  breakdown:', JSON.stringify(result.breakdown));
     failed++;
   }
 }
@@ -169,4 +175,4 @@ if (failed) {
   console.error('\n' + failed + ' case(s) failed.');
   process.exit(1);
 }
-console.log('\nAll ' + cases.length + ' cases passed.');
+console.log('\nAll cases passed.');

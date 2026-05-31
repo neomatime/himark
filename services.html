@@ -1209,6 +1209,18 @@
     border-radius: 1px;
     margin: 0;
   }
+  /* Photo beneath the tag — same width as description paragraph
+     (parent .svc-cat-right max-width caps it at 580px). 16:9
+     cinematic, slight saturation/contrast knock-down so it sits
+     back rather than competing with the editorial type above. */
+  .svc-cat-photo{
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    margin: 0;
+    filter: saturate(.88) contrast(1.04);
+  }
 
   /* ── NAVIGATION CONTROLS — dots + counter + arrows ──────── */
   .svc-cats-controls{
@@ -1517,6 +1529,7 @@
 <h3 class="svc-cat-name">Brand Architecture</h3>
 <p class="svc-cat-desc">Identity systems, market positioning, and executive personal branding. Where most engagements begin — because brand is the surface every commercial decision is measured against.</p>
 <span class="svc-cat-tag">Standalone or in tier</span>
+<img class="svc-cat-photo" src="images/mandates-hero.jpg" alt="" loading="lazy"/>
 </div>
 </article>
 
@@ -1534,6 +1547,7 @@
 <h3 class="svc-cat-name">Digital Infrastructure</h3>
 <p class="svc-cat-desc">Website, SEO, CRM, lead capture, automation and enterprise systems. The operational pipe everything else runs through.</p>
 <span class="svc-cat-tag">Standalone or in tier</span>
+<img class="svc-cat-photo" src="images/airass-hero.jpg" alt="" loading="lazy"/>
 </div>
 </article>
 
@@ -1552,6 +1566,7 @@
 <h3 class="svc-cat-name">Marketing &amp; Demand</h3>
 <p class="svc-cat-desc">Demand strategy, lead generation, content systems and channel architecture. Built for sustained pipeline, not one-quarter spikes.</p>
 <span class="svc-cat-tag">Standalone or in tier</span>
+<img class="svc-cat-photo" src="images/method-hero.jpg" alt="" loading="lazy"/>
 </div>
 </article>
 
@@ -1572,6 +1587,7 @@
 <h3 class="svc-cat-name">AI &amp; Operational Systems</h3>
 <p class="svc-cat-desc">AIRaaS deployment, workflow automation, intelligent routing. AI as compounding leverage — not novelty.</p>
 <span class="svc-cat-tag">Standalone or in tier</span>
+<img class="svc-cat-photo" src="images/algos.jpeg" alt="" loading="lazy"/>
 </div>
 </article>
 
@@ -1588,6 +1604,7 @@
 <h3 class="svc-cat-name">Strategic Advisory</h3>
 <p class="svc-cat-desc">Principal-level advisory — workshops, weekly reviews, and continuous access. The thinking layer above all of the above.</p>
 <span class="svc-cat-tag">In-tier only</span>
+<img class="svc-cat-photo" src="images/team-hero.jpg" alt="" loading="lazy"/>
 </div>
 </article>
 
@@ -1604,6 +1621,7 @@
 <h3 class="svc-cat-name">Executive &amp; Transformation</h3>
 <p class="svc-cat-desc">M&amp;A architecture, capital strategy, pricing design, and the work that reshapes a business rather than refines it.</p>
 <span class="svc-cat-tag">Selected · Private tier</span>
+<img class="svc-cat-photo" src="images/about-hero.jpg" alt="" loading="lazy"/>
 </div>
 </article>
 

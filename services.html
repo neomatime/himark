@@ -1210,13 +1210,14 @@
     margin: 0;
   }
   /* Photo beneath the tag — same width as description paragraph
-     (parent .svc-cat-right max-width caps it at 580px). 16:9
-     cinematic, slight saturation/contrast knock-down so it sits
-     back rather than competing with the editorial type above. */
+     (parent .svc-cat-right max-width caps it at 580px). Half the
+     vertical of the previous 16:9 → 32:9 super-letterbox strip.
+     Slight saturation/contrast knock-down so it sits back rather
+     than competing with the editorial type above. */
   .svc-cat-photo{
     display: block;
     width: 100%;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 32 / 9;
     object-fit: cover;
     margin: 0;
     filter: saturate(.88) contrast(1.04);

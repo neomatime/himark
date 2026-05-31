@@ -519,6 +519,141 @@
     margin: 0;
     max-width: 32ch;
   }
+
+  /* ── DOCTRINE PILLAR GRAPHICS ───────────────────────────────
+     Subtle animated motif beneath each doctrine cell. Each
+     graphic ties conceptually to its pillar:
+       01 dots   — fewer chosen from many (selection)
+       02 rings  — concentric pulse around a target (precision)
+       03 line   — horizontal stroke drawing across (work)
+       04 wave   — continuous sine-wave flow (on the record)
+     All four monochrome, low-contrast, loop forever (or pause
+     under prefers-reduced-motion). */
+  .hd-graphic{
+    margin-top: clamp(20px, 2.5vw, 32px);
+    height: 56px;
+    width: 100%;
+    max-width: 220px;
+    position: relative;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  /* 01 — dots row, two of which pulse bright */
+  .hd-graphic-dots{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .hd-graphic-dots > span{
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--ocean-dk);
+    opacity: .22;
+    flex-shrink: 0;
+    transition: opacity 200ms ease;
+  }
+  .hd-graphic-dots > span:nth-child(2),
+  .hd-graphic-dots > span:nth-child(6){
+    animation: hd-dot-pulse 3.6s ease-in-out infinite;
+  }
+  .hd-graphic-dots > span:nth-child(6){ animation-delay: 1.4s; }
+  @keyframes hd-dot-pulse{
+    0%, 100%   { opacity: .22; transform: scale(1);  background: var(--ocean-dk); }
+    40%, 60%   { opacity: 1;   transform: scale(1.6); background: var(--midnight); }
+  }
+
+  /* 02 — concentric rings around a center dot */
+  .hd-graphic-rings{
+    /* Use ::before and ::after as the two outer rings; the
+       inner solid dot is the explicit <span> child. */
+    display: block;
+  }
+  .hd-graphic-rings > span,
+  .hd-graphic-rings::before,
+  .hd-graphic-rings::after{
+    content: "";
+    position: absolute;
+    left: 28px;
+    top: 50%;
+    border: 1px solid var(--ocean-dk);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .hd-graphic-rings > span{
+    width: 7px; height: 7px;
+    background: var(--midnight);
+    border-color: var(--midnight);
+    opacity: 1;
+  }
+  .hd-graphic-rings::before{
+    width: 28px; height: 28px;
+    opacity: .35;
+    animation: hd-ring-pulse 3.6s ease-in-out infinite;
+  }
+  .hd-graphic-rings::after{
+    width: 50px; height: 50px;
+    opacity: .22;
+    animation: hd-ring-pulse 3.6s ease-in-out infinite .8s;
+  }
+  @keyframes hd-ring-pulse{
+    0%, 100% { opacity: .15; transform: translate(-50%, -50%) scale(0.78); }
+    50%      { opacity: .5;  transform: translate(-50%, -50%) scale(1.08); }
+  }
+
+  /* 03 — horizontal line drawing across */
+  .hd-graphic-line{
+    display: flex;
+    align-items: center;
+  }
+  .hd-graphic-line::before{
+    content: "";
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: var(--midnight);
+    transform-origin: left center;
+    animation: hd-line-draw 4.8s cubic-bezier(.7,0,.3,1) infinite;
+    opacity: 0;
+  }
+  @keyframes hd-line-draw{
+    0%        { transform: scaleX(0); opacity: 0; }
+    15%       { opacity: .65; }
+    50%, 65%  { transform: scaleX(1); opacity: .65; }
+    100%      { transform: scaleX(1); opacity: 0; }
+  }
+
+  /* 04 — continuously translating sine wave */
+  .hd-graphic-wave{
+    display: flex;
+    align-items: center;
+  }
+  .hd-graphic-wave svg{
+    width: 200%;
+    height: 28px;
+    stroke: var(--midnight);
+    stroke-width: 1.2;
+    fill: none;
+    opacity: .55;
+    animation: hd-wave-shift 4.5s linear infinite;
+  }
+  @keyframes hd-wave-shift{
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .hd-graphic-dots > span,
+    .hd-graphic-rings::before,
+    .hd-graphic-rings::after,
+    .hd-graphic-line::before,
+    .hd-graphic-wave svg{
+      animation: none !important;
+    }
+    /* Settle the line into its drawn end state instead of invisible */
+    .hd-graphic-line::before{ transform: scaleX(1); opacity: .65; }
+  }
+
   @media (max-width: 900px){
     .home-doctrine-grid{ grid-template-columns: repeat(2, 1fr); gap: 36px 32px; }
   }
@@ -2021,21 +2156,43 @@
 <span class="hd-num" aria-hidden="true">01</span>
 <h3 class="hd-line">Volume is a tax on quality.</h3>
 <p class="hd-body">Fewer mandates. More of us in each.</p>
+<!-- Graphic 01 — selection: a row of dots, only two pulse bright
+     (the chosen ones). Echoes "fewer mandates, more of us." -->
+<div class="hd-graphic hd-graphic-dots" aria-hidden="true">
+<span></span><span></span><span></span><span></span>
+<span></span><span></span><span></span><span></span>
+</div>
 </article>
 <article class="hd-cell">
 <span class="hd-num" aria-hidden="true">02</span>
 <h3 class="hd-line">Precision. Not volume.</h3>
 <p class="hd-body">Strategy is signal. Volume is noise.</p>
+<!-- Graphic 02 — precision: concentric rings pulsing around a
+     center dot. Crosshair / target metaphor. -->
+<div class="hd-graphic hd-graphic-rings" aria-hidden="true">
+<span></span>
+</div>
 </article>
 <article class="hd-cell">
 <span class="hd-num" aria-hidden="true">03</span>
 <h3 class="hd-line">Operators, not advisors.</h3>
 <p class="hd-body">We do the work, not just point at it.</p>
+<!-- Graphic 03 — work in progress: a thin horizontal line that
+     draws across, holds, then sweeps off and redraws. Continuous
+     execution rather than the static "advisor" pointer. -->
+<div class="hd-graphic hd-graphic-line" aria-hidden="true"></div>
 </article>
 <article class="hd-cell">
 <span class="hd-num" aria-hidden="true">04</span>
 <h3 class="hd-line">On.record.</h3>
 <p class="hd-body">What we sign, we stand behind. Every recommendation, attributable.</p>
+<!-- Graphic 04 — on the record: a continuously translating sine
+     wave. Recording / signature / always-on signal. -->
+<div class="hd-graphic hd-graphic-wave" aria-hidden="true">
+<svg viewBox="0 0 144 16" preserveAspectRatio="none">
+<path d="M0,8 Q4,0 8,8 T16,8 T24,8 T32,8 T40,8 T48,8 T56,8 T64,8 T72,8 T80,8 T88,8 T96,8 T104,8 T112,8 T120,8 T128,8 T136,8 T144,8"/>
+</svg>
+</div>
 </article>
 </div>
 </div>

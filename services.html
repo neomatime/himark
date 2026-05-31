@@ -1090,42 +1090,67 @@
   .svc-cat{
     position: relative;
     background: var(--off);
-    padding: 44px 32px 38px;
+    padding: 40px 32px 36px;
     display: flex;
     flex-direction: column;
-    min-height: 320px;
-    transition: background .3s ease, transform .35s ease;
+    min-height: 340px;
+    transition: background .35s ease, transform .35s ease, box-shadow .35s ease;
     isolation: isolate;
   }
-  /* Hide the old image wrapper completely — we're typography-led now */
-  .svc-cat-img{
-    display: none;
+  /* Thin top hairline accent — full-width ocean rule at top of each tile */
+  .svc-cat::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--ocean);
+    opacity: .5;
+    transition: background .35s ease, opacity .35s ease;
   }
-  /* Massive mono numeral is the visual anchor */
+  .svc-cat-img{ display: none; }
+  /* Icon — custom abstract SVG mark per service, top of tile */
+  .svc-cat-icon{
+    display: block;
+    width: 38px;
+    height: 38px;
+    stroke: var(--midnight);
+    stroke-width: 1.4;
+    fill: none;
+    margin: 0 0 28px 0;
+    transition: stroke .35s ease;
+  }
+  .svc-cat-icon circle.dot{
+    fill: var(--midnight);
+    stroke: none;
+    transition: fill .35s ease;
+  }
+  /* Smaller italic numeral — Roboto-300 italic for editorial weight */
   .svc-cat-num{
     display: block;
-    font-family: var(--f-mono);
-    font-size: clamp(48px, 5.2vw, 68px);
-    font-weight: 400;
-    letter-spacing: -.02em;
+    font-family: 'Roboto', sans-serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(22px, 2.4vw, 30px);
+    letter-spacing: -.005em;
     color: var(--midnight);
     text-transform: none;
     line-height: 1;
-    margin: 0 0 28px 0;
+    margin: 0 0 18px 0;
     padding: 0;
-    opacity: .92;
+    opacity: .9;
     font-feature-settings: 'tnum' 1;
-    transition: color .3s ease;
+    transition: color .35s ease, opacity .35s ease;
   }
-  /* Thin hairline beneath the numeral acts like a section rule */
   .svc-cat-num::after{
     content: "";
     display: block;
     width: 32px;
     height: 1px;
     background: var(--ocean);
-    margin-top: 16px;
-    transition: width .35s ease, background .3s ease;
+    margin-top: 14px;
+    transition: width .35s ease, background .35s ease;
   }
   .svc-cat-name{
     font-family: var(--f-nav);
@@ -1134,17 +1159,19 @@
     letter-spacing: .12em;
     text-transform: uppercase;
     color: var(--midnight);
-    margin: 0 0 16px 0;
+    margin: 0 0 14px 0;
     padding: 0;
     line-height: 1.3;
+    transition: color .35s ease;
   }
   .svc-cat-desc{
     font-family: var(--f-body);
     font-size: 14px;
     line-height: 1.6;
     color: var(--ink-mut);
-    margin: 0 0 24px 0;
+    margin: 0 0 22px 0;
     flex: 1;
+    transition: color .35s ease;
   }
   .svc-cat-tag{
     display: inline-block;
@@ -1158,25 +1185,53 @@
     padding: 6px 11px;
     border-radius: 1px;
     margin: 0;
+    transition: color .35s ease, background .35s ease;
   }
-  /* HOVER: tile background subtly shifts, the accent rule extends */
+  /* HOVER — dramatic dark inversion. Tile flips to midnight, all
+     text inverts, icon turns white, accent rule extends + shifts
+     to ocean-lt. The whole tile reads as a "stamped" dark card. */
   .svc-cat:hover,
   .svc-cat:focus-visible{
-    background: #fff;
+    background: var(--midnight);
+    transform: translateY(-5px);
+    box-shadow: 0 30px 60px -18px rgba(28,43,58,.38);
     outline: none;
+  }
+  .svc-cat:hover::before,
+  .svc-cat:focus-visible::before{
+    background: var(--ocean-lt);
+    opacity: 1;
+  }
+  .svc-cat:hover .svc-cat-icon,
+  .svc-cat:focus-visible .svc-cat-icon{
+    stroke: #fff;
+  }
+  .svc-cat:hover .svc-cat-icon circle.dot,
+  .svc-cat:focus-visible .svc-cat-icon circle.dot{
+    fill: #fff;
   }
   .svc-cat:hover .svc-cat-num,
   .svc-cat:focus-visible .svc-cat-num{
-    color: var(--ocean);
+    color: var(--ocean-lt);
     opacity: 1;
   }
   .svc-cat:hover .svc-cat-num::after,
   .svc-cat:focus-visible .svc-cat-num::after{
-    width: 96px;
-    background: var(--midnight);
+    width: 64px;
+    background: var(--ocean-lt);
   }
-  .svc-cat:focus-visible{
-    box-shadow: inset 0 0 0 2px var(--ocean);
+  .svc-cat:hover .svc-cat-name,
+  .svc-cat:focus-visible .svc-cat-name{
+    color: #fff;
+  }
+  .svc-cat:hover .svc-cat-desc,
+  .svc-cat:focus-visible .svc-cat-desc{
+    color: rgba(255,255,255,.78);
+  }
+  .svc-cat:hover .svc-cat-tag,
+  .svc-cat:focus-visible .svc-cat-tag{
+    color: rgba(255,255,255,.7);
+    background: rgba(255,255,255,.10);
   }
 
   @media (max-width: 1024px){
@@ -1187,14 +1242,21 @@
   @media (max-width: 640px){
     .svc-cats-section{ padding: 56px 22px 48px; }
     .svc-cats-grid{ grid-template-columns: 1fr; }
-    .svc-cat{ min-height: 0; padding: 36px 24px 30px; }
-    .svc-cat-num{ font-size: 42px; margin-bottom: 22px; }
-    .svc-cat-num::after{ margin-top: 12px; }
+    .svc-cat{ min-height: 0; padding: 32px 24px 28px; }
+    .svc-cat-icon{ width: 32px; height: 32px; margin-bottom: 22px; }
+    .svc-cat-num{ font-size: 22px; margin-bottom: 14px; }
+    .svc-cat-num::after{ margin-top: 10px; }
   }
   @media (prefers-reduced-motion: reduce){
     .svc-cat,
+    .svc-cat::before,
+    .svc-cat-icon,
+    .svc-cat-icon circle.dot,
     .svc-cat-num,
-    .svc-cat-num::after{
+    .svc-cat-num::after,
+    .svc-cat-name,
+    .svc-cat-desc,
+    .svc-cat-tag{
       transition: none !important;
     }
   }
@@ -1394,6 +1456,11 @@
 <div class="svc-cats-grid">
 <article class="svc-cat" tabindex="0">
 <div class="svc-cat-img"><img src="images/mandates-hero.jpg" alt="" loading="lazy"/></div>
+<!-- Icon: framed square with diagonal — architectural frame motif -->
+<svg class="svc-cat-icon" viewBox="0 0 32 32" aria-hidden="true">
+<rect x="4" y="4" width="24" height="24"/>
+<line x1="4" y1="28" x2="28" y2="4"/>
+</svg>
 <span class="svc-cat-num">S.01</span>
 <h3 class="svc-cat-name">Brand Architecture</h3>
 <p class="svc-cat-desc">Identity systems, market positioning, and executive personal branding. Where most engagements begin — because brand is the surface every commercial decision is measured against.</p>
@@ -1402,6 +1469,12 @@
 
 <article class="svc-cat" tabindex="0">
 <div class="svc-cat-img"><img src="images/airass-hero.jpg" alt="" loading="lazy"/></div>
+<!-- Icon: three stacked horizontal lines of varying width — layered infrastructure -->
+<svg class="svc-cat-icon" viewBox="0 0 32 32" aria-hidden="true">
+<line x1="4" y1="9" x2="28" y2="9"/>
+<line x1="4" y1="16" x2="22" y2="16"/>
+<line x1="4" y1="23" x2="26" y2="23"/>
+</svg>
 <span class="svc-cat-num">S.02</span>
 <h3 class="svc-cat-name">Digital Infrastructure</h3>
 <p class="svc-cat-desc">Website, SEO, CRM, lead capture, automation and enterprise systems. The operational pipe everything else runs through.</p>
@@ -1410,6 +1483,13 @@
 
 <article class="svc-cat" tabindex="0">
 <div class="svc-cat-img"><img src="images/method-hero.jpg" alt="" loading="lazy"/></div>
+<!-- Icon: four ascending bars — growth / demand curve -->
+<svg class="svc-cat-icon" viewBox="0 0 32 32" aria-hidden="true">
+<line x1="6" y1="28" x2="6" y2="22"/>
+<line x1="13" y1="28" x2="13" y2="18"/>
+<line x1="20" y1="28" x2="20" y2="12"/>
+<line x1="27" y1="28" x2="27" y2="6"/>
+</svg>
 <span class="svc-cat-num">S.03</span>
 <h3 class="svc-cat-name">Marketing &amp; Demand</h3>
 <p class="svc-cat-desc">Demand strategy, lead generation, content systems and channel architecture. Built for sustained pipeline, not one-quarter spikes.</p>
@@ -1418,6 +1498,15 @@
 
 <article class="svc-cat" tabindex="0">
 <div class="svc-cat-img"><img src="images/algos.jpeg" alt="" loading="lazy"/></div>
+<!-- Icon: three connected nodes in a triangle — neural / network -->
+<svg class="svc-cat-icon" viewBox="0 0 32 32" aria-hidden="true">
+<line x1="16" y1="7" x2="6" y2="24"/>
+<line x1="16" y1="7" x2="26" y2="24"/>
+<line x1="6" y1="24" x2="26" y2="24"/>
+<circle class="dot" cx="16" cy="7" r="2.2"/>
+<circle class="dot" cx="6" cy="24" r="2.2"/>
+<circle class="dot" cx="26" cy="24" r="2.2"/>
+</svg>
 <span class="svc-cat-num">S.04</span>
 <h3 class="svc-cat-name">AI &amp; Operational Systems</h3>
 <p class="svc-cat-desc">AIRaaS deployment, workflow automation, intelligent routing. AI as compounding leverage — not novelty.</p>
@@ -1426,6 +1515,11 @@
 
 <article class="svc-cat" tabindex="0">
 <div class="svc-cat-img"><img src="images/team-hero.jpg" alt="" loading="lazy"/></div>
+<!-- Icon: triangle outline with center dot — strategic apex / summit -->
+<svg class="svc-cat-icon" viewBox="0 0 32 32" aria-hidden="true">
+<polygon points="16,4 28,26 4,26"/>
+<circle class="dot" cx="16" cy="19" r="2.4"/>
+</svg>
 <span class="svc-cat-num">S.05</span>
 <h3 class="svc-cat-name">Strategic Advisory</h3>
 <p class="svc-cat-desc">Principal-level advisory — workshops, weekly reviews, and continuous access. The thinking layer above all of the above.</p>
@@ -1434,6 +1528,11 @@
 
 <article class="svc-cat" tabindex="0">
 <div class="svc-cat-img"><img src="images/about-hero.jpg" alt="" loading="lazy"/></div>
+<!-- Icon: square overlapping a diamond — shape transformation -->
+<svg class="svc-cat-icon" viewBox="0 0 32 32" aria-hidden="true">
+<rect x="4" y="8" width="14" height="14"/>
+<polygon points="22,8 30,16 22,24 14,16"/>
+</svg>
 <span class="svc-cat-num">S.06</span>
 <h3 class="svc-cat-name">Executive &amp; Transformation</h3>
 <p class="svc-cat-desc">M&amp;A architecture, capital strategy, pricing design, and the work that reshapes a business rather than refines it.</p>

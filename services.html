@@ -1068,89 +1068,217 @@
   }
   .svc-cats-sub strong{ font-weight: 700; color: var(--midnight); }
 
+  /* ── 6-tile hover-to-reveal grid ────────────────────────────
+     Default state on desktop: six clean text-only tiles showing
+     only the S.XX numeral and the service name. No images. No
+     descriptions. Generous whitespace, reads as an architecture
+     firm's wordmark grid.
+
+     Hover (or keyboard focus) any tile: the image fades in as a
+     background, a dark veil drops over it so the text reads
+     white, the description and tag fade up from beneath. The
+     other five tiles dim to .35 opacity (via :has()) so the eye
+     stays on the focused tile.
+
+     Mobile / touch / no-hover devices: hover dance is bypassed —
+     description and tag are always visible, image is hidden
+     (touch screens can't reveal them and dark overlays read
+     muddy at phone scale). Behaviour matches the existing card
+     layout the page already shipped. */
   .svc-cats-grid{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 28px;
   }
   .svc-cat{
-    background: var(--white);
-    border: 1px solid var(--rule);
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    transition: box-shadow .35s ease, transform .35s ease, border-color .35s ease;
-  }
-  .svc-cat:hover{
-    box-shadow: 0 12px 28px -10px rgba(28,43,58,.16);
-    transform: translateY(-2px);
-    border-color: rgba(95,129,144,.3);
-  }
-  .svc-cat-img{
-    width: 100%;
-    height: 160px;
+    position: relative;
+    background: var(--off);
+    border: 1px solid rgba(28,43,58,.10);
+    padding: 40px 28px 34px;
+    min-height: 240px;
     overflow: hidden;
-    background: var(--midnight);
+    cursor: pointer;
+    isolation: isolate;
+    transition: transform .4s ease, box-shadow .4s ease, border-color .4s ease, opacity .3s ease;
+  }
+  /* Image becomes an absolute background layer, hidden by default */
+  .svc-cat-img{
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity .5s ease;
+    pointer-events: none;
   }
   .svc-cat-img img{
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    opacity: .85;
-    transition: opacity .35s ease, transform .8s cubic-bezier(.2,.7,.15,1);
+    transform: scale(1.06);
+    transition: transform .9s cubic-bezier(.2,.7,.15,1);
+    filter: saturate(.9) contrast(1.04);
   }
-  .svc-cat:hover .svc-cat-img img{
-    opacity: 1;
-    transform: scale(1.05);
+  /* Dark veil — sits between image and text, only visible on hover */
+  .svc-cat::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(28,43,58,.42) 0%, rgba(28,43,58,.82) 100%);
+    z-index: 1;
+    opacity: 0;
+    transition: opacity .5s ease;
+    pointer-events: none;
+  }
+  /* All text content sits above image + veil */
+  .svc-cat-num,
+  .svc-cat-name,
+  .svc-cat-desc,
+  .svc-cat-tag{
+    position: relative;
+    z-index: 2;
+    transition: color .35s ease, opacity .4s ease, transform .4s ease;
   }
   .svc-cat-num{
+    display: block;
     font-family: var(--f-mono);
-    font-size: 9px;
-    letter-spacing: .14em;
+    font-size: 10px;
+    letter-spacing: .22em;
     color: var(--ocean);
     text-transform: uppercase;
-    padding: 20px 24px 0;
+    margin: 0 0 24px 0;
+    padding: 0;
   }
   .svc-cat-name{
     font-family: var(--f-nav);
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
     letter-spacing: .08em;
     text-transform: uppercase;
     color: var(--midnight);
-    margin: 8px 24px 12px;
+    margin: 0;
+    padding: 0;
+    line-height: 1.25;
   }
+  /* Description + tag hidden by default, revealed on hover */
   .svc-cat-desc{
     font-family: var(--f-body);
-    font-size: 13.5px;
-    line-height: 1.65;
-    color: var(--ink-mut);
-    margin: 0 24px 18px;
-    flex: 1;
+    font-size: 14px;
+    line-height: 1.55;
+    color: rgba(255,255,255,.92);
+    margin: 18px 0 14px 0;
+    opacity: 0;
+    transform: translateY(8px);
+    flex: none;
   }
   .svc-cat-tag{
     display: inline-block;
     align-self: flex-start;
     font-family: var(--f-mono);
-    font-size: 9px;
-    letter-spacing: .14em;
+    font-size: 10px;
+    letter-spacing: .22em;
     text-transform: uppercase;
-    color: var(--ocean-dk);
-    background: rgba(95,129,144,.1);
+    color: rgba(255,255,255,.72);
+    background: rgba(255,255,255,.10);
     padding: 5px 10px;
-    margin: 0 24px 22px;
+    margin: 0;
     border-radius: 1px;
+    opacity: 0;
+    transform: translateY(8px);
   }
+  /* HOVER / FOCUS state */
+  .svc-cat:hover,
+  .svc-cat:focus-visible{
+    border-color: var(--midnight);
+    transform: translateY(-3px);
+    box-shadow: 0 24px 60px -12px rgba(28,43,58,.22);
+    outline: none;
+  }
+  .svc-cat:hover .svc-cat-img,
+  .svc-cat:focus-visible .svc-cat-img{
+    opacity: 1;
+  }
+  .svc-cat:hover .svc-cat-img img,
+  .svc-cat:focus-visible .svc-cat-img img{
+    transform: scale(1);
+  }
+  .svc-cat:hover::before,
+  .svc-cat:focus-visible::before{
+    opacity: 1;
+  }
+  .svc-cat:hover .svc-cat-num,
+  .svc-cat:focus-visible .svc-cat-num{
+    color: rgba(255,255,255,.78);
+  }
+  .svc-cat:hover .svc-cat-name,
+  .svc-cat:focus-visible .svc-cat-name{
+    color: #fff;
+  }
+  .svc-cat:hover .svc-cat-desc,
+  .svc-cat:focus-visible .svc-cat-desc{
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .svc-cat:hover .svc-cat-tag,
+  .svc-cat:focus-visible .svc-cat-tag{
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: .12s;
+  }
+  /* Dim other tiles when one is hovered (modern :has() support) */
+  .svc-cats-grid:has(.svc-cat:hover) .svc-cat:not(:hover){
+    opacity: .38;
+  }
+
   @media (max-width: 1024px){
     .svc-cats-section{ padding: 72px 28px 60px; }
     .svc-cats-grid{ grid-template-columns: repeat(2, 1fr); gap: 22px; }
     .svc-cats-coord-l, .svc-cats-coord-r{ display: none; }
   }
+  /* Mobile / touch / no-hover: skip hover dance, show all copy
+     by default, hide image (too small for overlay legibility). */
+  @media (hover: none), (max-width: 720px){
+    .svc-cat{
+      min-height: 0;
+      padding: 28px 24px 26px;
+    }
+    .svc-cat-img,
+    .svc-cat::before{
+      display: none;
+    }
+    .svc-cat-desc{
+      opacity: 1;
+      transform: none;
+      color: var(--ink-mut);
+      font-size: 14px;
+      margin-top: 14px;
+    }
+    .svc-cat-tag{
+      opacity: 1;
+      transform: none;
+      color: var(--ocean-dk);
+      background: rgba(95,129,144,.10);
+      margin-top: 10px;
+    }
+    .svc-cats-grid:has(.svc-cat:hover) .svc-cat:not(:hover){
+      opacity: 1;
+    }
+  }
   @media (max-width: 640px){
     .svc-cats-section{ padding: 56px 22px 48px; }
     .svc-cats-grid{ grid-template-columns: 1fr; gap: 18px; }
-    .svc-cat-img{ height: 180px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .svc-cat,
+    .svc-cat-img,
+    .svc-cat-img img,
+    .svc-cat::before,
+    .svc-cat-num,
+    .svc-cat-name,
+    .svc-cat-desc,
+    .svc-cat-tag{
+      transition: none !important;
+    }
   }
 
   /* nav-bold-override — make navbar links bolder and darker so
@@ -1346,7 +1474,7 @@
 <p class="svc-cats-sub">The HIMARK service surface. Each category is available <strong>standalone</strong> or built into a tier engagement.</p>
 
 <div class="svc-cats-grid">
-<article class="svc-cat">
+<article class="svc-cat" tabindex="0">
 <div class="svc-cat-img"><img src="images/mandates-hero.jpg" alt="" loading="lazy"/></div>
 <span class="svc-cat-num">S.01</span>
 <h3 class="svc-cat-name">Brand Architecture</h3>
@@ -1354,7 +1482,7 @@
 <span class="svc-cat-tag">Standalone or in tier</span>
 </article>
 
-<article class="svc-cat">
+<article class="svc-cat" tabindex="0">
 <div class="svc-cat-img"><img src="images/airass-hero.jpg" alt="" loading="lazy"/></div>
 <span class="svc-cat-num">S.02</span>
 <h3 class="svc-cat-name">Digital Infrastructure</h3>
@@ -1362,7 +1490,7 @@
 <span class="svc-cat-tag">Standalone or in tier</span>
 </article>
 
-<article class="svc-cat">
+<article class="svc-cat" tabindex="0">
 <div class="svc-cat-img"><img src="images/method-hero.jpg" alt="" loading="lazy"/></div>
 <span class="svc-cat-num">S.03</span>
 <h3 class="svc-cat-name">Marketing &amp; Demand</h3>
@@ -1370,7 +1498,7 @@
 <span class="svc-cat-tag">Standalone or in tier</span>
 </article>
 
-<article class="svc-cat">
+<article class="svc-cat" tabindex="0">
 <div class="svc-cat-img"><img src="images/algos.jpeg" alt="" loading="lazy"/></div>
 <span class="svc-cat-num">S.04</span>
 <h3 class="svc-cat-name">AI &amp; Operational Systems</h3>
@@ -1378,7 +1506,7 @@
 <span class="svc-cat-tag">Standalone or in tier</span>
 </article>
 
-<article class="svc-cat">
+<article class="svc-cat" tabindex="0">
 <div class="svc-cat-img"><img src="images/team-hero.jpg" alt="" loading="lazy"/></div>
 <span class="svc-cat-num">S.05</span>
 <h3 class="svc-cat-name">Strategic Advisory</h3>
@@ -1386,7 +1514,7 @@
 <span class="svc-cat-tag">In-tier only</span>
 </article>
 
-<article class="svc-cat">
+<article class="svc-cat" tabindex="0">
 <div class="svc-cat-img"><img src="images/about-hero.jpg" alt="" loading="lazy"/></div>
 <span class="svc-cat-num">S.06</span>
 <h3 class="svc-cat-name">Executive &amp; Transformation</h3>

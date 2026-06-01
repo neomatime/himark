@@ -160,7 +160,36 @@ function extractSession(text){
 }
 function stripBlocks(text){
   if (!text || typeof text !== 'string') return text;
-  return text.replace(LEAD_RE, '').replace(SESSION_RE, '').trim();
+  return text.replace(LEAD_RE, '').replace(SESSION_RE, '').replace(BUTTONS_RE, '').trim();
+}
+
+/* ============================================================
+   INTERACTIVE BUTTONS — quick-reply chip extraction
+   Atlas can emit a hidden block like:
+     <wa-buttons>Apply | Learn more | Talk to principal</wa-buttons>
+   at the end of his reply when he's offering the visitor a clear
+   2-3 way choice. We strip the marker from the visible text and
+   send the last reply chunk as a WhatsApp interactive button
+   message instead of plain text. Visitor taps → the button title
+   comes back as a regular text message on the next webhook turn.
+   Rules:
+     - Pipe-separated labels (commas are too common in natural copy)
+     - Max 3 buttons (WhatsApp's hard limit)
+     - Max 20 chars per button (WhatsApp's hard limit — we truncate)
+     - Empty / malformed marker → no buttons, plain text fallback
+   ============================================================ */
+const BUTTONS_RE = /<wa-buttons>\s*([\s\S]*?)\s*<\/wa-buttons>/i;
+
+function extractButtons(text){
+  if (!text || typeof text !== 'string') return null;
+  const m = text.match(BUTTONS_RE);
+  if (!m) return null;
+  const labels = m[1].split('|')
+    .map(s => s.trim())
+    .filter(Boolean)
+    .map(s => s.slice(0, 20))
+    .slice(0, 3);
+  return labels.length ? labels : null;
 }
 
 /* ============================================================
@@ -482,6 +511,102 @@ async function sendWhatsAppTextChunks(to, body){
   return { chunks: chunks.length, results };
 }
 
+/* Interactive button message — body text + up to 3 reply buttons.
+   When the visitor taps a button, WhatsApp fires a webhook with
+   message.type === 'interactive' and interactive.button_reply.title
+   carrying the label. We coerce that back to text in handleMessage
+   so the brain receives it as if the visitor had typed the label. */
+async function sendWhatsAppButtons(to, bodyText, buttonLabels){
+  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
+  const accessToken   = process.env.WHATSAPP_ACCESS_TOKEN;
+  if (!phoneNumberId || !accessToken) {
+    console.error('[wa] missing env for button send');
+    return { error: 'env-missing' };
+  }
+  const body = String(bodyText || '').slice(0, 1024);
+  if (!body || !buttonLabels || !buttonLabels.length) {
+    return { error: 'empty-body-or-buttons' };
+  }
+  const buttons = buttonLabels.slice(0, 3).map((label, i) => ({
+    type: 'reply',
+    reply: {
+      /* WhatsApp requires button id (≤256 chars). We derive from the
+         label so the payload that comes back is human-readable in
+         logs without us needing a separate id↔label map. */
+      id: ('btn-' + i + '-' + label.toLowerCase().replace(/[^a-z0-9]+/g, '-')).slice(0, 256),
+      title: label.slice(0, 20)
+    }
+  }));
+  let res;
+  try {
+    res = await fetch(`https://graph.facebook.com/${WA_GRAPH_VERSION}/${phoneNumberId}/messages`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        recipient_type: 'individual',
+        to,
+        type: 'interactive',
+        interactive: {
+          type: 'button',
+          body: { text: body },
+          action: { buttons }
+        }
+      })
+    });
+  } catch (err) {
+    console.error('[wa] buttons fetch threw',
+      err && err.message,
+      'cause:', err && err.cause && (err.cause.message || err.cause.code || String(err.cause)));
+    return { error: 'fetch-threw' };
+  }
+  if (!res.ok) {
+    const t = await res.text().catch(() => '');
+    console.error('[wa] buttons send failed', res.status, t.slice(0, 400));
+    return { error: 'send-failed', status: res.status };
+  }
+  return { sent: true };
+}
+
+/* Orchestrator — sends Atlas's reply with optional buttons.
+   If buttonLabels is empty/null → falls through to the existing
+   plain chunked sender (unchanged behaviour). If buttons are
+   present → sends each chunk except the LAST as plain text, then
+   sends the last chunk as an interactive button message so the
+   buttons sit beneath the final paragraph of the reply. */
+async function sendWhatsAppReply(to, body, buttonLabels){
+  if (!buttonLabels || !buttonLabels.length) {
+    return await sendWhatsAppTextChunks(to, body);
+  }
+  const chunks = splitIntoChunks(body);
+  if (chunks.length === 0) {
+    return { chunks: 0, error: 'empty-body' };
+  }
+  if (chunks.length === 1) {
+    const result = await sendWhatsAppButtons(to, chunks[0], buttonLabels);
+    return { chunks: 1, results: [result], buttons: buttonLabels.length };
+  }
+  const results = [];
+  for (let i = 0; i < chunks.length - 1; i++) {
+    const result = await sendWhatsAppText(to, chunks[i]);
+    results.push(result);
+    if (result && result.error && i === 0) {
+      console.error('[wa] first chunk failed, aborting remaining', chunks.length - 1);
+      return { chunks: chunks.length, results, aborted: true };
+    }
+    if (result && result.error && i > 0) {
+      console.warn('[wa] chunk', i, 'failed (chunks 0..' + (i - 1) + ' already sent)', result.error);
+    }
+    await sleep(chunkPauseMs(chunks[i + 1]));
+  }
+  const buttonResult = await sendWhatsAppButtons(to, chunks[chunks.length - 1], buttonLabels);
+  results.push(buttonResult);
+  return { chunks: chunks.length, results, buttons: buttonLabels.length };
+}
+
 /* Mark the inbound message as read — purely a UX nicety so the
    visitor sees the blue ticks while we compute the reply. */
 async function markRead(messageId){
@@ -525,6 +650,24 @@ async function handleMessage(message){
   if (message.type === 'text') {
     userText = (message.text && message.text.body) || '';
     if (!userText) return;
+  } else if (message.type === 'interactive' && message.interactive) {
+    /* Visitor tapped a quick-reply button. WhatsApp delivers the
+       label as interactive.button_reply.title — coerce it back to
+       text so the brain processes it identically to a typed reply. */
+    const br = message.interactive.button_reply;
+    const lr = message.interactive.list_reply;
+    if (br && br.title) {
+      userText = String(br.title);
+      console.log('[wa] button tap inbound', { from, buttonId: br.id, title: br.title });
+    } else if (lr && lr.title) {
+      /* Future-proof: list reply (10-item menu). Currently Atlas
+         only emits 3-button replies, but if list messages get
+         enabled later this branch already handles their inbound. */
+      userText = String(lr.title);
+      console.log('[wa] list tap inbound', { from, listId: lr.id, title: lr.title });
+    } else {
+      return;
+    }
   } else if (message.type === 'audio' && message.audio && message.audio.id) {
     console.log('[wa] audio inbound', { from, mediaId: message.audio.id, mimeHint: message.audio.mime_type });
     const media = await fetchWhatsAppMediaBase64(message.audio.id);
@@ -584,12 +727,22 @@ async function handleMessage(message){
     console.log('[wa] lead scored', { bucket: scoring.bucket, score: scoring.score });
   }
 
+  /* Extract any quick-reply buttons Atlas chose to attach.
+     The <wa-buttons> marker is already stripped from `visible` by
+     stripBlocks (which strips LEAD_RE, SESSION_RE, and BUTTONS_RE).
+     We re-parse from `raw` to get the labels themselves. */
+  const buttonLabels = extractButtons(raw);
+
   /* HubSpot push (fire-and-forget) — unchanged in Phase A */
   if (lead)    pushToHubSpot(lead,    'lead',    from).catch(e => console.error('[wa] hubspot lead', e && e.message));
   if (session) pushToHubSpot(session, 'session', from).catch(e => console.error('[wa] hubspot session', e && e.message));
   appendHistory(from, 'assistant', visible);
-  const sendResult = await sendWhatsAppTextChunks(from, visible);
-  console.log('[wa] reply send result', { chunks: sendResult.chunks, aborted: sendResult.aborted || false }, 'replyPreview:', visible.slice(0, 100));
+  const sendResult = await sendWhatsAppReply(from, visible, buttonLabels);
+  console.log('[wa] reply send result', {
+    chunks: sendResult.chunks,
+    buttons: sendResult.buttons || 0,
+    aborted: sendResult.aborted || false
+  }, 'replyPreview:', visible.slice(0, 100));
 }
 
 /* ============================================================

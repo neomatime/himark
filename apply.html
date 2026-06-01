@@ -2073,14 +2073,20 @@ body.bm-open{overflow:hidden;}
    opening — no extra click required. A brief delay lets the
    widget mount + the visitor register the page hero, then we
    programmatically click the "Begin with Atlas" CTA (which calls
-   the same code path as a manual click). */
+   the same code path as a manual click).
+   Stamps window.__atlasApplySeeded so the global apply-link
+   interceptor in main.js doesn't re-seed if the visitor also
+   clicks Apply in the nav within a few seconds. */
 (function(){
   /* Honour reduced-motion / accessibility: still auto-fire, but
      visitor can dismiss the chat freely. The motion preference
      doesn't suppress the action, only any incidental animation. */
   function fire(){
     var btn = document.getElementById('ap-launch-atlas');
-    if (btn) btn.click();
+    if (btn) {
+      window.__atlasApplySeeded = Date.now();
+      btn.click();
+    }
   }
   if (document.readyState === 'complete') {
     setTimeout(fire, 1600);

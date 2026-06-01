@@ -2112,6 +2112,44 @@ window.authSubmit=authSubmit;
     });
   }
 
+  /* APPLY-LINK INTERCEPT — global handler that turns any nav /
+     footer / CTA <a href="apply.html"> click into "open Atlas
+     from the current page + seed LeadSense" instead of an actual
+     navigation to /apply.html. Visitor stays on their current
+     page; chat panel opens; LeadSense begins immediately. If
+     the chat widget isn't mounted on the current page (edge
+     case), we fall through to letting the link navigate
+     normally so /apply.html's own auto-launch script catches
+     the visitor instead — no dead-end.
+     window.__atlasApplySeeded is a debounce flag — if the apply
+     intent was seeded within the last 5s (e.g. by apply.html's
+     auto-launch script), we open Atlas but skip re-seeding so
+     the visitor doesn't see "I'd like to apply" twice in the
+     chat history. */
+  document.addEventListener('click', function(e){
+    if (e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    var el = e.target && e.target.closest ? e.target.closest('a') : null;
+    if (!el) return;
+    var href = el.getAttribute('href') || '';
+    /* Match "apply.html", "./apply.html", "/apply.html" with
+       optional ?query / #hash. Skip external apply URLs and
+       anything that isn't an exact apply-page reference. */
+    if (!/^\/?(?:\.{1,2}\/)*apply\.html(?:[?#].*)?$/.test(href)) return;
+    var cTgl = document.getElementById('chatTgl');
+    var cWin = document.getElementById('chatWin');
+    if (!cTgl || !cWin) return;  /* chat not mounted → fall through */
+    e.preventDefault();
+    if (!cWin.classList.contains('open')) cTgl.click();
+    var now = Date.now();
+    if (window.__atlasApplySeeded && (now - window.__atlasApplySeeded) < 5000) return;
+    window.__atlasApplySeeded = now;
+    setTimeout(function(){
+      if (typeof window.sQ === 'function') {
+        window.sQ({ textContent: "I'd like to apply" });
+      }
+    }, 900);
+  });
+
   /* Skip-to-form link — smooth-scroll into the form section
      instead of jumping. The actual scroller on this site is the
      .page element (each route scrolls independently), so we

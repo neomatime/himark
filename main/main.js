@@ -403,6 +403,41 @@ try{
         rmT();
         aM('bot', chunks[i]);
       }
+      /* Quick-reply buttons — Atlas may attach up to 3 tap-able pill
+         labels via the <wa-buttons> marker (extracted server-side,
+         arrives here as data.buttons). Render them after the last
+         chunk; tapping a pill sends the label as the visitor's next
+         message. The pill row is removed on tap so the buttons can't
+         double-fire and don't linger after the conversation moves on.
+         Voice mode receives buttons:null from the server, so this
+         block never runs while the visitor is on a voice call. */
+      const btns = (data && Array.isArray(data.buttons)) ? data.buttons : null;
+      if (btns && btns.length && !inVoice) {
+        const wrap = document.createElement('div');
+        wrap.className = 'msg-actions';
+        btns.slice(0, 3).forEach(function(label){
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'msg-action-btn';
+          b.textContent = String(label).slice(0, 28);
+          b.addEventListener('click', function(){
+            /* Disable the whole row so a second tap can't queue
+               another send, then remove the row entirely after a
+               short fade so the chat thread reads clean. */
+            wrap.querySelectorAll('button').forEach(function(x){ x.disabled = true; });
+            wrap.classList.add('msg-actions-fade');
+            setTimeout(function(){ if (wrap.parentNode) wrap.parentNode.removeChild(wrap); }, 220);
+            /* Render the user's "tap" as a normal user bubble + fire
+               the existing send path so it goes through HIST + the
+               backend exactly like a typed message. */
+            aM('user', label);
+            cC(label);
+          });
+          wrap.appendChild(b);
+        });
+        cMsgs.appendChild(wrap);
+        cMsgs.scrollTop = cMsgs.scrollHeight;
+      }
       /* Read out the reply only when the user is on the voice tab.
          Always use the joined reply so TTS speaks continuously
          regardless of any chunks the server returned. */

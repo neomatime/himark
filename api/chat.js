@@ -60,6 +60,7 @@ const { scoreLead, BUCKET_CLOSING_LINES, DEFAULT_SUBSTITUTION_TARGET, BUCKET_STA
    ============================================================ */
 const LEAD_RE    = /<lead>\s*([\s\S]*?)\s*<\/lead>/i;
 const SESSION_RE = /<session>\s*([\s\S]*?)\s*<\/session>/i;
+const BUTTONS_RE = /<wa-buttons>\s*([\s\S]*?)\s*<\/wa-buttons>/i;
 
 function parseBlock(text, regex, fields){
   if (!text || typeof text !== 'string') return null;
@@ -93,7 +94,25 @@ function extractSession(text){
 
 function stripLeadBlock(text){
   if (!text || typeof text !== 'string') return text;
-  return text.replace(LEAD_RE, '').replace(SESSION_RE, '').trim();
+  return text.replace(LEAD_RE, '').replace(SESSION_RE, '').replace(BUTTONS_RE, '').trim();
+}
+
+/* Quick-reply buttons — Atlas can append <wa-buttons>Label one | Label
+   two | Label three</wa-buttons> at the end of his reply when offering
+   the visitor a clear 2-3 way choice. We strip the marker from the
+   visible text (stripLeadBlock above also strips BUTTONS_RE) and pass
+   the labels to the widget so it can render them as tap-able pills
+   beneath the last chunk. Mirrors api/whatsapp.js. */
+function extractButtons(text){
+  if (!text || typeof text !== 'string') return null;
+  const m = text.match(BUTTONS_RE);
+  if (!m) return null;
+  const labels = m[1].split('|')
+    .map(s => s.trim())
+    .filter(Boolean)
+    .map(s => s.slice(0, 20))
+    .slice(0, 3);
+  return labels.length ? labels : null;
 }
 
 /* ============================================================
@@ -481,10 +500,15 @@ module.exports = async (req, res) => {
     const finalChunks = (mode === 'voice')
       ? [finalReply]
       : (rawChunks.length ? rawChunks : [finalReply]);
+    /* Quick-reply button labels Atlas chose to attach.
+       In voice mode we explicitly suppress buttons — the visitor is
+       on a phone call and can't tap chips while speaking. */
+    const buttons = (mode === 'voice') ? null : extractButtons(rawReply);
     res.statusCode = 200;
     return res.end(JSON.stringify({
       reply: finalReply,
       chunks: finalChunks,
+      buttons: buttons,
       leadCaptured: !!lead,
       sessionBooked: !!session
     }));

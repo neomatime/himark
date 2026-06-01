@@ -84,12 +84,12 @@ function parseBlock(text, regex, fields){
 
 function extractLead(text){
   return parseBlock(text, LEAD_RE,
-    ['name', 'email', 'company', 'role', 'brief', 'tier', 'timeline', 'budget']);
+    ['name', 'email', 'phone', 'company', 'role', 'brief', 'tier', 'timeline', 'budget']);
 }
 
 function extractSession(text){
   return parseBlock(text, SESSION_RE,
-    ['name', 'email', 'company', 'role', 'brief', 'window', 'format']);
+    ['name', 'email', 'phone', 'company', 'role', 'brief', 'window', 'format']);
 }
 
 function stripLeadBlock(text){
@@ -155,6 +155,11 @@ async function pushToHubSpot(record, kind){
     email: record.email,
     firstname: firstname || '',
     lastname: lastname || '',
+    /* Phone is the standard HubSpot 'phone' property — visitors
+       supply it at Step 8 alongside name + email. Empty string
+       when they declined to share it; HubSpot accepts empty
+       strings as "no value", not as an error. */
+    phone: record.phone || '',
     company: record.company || '',
     jobtitle: record.role || '',
     hs_lead_status: 'NEW',

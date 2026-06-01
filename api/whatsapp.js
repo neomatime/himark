@@ -152,11 +152,11 @@ function parseBlock(text, regex, fields){
 
 function extractLead(text){
   return parseBlock(text, LEAD_RE,
-    ['name', 'email', 'company', 'role', 'brief', 'tier', 'timeline', 'budget']);
+    ['name', 'email', 'phone', 'company', 'role', 'brief', 'tier', 'timeline', 'budget']);
 }
 function extractSession(text){
   return parseBlock(text, SESSION_RE,
-    ['name', 'email', 'company', 'role', 'brief', 'window', 'format']);
+    ['name', 'email', 'phone', 'company', 'role', 'brief', 'window', 'format']);
 }
 function stripBlocks(text){
   if (!text || typeof text !== 'string') return text;
@@ -221,7 +221,17 @@ async function pushToHubSpot(record, kind, fromPhone){
     jobtitle: record.role || '',
     /* Stamp the WhatsApp number on the contact so the team can
        reply on the same channel the visitor used. */
-    phone: fromPhone ? ('+' + String(fromPhone).replace(/^\+/, '')) : '',
+    /* Phone preference order:
+       1. record.phone — what Atlas captured at Step 8 (visitor's
+          explicit answer; could be a different line e.g. a desk
+          phone vs the WhatsApp number they messaged from)
+       2. fromPhone — the WhatsApp sender's number (always
+          present when handler is called from WhatsApp webhook)
+       The explicit Atlas-captured number wins when both exist
+       so principals can call the line the visitor actually
+       wants to be reached on. */
+    phone: (record.phone && String(record.phone).trim())
+           || (fromPhone ? ('+' + String(fromPhone).replace(/^\+/, '')) : ''),
     hs_lead_status: 'NEW',
     lifecyclestage: 'lead',
     himark_brief:    record.brief    || '',

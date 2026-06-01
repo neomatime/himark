@@ -368,7 +368,7 @@ module.exports = async (req, res) => {
   if (!apiKey) {
     res.statusCode = 200;
     return res.end(JSON.stringify({
-      reply: "Atlas is being configured. In the meantime you can reach us directly at info@himark.co.za or via the Intake form at /apply.html."
+      reply: "Atlas is being configured. In the meantime you can reach us directly at info@himark.co.za, or message us on WhatsApp via the contact page."
     }));
   }
 

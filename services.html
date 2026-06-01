@@ -1223,6 +1223,58 @@
     filter: saturate(.88) contrast(1.04);
   }
 
+  /* ── DISCOVERABILITY HINT ─────────────────────────────────
+     Sits between the scroller and the nav controls. Two faint
+     arrows with "Swipe or scroll" copy in the middle, ocean
+     accent. Pulses gently to draw the eye until the user first
+     interacts with the scroller — then fades out via
+     .svc-cats-hint-fade. */
+  .svc-cats-hint{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 18px 24px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--ocean);
+    background: var(--off);
+    transition: opacity .5s ease, transform .5s ease;
+  }
+  .svc-cats-hint-arrow{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    opacity: .6;
+    animation: svc-hint-pulse 2.4s ease-in-out infinite;
+  }
+  .svc-cats-hint-arrow-r{ animation-delay: 1.2s; }
+  @keyframes svc-hint-pulse{
+    0%, 100% { opacity: .35; transform: translateX(0); }
+    50%      { opacity: .95; transform: translateX(4px); }
+  }
+  .svc-cats-hint-arrow:not(.svc-cats-hint-arrow-r){
+    /* The LEFT arrow pulses toward the LEFT */
+    animation-name: svc-hint-pulse-l;
+  }
+  @keyframes svc-hint-pulse-l{
+    0%, 100% { opacity: .35; transform: translateX(0); }
+    50%      { opacity: .95; transform: translateX(-4px); }
+  }
+  .svc-cats-hint-fade{
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .svc-cats-hint-arrow{ animation: none !important; }
+  }
+  @media (max-width: 640px){
+    .svc-cats-hint{ font-size: 9px; padding: 14px 16px 6px; gap: 10px; }
+    .svc-cats-hint-text{ max-width: 200px; }
+  }
+
   /* ── NAVIGATION CONTROLS — dots + counter + arrows ──────── */
   .svc-cats-controls{
     display: flex;
@@ -1630,6 +1682,17 @@
 
 <!-- Navigation: prev/next arrows, 6 dots, counter. Wired by IIFE
      at the bottom of the page. -->
+<!-- Discoverability hint shown by default, auto-fades on first
+     interaction (.svc-cats-hint-fade added by the IIFE when the
+     scroller fires its first scroll event). Tells visitors the
+     section extends sideways since horizontal scroll isn't the
+     web's default expectation. -->
+<div class="svc-cats-hint" id="svcCatsHint" aria-hidden="true">
+<span class="svc-cats-hint-arrow">←</span>
+<span class="svc-cats-hint-text">Swipe or scroll through six services</span>
+<span class="svc-cats-hint-arrow svc-cats-hint-arrow-r">→</span>
+</div>
+
 <nav class="svc-cats-controls" aria-label="Service categories navigation">
 <button type="button" class="svc-cats-arrow" data-svc-dir="prev" aria-label="Previous service">←</button>
 <div class="svc-cats-dots" role="tablist" aria-label="Service category indicator">
@@ -1939,13 +2002,51 @@
   /* Sync state when the user swipes/scrolls manually. Debounce
      so we update once the scroll settles, not on every pixel. */
   var scrollTimer;
+  var hasInteracted = false;
   scroller.addEventListener('scroll', function(){
+    if (!hasInteracted) {
+      hasInteracted = true;
+      var hintEl = document.getElementById('svcCatsHint');
+      if (hintEl) hintEl.classList.add('svc-cats-hint-fade');
+    }
     clearTimeout(scrollTimer);
     scrollTimer = setTimeout(function(){
       var idx = Math.round(scroller.scrollLeft / scroller.clientWidth);
       if (idx !== current) update(idx);
     }, 90);
   });
+
+  /* Discoverability nudge — when the scroller first enters the
+     viewport (only fires once via the IO unobserve), do a brief
+     2-step animation: scroll right ~90px, hold, scroll back. The
+     motion telegraphs "I scroll horizontally" without any
+     permanent UI clutter. Respects reduced-motion. */
+  var nudged = false;
+  function nudge(){
+    if (nudged) return;
+    nudged = true;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    setTimeout(function(){
+      scroller.scrollTo({ left: 90, behavior: 'smooth' });
+      setTimeout(function(){
+        scroller.scrollTo({ left: 0, behavior: 'smooth' });
+      }, 650);
+    }, 1200);
+  }
+  if ('IntersectionObserver' in window) {
+    var nudgeIO = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting && !nudged) {
+          nudge();
+          nudgeIO.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    nudgeIO.observe(scroller);
+  } else {
+    /* No IntersectionObserver → just fire on a delay */
+    nudge();
+  }
 
   /* Arrow-key nav when the scroller (or any focused element inside
      it) is the active region. Avoids hijacking arrow keys when the

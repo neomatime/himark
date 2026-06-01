@@ -840,6 +840,22 @@
 <button class="cb-btn cb-btn-primary" id="cb-accept">Accept All</button>
 </div>
 </aside>
+<!-- Atlas-only intake — the manual submission form was retired
+     2026-05-30 per the §1A "Atlas IS the application channel"
+     direction. The form HTML below (#ap-form, #ap-form-section)
+     stays in the file as dead markup hidden by the page-scoped
+     rule below so that the change is reversible by removing one
+     style block. The s-num-bar between ap-atlas and ap-form is
+     also hidden so the page reads as a single Atlas-launcher
+     landing. -->
+<style>
+  #page-intake #ap-form,
+  #page-intake #ap-form-section,
+  #page-intake .s-num-bar:has(+ section#ap-form){
+    display: none !important;
+  }
+</style>
+
 <div class="page" id="page-intake">
 <div style="padding-top:0">
 <section class="np-hero">
@@ -870,9 +886,9 @@
 <span class="ap-atlas-coord-tr">BEGIN · CONVERSATION</span>
 <div class="ap-atlas-inner">
 <div class="ap-atlas-text">
-<p class="ap-atlas-eyebrow">Before the form</p>
-<h2 class="ap-atlas-hl">Begin with<span>a conversation.</span></h2>
-<p class="ap-atlas-body">Atlas — HIMARK's principal-trained assistant — knows the firm intimately. Five minutes here often saves twenty in the form, and gives you a clearer picture of fit before you commit to the formal application.</p>
+<p class="ap-atlas-eyebrow">Engagement applications</p>
+<h2 class="ap-atlas-hl">Applications run<span>through Atlas.</span></h2>
+<p class="ap-atlas-body">HIMARK doesn't operate a submission form. Atlas — the firm's principal-trained assistant — handles the qualifying conversation directly, captures the fields a principal would otherwise read off a form, and routes the brief to the right partner. A principal follows up within five working days of every conversation.</p>
 <ul class="ap-atlas-points">
 <li><span class="ap-atlas-arrow">→</span>Immediate clarity on tier alignment</li>
 <li><span class="ap-atlas-arrow">→</span>Most pricing and timing questions answered live</li>
@@ -881,10 +897,9 @@
 <div class="ap-atlas-ctas">
 <button class="ap-atlas-cta" id="ap-launch-atlas" type="button">
 <span class="ap-atlas-cta-dot"></span>
-<span class="ap-atlas-cta-label">Talk to Atlas</span>
+<span class="ap-atlas-cta-label">Begin with Atlas</span>
 <span class="ap-atlas-cta-arrow">↗</span>
 </button>
-<a class="ap-atlas-skip" href="#ap-form">Skip to the form <span>↓</span></a>
 </div>
 </div>
 <!-- Demo panel — visually mirrors the real Atlas chat window
@@ -2048,6 +2063,30 @@ body.bm-open{overflow:hidden;}
       submitBtn.querySelector('.bm-submit-l').textContent = origLabel;
     });
   });
+})();
+</script>
+
+<script>
+/* Auto-launch Atlas on /apply.html. Since the form is retired and
+   Atlas is the only application channel, every visitor who lands
+   on this page should be greeted with the chat panel already
+   opening — no extra click required. A brief delay lets the
+   widget mount + the visitor register the page hero, then we
+   programmatically click the "Begin with Atlas" CTA (which calls
+   the same code path as a manual click). */
+(function(){
+  /* Honour reduced-motion / accessibility: still auto-fire, but
+     visitor can dismiss the chat freely. The motion preference
+     doesn't suppress the action, only any incidental animation. */
+  function fire(){
+    var btn = document.getElementById('ap-launch-atlas');
+    if (btn) btn.click();
+  }
+  if (document.readyState === 'complete') {
+    setTimeout(fire, 1600);
+  } else {
+    window.addEventListener('load', function(){ setTimeout(fire, 1600); });
+  }
 })();
 </script>
 

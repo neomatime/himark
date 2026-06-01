@@ -57,11 +57,26 @@ module.exports = async (req, res) => {
         },
         body: JSON.stringify({
           text: text,
-          model_id: 'eleven_turbo_v2_5',
+          /* eleven_multilingual_v2 over turbo_v2_5: ~300ms slower
+             per turn but dramatically more natural prosody —
+             real pauses, breath, conversational lilt. Worth it
+             for a voice receptionist that's meant to feel human. */
+          model_id: 'eleven_multilingual_v2',
           voice_settings: {
-            stability: 0.55,
-            similarity_boost: 0.78,
-            style: 0.18,
+            /* Lower stability = more emotional variation between
+               sentences. 0.35 sits in ElevenLabs' "expressive"
+               zone without flipping into the "unstable / drifting"
+               zone (<0.20). */
+            stability: 0.35,
+            /* Slight loosening from 0.78 → 0.72 lets the model
+               wander a touch more for prosody without losing
+               George's voice character. */
+            similarity_boost: 0.72,
+            /* Style is the single biggest natural-vs-robotic
+               lever. 0.18 → 0.55 unlocks emphasis, lilt, and
+               conversational rhythm. Higher than 0.7 starts
+               sounding theatrical for our use case. */
+            style: 0.55,
             use_speaker_boost: true
           }
         })

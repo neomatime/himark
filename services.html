@@ -1177,10 +1177,15 @@
     max-width: 580px;
   }
   .svc-cat-name{
-    font-family: 'Roboto', sans-serif;
-    font-weight: 400;
+    /* Match the hero / standalone section's display font + heavy
+       weight. Source Sans 3 at 800 gives the title the same
+       editorial presence as ".svc-standalone-hl" + ".home-hero-hl"
+       — visually it's the masthead-style display setting, not the
+       Roboto Regular body voice the panel used previously. */
+    font-family: var(--f-disp);
+    font-weight: 800;
     font-size: clamp(32px, 4vw, 56px);
-    line-height: 1.08;
+    line-height: 1.05;
     letter-spacing: -.018em;
     color: var(--midnight);
     margin: 0;

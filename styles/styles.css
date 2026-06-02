@@ -4732,15 +4732,70 @@ body::before{
     0 2px 6px -2px rgba(46,74,90,.22);
 }
 
-/* ---- 3. NAV BAR — softer hover pill + ambient lift on scroll ---- */
-/* Desktop nav links currently use border-radius:2px which reads
-   as near-square at typical pill sizes. 6px gives the hover wash
-   a proper rounded-pill silhouette without leaving corporate
-   register. Mobile drawer items are unaffected (different
-   selector in the @media block, deliberately sharp-edged for
-   the drawer pattern). */
-.topnav-list a{
-  border-radius:6px;
+/* ---- 3. NAV BAR — full-height hover blocks + vertical separators
+                       on desktop, ambient lift on scroll ---- */
+/* Desktop pattern: each nav link fills the full 64px nav height
+   so the hover background reads as a solid top-to-bottom block,
+   not a pill floating inside whitespace. Items butt directly
+   together and are separated by 1px ocean-tinted vertical
+   hairlines — newspaper-masthead vocabulary. The hovered item's
+   own left separator hides so the hover block reads clean-edged
+   on both sides.
+
+   Specificity note: the inline <style> block in each HTML file
+   sets `.topnav-list a { padding:10px 14px; border-radius:2px }`
+   with specificity (0,1,1) AFTER styles.css loads. To override
+   those we use `.topnav .topnav-list a` here, specificity (0,2,1),
+   which wins the cascade.
+
+   Mobile drawer pattern (right-edge slide-out) is untouched —
+   wrapped in min-width: 1025px to avoid disturbing the column-
+   flexed mobile menu. */
+@media (min-width: 1025px){
+  .topnav .topnav-list{
+    align-self: stretch;       /* fill the 64px topnav-inner height */
+    align-items: stretch;      /* stretch li's to the ul's full height */
+    gap: 0;                    /* items butt together; separators do the work */
+    height: auto;
+  }
+  .topnav .topnav-list li{
+    display: flex;             /* li stretches to ul height; a fills li */
+  }
+  .topnav .topnav-list a{
+    padding: 0 20px;           /* kill vertical padding — height: 100% does it */
+    height: 100%;              /* fill the li (= nav) height */
+    border-radius: 0;          /* full-bleed block, no rounded pill */
+    position: relative;        /* anchor for the ::before separator */
+  }
+  /* 1px vertical hairline on the LEFT edge of every nav link.
+     The first visible link's hairline is suppressed below. */
+  .topnav .topnav-list a::before{
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 14px;
+    bottom: 14px;
+    width: 1px;
+    background: rgba(95,129,144,.16);
+    pointer-events: none;
+    transition: background-color .2s ease;
+  }
+  /* Suppress the leading hairline on whichever <li> is the first
+     visible link. Two cases:
+       - topnav-close-li is rendered (it's display:none on desktop)
+         → close-li is nth-child(1), first visible link is nth-child(2)
+       - topnav-close-li is absent → first link is :first-child */
+  .topnav .topnav-list li:first-child a::before,
+  .topnav .topnav-list li:nth-child(2) a::before{
+    display: none;
+  }
+  /* When you hover one item, hide the hairline of the IMMEDIATELY
+     FOLLOWING item too — otherwise the separator floats inside the
+     hover block's right edge and reads weird. */
+  .topnav .topnav-list a:hover + li a::before,
+  .topnav .topnav-list a:focus-visible + li a::before{
+    background: transparent;
+  }
 }
 
 /* Sticky nav: animate a subtle drop-shadow in once the page has

@@ -160,7 +160,38 @@ function extractSession(text){
 }
 function stripBlocks(text){
   if (!text || typeof text !== 'string') return text;
-  return text.replace(LEAD_RE, '').replace(SESSION_RE, '').replace(BUTTONS_RE, '').trim();
+  return text.replace(LEAD_RE, '').replace(SESSION_RE, '').replace(BUTTONS_RE, '').replace(FLOW_RE, '').trim();
+}
+
+/* ============================================================
+   WHATSAPP FLOWS — native form capture
+   At Step 8, on WhatsApp, Atlas can emit:
+     <wa-flow>identity</wa-flow>
+   The server replaces the last reply chunk with an interactive
+   Flow message that opens a native WhatsApp form (Full Name /
+   Email / Phone). Visitor fills, submits, the webhook fires an
+   'nfm_reply' event carrying response_json with the 3 fields,
+   which handleMessage coerces into a text input so Atlas's next
+   turn captures them as if typed.
+
+   Requires env var WHATSAPP_FLOW_IDENTITY_ID — the Flow ID from
+   Meta Business Manager (after publishing the Flow JSON). If
+   the env var is missing the marker is stripped and the last
+   chunk is sent as regular text — graceful fallback to the
+   existing text-capture behaviour.
+   ============================================================ */
+const FLOW_RE = /<wa-flow>\s*([a-z_-]+)\s*<\/wa-flow>/i;
+
+function extractFlow(text){
+  if (!text || typeof text !== 'string') return null;
+  const m = text.match(FLOW_RE);
+  if (!m) return null;
+  return m[1].toLowerCase();
+}
+
+function flowIdFor(flowName){
+  if (flowName === 'identity') return process.env.WHATSAPP_FLOW_IDENTITY_ID || '';
+  return '';
 }
 
 /* ============================================================
@@ -581,13 +612,120 @@ async function sendWhatsAppButtons(to, bodyText, buttonLabels){
   return { sent: true };
 }
 
-/* Orchestrator — sends Atlas's reply with optional buttons.
-   If buttonLabels is empty/null → falls through to the existing
-   plain chunked sender (unchanged behaviour). If buttons are
-   present → sends each chunk except the LAST as plain text, then
-   sends the last chunk as an interactive button message so the
-   buttons sit beneath the final paragraph of the reply. */
-async function sendWhatsAppReply(to, body, buttonLabels){
+/* Flow message — sends an interactive WhatsApp Flow that opens a
+   native form inside WhatsApp. The body is the message body, the
+   button label ("Share details") triggers the Flow UI. Submitting
+   the form fires a webhook with type:'interactive', interactive
+   type 'nfm_reply', and response_json carrying the field values.
+
+   flowToken is an opaque session id we set per-recipient so the
+   submission can be correlated back. For our static (no endpoint)
+   Flow it's just for tracking. Using the recipient phone + a
+   millisecond timestamp gives us uniqueness without state. */
+async function sendWhatsAppFlow(to, bodyText, flowId, options){
+  options = options || {};
+  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
+  const accessToken   = process.env.WHATSAPP_ACCESS_TOKEN;
+  if (!phoneNumberId || !accessToken) {
+    console.error('[wa] missing env for flow send');
+    return { error: 'env-missing' };
+  }
+  if (!flowId) {
+    console.error('[wa] no flow id configured for this flow');
+    return { error: 'no-flow-id' };
+  }
+  const body = String(bodyText || '').slice(0, 1024);
+  const screen = String(options.screen || 'IDENTITY_SCREEN');
+  const cta = String(options.cta || 'Share details').slice(0, 20);
+  const flowToken = String(options.flowToken || (to + '-' + Date.now()));
+  let res;
+  try {
+    res = await fetch(`https://graph.facebook.com/${WA_GRAPH_VERSION}/${phoneNumberId}/messages`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        recipient_type: 'individual',
+        to,
+        type: 'interactive',
+        interactive: {
+          type: 'flow',
+          body: { text: body },
+          action: {
+            name: 'flow',
+            parameters: {
+              flow_message_version: '3',
+              flow_token: flowToken,
+              flow_id: flowId,
+              flow_cta: cta,
+              flow_action: 'navigate',
+              flow_action_payload: {
+                screen: screen,
+                data: {}
+              }
+            }
+          }
+        }
+      })
+    });
+  } catch (err) {
+    console.error('[wa] flow fetch threw',
+      err && err.message,
+      'cause:', err && err.cause && (err.cause.message || err.cause.code || String(err.cause)));
+    return { error: 'fetch-threw' };
+  }
+  if (!res.ok) {
+    const t = await res.text().catch(() => '');
+    console.error('[wa] flow send failed', res.status, t.slice(0, 400));
+    return { error: 'send-failed', status: res.status };
+  }
+  return { sent: true };
+}
+
+/* Orchestrator — sends Atlas's reply with optional buttons or flow.
+   Precedence:
+     1. flowName (with configured flow id) → last chunk is sent as
+        an interactive Flow message; buttons are ignored if both
+        are emitted (the Flow takes the slot).
+     2. buttonLabels → last chunk sent as interactive button message.
+     3. Neither → all chunks sent as plain text via the chunked
+        sender (unchanged behaviour).
+   Earlier chunks (before the last) always go out as plain text. */
+async function sendWhatsAppReply(to, body, buttonLabels, flowName){
+  /* Flow path takes precedence if requested + configured */
+  if (flowName) {
+    const flowId = flowIdFor(flowName);
+    if (flowId) {
+      const chunks = splitIntoChunks(body);
+      if (chunks.length === 0) return { chunks: 0, error: 'empty-body' };
+      if (chunks.length === 1) {
+        const result = await sendWhatsAppFlow(to, chunks[0], flowId);
+        return { chunks: 1, results: [result], flow: flowName };
+      }
+      const results = [];
+      for (let i = 0; i < chunks.length - 1; i++) {
+        const result = await sendWhatsAppText(to, chunks[i]);
+        results.push(result);
+        if (result && result.error && i === 0) {
+          console.error('[wa] first chunk failed, aborting flow send', chunks.length - 1);
+          return { chunks: chunks.length, results, aborted: true };
+        }
+        await sleep(chunkPauseMs(chunks[i + 1]));
+      }
+      const flowResult = await sendWhatsAppFlow(to, chunks[chunks.length - 1], flowId);
+      results.push(flowResult);
+      return { chunks: chunks.length, results, flow: flowName };
+    } else {
+      /* Marker present but no env var configured → log + fall
+         through to plain text send. Atlas's visible reply still
+         asks for the details in prose, so the conversation
+         degrades gracefully to the existing text-capture path. */
+      console.warn('[wa] flow marker', flowName, 'present but no flow id env var configured — sending as text');
+    }
+  }
   if (!buttonLabels || !buttonLabels.length) {
     return await sendWhatsAppTextChunks(to, body);
   }
@@ -661,12 +799,39 @@ async function handleMessage(message){
     userText = (message.text && message.text.body) || '';
     if (!userText) return;
   } else if (message.type === 'interactive' && message.interactive) {
-    /* Visitor tapped a quick-reply button. WhatsApp delivers the
-       label as interactive.button_reply.title — coerce it back to
-       text so the brain processes it identically to a typed reply. */
+    /* Visitor tapped a quick-reply button OR submitted a Flow form.
+       WhatsApp delivers the payload differently per interactive type
+       — we normalise all three (button_reply, list_reply, nfm_reply)
+       into plain user text so the brain processes them identically
+       to typed input. */
     const br = message.interactive.button_reply;
     const lr = message.interactive.list_reply;
-    if (br && br.title) {
+    const nfm = message.interactive.nfm_reply;
+    if (nfm && nfm.response_json) {
+      /* Flow form submission. response_json is a STRING containing
+         the field values keyed by the names defined in the Flow
+         JSON. Format as a structured text block Atlas can parse
+         naturally on the next turn. */
+      try {
+        const data = JSON.parse(nfm.response_json);
+        const parts = [];
+        if (data.full_name) parts.push('Full name: ' + String(data.full_name).trim());
+        if (data.email)     parts.push('Email: '     + String(data.email).trim());
+        if (data.phone)     parts.push('Phone: '     + String(data.phone).trim());
+        userText = parts.join('\n');
+        if (!userText) userText = '[empty form submission]';
+        console.log('[wa] flow submission inbound', {
+          from,
+          fields: Object.keys(data),
+          hasName: !!data.full_name,
+          hasEmail: !!data.email,
+          hasPhone: !!data.phone
+        });
+      } catch (e) {
+        console.error('[wa] flow response_json parse error', e && e.message);
+        return;
+      }
+    } else if (br && br.title) {
       userText = String(br.title);
       console.log('[wa] button tap inbound', { from, buttonId: br.id, title: br.title });
     } else if (lr && lr.title) {
@@ -737,20 +902,22 @@ async function handleMessage(message){
     console.log('[wa] lead scored', { bucket: scoring.bucket, score: scoring.score });
   }
 
-  /* Extract any quick-reply buttons Atlas chose to attach.
-     The <wa-buttons> marker is already stripped from `visible` by
-     stripBlocks (which strips LEAD_RE, SESSION_RE, and BUTTONS_RE).
-     We re-parse from `raw` to get the labels themselves. */
+  /* Extract any quick-reply buttons OR flow marker Atlas attached.
+     Both markers are already stripped from `visible` by stripBlocks
+     (LEAD_RE, SESSION_RE, BUTTONS_RE, FLOW_RE). We re-parse from
+     `raw` to get the payloads themselves. */
   const buttonLabels = extractButtons(raw);
+  const flowName     = extractFlow(raw);
 
   /* HubSpot push (fire-and-forget) — unchanged in Phase A */
   if (lead)    pushToHubSpot(lead,    'lead',    from).catch(e => console.error('[wa] hubspot lead', e && e.message));
   if (session) pushToHubSpot(session, 'session', from).catch(e => console.error('[wa] hubspot session', e && e.message));
   appendHistory(from, 'assistant', visible);
-  const sendResult = await sendWhatsAppReply(from, visible, buttonLabels);
+  const sendResult = await sendWhatsAppReply(from, visible, buttonLabels, flowName);
   console.log('[wa] reply send result', {
     chunks: sendResult.chunks,
     buttons: sendResult.buttons || 0,
+    flow: sendResult.flow || null,
     aborted: sendResult.aborted || false
   }, 'replyPreview:', visible.slice(0, 100));
 }

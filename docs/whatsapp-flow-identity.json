@@ -1,0 +1,70 @@
+{
+  "version": "5.0",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "IDENTITY_SCREEN": []
+  },
+  "screens": [
+    {
+      "id": "IDENTITY_SCREEN",
+      "title": "Your details",
+      "terminal": true,
+      "success": true,
+      "data": {},
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextHeading",
+            "text": "Almost there"
+          },
+          {
+            "type": "TextBody",
+            "text": "Share your details and a principal will follow up directly within five working days."
+          },
+          {
+            "type": "Form",
+            "name": "identity_form",
+            "children": [
+              {
+                "type": "TextInput",
+                "name": "full_name",
+                "label": "Full name",
+                "required": true,
+                "input-type": "text",
+                "helper-text": "First and last name"
+              },
+              {
+                "type": "TextInput",
+                "name": "email",
+                "label": "Email address",
+                "required": true,
+                "input-type": "email"
+              },
+              {
+                "type": "TextInput",
+                "name": "phone",
+                "label": "Contact number",
+                "required": false,
+                "input-type": "phone",
+                "helper-text": "Optional — a principal can call this line"
+              },
+              {
+                "type": "Footer",
+                "label": "Submit",
+                "on-click-action": {
+                  "name": "complete",
+                  "payload": {
+                    "full_name": "${form.full_name}",
+                    "email": "${form.email}",
+                    "phone": "${form.phone}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

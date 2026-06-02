@@ -57,8 +57,9 @@
               {
                 "type": "Dropdown",
                 "name": "session_time",
-                "label": "Preferred time (SAST)",
+                "label": "Preferred time",
                 "required": true,
+                "helper-text": "SAST (UTC+2)",
                 "data-source": [
                   { "id": "0900", "title": "09:00" },
                   { "id": "0930", "title": "09:30" },

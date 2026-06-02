@@ -1,0 +1,12 @@
+{
+  "name": "himark-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "HIMARK strategic growth consultancy website + Atlas backend (Vercel serverless).",
+  "engines": {
+    "node": "20.x"
+  },
+  "dependencies": {
+    "pdf-lib": "^1.17.1"
+  }
+}

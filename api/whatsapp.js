@@ -51,6 +51,7 @@
 
 const SYSTEM_PROMPT = require('./atlas-knowledge');
 const { scoreLead, BUCKET_CLOSING_LINES, DEFAULT_SUBSTITUTION_TARGET, BUCKET_STANDARD } = require('./scoring');
+const { emailApplication } = require('../lib/mail-application');
 
 const GEMINI_MODEL = 'gemini-flash-lite-latest';
 /* Audio turns need the FULL Flash variant — gemini-flash-lite-latest is
@@ -954,6 +955,11 @@ async function handleMessage(message){
   /* HubSpot push (fire-and-forget) — unchanged in Phase A */
   if (lead)    pushToHubSpot(lead,    'lead',    from).catch(e => console.error('[wa] hubspot lead', e && e.message));
   if (session) pushToHubSpot(session, 'session', from).catch(e => console.error('[wa] hubspot session', e && e.message));
+  /* Application PDF email to apply@himark.co.za via Resend. Mirrors
+     api/chat.js — fires only on full LeadSense leads (NOT session
+     bookings), and only if RESEND_API_KEY is set. Fire-and-forget so
+     the reply to the visitor is never delayed by mail delivery. */
+  if (lead)    emailApplication(lead, scoring, 'atlas-whatsapp').catch(e => console.error('[wa] email lead', e && e.message));
   appendHistory(from, 'assistant', visible);
   const sendResult = await sendWhatsAppReply(from, visible, buttonLabels, flowName);
   console.log('[wa] reply send result', {

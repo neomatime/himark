@@ -49,6 +49,7 @@ function splitIntoChunks(text){
    content. */
 const SYSTEM_PROMPT = require('./atlas-knowledge');
 const { scoreLead, BUCKET_CLOSING_LINES, DEFAULT_SUBSTITUTION_TARGET, BUCKET_STANDARD } = require('./scoring');
+const { emailApplication } = require('../lib/mail-application');
 
 /* ============================================================
    LEAD + SESSION EXTRACTION
@@ -516,9 +517,18 @@ module.exports = async (req, res) => {
 
     if (lead) {
       pushToHubSpot(lead, 'lead').catch(e => console.error('[atlas] hubspot push exception (lead)', e && e.message));
+      /* Send a PDF summary of the application to apply@himark.co.za
+         via Resend. Fire-and-forget — the visitor-facing reply is
+         already being assembled below and must not be delayed by
+         mail delivery latency. If RESEND_API_KEY is missing the
+         module logs and returns gracefully; nothing breaks. */
+      emailApplication(lead, scoring, 'atlas-chat').catch(e => console.error('[atlas] email exception (lead)', e && e.message));
     }
     if (session) {
       pushToHubSpot(session, 'session').catch(e => console.error('[atlas] hubspot push exception (session)', e && e.message));
+      /* Session bookings do NOT trigger the application PDF email —
+         scoped out by the user; sessions go through a separate
+         confirmation path that's TBD. HubSpot push still fires. */
     }
 
     const finalReply = visibleReply || "I'm not able to respond on that just now. Please reach us at info@himark.co.za.";

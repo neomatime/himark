@@ -4758,7 +4758,13 @@ body::before{
     gap: 0;                    /* items butt together; separators do the work */
     height: auto;
   }
-  .topnav .topnav-list li{
+  /* :not(.topnav-close-li) — the close-button li only exists in
+     the mobile drawer markup. It's hidden by default via the inline
+     `.topnav-close-li { display:none }` rule, but our (0,2,1)
+     selector here would override that (0,1,0) default and unhide
+     the X on desktop. Excluding it keeps the inline default
+     winning. */
+  .topnav .topnav-list li:not(.topnav-close-li){
     display: flex;             /* li stretches to ul height; a fills li */
   }
   .topnav .topnav-list a{

@@ -4627,3 +4627,145 @@ textarea:focus-visible,
   /* Cursor ghost trail makes no sense without a hover pointer */
   #ghost-trail{ display:none !important; }
 }
+
+/* ====================================================================
+   PREMIUM REFINEMENT — silica grain texture + restrained soft corners
+                       + ambient depth on nav and primary buttons
+   ====================================================================
+   Pass added to lift the site from "flat web" toward "printed luxury
+   collateral". Three coordinated layers:
+
+   1. SILICA GRAIN
+      A whisper-quiet noise overlay (SVG fractalNoise → opacity .045)
+      pinned to fixed-positioned body::before. The grain reads as
+      paper texture under direct light without ever announcing
+      itself; you feel it more than you see it. Standard trick on
+      McKinsey, Cartier, Aman, etc. — premium-corporate vocabulary.
+
+   2. SOFT CORNERS — restrained
+      Bumped sharp 0px corners on the primary button class + nav
+      list links to 4–6px. Far enough from sharp to read as
+      considered; nowhere near consumer-app rounded. Pairs with
+      the existing mono uppercase labels for a letterpress-card
+      feel.
+
+   3. AMBIENT DEPTH
+      Soft layered ocean-tinted shadows on .btn-dk hover and on
+      .topnav once the page has scrolled (.light-nav state). Lifts
+      both elements off the page surface without resorting to glow
+      or glass. Shadows use brand colours at low opacity so they
+      read as "considered", not generic Material/Bootstrap.
+
+   Targets are deliberately narrow: buttons + nav only, plus the
+   body texture layer. Cards, sections, and editorial surfaces
+   keep their existing sharp aesthetic — bumping radii everywhere
+   would dilute the brand. ==================================== */
+
+/* ---- 1. SILICA GRAIN ---- */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  /* z-index sits above the body background but below all named UI
+     layers (nav z:100, modal z:99990, cursor z:2147483646+). The
+     grain renders as a film over content; content remains
+     interactive because pointer-events:none. */
+  z-index:1;
+  opacity:.045;
+  /* SVG fractalNoise inlined as a data URI — no extra HTTP request,
+     no font/asset loading delay. Tile size 240px so the pattern
+     doesn't visibly repeat at typical viewports. baseFrequency
+     .85 gives a fine silica grain (not the coarse linen you'd
+     get at .35 — that would feel rustic, wrong register).
+     feColorMatrix collapses RGB to a single alpha-modulated black
+     channel so the grain reads identically on dark and light
+     surfaces. */
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@media (prefers-reduced-motion: reduce){
+  /* Some users describe SVG grain as visually noisy. Reduced-motion
+     preference also implies reduced visual chrome, so we honour it
+     by removing the texture entirely. */
+  body::before{display:none;}
+}
+
+/* ---- 2. SOFT CORNERS — primary buttons + intake submit ---- */
+.btn{
+  border-radius:4px;
+}
+.btn-dk{
+  /* Inset top highlight: a 1px white line at the very top edge,
+     ~6% opacity. Almost imperceptible until removed — adds the
+     "this button is a physical object catching light" cue from
+     premium product UI. */
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+}
+.btn-dk:hover{
+  /* Ambient lift on hover: two layered ocean-tinted shadows (one
+     soft and far, one tight and close) plus the inset highlight
+     carried over. Reads as elevation, not as a generic Material
+     box-shadow. */
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.10),
+    0 8px 22px -6px rgba(46,74,90,.36),
+    0 2px 6px -2px rgba(46,74,90,.22);
+}
+.btn-lt:hover{
+  /* Light/ghost border variant gets a matching lift with cooler
+     midnight-toned shadows so it pairs visually with .btn-dk. */
+  box-shadow:
+    0 8px 22px -6px rgba(28,43,58,.22),
+    0 2px 6px -2px rgba(28,43,58,.12);
+}
+
+/* Intake form submit shares button DNA but its own class — keep
+   it cohesive. */
+.itk-submit{
+  border-radius:4px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+}
+.itk-submit:hover{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.10),
+    0 8px 22px -6px rgba(46,74,90,.36),
+    0 2px 6px -2px rgba(46,74,90,.22);
+}
+
+/* ---- 3. NAV BAR — softer hover pill + ambient lift on scroll ---- */
+/* Desktop nav links currently use border-radius:2px which reads
+   as near-square at typical pill sizes. 6px gives the hover wash
+   a proper rounded-pill silhouette without leaving corporate
+   register. Mobile drawer items are unaffected (different
+   selector in the @media block, deliberately sharp-edged for
+   the drawer pattern). */
+.topnav-list a{
+  border-radius:6px;
+}
+
+/* Sticky nav: animate a subtle drop-shadow in once the page has
+   scrolled past the hero (.light-nav is toggled by the existing
+   updBodyTheme scroll handler in main.js). The unscrolled state
+   stays flat — the nav lives on the page; the scrolled state
+   lifts it as a fixed UI layer above content. Mirrors how a
+   broadsheet masthead reads when the reader is mid-page. */
+.topnav{
+  transition:box-shadow .3s var(--ease), border-color .3s var(--ease);
+}
+body.light-nav .topnav{
+  box-shadow:
+    0 6px 24px -10px rgba(28,43,58,.18),
+    0 2px 6px -2px rgba(28,43,58,.06);
+  border-bottom-color:rgba(95,129,144,.10);
+}
+
+/* ---- 4. TYPOGRAPHIC POLISH ---- */
+/* Compound legibility settings. None of these alone are visible;
+   together they tighten the body text into a "set-in-print" finish.
+   Kerning + standard ligatures + contextual alternates on. */
+html{
+  text-rendering:optimizeLegibility;
+  font-feature-settings:'kern' 1, 'liga' 1, 'calt' 1;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}

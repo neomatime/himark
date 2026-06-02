@@ -1,5 +1,5 @@
 {
-  "version": "5.0",
+  "version": "7.3",
   "data_api_version": "3.0",
   "routing_model": {
     "IDENTITY_SCREEN": []
@@ -9,8 +9,6 @@
       "id": "IDENTITY_SCREEN",
       "title": "Your details",
       "terminal": true,
-      "success": true,
-      "data": {},
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
@@ -24,7 +22,7 @@
           },
           {
             "type": "Form",
-            "name": "identity_form",
+            "name": "form",
             "children": [
               {
                 "type": "TextInput",
@@ -47,21 +45,21 @@
                 "label": "Contact number",
                 "required": false,
                 "input-type": "phone",
-                "helper-text": "Optional — a principal can call this line"
-              },
-              {
-                "type": "Footer",
-                "label": "Submit",
-                "on-click-action": {
-                  "name": "complete",
-                  "payload": {
-                    "full_name": "${form.full_name}",
-                    "email": "${form.email}",
-                    "phone": "${form.phone}"
-                  }
-                }
+                "helper-text": "Optional - a principal can call this line"
               }
             ]
+          },
+          {
+            "type": "Footer",
+            "label": "Submit",
+            "on-click-action": {
+              "name": "complete",
+              "payload": {
+                "full_name": "${form.full_name}",
+                "email": "${form.email}",
+                "phone": "${form.phone}"
+              }
+            }
           }
         ]
       }

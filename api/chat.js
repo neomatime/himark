@@ -58,9 +58,16 @@ const { scoreLead, BUCKET_CLOSING_LINES, DEFAULT_SUBSTITUTION_TARGET, BUCKET_STA
    We pull whichever is present, strip it from the visitor-facing
    reply, and forward to HubSpot with a tag indicating which path.
    ============================================================ */
-const LEAD_RE    = /<lead>\s*([\s\S]*?)\s*<\/lead>/i;
-const SESSION_RE = /<session>\s*([\s\S]*?)\s*<\/session>/i;
-const BUTTONS_RE = /<wa-buttons>\s*([\s\S]*?)\s*<\/wa-buttons>/i;
+const LEAD_RE     = /<lead>\s*([\s\S]*?)\s*<\/lead>/i;
+const SESSION_RE  = /<session>\s*([\s\S]*?)\s*<\/session>/i;
+const BUTTONS_RE  = /<wa-buttons>\s*([\s\S]*?)\s*<\/wa-buttons>/i;
+/* WEB_FORM_RE — Atlas may emit <web-form>identity</web-form> or
+   <web-form>session</web-form> at the END of a reply to surface an
+   inline form card in the web widget. Parallel to <wa-flow> on
+   WhatsApp; the widget renders fields, the visitor submits, the
+   submission text comes back as the next user turn (just like the
+   WhatsApp nfm_reply). */
+const WEB_FORM_RE = /<web-form>\s*([\w-]+)\s*<\/web-form>/i;
 
 function parseBlock(text, regex, fields){
   if (!text || typeof text !== 'string') return null;
@@ -94,7 +101,26 @@ function extractSession(text){
 
 function stripLeadBlock(text){
   if (!text || typeof text !== 'string') return text;
-  return text.replace(LEAD_RE, '').replace(SESSION_RE, '').replace(BUTTONS_RE, '').trim();
+  return text
+    .replace(LEAD_RE, '')
+    .replace(SESSION_RE, '')
+    .replace(BUTTONS_RE, '')
+    .replace(WEB_FORM_RE, '')
+    .trim();
+}
+
+/* extractWebForm — pull the form id ('identity' | 'session') out of
+   Atlas's reply so the widget can render the corresponding inline
+   form card. Returns null if the marker isn't present or the id
+   isn't one of the two we know about. Unknown ids are dropped
+   defensively so a typo in Atlas's reply can't crash the widget. */
+function extractWebForm(text){
+  if (!text || typeof text !== 'string') return null;
+  const m = text.match(WEB_FORM_RE);
+  if (!m) return null;
+  const id = (m[1] || '').trim().toLowerCase();
+  if (id !== 'identity' && id !== 'session') return null;
+  return id;
 }
 
 /* Quick-reply buttons — Atlas can append <wa-buttons>Label one | Label
@@ -508,12 +534,19 @@ module.exports = async (req, res) => {
     /* Quick-reply button labels Atlas chose to attach.
        In voice mode we explicitly suppress buttons — the visitor is
        on a phone call and can't tap chips while speaking. */
-    const buttons = (mode === 'voice') ? null : extractButtons(rawReply);
+    let buttons = (mode === 'voice') ? null : extractButtons(rawReply);
+    /* Inline form card — identity or session capture. Voice mode
+       suppresses forms (visitor can't fill fields mid-call); when a
+       form is present we also suppress quick-reply buttons so only
+       one inline UI competes for the visitor's attention at a time. */
+    const form = (mode === 'voice') ? null : extractWebForm(rawReply);
+    if (form) buttons = null;
     res.statusCode = 200;
     return res.end(JSON.stringify({
       reply: finalReply,
       chunks: finalChunks,
       buttons: buttons,
+      form: form,
       leadCaptured: !!lead,
       sessionBooked: !!session
     }));

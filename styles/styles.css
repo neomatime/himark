@@ -3981,6 +3981,192 @@ body.auth-mode #cookies-banner{
   .msg-actions,.msg-actions-fade{animation:none;transition:none;opacity:1;transform:none;}
   .msg-action-btn{transition:none;}
 }
+
+/* INLINE FORM CARD — identity (Step 8) or session-booking capture.
+   Renders as a single full-width card inside the chat-msgs list,
+   between Atlas's last bubble and his next reply. Visual language
+   mirrors the chat bubble (dark translucent surface, ocean
+   accents, mono labels) so it reads as part of the conversation,
+   not a popup. Field controls are the native inputs so iOS / Android
+   surface their proper keyboards (email keyboard for email, numeric
+   keypad for phone, date wheel for date, etc.) — accessibility +
+   mobile UX wins without writing custom widgets. */
+.msg-form{
+  align-self:stretch;
+  width:100%;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:14px;
+  border-top-left-radius:4px;
+  padding:14px 14px 12px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  opacity:0;
+  transform:translateY(6px);
+  animation:msg-actions-in 320ms ease forwards 80ms;
+}
+.msg-form-h{
+  font-family:var(--f-mono);
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--ocean-lt);
+}
+.msg-form-sub{
+  font-family:var(--f-body);
+  font-size:12px;
+  font-weight:300;
+  color:rgba(247,247,245,.65);
+  margin:0 0 4px;
+  line-height:1.5;
+}
+.msg-form-row{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+.msg-form-l{
+  font-family:var(--f-mono);
+  font-size:9px;
+  font-weight:500;
+  letter-spacing:.10em;
+  text-transform:uppercase;
+  color:rgba(247,247,245,.62);
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
+.msg-form-req{
+  color:#ef9b8a;
+  font-size:11px;
+  line-height:1;
+  font-family:var(--f-body);
+}
+.msg-form-input,
+.msg-form-select{
+  font-family:var(--f-body);
+  font-size:13px;
+  font-weight:300;
+  color:var(--off);
+  background:rgba(0,0,0,.22);
+  border:1px solid rgba(255,255,255,.12);
+  padding:9px 11px;
+  border-radius:8px;
+  outline:none;
+  width:100%;
+  box-sizing:border-box;
+  cursor:none;
+  transition:border-color .15s ease, background .15s ease;
+  -webkit-appearance:none;
+  appearance:none;
+}
+.msg-form-select{
+  /* Chevron rendered inline via SVG so the native select arrow style
+     stays consistent across platforms without an extra image asset. */
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%238AADB8'><path d='M3.5 6 8 10.5 12.5 6z'/></svg>");
+  background-repeat:no-repeat;
+  background-position:right 10px center;
+  background-size:14px 14px;
+  padding-right:32px;
+}
+.msg-form-input:focus,
+.msg-form-select:focus{
+  border-color:var(--ocean-lt);
+  background-color:rgba(0,0,0,.30);
+}
+.msg-form-input::placeholder{
+  color:rgba(247,247,245,.32);
+}
+/* iOS Safari ignores ::placeholder on type=date when there's no value.
+   This combo plus the min/max attrs gives the field a usable greyed
+   look when empty. */
+.msg-form-input[type="date"]{
+  color-scheme:dark;
+}
+.msg-form-help{
+  font-family:var(--f-body);
+  font-size:11px;
+  color:rgba(247,247,245,.45);
+  font-weight:300;
+  line-height:1.4;
+}
+.msg-form-radio{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  padding:2px 0;
+}
+.msg-form-radio-opt{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-family:var(--f-body);
+  font-size:13px;
+  font-weight:300;
+  color:var(--off);
+  cursor:pointer;
+  padding:4px 0;
+}
+.msg-form-radio-opt input[type="radio"]{
+  accent-color:var(--ocean-lt);
+  margin:0;
+  cursor:pointer;
+  width:16px;
+  height:16px;
+  flex-shrink:0;
+}
+.msg-form-err{
+  font-family:var(--f-body);
+  font-size:12px;
+  color:#ef9b8a;
+  min-height:0;
+  line-height:1.4;
+}
+.msg-form-err:empty{
+  display:none;
+}
+.msg-form-submit{
+  margin-top:4px;
+  font-family:var(--f-mono);
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--off);
+  background:var(--ocean);
+  border:1px solid var(--ocean);
+  padding:11px 16px;
+  border-radius:10px;
+  cursor:pointer;
+  transition:background .2s ease, border-color .2s ease, transform .15s ease;
+}
+.msg-form-submit:hover,
+.msg-form-submit:focus-visible{
+  background:var(--ocean-lt);
+  border-color:var(--ocean-lt);
+  outline:none;
+  transform:translateY(-1px);
+}
+.msg-form-submit:disabled{
+  opacity:.45;
+  cursor:default;
+  transform:none;
+  background:var(--ocean-dk);
+  border-color:var(--ocean-dk);
+}
+.msg-form-submitted{
+  opacity:0;
+  transform:translateY(-4px);
+  transition:opacity 280ms ease, transform 280ms ease;
+  pointer-events:none;
+}
+@media (prefers-reduced-motion: reduce){
+  .msg-form{animation:none;opacity:1;transform:none;}
+  .msg-form-submitted{transition:none;}
+  .msg-form-input,.msg-form-select,.msg-form-submit{transition:none;}
+}
 .typing-i{align-self:flex-start;}
 .typ-d{display:flex;gap:3px;padding:12px 14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);border-radius:14px;border-top-left-radius:4px;width:fit-content;}
 .typ-d span{width:4px;height:4px;background:var(--ocean);border-radius:50%;animation:tb 1.2s ease-in-out infinite;}

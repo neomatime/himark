@@ -364,6 +364,273 @@ try{
   }
   function rmT(){ const e=document.getElementById('ti'); if(e)e.remove(); }
 
+  /* ============================================================
+     INLINE FORM CARD — identity / session capture
+     ============================================================
+     Renders a chat-bubble-style form inside the message list when
+     Atlas emits a <web-form>identity</web-form> or
+     <web-form>session</web-form> marker. The form fields mirror the
+     WhatsApp Flow JSON so both surfaces capture identical shapes;
+     on submit, the data is formatted as multi-line text in the
+     SAME format the WhatsApp nfm_reply parser emits, then sent
+     through cC() as the visitor's next turn. Atlas reads that text,
+     emits the <lead> / <session> JSON block, and the server pushes
+     to HubSpot just like a typed conversation.
+
+     The form is a single <form> element so the browser handles
+     required-field validation, Enter-to-submit, and tab order for
+     free. On successful submit the form is replaced by the visitor
+     bubble (showing the formatted text they submitted) and the
+     conversation continues — Atlas's reply lands as the next bot
+     bubble through the normal cC() path. */
+  function renderInlineForm(formId){
+    const isSession = (formId === 'session');
+    const form = document.createElement('form');
+    form.className = 'msg-form msg-form-' + formId;
+    form.setAttribute('novalidate', '');         // we run our own validation pass
+    form.setAttribute('aria-label', isSession ? 'Book a strategic advisory session' : 'Share your details');
+
+    /* Heading + lede paragraph mirror the copy on the WhatsApp Flow
+       header so the visitor sees the same framing on both surfaces. */
+    const h = document.createElement('div');
+    h.className = 'msg-form-h';
+    h.textContent = isSession ? 'Book your session' : 'Almost there';
+    form.appendChild(h);
+    const sub = document.createElement('p');
+    sub.className = 'msg-form-sub';
+    sub.textContent = isSession
+      ? 'Pick a preferred date and time. A principal confirms within one working day.'
+      : 'Share your details and a principal will follow up directly.';
+    form.appendChild(sub);
+
+    /* Field factory — produces a label/input row matching the
+       widget aesthetic. Returns the row element AND a getValue()
+       fn so the submit handler can pull values without naming
+       fields twice. */
+    function field(opts){
+      const row = document.createElement('label');
+      row.className = 'msg-form-row';
+      const lbl = document.createElement('span');
+      lbl.className = 'msg-form-l';
+      lbl.textContent = opts.label;
+      if (opts.required){
+        const r = document.createElement('span');
+        r.className = 'msg-form-req';
+        r.textContent = '*';
+        r.setAttribute('aria-hidden', 'true');
+        lbl.appendChild(r);
+      }
+      row.appendChild(lbl);
+      let input;
+      if (opts.type === 'select'){
+        input = document.createElement('select');
+        input.className = 'msg-form-select';
+        const ph = document.createElement('option');
+        ph.value = '';
+        ph.textContent = opts.placeholder || 'Select…';
+        ph.disabled = true;
+        ph.selected = true;
+        input.appendChild(ph);
+        (opts.options || []).forEach(function(o){
+          const op = document.createElement('option');
+          op.value = o.value;
+          op.textContent = o.label;
+          input.appendChild(op);
+        });
+      } else if (opts.type === 'radio'){
+        input = document.createElement('div');
+        input.className = 'msg-form-radio';
+        input.setAttribute('role', 'radiogroup');
+        (opts.options || []).forEach(function(o, i){
+          const rl = document.createElement('label');
+          rl.className = 'msg-form-radio-opt';
+          const r = document.createElement('input');
+          r.type = 'radio';
+          r.name = opts.name;
+          r.value = o.value;
+          if (i === 0 && opts.required) r.required = true;
+          rl.appendChild(r);
+          const t = document.createElement('span');
+          t.textContent = o.label;
+          rl.appendChild(t);
+          input.appendChild(rl);
+        });
+      } else {
+        input = document.createElement('input');
+        input.className = 'msg-form-input';
+        input.type = opts.type || 'text';
+        if (opts.placeholder) input.placeholder = opts.placeholder;
+        if (opts.min) input.min = opts.min;
+        if (opts.autocomplete) input.setAttribute('autocomplete', opts.autocomplete);
+      }
+      if (opts.type !== 'radio'){
+        input.name = opts.name;
+        if (opts.required) input.required = true;
+      }
+      row.appendChild(input);
+      if (opts.helper){
+        const hp = document.createElement('div');
+        hp.className = 'msg-form-help';
+        hp.textContent = opts.helper;
+        row.appendChild(hp);
+      }
+      return row;
+    }
+
+    /* Common identity fields (both forms). */
+    form.appendChild(field({ name:'full_name', label:'Full name', type:'text', required:true, placeholder:'First and last name', autocomplete:'name' }));
+    form.appendChild(field({ name:'email',     label:'Email',     type:'email', required:true, placeholder:'you@company.com', autocomplete:'email' }));
+    form.appendChild(field({ name:'phone',     label:'Phone',     type:'tel',  required:false, placeholder:'Optional', helper:'A principal can call this line', autocomplete:'tel' }));
+
+    /* Session-only fields — date / time / format. */
+    if (isSession){
+      /* min=today as YYYY-MM-DD so the native date picker won't let
+         the visitor pick a past date. Note: the picker accepts
+         keyboard input that bypasses min on some browsers; we
+         double-check in the submit handler. */
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const todayStr = yyyy + '-' + mm + '-' + dd;
+
+      form.appendChild(field({
+        name:'session_date', label:'Preferred date', type:'date',
+        required:true, min: todayStr,
+        helper:'Weekdays · a principal confirms within 1 working day'
+      }));
+      /* SAST business-hour slots — match the WhatsApp Flow dropdown
+         exactly so HubSpot sees identical shapes regardless of
+         channel. Lunchtime 12:00 / 12:30 are skipped. */
+      const TIME_SLOTS = [
+        '09:00','09:30','10:00','10:30','11:00','11:30',
+        '13:00','13:30','14:00','14:30','15:00','15:30',
+        '16:00','16:30'
+      ].map(function(t){ return { value: t, label: t }; });
+      form.appendChild(field({
+        name:'session_time', label:'Preferred time', type:'select',
+        required:true, placeholder:'Select a slot…',
+        options: TIME_SLOTS,
+        helper:'SAST (UTC+2)'
+      }));
+      form.appendChild(field({
+        name:'session_format', label:'Format', type:'radio', required:true,
+        options:[
+          { value:'video',    label:'Video call' },
+          { value:'inperson', label:'In person · Randburg' }
+        ]
+      }));
+    }
+
+    /* Submit button + error region. */
+    const errEl = document.createElement('div');
+    errEl.className = 'msg-form-err';
+    errEl.setAttribute('aria-live', 'polite');
+    form.appendChild(errEl);
+
+    const submit = document.createElement('button');
+    submit.type = 'submit';
+    submit.className = 'msg-form-submit';
+    submit.textContent = isSession ? 'Book session' : 'Submit';
+    form.appendChild(submit);
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      if (busy) return;
+      errEl.textContent = '';
+
+      /* Pull values directly off named fields rather than via FormData
+         so we can validate before formatting (FormData would happily
+         return empty strings). */
+      function val(name){
+        const el = form.querySelector('[name="' + name + '"]');
+        if (!el) return '';
+        if (el instanceof RadioNodeList || el.length){
+          /* radio group — find the checked one */
+          for (let i = 0; i < el.length; i++){
+            if (el[i].checked) return String(el[i].value || '').trim();
+          }
+          return '';
+        }
+        return String(el.value || '').trim();
+      }
+      /* Radios are a NodeList only when there are multiple <input>s
+         with the same name; querySelector returns the first input.
+         Use querySelectorAll explicitly for radios. */
+      function radioVal(name){
+        const radios = form.querySelectorAll('input[type="radio"][name="' + name + '"]');
+        for (let i = 0; i < radios.length; i++){
+          if (radios[i].checked) return String(radios[i].value || '').trim();
+        }
+        return '';
+      }
+
+      const data = {
+        full_name: val('full_name'),
+        email:     val('email'),
+        phone:     val('phone')
+      };
+      if (isSession){
+        data.session_date   = val('session_date');
+        data.session_time   = val('session_time');
+        data.session_format = radioVal('session_format');
+      }
+
+      /* Validation — required fields, email shape, future date. */
+      if (!data.full_name){ errEl.textContent = 'Full name is required.'; return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)){
+        errEl.textContent = 'Please enter a valid email address.';
+        return;
+      }
+      if (isSession){
+        if (!data.session_date){ errEl.textContent = 'Pick a preferred date.'; return; }
+        if (!data.session_time){ errEl.textContent = 'Pick a preferred time.'; return; }
+        if (!data.session_format){ errEl.textContent = 'Pick a format — video or in person.'; return; }
+        /* Guard against keyboard-bypassed min attribute on date input. */
+        const todayMidnight = new Date(); todayMidnight.setHours(0,0,0,0);
+        const picked = new Date(data.session_date + 'T00:00:00');
+        if (isFinite(picked) && picked < todayMidnight){
+          errEl.textContent = 'Pick a date in the future.';
+          return;
+        }
+      }
+
+      /* Format submission text — must match the WhatsApp nfm_reply
+         shape so Atlas's prompt handles both channels identically.
+         See §15 (identity) and §18 (session) of atlas-knowledge.js
+         for the expected layout. */
+      const lines = [];
+      lines.push('Full name: ' + data.full_name);
+      lines.push('Email: ' + data.email);
+      if (data.phone) lines.push('Phone: ' + data.phone);
+      if (isSession){
+        lines.push('Preferred date: ' + data.session_date);
+        lines.push('Preferred time: ' + data.session_time + ' SAST');
+        const fmtLabel = data.session_format === 'video'    ? 'Video call'
+                       : data.session_format === 'inperson' ? 'In person · Randburg'
+                       : data.session_format;
+        lines.push('Format: ' + fmtLabel);
+      }
+      const formattedText = lines.join('\n');
+
+      /* Disable the form (so a second tap can't double-submit) and
+         fade it out. Then push the formatted text into the
+         conversation through the normal user-bubble + cC() path so
+         it goes through HIST and Atlas's reply lands as a normal
+         bot bubble. */
+      submit.disabled = true;
+      submit.textContent = 'Submitted';
+      form.classList.add('msg-form-submitted');
+      form.querySelectorAll('input, select, button').forEach(function(el){ el.disabled = true; });
+      setTimeout(function(){ if (form.parentNode) form.parentNode.removeChild(form); }, 320);
+
+      aM('user', formattedText);
+      cC(formattedText);
+    });
+
+    return form;
+  }
+
   /* Call the chat endpoint. Records turn in HIST so context carries
      across messages within the same page-load (resets on navigation,
      which is the right behaviour for a brief contact-style chat). */
@@ -403,6 +670,22 @@ try{
         rmT();
         aM('bot', chunks[i]);
       }
+      /* Inline form card — Atlas may emit <web-form>identity</web-form>
+         or <web-form>session</web-form> at the END of a reply. The
+         server strips the marker and returns the form id in data.form
+         ('identity' | 'session'); we render an inline form card
+         beneath the last bubble. On submit, the captured fields are
+         formatted as multi-line text matching the WhatsApp Flow
+         submission shape and sent as the visitor's next message —
+         Atlas's next turn closes the conversation and emits the lead
+         / session block for HubSpot. Voice mode receives form:null
+         from the server, so this never runs in a voice call. */
+      const formId = (data && typeof data.form === 'string') ? data.form : null;
+      if (formId && !inVoice) {
+        const formEl = renderInlineForm(formId);
+        cMsgs.appendChild(formEl);
+        cMsgs.scrollTop = cMsgs.scrollHeight;
+      }
       /* Quick-reply buttons — Atlas may attach up to 3 tap-able pill
          labels via the <wa-buttons> marker (extracted server-side,
          arrives here as data.buttons). Render them after the last
@@ -410,7 +693,10 @@ try{
          message. The pill row is removed on tap so the buttons can't
          double-fire and don't linger after the conversation moves on.
          Voice mode receives buttons:null from the server, so this
-         block never runs while the visitor is on a voice call. */
+         block never runs while the visitor is on a voice call. Forms
+         and buttons are mutually exclusive — the server forces
+         buttons:null when a form is present, so this block self-skips
+         when the form card above rendered. */
       const btns = (data && Array.isArray(data.buttons)) ? data.buttons : null;
       if (btns && btns.length && !inVoice) {
         const wrap = document.createElement('div');

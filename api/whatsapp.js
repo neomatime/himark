@@ -191,7 +191,23 @@ function extractFlow(text){
 
 function flowIdFor(flowName){
   if (flowName === 'identity') return process.env.WHATSAPP_FLOW_IDENTITY_ID || '';
+  if (flowName === 'session')  return process.env.WHATSAPP_FLOW_SESSION_ID  || '';
   return '';
+}
+
+/* Each flow uses a different entry screen — keep them named here
+   so sendWhatsAppFlow can look up the right one without callers
+   needing to know the Flow internals. */
+function flowScreenFor(flowName){
+  if (flowName === 'session') return 'SESSION_BOOKING_SCREEN';
+  return 'IDENTITY_SCREEN';
+}
+
+/* CTA label is what visitors see on the Flow trigger button. Keep
+   it short — WhatsApp truncates over 20 chars. */
+function flowCtaFor(flowName){
+  if (flowName === 'session') return 'Book session';
+  return 'Share details';
 }
 
 /* ============================================================
@@ -699,10 +715,14 @@ async function sendWhatsAppReply(to, body, buttonLabels, flowName){
   if (flowName) {
     const flowId = flowIdFor(flowName);
     if (flowId) {
+      const flowOpts = {
+        screen: flowScreenFor(flowName),
+        cta: flowCtaFor(flowName)
+      };
       const chunks = splitIntoChunks(body);
       if (chunks.length === 0) return { chunks: 0, error: 'empty-body' };
       if (chunks.length === 1) {
-        const result = await sendWhatsAppFlow(to, chunks[0], flowId);
+        const result = await sendWhatsAppFlow(to, chunks[0], flowId, flowOpts);
         return { chunks: 1, results: [result], flow: flowName };
       }
       const results = [];
@@ -715,7 +735,7 @@ async function sendWhatsAppReply(to, body, buttonLabels, flowName){
         }
         await sleep(chunkPauseMs(chunks[i + 1]));
       }
-      const flowResult = await sendWhatsAppFlow(to, chunks[chunks.length - 1], flowId);
+      const flowResult = await sendWhatsAppFlow(to, chunks[chunks.length - 1], flowId, flowOpts);
       results.push(flowResult);
       return { chunks: chunks.length, results, flow: flowName };
     } else {
@@ -811,13 +831,34 @@ async function handleMessage(message){
       /* Flow form submission. response_json is a STRING containing
          the field values keyed by the names defined in the Flow
          JSON. Format as a structured text block Atlas can parse
-         naturally on the next turn. */
+         naturally on the next turn. Identity flow sends 3 fields
+         (full_name, email, phone); session flow sends 6 (those
+         three plus session_date / session_time / session_format).
+         Dropdown and RadioButtonsGroup values arrive as the option
+         ID, not the title — handleSessionFormatLabel and the time
+         slot map convert them back to human-readable strings. */
       try {
         const data = JSON.parse(nfm.response_json);
         const parts = [];
-        if (data.full_name) parts.push('Full name: ' + String(data.full_name).trim());
-        if (data.email)     parts.push('Email: '     + String(data.email).trim());
-        if (data.phone)     parts.push('Phone: '     + String(data.phone).trim());
+        if (data.full_name)      parts.push('Full name: '      + String(data.full_name).trim());
+        if (data.email)          parts.push('Email: '          + String(data.email).trim());
+        if (data.phone)          parts.push('Phone: '          + String(data.phone).trim());
+        if (data.session_date)   parts.push('Preferred date: ' + String(data.session_date).trim());
+        if (data.session_time) {
+          /* Slot ids in the Flow JSON are "0900".."1630" — convert
+             to "HH:MM SAST" for the lead block. */
+          const slot = String(data.session_time).trim();
+          const hhmm = slot.length === 4 ? slot.slice(0, 2) + ':' + slot.slice(2) : slot;
+          parts.push('Preferred time: ' + hhmm + ' SAST');
+        }
+        if (data.session_format) {
+          /* Radio ids: "video" → "Video call", "inperson" → "In person · Randburg" */
+          const fmt = String(data.session_format).trim().toLowerCase();
+          const label = fmt === 'video' ? 'Video call'
+                      : fmt === 'inperson' ? 'In person · Randburg'
+                      : String(data.session_format);
+          parts.push('Format: ' + label);
+        }
         userText = parts.join('\n');
         if (!userText) userText = '[empty form submission]';
         console.log('[wa] flow submission inbound', {
@@ -825,7 +866,8 @@ async function handleMessage(message){
           fields: Object.keys(data),
           hasName: !!data.full_name,
           hasEmail: !!data.email,
-          hasPhone: !!data.phone
+          hasPhone: !!data.phone,
+          isSession: !!(data.session_date || data.session_time || data.session_format)
         });
       } catch (e) {
         console.error('[wa] flow response_json parse error', e && e.message);

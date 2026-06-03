@@ -234,7 +234,12 @@ async function sendTestFlow(toRaw, flowName, flowId){
               flow_id: flowId,
               flow_cta: cta,
               flow_action: 'navigate',
-              flow_action_payload: { screen, data: {} }
+              /* No `data` key when there's nothing to pre-populate.
+                 Meta's current docs omit `data` for navigate-action
+                 sends to a screen with no declared data inputs;
+                 passing `data: {}` was empirically returning
+                 (#100) Invalid parameter from Graph API. */
+              flow_action_payload: { screen }
             }
           }
         }

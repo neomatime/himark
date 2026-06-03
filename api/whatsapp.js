@@ -828,10 +828,14 @@ async function sendWhatsAppFlow(to, bodyText, flowId, options){
                 flow_id: flowId,
                 flow_cta: cta,
                 flow_action: 'navigate',
-                flow_action_payload: {
-                  screen: screen,
-                  data: {}
-                }
+                /* No `data` key — our screens don't declare initial
+                   data inputs, and Meta's Graph API was returning
+                   (#100) Invalid parameter when an empty `data: {}`
+                   was included. Omit entirely. If a future flow
+                   needs to pre-populate fields, pass them as
+                   options.flowActionData and we'll conditionally
+                   add the key here. */
+                flow_action_payload: { screen: screen }
               }
             }
           },

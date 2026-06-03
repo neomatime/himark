@@ -573,7 +573,7 @@ async function sendWhatsAppTextChunks(to, body){
    WHATSAPP CLOUD API — image with caption (single message).
    Used for the first-turn welcome banner. The caption is Atlas's
    actual reply text (chunk[0]); the image is hosted at a public
-   HTTPS URL (default: himark.co.za/images/whatsapp-welcome.jpg).
+   HTTPS URL (default: himark.co.za/images/whatsapp-welcome.png).
    WhatsApp caches the link after the first send so repeat sends
    are cheap.
    ============================================================ */
@@ -1091,7 +1091,7 @@ async function handleMessage(message){
   const isFirstTurn = (history.length === 1);
   const welcomeRaw = (typeof process.env.WHATSAPP_WELCOME_IMAGE_URL === 'string')
     ? process.env.WHATSAPP_WELCOME_IMAGE_URL.trim()
-    : 'https://www.himark.co.za/images/whatsapp-welcome.jpg';
+    : 'https://www.himark.co.za/images/whatsapp-welcome.png';
   const welcomeImageUrl = (isFirstTurn && welcomeRaw && welcomeRaw.toLowerCase() !== 'off')
     ? welcomeRaw
     : null;

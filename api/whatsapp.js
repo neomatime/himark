@@ -895,6 +895,16 @@ async function sendWhatsAppReply(to, body, buttonLabels, flowName, welcomeImageU
           ? Object.assign({}, flowOpts, { headerImageUrl: welcomeImageUrl })
           : flowOpts;
         const result = await sendWhatsAppFlow(to, chunks[0], flowId, opts);
+        /* RELIABILITY: if the interactive flow send fails (rate limit,
+           malformed body, image URL bad, account misconfig), the visitor
+           would otherwise see nothing. Fall back to plain text so they
+           at least receive Atlas's message body and can continue the
+           conversation in prose. */
+        if (result && result.error) {
+          console.warn('[wa] flow send failed (single chunk), falling back to text', result.error);
+          const fallback = await sendWhatsAppText(to, chunks[0]);
+          return { chunks: 1, results: [fallback], flow: flowName, welcome: !!welcomeImageUrl, fellBack: 'flow→text' };
+        }
         return { chunks: 1, results: [result], flow: flowName, welcome: !!welcomeImageUrl };
       }
       const results = [];
@@ -912,6 +922,17 @@ async function sendWhatsAppReply(to, body, buttonLabels, flowName, welcomeImageU
         await sleep(chunkPauseMs(chunks[i + 1]));
       }
       const flowResult = await sendWhatsAppFlow(to, chunks[chunks.length - 1], flowId, flowOpts);
+      /* Same fallback as the single-chunk path above — if the
+         interactive Flow send rejects, the prior text chunks have
+         already been delivered, so we still deliver the LAST chunk
+         as plain text. The visitor sees the full message; only the
+         Flow form is missed. */
+      if (flowResult && flowResult.error) {
+        console.warn('[wa] flow send failed (last of multi), falling back to text', flowResult.error);
+        const fallback = await sendWhatsAppText(to, chunks[chunks.length - 1]);
+        results.push(fallback);
+        return { chunks: chunks.length, results, flow: flowName, welcome: !!welcomeImageUrl, fellBack: 'flow→text' };
+      }
       results.push(flowResult);
       return { chunks: chunks.length, results, flow: flowName, welcome: !!welcomeImageUrl };
     } else {
@@ -957,6 +978,15 @@ async function sendWhatsAppReply(to, body, buttonLabels, flowName, welcomeImageU
     /* First-turn welcome + buttons in one chunk: image header on
        the interactive button message. Single send. */
     const result = await sendWhatsAppButtons(to, chunks[0], buttonLabels, welcomeImageUrl || null);
+    /* RELIABILITY: if the interactive button send fails (rate
+       limit, body too long, image URL bad), fall back to plain
+       text so the visitor receives the message body. They lose
+       the tap-able buttons; the conversation still proceeds. */
+    if (result && result.error) {
+      console.warn('[wa] button send failed (single chunk), falling back to text', result.error);
+      const fallback = await sendWhatsAppText(to, chunks[0]);
+      return { chunks: 1, results: [fallback], buttons: 0, welcome: !!welcomeImageUrl, fellBack: 'buttons→text' };
+    }
     return { chunks: 1, results: [result], buttons: buttonLabels.length, welcome: !!welcomeImageUrl };
   }
   const results = [];
@@ -977,6 +1007,16 @@ async function sendWhatsAppReply(to, body, buttonLabels, flowName, welcomeImageU
     await sleep(chunkPauseMs(chunks[i + 1]));
   }
   const buttonResult = await sendWhatsAppButtons(to, chunks[chunks.length - 1], buttonLabels);
+  /* Same fallback as the single-chunk path above — prior chunks
+     already delivered as plain text; if the interactive button
+     send rejects, deliver the LAST chunk as text too. Visitor sees
+     the full message; only the tap-able buttons are missed. */
+  if (buttonResult && buttonResult.error) {
+    console.warn('[wa] button send failed (last of multi), falling back to text', buttonResult.error);
+    const fallback = await sendWhatsAppText(to, chunks[chunks.length - 1]);
+    results.push(fallback);
+    return { chunks: chunks.length, results, buttons: 0, welcome: !!welcomeImageUrl, fellBack: 'buttons→text' };
+  }
   results.push(buttonResult);
   return { chunks: chunks.length, results, buttons: buttonLabels.length, welcome: !!welcomeImageUrl };
 }

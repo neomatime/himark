@@ -738,6 +738,19 @@ try{
           b.className = 'msg-action-btn';
           b.textContent = String(label).slice(0, 28);
           b.addEventListener('click', function(){
+            /* BUSY GUARD — if Atlas is mid-reply (cC's busy flag is
+               true), bail BEFORE disabling/removing buttons. The
+               previous implementation tore the row down and then
+               called cC(), which silently no-op'd on busy — visitor
+               saw their tap as a bubble but Atlas never responded.
+               Now buttons stay visible for a clean retry once busy
+               clears, with a brief pending pulse on the tapped
+               button so the tap still feels acknowledged. */
+            if (busy) {
+              b.classList.add('msg-action-btn-pending');
+              setTimeout(function(){ b.classList.remove('msg-action-btn-pending'); }, 320);
+              return;
+            }
             /* Disable the whole row so a second tap can't queue
                another send, then remove the row entirely after a
                short fade so the chat thread reads clean. */

@@ -3977,6 +3977,18 @@ body.auth-mode #cookies-banner{
   cursor:default;
   transform:none;
 }
+/* Pending pulse — fired briefly when a button is tapped while Atlas
+   is mid-reply (busy guard). Visually acknowledges the tap without
+   firing the send (the visitor's expectation that the tap registered
+   is preserved; they retry once the in-flight reply finishes). */
+.msg-action-btn-pending{
+  animation:msg-action-btn-pulse 320ms ease;
+}
+@keyframes msg-action-btn-pulse{
+  0%  { background:rgba(95,129,144,.22); transform:scale(1.0); }
+  40% { background:rgba(95,129,144,.42); transform:scale(.97); }
+  100%{ background:transparent;          transform:scale(1.0); }
+}
 @media (prefers-reduced-motion: reduce){
   .msg-actions,.msg-actions-fade{animation:none;transition:none;opacity:1;transform:none;}
   .msg-action-btn{transition:none;}

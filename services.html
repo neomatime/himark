@@ -652,22 +652,61 @@
     max-width:1180px;
   }
   @media (max-width:900px){.svc-tiers-row{grid-template-columns:1fr;}}
+  /* Glass UI treatment — three tier cards.
+     ------------------------------------------------------------
+     The cards sit on the dark .svc-tiers-brief midnight surface
+     with a subtle grid pattern visible behind them. Glassmorphism
+     pattern: low-opacity translucent fill + heavy backdrop blur
+     so the grid lines behind soften and lift, 1px white rim
+     highlight at the top edge for the "catching light" cue, layered
+     ambient shadow for depth. Soft 12px corner radius matches the
+     premium-refinement direction established sitewide.
+     Backdrop-filter prefixed for Safari (-webkit-) so the blur
+     renders on iPad / iPhone. */
   .svc-tier-card{
-    background:rgba(95,129,144,.06);
-    border:1px solid rgba(138,173,184,.18);
-    padding:28px 28px 24px;
+    position:relative;
+    background:linear-gradient(180deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,.03) 100%);
+    -webkit-backdrop-filter:blur(22px) saturate(140%);
+            backdrop-filter:blur(22px) saturate(140%);
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:12px;
+    padding:30px 28px 26px;
     display:flex;flex-direction:column;
-    transition:background .4s var(--ease), border-color .4s var(--ease), transform .4s var(--ease);
+    box-shadow:
+      0 24px 48px -16px rgba(0,0,0,.45),
+      0 1px 0 rgba(255,255,255,.10) inset,
+      0 -1px 0 rgba(0,0,0,.18) inset;
+    transition:background .4s var(--ease), border-color .4s var(--ease), transform .4s var(--ease), box-shadow .4s var(--ease);
   }
   .svc-tier-card:hover{
-    background:rgba(95,129,144,.12);
-    border-color:var(--ocean-lt);
-    transform:translateY(-4px);
+    background:linear-gradient(180deg, rgba(255,255,255,.11) 0%, rgba(255,255,255,.05) 100%);
+    border-color:rgba(138,173,184,.45);
+    transform:translateY(-6px);
+    box-shadow:
+      0 36px 72px -16px rgba(0,0,0,.55),
+      0 1px 0 rgba(255,255,255,.16) inset,
+      0 -1px 0 rgba(0,0,0,.20) inset;
   }
+  /* Middle "Growth Partner" card — slightly more present so the
+     primary tier reads as the recommended choice. Tinted toward
+     ocean rather than pure white so the colour pulls the eye too. */
   .svc-tier-card-mid{
-    background:rgba(95,129,144,.12);
-    border-color:rgba(138,173,184,.3);
+    background:linear-gradient(180deg, rgba(138,173,184,.16) 0%, rgba(95,129,144,.08) 100%);
+    border-color:rgba(138,173,184,.28);
+    box-shadow:
+      0 28px 56px -16px rgba(0,30,60,.50),
+      0 1px 0 rgba(255,255,255,.14) inset,
+      0 -1px 0 rgba(0,0,0,.20) inset,
+      0 0 0 1px rgba(138,173,184,.08);
     position:relative;
+  }
+  .svc-tier-card-mid:hover{
+    background:linear-gradient(180deg, rgba(138,173,184,.22) 0%, rgba(95,129,144,.12) 100%);
+    border-color:rgba(138,173,184,.55);
+  }
+  @media (prefers-reduced-motion: reduce){
+    .svc-tier-card{transition:none;}
+    .svc-tier-card:hover{transform:none;}
   }
   /* "Most engaged" badge — anchored to the top-right of the Growth
      Partner card. Floats above the top border so it reads as a

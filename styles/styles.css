@@ -4938,6 +4938,106 @@ body.light-nav .topnav{
     0 -1px 0 rgba(0,0,0,.22) inset;
 }
 
+/* ---- 3. PRINCIPAL CARDS (home + team) ---- */
+/* These carry scroll-driven choreography (--px / --py / --pr / --po
+   / --ps custom properties set by the principals scatter→assemble
+   animation in main.js). The transform stays untouched; we only
+   replace the flat `background:var(--off)` + 1px rule border with a
+   subtle glass treatment. Editorial weight is preserved by keeping
+   the fill near-opaque (88% off) — visitors see the page tint just
+   barely through, enough to read as "glass plate", not "translucent
+   wash". */
+.principal-card{
+  background: linear-gradient(180deg, rgba(247,247,245,.92) 0%, rgba(247,247,245,.84) 100%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+          backdrop-filter: blur(18px) saturate(120%);
+  border: 1px solid rgba(28,43,58,.10) !important;
+  border-radius: 8px;
+  box-shadow:
+    0 20px 44px -14px rgba(28,43,58,.18),
+    0 1px 0 rgba(255,255,255,.55) inset,
+    0 -1px 0 rgba(28,43,58,.04) inset;
+}
+
+/* ---- 4. IMGM-CARD (image marquee tiles) ---- */
+/* Treatment is a glass frame around each photo: 1px white rim on top
+   for "light catching the bezel", subtle ambient drop shadow below,
+   slight corner radius. The image content remains the focal point;
+   the frame just lifts it as a held object rather than a flat image. */
+.imgm-card{
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow:
+    0 20px 40px -14px rgba(0,0,0,.32),
+    0 1px 0 rgba(255,255,255,.18) inset,
+    0 -1px 0 rgba(0,0,0,.20) inset,
+    0 0 0 1px rgba(255,255,255,.08);
+  transition: box-shadow .5s var(--ease), transform .5s var(--ease);
+}
+.imgm-card:hover{
+  box-shadow:
+    0 28px 56px -14px rgba(0,0,0,.42),
+    0 1px 0 rgba(255,255,255,.28) inset,
+    0 -1px 0 rgba(0,0,0,.20) inset,
+    0 0 0 1px rgba(138,173,184,.35);
+}
+
+/* ---- 5. APPLY PAGE SECONDARY CTA (WhatsApp) ---- */
+/* The previous "ghost outline" treatment is replaced with translucent
+   glass: 60% white over the apply page's off-white surface gives a
+   subtle frosted-card feel rather than just an outlined button.
+   Hover still flips to WhatsApp green so the recognition cue stays. */
+.ap-atlas-cta-wa{
+  background: linear-gradient(180deg, rgba(255,255,255,.60) 0%, rgba(255,255,255,.40) 100%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+          backdrop-filter: blur(16px) saturate(140%);
+  border-color: rgba(28,43,58,.18) !important;
+  box-shadow:
+    0 14px 28px -10px rgba(28,43,58,.18),
+    0 1px 0 rgba(255,255,255,.65) inset;
+}
+.ap-atlas-cta-wa:hover{
+  /* On hover, lose the glass and become solid WhatsApp green — the
+     "channel is now live" cue. Backdrop-filter doesn't apply once
+     the bg is solid. */
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+  box-shadow:
+    0 22px 44px -10px rgba(0,80,30,.30),
+    0 1px 0 rgba(255,255,255,.18) inset;
+}
+
+/* ---- 6. HOME DOCTRINE PILLAR CELLS (.hd-cell) ---- */
+/* Currently open columns with just a 1px top rule and a number/text
+   stack. Glass-up: subtle translucent fill so each pillar reads as a
+   panel rather than a bare column. Padding + corner radius added so
+   the new fill has structure. The existing scroll-trigger transforms
+   (opacity/translate) keep firing exactly as before — we only touched
+   the surface. */
+.hd-cell{
+  background: linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,.25) 100%);
+  -webkit-backdrop-filter: blur(14px) saturate(125%);
+          backdrop-filter: blur(14px) saturate(125%);
+  border: 1px solid rgba(28,43,58,.08);
+  border-radius: 8px;
+  /* override the original border-top-only rule */
+  padding: 28px 22px 24px;
+  box-shadow:
+    0 16px 32px -14px rgba(28,43,58,.14),
+    0 1px 0 rgba(255,255,255,.55) inset;
+  transition:
+    opacity 700ms ease,
+    transform 700ms cubic-bezier(.2,.7,.2,1),
+    box-shadow 350ms ease,
+    border-color 350ms ease;
+}
+.hd-cell:hover{
+  border-color: rgba(95,129,144,.22);
+  box-shadow:
+    0 24px 48px -14px rgba(28,43,58,.22),
+    0 1px 0 rgba(255,255,255,.70) inset;
+}
+
 /* ---- 4. TYPOGRAPHIC POLISH ---- */
 /* Compound legibility settings. None of these alone are visible;
    together they tighten the body text into a "set-in-print" finish.

@@ -74,6 +74,47 @@ module.exports = async (req, res) => {
     result.flowChecks.session = await probeFlow(sessFlow, 'session');
   }
 
+  /* --- Optional test send: bypass Atlas, send Flow directly --- */
+  /* /api/wa-diag?send=identity&to=27821234567   (your WhatsApp number)
+     /api/wa-diag?send=session&to=27821234567
+     Isolates the Flow send pipeline from Atlas's prompt fidelity. If
+     this succeeds and the form lands on your phone, the wiring is
+     correct and the missing-form symptom is purely Atlas not emitting
+     the marker. If this fails, the failure body tells us exactly what
+     Meta rejected. */
+  const sendWhich = req.query && req.query.send;
+  const sendTo    = req.query && req.query.to;
+  if (sendWhich) {
+    if (!sendTo) {
+      result.testSend = {
+        attempted: false,
+        error: 'Missing ?to=... param. Provide your own WhatsApp number (country code + national number, no + or spaces). e.g. ?send=identity&to=27821234567'
+      };
+    } else if (sendWhich !== 'identity' && sendWhich !== 'session') {
+      result.testSend = {
+        attempted: false,
+        error: 'send=? must be either identity or session. Got: ' + sendWhich
+      };
+    } else {
+      const flowId = sendWhich === 'session'
+        ? process.env.WHATSAPP_FLOW_SESSION_ID
+        : process.env.WHATSAPP_FLOW_IDENTITY_ID;
+      if (!flowId) {
+        result.testSend = {
+          attempted: false,
+          error: 'Env var for that flow not set. See envConfig above.'
+        };
+      } else {
+        result.testSend = await sendTestFlow(sendTo, sendWhich, flowId);
+      }
+    }
+  } else {
+    result.testSend = {
+      attempted: false,
+      note: 'Append ?send=identity&to=<your-whatsapp-number> (or ?send=session&to=...) to fire a test Flow directly to your phone. Bypasses Atlas — proves the send pipeline works.'
+    };
+  }
+
   /* Roll up to an overall verdict. */
   const idOk   = result.flowChecks.identity.publishedAndUsable;
   const sessOk = result.flowChecks.session.publishedAndUsable;
@@ -149,6 +190,77 @@ async function probeFlow(flowId, label){
       publishedAndUsable: false,
       fetchError: String(e && e.message || e),
       verdict: 'NETWORK ERROR — could not reach graph.facebook.com. Retry; usually transient.'
+    };
+  }
+}
+
+/* sendTestFlow — fires an interactive Flow message directly to the
+   given phone number, bypassing the orchestrator + Atlas prompt.
+   Returns the Graph API response (status code + body) so we can see
+   exactly what Meta said. */
+async function sendTestFlow(toRaw, flowName, flowId){
+  /* WhatsApp expects the phone number with country code, no + or
+     spaces, e.g. 27821234567 for SA. Sanitize whatever the caller
+     passed. */
+  const to = String(toRaw || '').replace(/[^0-9]/g, '');
+  if (!to) return { attempted: false, error: 'Phone number had no digits after sanitisation.' };
+
+  const screen = flowName === 'session' ? 'SESSION_BOOKING_SCREEN' : 'IDENTITY_SCREEN';
+  const cta    = flowName === 'session' ? 'Book session' : 'Share details';
+  const body   = flowName === 'session'
+    ? 'Diagnostic test send for the session booking flow. Tap to open.'
+    : 'Diagnostic test send for the identity capture flow. Tap to open.';
+
+  try {
+    const res = await fetch(`https://graph.facebook.com/${WA_GRAPH_VERSION}/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + process.env.WHATSAPP_ACCESS_TOKEN,
+        'Content-Type':  'application/json'
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        recipient_type: 'individual',
+        to,
+        type: 'interactive',
+        interactive: {
+          type: 'flow',
+          body: { text: body },
+          action: {
+            name: 'flow',
+            parameters: {
+              flow_message_version: '3',
+              flow_token: 'diag-' + Date.now(),
+              flow_id: flowId,
+              flow_cta: cta,
+              flow_action: 'navigate',
+              flow_action_payload: { screen, data: {} }
+            }
+          }
+        }
+      })
+    });
+    const text = await res.text();
+    let parsed;
+    try { parsed = JSON.parse(text); } catch (_) { parsed = null; }
+    return {
+      attempted: true,
+      to,
+      flowName,
+      flowIdPreview: maskId(flowId),
+      httpStatus: res.status,
+      ok: res.ok,
+      response: parsed || text.slice(0, 600),
+      verdict: res.ok
+        ? 'SUCCESS — Meta accepted the send. Check your WhatsApp app, you should see the interactive Flow card with the "' + cta + '" button. If you don\'t see it, the visitor on this WhatsApp number may have a 24h customer-service window issue (you need to message HIMARK first).'
+        : 'FAILED — Meta rejected the send. See response.error for the reason. Common causes: visitor hasn\'t messaged within 24h (customer-service window closed); rate limit; WABA verification missing for marketing template.'
+    };
+  } catch (e) {
+    return {
+      attempted: true,
+      to,
+      threw: String(e && e.message || e),
+      verdict: 'EXCEPTION — network error during Graph API call.'
     };
   }
 }

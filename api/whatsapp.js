@@ -86,19 +86,84 @@ function chunkPauseMs(nextChunk){
 function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
 
 /* ============================================================
-   CONVERSATION HISTORY
-   In-memory Map keyed by sender phone number. Survives within a
-   warm Vercel instance for the life of that instance; clears on
-   cold start. For long-lived conversation continuity across
-   restarts, this is the slot to drop Upstash Redis / Vercel KV
-   in front of (same interface — getHistory/appendHistory).
-   ============================================================ */
+   CONVERSATION HISTORY — Upstash Redis with in-memory fallback
+   ============================================================
+   The previous implementation was a plain in-memory Map keyed by
+   sender phone. It survived a warm Vercel instance but cleared on
+   cold start, which meant a visitor whose second message landed
+   on a fresh lambda would be treated as new — Atlas would re-ask
+   whichever LeadSense step he'd just covered, because he couldn't
+   see the answer in history.
+
+   The fix is persistent storage. We use Upstash's REST-based
+   Redis (HTTP, not TCP — works in any serverless model) keyed by
+   phone, with a 30-minute idle TTL matching the previous in-memory
+   semantics.
+
+   Env vars (set in Vercel project settings):
+     UPSTASH_REDIS_REST_URL   (REQUIRED for persistence)
+     UPSTASH_REDIS_REST_TOKEN (REQUIRED for persistence)
+
+   Graceful degradation: if either env var is missing, we fall
+   back to the original in-memory Map so the code keeps working
+   in dev / before the user adds Upstash, just without
+   cross-instance survival. */
+const HISTORY_LIMIT = 20;
+const HISTORY_TTL_SECONDS = 30 * 60;
+const HISTORY_TTL_MS = HISTORY_TTL_SECONDS * 1000;
+
+/* In-memory fallback structures (used when Upstash not configured). */
 const HISTORY = new Map();
-const HISTORY_LIMIT = 20;     // keep last N turns per visitor
-const HISTORY_TTL_MS = 30 * 60 * 1000; // 30 min idle → reset
 const HISTORY_TS = new Map();
 
+function upstashConfigured(){
+  return !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
+}
+
+function historyKey(phone){
+  /* Namespaced key so other features can share the same Redis
+     instance without colliding. */
+  return 'wa:hist:' + phone;
+}
+
+async function redisGet(key){
+  try {
+    const res = await fetch(
+      process.env.UPSTASH_REDIS_REST_URL + '/get/' + encodeURIComponent(key),
+      { headers: { 'Authorization': 'Bearer ' + process.env.UPSTASH_REDIS_REST_TOKEN } }
+    );
+    if (!res.ok) {
+      console.error('[wa] upstash GET non-ok', res.status);
+      return null;
+    }
+    const data = await res.json();
+    return data && typeof data.result === 'string' ? data.result : null;
+  } catch (e) {
+    console.error('[wa] upstash GET threw', e && e.message);
+    return null;
+  }
+}
+
+async function redisSetEx(key, value, ttlSeconds){
+  try {
+    /* Upstash REST API: /set/{key}/{value}?EX={seconds}. URL-
+       encode both so JSON quote characters survive the trip. */
+    const url = process.env.UPSTASH_REDIS_REST_URL
+              + '/set/' + encodeURIComponent(key)
+              + '/' + encodeURIComponent(value)
+              + '?EX=' + ttlSeconds;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + process.env.UPSTASH_REDIS_REST_TOKEN }
+    });
+    if (!res.ok) console.error('[wa] upstash SET non-ok', res.status);
+  } catch (e) {
+    console.error('[wa] upstash SET threw', e && e.message);
+  }
+}
+
 function pruneExpired(){
+  /* In-memory fallback path only. */
   const now = Date.now();
   for (const [phone, ts] of HISTORY_TS) {
     if (now - ts > HISTORY_TTL_MS) {
@@ -108,7 +173,20 @@ function pruneExpired(){
   }
 }
 
-function appendHistory(phone, role, content){
+async function appendHistory(phone, role, content){
+  if (upstashConfigured()) {
+    const key = historyKey(phone);
+    const cached = await redisGet(key);
+    let arr;
+    try { arr = cached ? JSON.parse(cached) : []; }
+    catch (_) { arr = []; }
+    if (!Array.isArray(arr)) arr = [];
+    arr.push({ role, content });
+    if (arr.length > HISTORY_LIMIT) arr.splice(0, arr.length - HISTORY_LIMIT);
+    await redisSetEx(key, JSON.stringify(arr), HISTORY_TTL_SECONDS);
+    return;
+  }
+  /* Fallback: in-memory. */
   pruneExpired();
   const arr = HISTORY.get(phone) || [];
   arr.push({ role, content });
@@ -117,7 +195,16 @@ function appendHistory(phone, role, content){
   HISTORY_TS.set(phone, Date.now());
 }
 
-function getHistory(phone){
+async function getHistory(phone){
+  if (upstashConfigured()) {
+    const cached = await redisGet(historyKey(phone));
+    if (!cached) return [];
+    try {
+      const arr = JSON.parse(cached);
+      return Array.isArray(arr) ? arr : [];
+    } catch (_) { return []; }
+  }
+  /* Fallback: in-memory. */
   pruneExpired();
   return HISTORY.get(phone) || [];
 }
@@ -1027,8 +1114,11 @@ async function handleMessage(message){
 
   markRead(message.id).catch(() => {});
 
-  appendHistory(from, 'user', userText);
-  const history = getHistory(from);
+  /* History is now async (Upstash-backed when configured, in-memory
+     fallback otherwise). Await both calls so Atlas always sees the
+     latest persisted state. ~50-100ms each via Upstash REST. */
+  await appendHistory(from, 'user', userText);
+  const history = await getHistory(from);
 
   const raw = await askAtlas(history, mediaParts);
   console.log('[wa] askAtlas done', { rawLen: raw ? raw.length : 0, rawPreview: raw && raw.slice(0, 120) });
@@ -1078,7 +1168,10 @@ async function handleMessage(message){
      bookings), and only if RESEND_API_KEY is set. Fire-and-forget so
      the reply to the visitor is never delayed by mail delivery. */
   if (lead)    emailApplication(lead, scoring, 'atlas-whatsapp').catch(e => console.error('[wa] email lead', e && e.message));
-  appendHistory(from, 'assistant', visible);
+  /* Persist the assistant turn. Await is intentional so the next
+     inbound message (possibly on a different cold lambda) can
+     read this turn back from Redis. */
+  await appendHistory(from, 'assistant', visible);
   /* First-turn detection: at this point the history contains the
      visitor's just-appended inbound message and nothing else (no
      prior assistant turn for this phone). When that's the case AND

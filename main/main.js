@@ -326,7 +326,36 @@ try{
   const vStat  = document.getElementById('vStat');
   if(!cTgl||!cWin||!cMsgs) return;
 
-  const HIST = [];   // running conversation history sent to /api/chat
+  /* HIST — running conversation history sent to /api/chat.
+     Persisted to sessionStorage so the conversation survives
+     page navigation within the same browser tab. Previously
+     HIST was a fresh empty array on every page load, which
+     meant a visitor who started chatting on /home and moved to
+     /services saw Atlas re-introduce himself and re-ask any
+     questions he'd already covered. Now the array is loaded
+     from sessionStorage on init and saved after every change.
+     sessionStorage clears when the tab closes (deliberate — a
+     new tab = a new conversation). */
+  const HIST_STORAGE_KEY = 'himark-atlas-hist';
+  function loadHist(){
+    try {
+      const raw = sessionStorage.getItem(HIST_STORAGE_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch(_) { return []; }
+  }
+  function saveHist(){
+    try {
+      sessionStorage.setItem(HIST_STORAGE_KEY, JSON.stringify(HIST));
+    } catch(_) {
+      /* QuotaExceededError or sessionStorage disabled (private
+         browsing on some browsers). Fail silently — the array
+         still works in-memory, conversation just won't survive
+         navigation. */
+    }
+  }
+  const HIST = loadHist();
   let busy = false, lstn = false, recog = null;
 
   function ts(){
@@ -638,6 +667,7 @@ try{
     if(busy)return;
     busy=true;
     HIST.push({role:'user',content:msg});
+    saveHist();
     shT();
     /* Tell the server which mode we're in so it can append a
        voice-friendly hint to the system prompt for this turn. */
@@ -661,6 +691,7 @@ try{
         ? data.chunks
         : [reply];
       HIST.push({role:'assistant',content:reply});
+      saveHist();
       /* Render first chunk immediately, then for each remaining
          chunk show the typing indicator, pause, hide it, render. */
       aM('bot', chunks[0]);
@@ -752,15 +783,37 @@ try{
     setTimeout(()=>{
       aM('bot', GREETING);
       HIST.push({role:'assistant', content: GREETING});
+      saveHist();
     }, 380);
   }
 
-  /* TOGGLE — open/close the panel. Greeting fires on first open. */
+  /* Restore prior conversation visually when the chat opens on a
+     fresh page load and HIST already has content from a previous
+     page. The HIST array carries over via sessionStorage but the
+     chat panel DOM is empty on each new page — without this, the
+     visitor would resume the conversation but see an empty thread
+     until they typed. We replay HIST as bubbles (cap last 20 so
+     long conversations don't flood the panel). Bots show their
+     joined reply (chunk animation isn't replayed — content over
+     choreography on a restore). */
+  function restoreHistIntoChat(){
+    if(HIST.length === 0) return;
+    if(cMsgs.children.length > 0) return;
+    const tail = HIST.slice(-20);
+    tail.forEach(m => {
+      const role = (m && m.role === 'assistant') ? 'bot' : 'user';
+      aM(role, (m && m.content) || '');
+    });
+  }
+
+  /* TOGGLE — open/close the panel. Greeting fires on first open;
+     prior-conversation restore fires first if HIST has content. */
   cTgl.addEventListener('click',()=>{
     const willOpen=!cWin.classList.contains('open');
     cWin.classList.toggle('open',willOpen);
     cTgl.classList.toggle('open',willOpen);
     if(willOpen){
+      restoreHistIntoChat();
       showGreetingIfNeeded();
       setTimeout(()=>cIn&&cIn.focus(),260);
     }

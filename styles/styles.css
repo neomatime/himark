@@ -4866,6 +4866,78 @@ body.light-nav .topnav{
   border-bottom-color:rgba(95,129,144,.10);
 }
 
+/* ====================================================================
+   GLASS UI SWEEP — frosted-glass treatment on prominent surfaces
+   ====================================================================
+   Building on the existing glass language already used by the chat
+   panel, mobile drawer, and tier cards (services). Extending the
+   pattern to the navbar and the orbit shortcut cards as the first
+   batch of a wider sitewide glass refresh.
+
+   Pattern: translucent background (so what's behind tints through),
+   heavy backdrop-filter blur (so the bg softens to a frosted bloom),
+   1px rim border at low opacity (catches light, reads as glass edge),
+   layered ambient shadow for depth. The contract: the surface is a
+   thin plate suspended above content, not an opaque shelf.
+
+   Browser support: -webkit-backdrop-filter prefixed for Safari.
+   Browsers without backdrop-filter (Firefox <103, ancient Edge)
+   still render the translucent fill — the blur just doesn't apply,
+   which is acceptable degradation.
+   ==================================================================== */
+
+/* ---- 1. NAVBAR — frosted plate floating above the page ---- */
+/* Every page's inline <style> sets `.topnav { background: var(--off) }`
+   which is solid opaque off-white. Override with translucent so the
+   content behind soft-blurs through. 72% opacity is enough for dark
+   midnight text to stay readable on every page (light bg = stays
+   light, dark hero = colour tints through but text stays anchored).
+   `!important` because the inline rule loads after this file and
+   sits at the same specificity. */
+.topnav{
+  background: rgba(247, 247, 245, 0.72) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+          backdrop-filter: blur(24px) saturate(140%);
+  border-bottom-color: rgba(95, 129, 144, 0.16);
+}
+/* Mobile drawer (slide-out) keeps the inline solid bg — backdrop-
+   filter on a fixed-position drawer the full height of the viewport
+   creates visual confusion as the user scrolls inside the drawer.
+   We restore opacity inside the @media block. */
+@media (max-width: 1024px){
+  .topnav .topnav-list{
+    background: var(--off);
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+  }
+}
+
+/* ---- 2. ORBIT SHORTCUT CARDS (home: Apply / WhatsApp / Atlas) ---- */
+/* Sit on the dark .ink-deep orbit background, so glass-on-dark
+   pattern: white tint .10 → .04 gradient, white rim at 12%, white
+   top-edge inset highlight, black bottom-edge inset rule, layered
+   ambient drop shadow. Hover deepens everything. */
+.orbit-shortcut-card{
+  background: linear-gradient(180deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.04) 100%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+          backdrop-filter: blur(22px) saturate(140%);
+  border: 1px solid rgba(255,255,255,.12) !important;
+  border-radius: 12px;
+  box-shadow:
+    0 24px 48px -16px rgba(0,0,0,.45),
+    0 1px 0 rgba(255,255,255,.10) inset,
+    0 -1px 0 rgba(0,0,0,.18) inset;
+}
+.orbit-shortcut-card:hover,
+.orbit-shortcut-card:focus-visible{
+  background: linear-gradient(180deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,.06) 100%) !important;
+  border-color: rgba(138,173,184,.50) !important;
+  box-shadow:
+    0 36px 72px -16px rgba(0,0,0,.55),
+    0 1px 0 rgba(255,255,255,.18) inset,
+    0 -1px 0 rgba(0,0,0,.22) inset;
+}
+
 /* ---- 4. TYPOGRAPHIC POLISH ---- */
 /* Compound legibility settings. None of these alone are visible;
    together they tighten the body text into a "set-in-print" finish.

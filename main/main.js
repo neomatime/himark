@@ -91,29 +91,6 @@ if(authPages.includes(cur))document.body.classList.add('auth-mode');
   }
 })();
 
-/* WHATSAPP FLOATING BUTTON — sitewide, injected once on every page.
-   Stacked above the chat toggle (Atlas) so the visitor has two
-   parallel contact channels at the same screen corner:
-     - tap the WhatsApp button → opens wa.me with HIMARK Business
-     - tap the chat toggle    → opens Atlas in the in-page widget
-   We inject via JS rather than per-page HTML so a single source
-   of truth controls position, number, and behaviour. Hidden in
-   auth-mode via the same body class the chat toggle obeys (see
-   .wa-toggle-btn rule in styles.css). */
-(function(){
-  if(document.querySelector('.wa-toggle-btn')) return;
-  const a=document.createElement('a');
-  a.className='wa-toggle-btn';
-  a.href='https://wa.me/27691174120';
-  a.target='_blank';
-  a.rel='noopener noreferrer';
-  a.setAttribute('aria-label','Message HIMARK on WhatsApp');
-  a.title='Message HIMARK on WhatsApp';
-  /* Inline WhatsApp glyph SVG so we don't ship an asset file. */
-  a.innerHTML='<svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false"><path fill="currentColor" d="M16.003 3.2c-7.07 0-12.8 5.73-12.8 12.8 0 2.258.594 4.462 1.722 6.4L3.2 28.8l6.554-1.71a12.74 12.74 0 0 0 6.249 1.6h.006c7.069 0 12.8-5.73 12.8-12.8s-5.731-12.8-12.806-12.8Zm0 23.466h-.005a10.65 10.65 0 0 1-5.426-1.486l-.39-.231-4.066 1.061 1.085-3.962-.254-.407a10.65 10.65 0 0 1-1.633-5.66c0-5.886 4.795-10.681 10.69-10.681 2.853 0 5.535 1.114 7.55 3.134a10.6 10.6 0 0 1 3.131 7.554c-.002 5.887-4.797 10.678-10.682 10.678Zm5.86-7.998c-.322-.16-1.904-.94-2.198-1.046-.295-.107-.51-.16-.725.16-.214.32-.832 1.046-1.02 1.262-.188.214-.376.241-.698.08-.322-.16-1.359-.501-2.589-1.598-.957-.853-1.604-1.908-1.792-2.229-.187-.32-.02-.494.141-.654.144-.144.322-.376.483-.563.16-.188.214-.321.322-.535.107-.214.054-.402-.027-.563-.08-.16-.725-1.747-.993-2.392-.262-.628-.527-.543-.725-.553-.187-.01-.402-.012-.617-.012a1.18 1.18 0 0 0-.858.402c-.295.32-1.127 1.101-1.127 2.687 0 1.585 1.153 3.116 1.314 3.33.16.214 2.27 3.466 5.498 4.86.768.331 1.367.529 1.834.677.77.245 1.471.21 2.025.128.617-.092 1.904-.778 2.173-1.529.268-.751.268-1.394.187-1.529-.08-.134-.295-.214-.617-.374Z"/></svg>';
-  document.body.appendChild(a);
-})();
-
 /* MPA: ensure the page on this document is visible (.active) */
 (function(){
   const p=document.querySelector('.page');

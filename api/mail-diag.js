@@ -127,11 +127,57 @@ module.exports = async (req, res) => {
         attempted: true,
         result: sendResult,
         verdict: sendResult && sendResult.sent
-          ? 'SENT — Resend accepted the email (id: ' + sendResult.id + '). Check apply@himark.co.za inbox AND spam folder.'
+          ? 'SENT — Resend accepted the email (id: ' + sendResult.id + '). See deliveryPoll below for actual destination status.'
           : sendResult && sendResult.skipped
             ? 'SKIPPED — ' + sendResult.skipped + '. Fix the env config first.'
             : 'FAILED — see result.error above. Most common: domain not verified (Resend rejects). Status: ' + (sendResult && sendResult.status)
       };
+
+      /* If Resend accepted the send, immediately poll their /emails/{id}
+         endpoint to learn the actual delivery status. Resend typically
+         processes within 1-3s; we sleep then poll once. The status
+         we care about most lives in `last_event`:
+           sent       → handed off, waiting for destination MTA response
+           delivered  → destination accepted (mailbox should have it)
+           bounced    → destination rejected — body tells us why
+           complained → marked as spam by recipient (n/a for test sends)
+           opened     → recipient opened (n/a here, no tracker)
+         The single poll is enough for a diagnostic — production sends
+         don't need this and don't pay the latency. */
+      if (sendResult && sendResult.sent && sendResult.id) {
+        await sleep(2500);
+        try {
+          const probe = await fetch('https://api.resend.com/emails/' + sendResult.id, {
+            headers: { 'Authorization': 'Bearer ' + process.env.RESEND_API_KEY }
+          });
+          const text = await probe.text();
+          let parsed;
+          try { parsed = JSON.parse(text); } catch (_) { parsed = null; }
+          if (probe.ok && parsed) {
+            const lastEvent = parsed.last_event || parsed.status || null;
+            result.deliveryPoll = {
+              httpStatus: probe.status,
+              lastEvent: lastEvent,
+              to: parsed.to,
+              from: parsed.from,
+              subject: parsed.subject,
+              createdAt: parsed.created_at,
+              verdict: deliveryVerdict(lastEvent)
+            };
+          } else {
+            result.deliveryPoll = {
+              httpStatus: probe.status,
+              errorBody: text.slice(0, 400),
+              verdict: 'Could not retrieve email status from Resend — see errorBody.'
+            };
+          }
+        } catch (e) {
+          result.deliveryPoll = {
+            fetchError: String(e && e.message || e),
+            verdict: 'Network error fetching delivery status. The email itself was already accepted by Resend.'
+          };
+        }
+      }
     } catch (e) {
       result.testSend = {
         attempted: true,
@@ -154,4 +200,30 @@ function maskKey(key){
   if (!key) return '(unset)';
   if (key.length < 8) return '(set, length ' + key.length + ')';
   return key.slice(0, 4) + '…' + key.slice(-4) + ' (length ' + key.length + ')';
+}
+
+function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+/* deliveryVerdict — translate Resend's last_event string into a
+   plain-English summary of what to do next. Covers all the
+   states the API can return; falls through to a generic note
+   for any new/unknown state. */
+function deliveryVerdict(lastEvent){
+  switch ((lastEvent || '').toLowerCase()){
+    case 'delivered':
+      return 'DELIVERED — Microsoft (M365) accepted the email. Check Inbox, then Junk Email folder, then M365 Quarantine at security.microsoft.com → Quarantine. First-time-sender emails are commonly quarantined.';
+    case 'sent':
+      return 'IN TRANSIT — Resend handed it to the destination MTA but the destination hasn\'t confirmed delivery yet. Refresh this URL again in 30 seconds.';
+    case 'bounced':
+      return 'BOUNCED — destination server rejected the email. Check Resend dashboard → Logs → click the row to see the bounce reason. Common: mailbox doesn\'t exist; domain has no MX records; recipient quota exceeded.';
+    case 'complained':
+      return 'MARKED AS SPAM — recipient flagged this as spam. Shouldn\'t happen on test sends; check the from address and content.';
+    case 'opened':
+    case 'clicked':
+      return 'DELIVERED + ' + lastEvent.toUpperCase() + ' — already opened by recipient.';
+    case 'failed':
+      return 'FAILED — Resend gave up. Check Resend dashboard for the reason.';
+    default:
+      return 'UNKNOWN status "' + lastEvent + '" — check Resend dashboard at resend.com/emails for the row matching this ID.';
+  }
 }

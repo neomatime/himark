@@ -569,12 +569,66 @@ async function sendWhatsAppTextChunks(to, body){
   return { chunks: chunks.length, results };
 }
 
+/* ============================================================
+   WHATSAPP CLOUD API — image with caption (single message).
+   Used for the first-turn welcome banner. The caption is Atlas's
+   actual reply text (chunk[0]); the image is hosted at a public
+   HTTPS URL (default: himark.co.za/images/whatsapp-welcome.jpg).
+   WhatsApp caches the link after the first send so repeat sends
+   are cheap.
+   ============================================================ */
+async function sendWhatsAppImageWithCaption(to, imageUrl, caption){
+  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
+  const accessToken   = process.env.WHATSAPP_ACCESS_TOKEN;
+  if (!phoneNumberId || !accessToken) {
+    return { error: 'env-missing' };
+  }
+  if (!imageUrl) return { error: 'no-image-url' };
+  /* Captions are capped at 1024 chars by WhatsApp. Atlas's first
+     replies are short by prompt design, but we still slice to be
+     defensive — a long caption would silently 400. */
+  const cap = String(caption || '').slice(0, 1024);
+  let res;
+  try {
+    res = await fetch(`https://graph.facebook.com/${WA_GRAPH_VERSION}/${phoneNumberId}/messages`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        recipient_type: 'individual',
+        to,
+        type: 'image',
+        image: { link: imageUrl, caption: cap || undefined }
+      })
+    });
+  } catch (err) {
+    console.error('[wa] image send fetch threw',
+      err && err.message,
+      'cause:', err && err.cause && (err.cause.message || err.cause.code || String(err.cause)));
+    return { error: 'fetch-threw' };
+  }
+  if (!res.ok) {
+    const t = await res.text().catch(() => '');
+    console.error('[wa] image send failed', res.status, t.slice(0, 400));
+    return { error: 'send-failed', status: res.status };
+  }
+  return { sent: true };
+}
+
 /* Interactive button message — body text + up to 3 reply buttons.
    When the visitor taps a button, WhatsApp fires a webhook with
    message.type === 'interactive' and interactive.button_reply.title
    carrying the label. We coerce that back to text in handleMessage
-   so the brain receives it as if the visitor had typed the label. */
-async function sendWhatsAppButtons(to, bodyText, buttonLabels){
+   so the brain receives it as if the visitor had typed the label.
+
+   Optional headerImageUrl: when provided, the message gets an
+   image header (banner above the body text). Used for first-turn
+   welcomes where Atlas wants both the brand banner AND buttons
+   in a single coherent message. */
+async function sendWhatsAppButtons(to, bodyText, buttonLabels, headerImageUrl){
   const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
   const accessToken   = process.env.WHATSAPP_ACCESS_TOKEN;
   if (!phoneNumberId || !accessToken) {
@@ -608,11 +662,18 @@ async function sendWhatsAppButtons(to, bodyText, buttonLabels){
         recipient_type: 'individual',
         to,
         type: 'interactive',
-        interactive: {
-          type: 'button',
-          body: { text: body },
-          action: { buttons }
-        }
+        interactive: Object.assign(
+          {
+            type: 'button',
+            body: { text: body },
+            action: { buttons }
+          },
+          /* Optional image header — only attached when caller passes
+             headerImageUrl (first-turn welcome path). Meta's
+             interactive button schema supports image / video /
+             document headers above the body. */
+          headerImageUrl ? { header: { type: 'image', image: { link: headerImageUrl } } } : null
+        )
       })
     });
   } catch (err) {
@@ -668,24 +729,32 @@ async function sendWhatsAppFlow(to, bodyText, flowId, options){
         recipient_type: 'individual',
         to,
         type: 'interactive',
-        interactive: {
-          type: 'flow',
-          body: { text: body },
-          action: {
-            name: 'flow',
-            parameters: {
-              flow_message_version: '3',
-              flow_token: flowToken,
-              flow_id: flowId,
-              flow_cta: cta,
-              flow_action: 'navigate',
-              flow_action_payload: {
-                screen: screen,
-                data: {}
+        interactive: Object.assign(
+          {
+            type: 'flow',
+            body: { text: body },
+            action: {
+              name: 'flow',
+              parameters: {
+                flow_message_version: '3',
+                flow_token: flowToken,
+                flow_id: flowId,
+                flow_cta: cta,
+                flow_action: 'navigate',
+                flow_action_payload: {
+                  screen: screen,
+                  data: {}
+                }
               }
             }
-          }
-        }
+          },
+          /* Optional image header — only attached when caller passes
+             options.headerImageUrl (first-turn welcome). Interactive
+             flow messages support image headers above the body. */
+          options.headerImageUrl
+            ? { header: { type: 'image', image: { link: options.headerImageUrl } } }
+            : null
+        )
       })
     });
   } catch (err) {
@@ -710,8 +779,17 @@ async function sendWhatsAppFlow(to, bodyText, flowId, options){
      2. buttonLabels → last chunk sent as interactive button message.
      3. Neither → all chunks sent as plain text via the chunked
         sender (unchanged behaviour).
-   Earlier chunks (before the last) always go out as plain text. */
-async function sendWhatsAppReply(to, body, buttonLabels, flowName){
+   Earlier chunks (before the last) always go out as plain text.
+
+   welcomeImageUrl: when set (first-turn welcome path), the FIRST
+   chunk is sent as a media-headed message instead of plain text.
+     - First chunk + buttons + image → interactive button msg with image header
+     - First chunk + flow    + image → interactive flow msg with image header
+     - First chunk + text    + image → plain image message with caption
+   Subsequent chunks fall back to plain text. The image still
+   carries Atlas's dynamic greeting (as caption or interactive body)
+   so the visual welcome and the personalised intro land together. */
+async function sendWhatsAppReply(to, body, buttonLabels, flowName, welcomeImageUrl){
   /* Flow path takes precedence if requested + configured */
   if (flowName) {
     const flowId = flowIdFor(flowName);
@@ -722,13 +800,23 @@ async function sendWhatsAppReply(to, body, buttonLabels, flowName){
       };
       const chunks = splitIntoChunks(body);
       if (chunks.length === 0) return { chunks: 0, error: 'empty-body' };
+      /* First-turn welcome + only one chunk: bake the image straight
+         into the interactive Flow header. Single message; no extra
+         round-trip. */
       if (chunks.length === 1) {
-        const result = await sendWhatsAppFlow(to, chunks[0], flowId, flowOpts);
-        return { chunks: 1, results: [result], flow: flowName };
+        const opts = welcomeImageUrl
+          ? Object.assign({}, flowOpts, { headerImageUrl: welcomeImageUrl })
+          : flowOpts;
+        const result = await sendWhatsAppFlow(to, chunks[0], flowId, opts);
+        return { chunks: 1, results: [result], flow: flowName, welcome: !!welcomeImageUrl };
       }
       const results = [];
       for (let i = 0; i < chunks.length - 1; i++) {
-        const result = await sendWhatsAppText(to, chunks[i]);
+        /* On first chunk + welcome image, send image+caption[0]
+           instead of plain text. Subsequent chunks plain text. */
+        const result = (i === 0 && welcomeImageUrl)
+          ? await sendWhatsAppImageWithCaption(to, welcomeImageUrl, chunks[i])
+          : await sendWhatsAppText(to, chunks[i]);
         results.push(result);
         if (result && result.error && i === 0) {
           console.error('[wa] first chunk failed, aborting flow send', chunks.length - 1);
@@ -738,7 +826,7 @@ async function sendWhatsAppReply(to, body, buttonLabels, flowName){
       }
       const flowResult = await sendWhatsAppFlow(to, chunks[chunks.length - 1], flowId, flowOpts);
       results.push(flowResult);
-      return { chunks: chunks.length, results, flow: flowName };
+      return { chunks: chunks.length, results, flow: flowName, welcome: !!welcomeImageUrl };
     } else {
       /* Marker present but no env var configured → log + fall
          through to plain text send. Atlas's visible reply still
@@ -747,20 +835,50 @@ async function sendWhatsAppReply(to, body, buttonLabels, flowName){
       console.warn('[wa] flow marker', flowName, 'present but no flow id env var configured — sending as text');
     }
   }
+  /* No buttons + no flow path. */
   if (!buttonLabels || !buttonLabels.length) {
+    /* First-turn welcome with no buttons/flow: image + caption,
+       optionally followed by additional plain-text chunks. */
+    if (welcomeImageUrl) {
+      const chunks = splitIntoChunks(body);
+      if (chunks.length === 0) return { chunks: 0, error: 'empty-body' };
+      const results = [];
+      const imgResult = await sendWhatsAppImageWithCaption(to, welcomeImageUrl, chunks[0]);
+      results.push(imgResult);
+      if (imgResult && imgResult.error) {
+        /* Image failed (bad URL, network, etc.) — fall back to
+           plain-text-only so the visitor still sees Atlas's reply. */
+        console.warn('[wa] welcome image failed, falling back to text-only', imgResult.error);
+        return await sendWhatsAppTextChunks(to, body);
+      }
+      for (let i = 1; i < chunks.length; i++) {
+        await sleep(chunkPauseMs(chunks[i]));
+        const r = await sendWhatsAppText(to, chunks[i]);
+        results.push(r);
+        if (r && r.error) console.warn('[wa] welcome chunk', i, 'failed', r.error);
+      }
+      return { chunks: chunks.length, results, welcome: true };
+    }
     return await sendWhatsAppTextChunks(to, body);
   }
+  /* Buttons path. */
   const chunks = splitIntoChunks(body);
   if (chunks.length === 0) {
     return { chunks: 0, error: 'empty-body' };
   }
   if (chunks.length === 1) {
-    const result = await sendWhatsAppButtons(to, chunks[0], buttonLabels);
-    return { chunks: 1, results: [result], buttons: buttonLabels.length };
+    /* First-turn welcome + buttons in one chunk: image header on
+       the interactive button message. Single send. */
+    const result = await sendWhatsAppButtons(to, chunks[0], buttonLabels, welcomeImageUrl || null);
+    return { chunks: 1, results: [result], buttons: buttonLabels.length, welcome: !!welcomeImageUrl };
   }
   const results = [];
   for (let i = 0; i < chunks.length - 1; i++) {
-    const result = await sendWhatsAppText(to, chunks[i]);
+    /* On first chunk + welcome image, send image+caption[0]
+       instead of plain text. Subsequent chunks plain text. */
+    const result = (i === 0 && welcomeImageUrl)
+      ? await sendWhatsAppImageWithCaption(to, welcomeImageUrl, chunks[i])
+      : await sendWhatsAppText(to, chunks[i]);
     results.push(result);
     if (result && result.error && i === 0) {
       console.error('[wa] first chunk failed, aborting remaining', chunks.length - 1);
@@ -773,7 +891,7 @@ async function sendWhatsAppReply(to, body, buttonLabels, flowName){
   }
   const buttonResult = await sendWhatsAppButtons(to, chunks[chunks.length - 1], buttonLabels);
   results.push(buttonResult);
-  return { chunks: chunks.length, results, buttons: buttonLabels.length };
+  return { chunks: chunks.length, results, buttons: buttonLabels.length, welcome: !!welcomeImageUrl };
 }
 
 /* Mark the inbound message as read — purely a UX nicety so the
@@ -961,11 +1079,28 @@ async function handleMessage(message){
      the reply to the visitor is never delayed by mail delivery. */
   if (lead)    emailApplication(lead, scoring, 'atlas-whatsapp').catch(e => console.error('[wa] email lead', e && e.message));
   appendHistory(from, 'assistant', visible);
-  const sendResult = await sendWhatsAppReply(from, visible, buttonLabels, flowName);
+  /* First-turn detection: at this point the history contains the
+     visitor's just-appended inbound message and nothing else (no
+     prior assistant turn for this phone). When that's the case AND
+     a welcome image URL is configured, the first chunk goes out
+     as a branded image+caption (or as the interactive header on
+     button/flow messages). Default URL points to the production
+     site so a redeploy alone activates it once the image is
+     committed; override via WHATSAPP_WELCOME_IMAGE_URL. Set to
+     'off' (or empty) to disable. */
+  const isFirstTurn = (history.length === 1);
+  const welcomeRaw = (typeof process.env.WHATSAPP_WELCOME_IMAGE_URL === 'string')
+    ? process.env.WHATSAPP_WELCOME_IMAGE_URL.trim()
+    : 'https://www.himark.co.za/images/whatsapp-welcome.jpg';
+  const welcomeImageUrl = (isFirstTurn && welcomeRaw && welcomeRaw.toLowerCase() !== 'off')
+    ? welcomeRaw
+    : null;
+  const sendResult = await sendWhatsAppReply(from, visible, buttonLabels, flowName, welcomeImageUrl);
   console.log('[wa] reply send result', {
     chunks: sendResult.chunks,
     buttons: sendResult.buttons || 0,
     flow: sendResult.flow || null,
+    welcome: sendResult.welcome || false,
     aborted: sendResult.aborted || false
   }, 'replyPreview:', visible.slice(0, 100));
 }

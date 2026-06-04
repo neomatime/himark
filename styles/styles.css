@@ -4999,7 +4999,14 @@ body.light-nav .topnav{
 .ap-atlas-cta-wa:hover{
   /* On hover, lose the glass and become solid WhatsApp green — the
      "channel is now live" cue. Backdrop-filter doesn't apply once
-     the bg is solid. */
+     the bg is solid. The base rule above uses !important on
+     background and border-color (to win against earlier non-glass
+     declarations), so the hover state must also use !important to
+     swap them — otherwise the white glass background sticks and
+     the green never appears. */
+  background: #25D366 !important;
+  border-color: #25D366 !important;
+  color: #ffffff !important;
   -webkit-backdrop-filter: none;
           backdrop-filter: none;
   box-shadow:

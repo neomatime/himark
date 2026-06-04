@@ -35,23 +35,23 @@ body[data-page="direct"],
 body[data-page="intake"]{
   background: #D8E3E8;        /* pastel sky around the card (visible during overscroll) */
 }
-body[data-page="home"]      .topnav,
-body[data-page="doctrine"]  .topnav,
-body[data-page="mandates"]  .topnav,
-body[data-page="principals"].topnav,
-body[data-page="direct"]    .topnav,
-body[data-page="intake"]    .topnav{
+body[data-page="home"] .topnav,
+body[data-page="doctrine"] .topnav,
+body[data-page="mandates"] .topnav,
+body[data-page="principals"] .topnav,
+body[data-page="direct"] .topnav,
+body[data-page="intake"] .topnav{
   display: none !important;
 }
 
 /* Full-bleed page frame — pages cover the whole viewport. We do
    NOT touch position/overflow — that's the .page scroller. */
-body[data-page="home"]      .page.redesign,
-body[data-page="doctrine"]  .page.redesign,
-body[data-page="mandates"]  .page.redesign,
-body[data-page="principals"].page.redesign,
-body[data-page="direct"]    .page.redesign,
-body[data-page="intake"]    .page.redesign{
+body[data-page="home"] .page.redesign,
+body[data-page="doctrine"] .page.redesign,
+body[data-page="mandates"] .page.redesign,
+body[data-page="principals"] .page.redesign,
+body[data-page="direct"] .page.redesign,
+body[data-page="intake"] .page.redesign{
   background: var(--off);
   border-radius: 0;
   margin: 0;
@@ -331,12 +331,15 @@ body[data-page="intake"]    .page.redesign{
    them read as actual dividers (not as the same flat field). The
    cells inside stay `--off` so they pop against the white section.
    ==================================================================== */
-body[data-page="mandates"]  .svc-cats-section,
-body[data-page="mandates"]  .svc-tiers-brief,
-body[data-page="mandates"]  .cap-section,
-body[data-page="direct"]    .cap-section{
+body[data-page="mandates"] .svc-cats-section,
+body[data-page="mandates"] .cap-section,
+body[data-page="direct"] .cap-section{
   background: var(--white);
 }
+/* NOTE: .svc-tiers-brief is intentionally NOT in the white-override.
+   The original services.html inline style sets it to var(--midnight)
+   (dark navy/blue) with cream text — that's the engagement-tiers
+   anchor section, kept on purpose. */
 
 
 /* ====================================================================

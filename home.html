@@ -2068,7 +2068,78 @@
   .hero-cta:hover .hero-cta-arrow{
     transform:translate(3px, -3px);
   }
-  /* Tablet + mobile breakpoints + initial-reveal motion are added in Tasks 5 + 7 of the hero redesign plan. */
+  /* Tablet + mobile breakpoints are added in Task 7 of the hero redesign plan. */
+
+  /* ============================================================
+     HERO — initial reveal cascade
+     ============================================================
+     On first paint, each element animates in sequence. Total
+     reveal: ~1.2s from paint. After that the hero sits still. */
+@keyframes hero-fade-in{
+  from { opacity:0; }
+  to   { opacity:1; }
+}
+@keyframes hero-rise-in{
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes hero-rule-draw{
+  from { transform:scaleX(0); transform-origin:left; }
+  to   { transform:scaleX(1); transform-origin:left; }
+}
+
+.hero-photo-img{
+  opacity:0;
+  animation:hero-fade-in 600ms ease-out 0ms forwards;
+}
+.hero-eyebrow{
+  opacity:0;
+  transform:translateY(12px);
+  animation:hero-rise-in 500ms cubic-bezier(.2,.7,.2,1) 200ms forwards;
+}
+.hero-hl > span:nth-child(1){
+  opacity:0;
+  transform:translateY(12px);
+  animation:hero-rise-in 500ms cubic-bezier(.2,.7,.2,1) 320ms forwards;
+}
+.hero-hl > span:nth-child(2){
+  opacity:0;
+  transform:translateY(12px);
+  animation:hero-rise-in 500ms cubic-bezier(.2,.7,.2,1) 420ms forwards;
+}
+.hero-hl > span:nth-child(3){
+  opacity:0;
+  transform:translateY(12px);
+  animation:hero-rise-in 500ms cubic-bezier(.2,.7,.2,1) 520ms forwards;
+}
+.hero-sub{
+  opacity:0;
+  transform:translateY(12px);
+  animation:hero-rise-in 500ms cubic-bezier(.2,.7,.2,1) 640ms forwards;
+}
+.hero-h-rule{
+  transform:scaleX(0);
+  transform-origin:left;
+  animation:hero-rule-draw 400ms ease-out 760ms forwards;
+}
+.hero-cta{
+  opacity:0;
+  animation:hero-fade-in 400ms ease-out 880ms forwards;
+}
+
+/* prefers-reduced-motion — paint instantly at final state */
+@media (prefers-reduced-motion: reduce){
+  .hero-photo-img,
+  .hero-eyebrow,
+  .hero-hl > span,
+  .hero-sub,
+  .hero-h-rule,
+  .hero-cta{
+    animation:none;
+    opacity:1;
+    transform:none;
+  }
+}
   </style>
 
   <script src="images.config.js"></script>

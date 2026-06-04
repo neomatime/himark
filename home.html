@@ -2467,26 +2467,33 @@
      client logo in: change the <img src> inside any .ilm-cell to
      that client's logo file (e.g. images/clients/acme.svg).
      object-fit:contain centres any aspect ratio without cropping. -->
+<!-- TEMPORARY: Eight real-brand logos sourced from Clearbit's free
+     logo CDN (https://logo.clearbit.com/<domain>) to preview how
+     the marquee will read with real client artwork. NOT actual
+     HIMARK clients - these are visual placeholders only. Revert
+     to images/client-logo-placeholder.svg in all cells before
+     shipping. The 8 visible cells are duplicated exactly (aria-
+     hidden:true on the duplicates) to keep the seamless loop. -->
 <section class="home-img-marquee" aria-label="Selected engagements — client logos">
 <span class="ilm-eyebrow">Engagements · select clients</span>
 <div class="home-img-marquee-track">
-<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
-<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
-<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
-<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
-<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
-<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
-<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
-<div class="ilm-cell"><img src="images/client-logo-placeholder.svg" alt="Client logo placeholder" loading="lazy"/></div>
+<div class="ilm-cell"><img src="https://logo.clearbit.com/investec.com" alt="Investec" loading="lazy"/></div>
+<div class="ilm-cell"><img src="https://logo.clearbit.com/discovery.co.za" alt="Discovery" loading="lazy"/></div>
+<div class="ilm-cell"><img src="https://logo.clearbit.com/standardbank.co.za" alt="Standard Bank" loading="lazy"/></div>
+<div class="ilm-cell"><img src="https://logo.clearbit.com/mtn.com" alt="MTN" loading="lazy"/></div>
+<div class="ilm-cell"><img src="https://logo.clearbit.com/stripe.com" alt="Stripe" loading="lazy"/></div>
+<div class="ilm-cell"><img src="https://logo.clearbit.com/shopify.com" alt="Shopify" loading="lazy"/></div>
+<div class="ilm-cell"><img src="https://logo.clearbit.com/apple.com" alt="Apple" loading="lazy"/></div>
+<div class="ilm-cell"><img src="https://logo.clearbit.com/tesla.com" alt="Tesla" loading="lazy"/></div>
 <!-- Duplicate set — the -50% translate loops back here for seamless scroll -->
-<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
-<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
-<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
-<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
-<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
-<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
-<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
-<div class="ilm-cell" aria-hidden="true"><img src="images/client-logo-placeholder.svg" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="https://logo.clearbit.com/investec.com" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="https://logo.clearbit.com/discovery.co.za" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="https://logo.clearbit.com/standardbank.co.za" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="https://logo.clearbit.com/mtn.com" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="https://logo.clearbit.com/stripe.com" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="https://logo.clearbit.com/shopify.com" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="https://logo.clearbit.com/apple.com" alt="" loading="lazy"/></div>
+<div class="ilm-cell" aria-hidden="true"><img src="https://logo.clearbit.com/tesla.com" alt="" loading="lazy"/></div>
 </div>
 </section>
 

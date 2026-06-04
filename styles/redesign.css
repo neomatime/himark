@@ -185,7 +185,7 @@ body[data-page="intake"]    .page.redesign{
   background: linear-gradient(180deg, #B8CFDB 0%, #ECEFF0 100%);
 }
 .hero-editorial.full{
-  min-height: calc(100vh - 64px);
+  min-height: 100vh;          /* exact viewport — card is full-bleed now */
   padding: 120px 56px;
 }
 .hero-editorial.half{

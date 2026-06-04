@@ -340,6 +340,25 @@ body[data-page="direct"]    .cap-section{
 
 
 /* ====================================================================
+   CONTACT PAGE — distribute cap-cell content vertically so the email
+   / CTA / footer line sticks to the bottom of the cell, no matter
+   how tall the row is. Without this, shorter cells (D.02 / D.03)
+   stretched to match D.01's height and left empty whitespace at
+   the bottom. With margin-top:auto on the last paragraph, that
+   space becomes deliberate breathing room between the description
+   and the contact line.
+   ==================================================================== */
+body[data-page="direct"] .cap-cell{
+  display: flex;
+  flex-direction: column;
+}
+body[data-page="direct"] .cap-cell > .cap-d:last-child{
+  margin-top: auto;
+  padding-top: 28px;
+}
+
+
+/* ====================================================================
    MOBILE — shrink the pill + stack things.
    ==================================================================== */
 @media (max-width: 1024px){

@@ -2084,10 +2084,11 @@
   to   { opacity:1; transform:translateY(0); }
 }
 @keyframes hero-rule-draw{
-  from { transform:scaleX(0); transform-origin:left; }
-  to   { transform:scaleX(1); transform-origin:left; }
+  from { transform:scaleX(0); }
+  to   { transform:scaleX(1); }
 }
 
+/* Fade-only animations use ease-out; rise-in elements use a softer custom curve below. */
 .hero-photo-img{
   opacity:0;
   animation:hero-fade-in 600ms ease-out 0ms forwards;

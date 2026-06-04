@@ -1,45 +1,51 @@
 /* ====================================================================
-   HIMARK · REDESIGN — rounded card + glass pill nav + editorial hero
+   HIMARK · REDESIGN — pill nav + editorial hero (sticky cover pattern)
    ====================================================================
    Applied per-page via the body[data-page="…"] selectors below. Pages
    that opt in get:
-     - soft pastel sky body background (outside the card)
-     - rounded glass card framing the entire .page wrapper
      - the existing global .topnav hidden
-     - a floating glass pill nav inside the card, brand = framed-H +
-       IMARK lockup (matches the established brand mark)
-     - a centered editorial hero — full-viewport on home, half-sized
-       (banner-style) on the secondary pages
-     - existing sections below the hero (doctrine, orbit, marquee,
-       etc.) stay functional inside the card
+     - a floating glass pill nav, framed-H + IMARK lockup
+     - a centered editorial hero pinned via position:sticky so the
+       sections below scroll UP OVER it on scroll — same cinematic
+       cover pattern the original .hero / .doc-split / .np-hero used
+     - existing sections below the hero keep their original styling
+       and z-index:1 layering so they occlude the sticky hero
 
-   Pages currently opted in: home, doctrine (about), mandates
-   (services), principals (team), direct (contact), intake (apply).
-   Any other page is unaffected.
+   Pages opted in: home, doctrine (about), mandates (services),
+   principals (team), direct (contact), intake (apply).
    ==================================================================== */
 
-/* Pages with the redesign — shared baseline. */
+
+/* ====================================================================
+   PAGE-LEVEL: leave .page untouched as the scroller, hide topnav.
+   The previous version of this file added `position:relative;
+   overflow:hidden` to .page.redesign which BROKE THE INTERNAL
+   SCROLLER — that in turn broke (a) the r3d reveal-on-scroll
+   observer (every section below the fold stayed opacity:0), (b)
+   the sticky-hero scroll-cover effect, and (c) the cap-cell /
+   dpl-cell hover lifts. We now ONLY override the cosmetics
+   (margin / border-radius / page bg) — scrolling is the original
+   .page (position:fixed; inset:0; overflow-y:auto) untouched.
+   ==================================================================== */
 body[data-page="home"],
 body[data-page="doctrine"],
 body[data-page="mandates"],
 body[data-page="principals"],
 body[data-page="direct"],
 body[data-page="intake"]{
-  background: #D8E3E8;        /* soft pastel sky around the card */
+  background: #D8E3E8;        /* pastel sky around the card (visible during overscroll) */
 }
-body[data-page="home"] .topnav,
-body[data-page="doctrine"] .topnav,
-body[data-page="mandates"] .topnav,
-body[data-page="principals"] .topnav,
-body[data-page="direct"] .topnav,
-body[data-page="intake"] .topnav{
-  display: none !important;   /* hide the global topnav on redesigned pages */
+body[data-page="home"]      .topnav,
+body[data-page="doctrine"]  .topnav,
+body[data-page="mandates"]  .topnav,
+body[data-page="principals"].topnav,
+body[data-page="direct"]    .topnav,
+body[data-page="intake"]    .topnav{
+  display: none !important;
 }
 
-/* Full-bleed page frame — the redesigned pages cover the whole
-   viewport. No margin around the card; the pastel body background
-   only shows during overscroll on browsers that paint past the
-   document edge. */
+/* Full-bleed page frame — pages cover the whole viewport. We do
+   NOT touch position/overflow — that's the .page scroller. */
 body[data-page="home"]      .page.redesign,
 body[data-page="doctrine"]  .page.redesign,
 body[data-page="mandates"]  .page.redesign,
@@ -49,19 +55,15 @@ body[data-page="intake"]    .page.redesign{
   background: var(--off);
   border-radius: 0;
   margin: 0;
-  min-height: 100vh;
-  position: relative;
-  overflow: hidden;
 }
 
+
 /* ====================================================================
-   PILL NAV — floating glass plate inside the card at the top.
-   Brand lockup is the original framed-H SVG + IMARK wordmark (NOT
-   the circle-H PNG). Lockup matches the visual language of the
-   existing .topnav-brand so brand recognition carries through.
+   PILL NAV — floating glass plate at top of viewport.
+   position: fixed so it stays pinned regardless of .page scroll.
    ==================================================================== */
 .pill-nav{
-  position: absolute;
+  position: fixed;
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
@@ -87,23 +89,29 @@ body[data-page="intake"]    .page.redesign{
 .pn-links{ justify-self:center; }
 .pn-cta{   justify-self:end;   }
 
-/* Brand lockup — exact framed-H SVG + IMARK wordmark from the
-   global topnav, scaled to fit the pill. */
+/* Brand lockup — framed-H SVG + IMARK wordmark, both normalised to
+   the same visual height so the lockup reads balanced (the previous
+   version had a 32px-tall mark next to a 22px wordmark which made
+   the H look like it was floating above the type baseline). The
+   IMARK PNG is 367×99 px (aspect 3.71:1); at 22px tall the wordmark
+   width is 22 × 3.71 ≈ 82px. The framed-H SVG viewBox is 140×200
+   (aspect 0.70); at 26px tall the SVG width is 26 × 0.70 ≈ 18px,
+   and the internal stroke padding means the visible H glyph reads
+   at ~22px — same optical height as the wordmark. */
 .pn-brand{
   display: inline-flex;
   align-items: center;
-  gap: 0;
+  gap: 6px;
   color: var(--midnight);
   text-decoration: none;
   height: 32px;
   line-height: 1;
 }
 .pn-brand-mark{
-  width: 22px;
-  height: 32px;
+  width: 18px;
+  height: 26px;
   display: inline-block;
   flex-shrink: 0;
-  margin-right: -4px;
 }
 .pn-brand-mark svg{
   width: 100%;
@@ -112,7 +120,7 @@ body[data-page="intake"]    .page.redesign{
 }
 .pn-brand-imark{
   display: inline-block;
-  width: 84px;
+  width: 82px;
   height: 22px;
   background-color: var(--midnight);
   -webkit-mask: url('../images/IMARK.png') no-repeat center / contain;
@@ -165,17 +173,21 @@ body[data-page="intake"]    .page.redesign{
 }
 .pn-cta:hover{ background: var(--ink-deep); }
 
+
 /* ====================================================================
-   EDITORIAL HERO — shared base.
-     - .hero-editorial         (any page)         — base styles
-     - .hero-editorial.full    (home only)        — full viewport
-     - .hero-editorial.half    (secondary pages)  — half-sized banner
-   Sharp full-bleed architectural image as background (no blur on
-   secondary pages; light wash for text contrast). Home variant
-   gets a soft blur for the more atmospheric landing feel.
+   EDITORIAL HERO — sticky-cover pattern.
+     .hero-editorial         (any page)         — base
+     .hero-editorial.full    (home only)        — 100vh sticky
+     .hero-editorial.half    (secondary pages)  — ~50vh sticky
+   The hero sits at z-index:0 and stays pinned (top:0) while every
+   following section, layered at z-index:1 via the rule below,
+   scrolls up and visually covers it. Same pattern the original
+   `.hero` / `.doc-split` / `.np-hero` used.
    ==================================================================== */
 .hero-editorial{
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -185,13 +197,16 @@ body[data-page="intake"]    .page.redesign{
   background: linear-gradient(180deg, #B8CFDB 0%, #ECEFF0 100%);
 }
 .hero-editorial.full{
-  min-height: 100vh;          /* exact viewport — card is full-bleed now */
+  height: 100vh;
+  min-height: 100vh;
   padding: 120px 56px;
 }
 .hero-editorial.half{
+  height: clamp(420px, 50vh, 560px);
   min-height: clamp(420px, 50vh, 560px);
 }
-/* Image: full hero gets blurred; half hero stays sharp. */
+/* Background image: full hero gets a soft blur (atmospheric landing);
+   half hero stays sharp (banner). */
 .hero-editorial::before{
   content: '';
   position: absolute;
@@ -289,8 +304,44 @@ body[data-page="intake"]    .page.redesign{
   transform: translateY(-2px);
 }
 
-/* Mobile — shrink the pill + stack things. Page itself stays
-   full-bleed across all viewports. */
+
+/* ====================================================================
+   SECTION LAYERING — every direct child of .page.redesign except
+   .pill-nav and .hero-editorial gets z-index:1 + position:relative
+   so it occludes the sticky hero on scroll. Without this, sections
+   without their own z-index would scroll behind the hero.
+   ==================================================================== */
+.page.redesign > *:not(.pill-nav):not(.hero-editorial){
+  position: relative;
+  z-index: 1;
+}
+/* Soft top-edge shadow on the FIRST section that rises over the
+   hero — same "lift" the original `.doc-decl` / `.mnd-cards` had. */
+.page.redesign > .hero-editorial + *{
+  box-shadow: 0 -24px 60px rgba(28,43,58,.10), 0 -1px 0 rgba(28,43,58,.06);
+}
+
+
+/* ====================================================================
+   SECTION BACKGROUND OVERRIDES — the original styles.css set
+   `.svc-cats-section`, `.svc-tiers-brief`, and `.cap-section`
+   to `var(--off)` so they all matched the page background. On
+   the redesigned pages we want these standalone content sections
+   on pure WHITE so the off-white `.s-num-bar` dividers between
+   them read as actual dividers (not as the same flat field). The
+   cells inside stay `--off` so they pop against the white section.
+   ==================================================================== */
+body[data-page="mandates"]  .svc-cats-section,
+body[data-page="mandates"]  .svc-tiers-brief,
+body[data-page="mandates"]  .cap-section,
+body[data-page="direct"]    .cap-section{
+  background: var(--white);
+}
+
+
+/* ====================================================================
+   MOBILE — shrink the pill + stack things.
+   ==================================================================== */
 @media (max-width: 1024px){
   .pill-nav{ width: calc(100% - 32px); }
 }
@@ -302,12 +353,21 @@ body[data-page="intake"]    .page.redesign{
     top: 12px;
   }
   .pn-links{ display: none; }
-  .pn-brand-mark{ width: 18px; height: 26px; }
+  .pn-brand-mark{ width: 15px; height: 22px; }
   .pn-brand-imark{ width: 68px; height: 18px; }
   .pn-cta{ height: 32px; padding: 0 12px; font-size: 9px; }
   .hero-editorial{ padding: 80px 22px 40px; }
   .hero-editorial.full{ padding: 96px 22px; }
-  .hero-editorial.half{ min-height: clamp(360px, 50vh, 480px); }
+  .hero-editorial.half{
+    height: clamp(360px, 50vh, 480px);
+    min-height: clamp(360px, 50vh, 480px);
+  }
   .heroe-hl{ font-size: clamp(28px, 7vw, 36px); }
   .heroe-sub{ max-width: none; font-size: 14px; }
+}
+
+/* Reduced motion — drop sticky so the hero just scrolls normally.
+   Same pattern the original `.doc-split` rules used. */
+@media (prefers-reduced-motion: reduce){
+  .hero-editorial{ position: relative; }
 }

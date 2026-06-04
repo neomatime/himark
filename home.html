@@ -311,82 +311,6 @@
     .topnav-brand-imark{ width: 92px; height: 22px; }
   }
 
-  /* ── HERO ───────────────────────────────────────────────── */
-  .home-hero{
-    padding: 140px 32px 120px;
-    background: var(--off);
-  }
-  .home-hero-inner{
-    max-width: 1280px;
-    margin: 0 auto;
-  }
-  .home-hero-eyebrow{
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: .22em;
-    color: var(--ocean);
-    text-transform: uppercase;
-    margin: 0 0 28px;
-  }
-  .home-hero-hl{
-    font-family: 'Source Sans 3', sans-serif;
-    font-weight: 300;
-    font-size: clamp(48px, 7vw, 104px);
-    line-height: .98;
-    letter-spacing: -.02em;
-    color: var(--midnight);
-    margin: 0 0 36px;
-    max-width: 14ch;
-  }
-  .home-hero-hl em{
-    font-style: italic;
-    font-weight: 300;
-    color: var(--ocean-dk);
-  }
-  .home-hero-sub{
-    font-family: 'Roboto', sans-serif;
-    font-weight: 300;
-    font-size: 19px;
-    line-height: 1.55;
-    color: var(--ocean-dk);
-    margin: 0 0 48px;
-    max-width: 580px;
-  }
-  .home-hero-cta{
-    display: inline-flex;
-    align-items: center;
-    gap: 16px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    letter-spacing: .2em;
-    text-transform: uppercase;
-    color: var(--midnight);
-    background: var(--ocean-lt);
-    padding: 20px 32px;
-    text-decoration: none;
-    border-radius: 2px;
-    transition: background-color .2s ease, color .2s ease;
-  }
-  .home-hero-cta:hover,
-  .home-hero-cta:focus-visible{
-    background: var(--off);
-    color: var(--midnight);
-    outline: none;
-  }
-  .home-hero-cta-arrow{
-    font-size: 16px;
-    transition: transform .25s ease;
-  }
-  .home-hero-cta:hover .home-hero-cta-arrow{
-    transform: translateX(6px);
-  }
-
-  @media (max-width: 768px){
-    .home-hero{ padding: 80px 24px 72px; }
-    .home-hero-sub{ font-size: 17px; margin-bottom: 36px; }
-    .home-hero-cta{ padding: 18px 26px; font-size: 11px; }
-  }
-
   /* ── DOCTRINE — four pillars, scroll-revealed ───────────────
      Replaces the old looping marquee. Each pillar is a numbered
      editorial card: oversized mono numeral, italic doctrine line,
@@ -1808,52 +1732,6 @@
     font-weight: 700 !important;
   }
 
-  /* ── Hero CTAs — primary (Apply) + soft secondary (Doctrine).
-     Side-by-side on desktop; stack on narrow screens where they
-     would otherwise truncate. */
-  #page-home .hero-meta-r{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 14px;
-    align-items: center;
-  }
-  #page-home .home-hero-cta-soft{
-    background: transparent !important;
-    color: var(--off) !important;
-    border: 1px solid rgba(247,247,245,.5);
-  }
-  #page-home .home-hero-cta-soft:hover,
-  #page-home .home-hero-cta-soft:focus-visible{
-    background: rgba(247,247,245,.08) !important;
-    border-color: rgba(247,247,245,.9);
-    color: var(--off) !important;
-  }
-  @media (max-width: 520px){
-    #page-home .hero-meta-r{
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 10px;
-    }
-    #page-home .hero-meta-r .home-hero-cta{ width: 100%; justify-content: space-between; }
-  }
-
-  /* ── Hero headline — smaller per user request ──────────────
-     Original was clamp(54px, 8vw, 128px) — overpowered the
-     space. Trimmed to roughly half. */
-  #page-home .hero-hl{
-    font-size: clamp(34px, 4.4vw, 72px) !important;
-    line-height: 1.02 !important;
-    letter-spacing: -.01em !important;
-  }
-  #page-home .hero-eyebrow{
-    margin-bottom: 18px !important;
-  }
-  #page-home .hero-meta-l{
-    font-size: 15px !important;
-    max-width: 480px !important;
-  }
-
   /* ── Footer wordmark — full landing-page lockup: framed-H +
      IMARK image flush together (gap:0, same as index.html). */
   .footer .ft-wm{
@@ -2044,6 +1922,153 @@
         outline: none;
       }
     }
+
+  /* ============================================================
+     HERO — Rowan-editorial asymmetric split
+     ============================================================ */
+  .hero{
+    position:relative;
+    width:100%;
+    height:100vh;
+    min-height:680px;
+    background:var(--off);
+    overflow:hidden;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:40% 1px 1fr;
+    height:100%;
+    width:100%;
+  }
+
+  /* LEFT — photograph + brand mark */
+  .hero-photo{
+    position:relative;
+    background:#0E1822;    /* dark fallback when image hasn't loaded */
+    overflow:hidden;
+  }
+  .hero-photo-img{
+    position:absolute;
+    inset:0;
+    background-image:url('images/home-hero.jpg');
+    background-size:cover;
+    background-position:center;
+    filter:grayscale(1) contrast(1.05);
+  }
+  .hero-photo-mark{
+    position:absolute;
+    bottom:32px;
+    left:32px;
+    opacity:.55;
+    z-index:1;
+  }
+
+  /* VERTICAL HAIRLINE between photo and content */
+  .hero-rule{
+    background:rgba(95,129,144,.30);
+    width:1px;
+    height:100%;
+  }
+
+  /* RIGHT — content panel */
+  .hero-content{
+    position:relative;
+    padding:0 clamp(40px, 6vw, 88px) clamp(80px, 10vh, 120px);
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;   /* content sits in lower portion */
+    align-items:flex-start;
+    gap:18px;
+    max-width:680px;
+  }
+
+  /* Eyebrow */
+  .hero-eyebrow{
+    font-family:var(--f-mono);
+    font-size:10px;
+    font-weight:500;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--ocean);
+    margin:0;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    line-height:1.6;
+  }
+  .hero-eyebrow-rule{
+    display:inline-block;
+    width:24px;
+    height:1px;
+    background:var(--ocean);
+    flex-shrink:0;
+  }
+
+  /* Headline */
+  .hero-hl{
+    font-family:var(--f-disp);
+    font-weight:700;
+    font-size:clamp(40px, 4.4vw, 56px);
+    letter-spacing:.005em;
+    line-height:1.06;
+    color:var(--midnight);
+    text-transform:uppercase;
+    margin:8px 0 12px;
+    max-width:560px;
+  }
+  .hero-hl > span{ display:block; }
+
+  /* Supporting paragraph */
+  .hero-sub{
+    font-family:var(--f-body);
+    font-weight:300;
+    font-size:14px;
+    line-height:1.75;
+    color:var(--ink-mut);
+    max-width:440px;
+    margin:0;
+  }
+
+  /* Horizontal compositional hairline above the CTA */
+  .hero-h-rule{
+    width:80px;
+    height:1px;
+    background:rgba(28,43,58,.12);
+    margin:18px 0 6px;
+  }
+
+  /* CTA — text + arrow only, no button chrome */
+  .hero-cta{
+    display:inline-flex;
+    align-items:center;
+    gap:14px;
+    font-family:var(--f-mono);
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--midnight);
+    text-decoration:none;
+    padding:6px 0;
+    border-bottom:1px solid transparent;
+    cursor:none;
+    transition:border-color .25s var(--ease), gap .35s var(--ease), color .25s var(--ease);
+  }
+  .hero-cta:hover,
+  .hero-cta:focus-visible{
+    border-bottom-color:var(--midnight);
+    gap:18px;
+    outline:none;
+    color:#000;
+  }
+  .hero-cta-arrow{
+    font-size:14px;
+    line-height:1;
+    transition:transform .35s var(--ease);
+  }
+  .hero-cta:hover .hero-cta-arrow{
+    transform:translate(3px, -3px);
+  }
   </style>
 
   <script src="images.config.js"></script>

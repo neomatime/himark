@@ -36,7 +36,10 @@ body[data-page="intake"] .topnav{
   display: none !important;   /* hide the global topnav on redesigned pages */
 }
 
-/* Rounded glass card — wraps each redesigned page. */
+/* Full-bleed page frame — the redesigned pages cover the whole
+   viewport. No margin around the card; the pastel body background
+   only shows during overscroll on browsers that paint past the
+   document edge. */
 body[data-page="home"]      .page.redesign,
 body[data-page="doctrine"]  .page.redesign,
 body[data-page="mandates"]  .page.redesign,
@@ -44,13 +47,9 @@ body[data-page="principals"].page.redesign,
 body[data-page="direct"]    .page.redesign,
 body[data-page="intake"]    .page.redesign{
   background: var(--off);
-  border-radius: 24px;
-  margin: 32px;
-  min-height: calc(100vh - 64px);
-  box-shadow:
-    0 24px 56px -16px rgba(28,43,58,.18),
-    0 1px 0 rgba(255,255,255,.50) inset,
-    0 -1px 0 rgba(28,43,58,.06) inset;
+  border-radius: 0;
+  margin: 0;
+  min-height: 100vh;
   position: relative;
   overflow: hidden;
 }
@@ -290,30 +289,12 @@ body[data-page="intake"]    .page.redesign{
   transform: translateY(-2px);
 }
 
-/* Mobile — tighten the card margin, shrink the pill, stack things. */
+/* Mobile — shrink the pill + stack things. Page itself stays
+   full-bleed across all viewports. */
 @media (max-width: 1024px){
-  body[data-page="home"]      .page.redesign,
-  body[data-page="doctrine"]  .page.redesign,
-  body[data-page="mandates"]  .page.redesign,
-  body[data-page="principals"].page.redesign,
-  body[data-page="direct"]    .page.redesign,
-  body[data-page="intake"]    .page.redesign{
-    margin: 16px;
-    border-radius: 18px;
-    min-height: calc(100vh - 32px);
-  }
   .pill-nav{ width: calc(100% - 32px); }
 }
 @media (max-width: 768px){
-  body[data-page="home"]      .page.redesign,
-  body[data-page="doctrine"]  .page.redesign,
-  body[data-page="mandates"]  .page.redesign,
-  body[data-page="principals"].page.redesign,
-  body[data-page="direct"]    .page.redesign,
-  body[data-page="intake"]    .page.redesign{
-    margin: 8px;
-    border-radius: 14px;
-  }
   .pill-nav{
     width: calc(100% - 16px);
     height: 48px;

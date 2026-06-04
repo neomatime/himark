@@ -311,6 +311,82 @@
     .topnav-brand-imark{ width: 92px; height: 22px; }
   }
 
+  /* ── HERO ───────────────────────────────────────────────── */
+  .home-hero{
+    padding: 140px 32px 120px;
+    background: var(--off);
+  }
+  .home-hero-inner{
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .home-hero-eyebrow{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .22em;
+    color: var(--ocean);
+    text-transform: uppercase;
+    margin: 0 0 28px;
+  }
+  .home-hero-hl{
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    font-size: clamp(48px, 7vw, 104px);
+    line-height: .98;
+    letter-spacing: -.02em;
+    color: var(--midnight);
+    margin: 0 0 36px;
+    max-width: 14ch;
+  }
+  .home-hero-hl em{
+    font-style: italic;
+    font-weight: 300;
+    color: var(--ocean-dk);
+  }
+  .home-hero-sub{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--ocean-dk);
+    margin: 0 0 48px;
+    max-width: 580px;
+  }
+  .home-hero-cta{
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--midnight);
+    background: var(--ocean-lt);
+    padding: 20px 32px;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: background-color .2s ease, color .2s ease;
+  }
+  .home-hero-cta:hover,
+  .home-hero-cta:focus-visible{
+    background: var(--off);
+    color: var(--midnight);
+    outline: none;
+  }
+  .home-hero-cta-arrow{
+    font-size: 16px;
+    transition: transform .25s ease;
+  }
+  .home-hero-cta:hover .home-hero-cta-arrow{
+    transform: translateX(6px);
+  }
+
+  @media (max-width: 768px){
+    .home-hero{ padding: 80px 24px 72px; }
+    .home-hero-sub{ font-size: 17px; margin-bottom: 36px; }
+    .home-hero-cta{ padding: 18px 26px; font-size: 11px; }
+  }
+
   /* ── DOCTRINE — four pillars, scroll-revealed ───────────────
      Replaces the old looping marquee. Each pillar is a numbered
      editorial card: oversized mono numeral, italic doctrine line,
@@ -914,38 +990,6 @@
   .doctrine-stage > .orbit-section{
     position: relative;
     z-index: 2;
-  }
-
-  /* ============================================================
-     HERO → DOCTRINE — scroll-mask transition
-     ============================================================
-     Soft glass plate at the very top of the doctrine stage.
-     As the user scrolls down, this pseudo-element rides the top
-     edge of .doctrine-stage and reads as a frosted leading edge
-     sliding up over whatever is behind it (hero, last section).
-     Pure CSS — no scroll JS. ::before / ::after on .home-doctrine
-     are already occupied by the decorative hairlines, so we
-     anchor the mask on .doctrine-stage::before instead.
-     .doctrine-stage already has position:relative, so absolute
-     positioning inside it works correctly. */
-  .doctrine-stage::before{
-    content: '';
-    position: absolute;
-    top: -32px;
-    left: 0;
-    right: 0;
-    height: 64px;
-    /* rgba(247,247,245,X) is the decimal form of --off (#F7F7F5) with alpha. */
-    background: linear-gradient(
-      to bottom,
-      rgba(247,247,245,0) 0%,
-      rgba(247,247,245,.55) 50%,
-      rgba(247,247,245,.95) 100%
-    );
-    -webkit-backdrop-filter: blur(14px) saturate(125%);
-            backdrop-filter: blur(14px) saturate(125%);
-    pointer-events: none;
-    z-index: 0;
   }
 
   /* ── DOCTRINE → ORBIT BRIDGE — editorial chapter break ────────
@@ -1764,6 +1808,52 @@
     font-weight: 700 !important;
   }
 
+  /* ── Hero CTAs — primary (Apply) + soft secondary (Doctrine).
+     Side-by-side on desktop; stack on narrow screens where they
+     would otherwise truncate. */
+  #page-home .hero-meta-r{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+  }
+  #page-home .home-hero-cta-soft{
+    background: transparent !important;
+    color: var(--off) !important;
+    border: 1px solid rgba(247,247,245,.5);
+  }
+  #page-home .home-hero-cta-soft:hover,
+  #page-home .home-hero-cta-soft:focus-visible{
+    background: rgba(247,247,245,.08) !important;
+    border-color: rgba(247,247,245,.9);
+    color: var(--off) !important;
+  }
+  @media (max-width: 520px){
+    #page-home .hero-meta-r{
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    #page-home .hero-meta-r .home-hero-cta{ width: 100%; justify-content: space-between; }
+  }
+
+  /* ── Hero headline — smaller per user request ──────────────
+     Original was clamp(54px, 8vw, 128px) — overpowered the
+     space. Trimmed to roughly half. */
+  #page-home .hero-hl{
+    font-size: clamp(34px, 4.4vw, 72px) !important;
+    line-height: 1.02 !important;
+    letter-spacing: -.01em !important;
+  }
+  #page-home .hero-eyebrow{
+    margin-bottom: 18px !important;
+  }
+  #page-home .hero-meta-l{
+    font-size: 15px !important;
+    max-width: 480px !important;
+  }
+
   /* ── Footer wordmark — full landing-page lockup: framed-H +
      IMARK image flush together (gap:0, same as index.html). */
   .footer .ft-wm{
@@ -1954,275 +2044,6 @@
         outline: none;
       }
     }
-
-  /* ============================================================
-     HERO — Rowan-editorial asymmetric split
-     ============================================================ */
-  .hero{
-    position:relative;
-    width:100%;
-    height:100vh;
-    min-height:680px;
-    background:var(--off);
-    overflow:hidden;
-  }
-  .hero-grid{
-    display:grid;
-    grid-template-columns:40% 1px 1fr;
-    height:100%;
-    width:100%;
-  }
-
-  /* LEFT — photograph + brand mark */
-  .hero-photo{
-    position:relative;
-    background:#0E1822;    /* dark fallback when image hasn't loaded */
-    overflow:hidden;
-  }
-  .hero-photo-img{
-    position:absolute;
-    inset:0;
-    background-image:url('images/home-hero.jpg');
-    background-size:cover;
-    background-position:center;
-    filter:grayscale(1) contrast(1.05);
-  }
-  .hero-photo-mark{
-    position:absolute;
-    bottom:32px;
-    left:32px;
-    opacity:.55;
-    z-index:1;
-  }
-
-  /* VERTICAL HAIRLINE between photo and content */
-  .hero-rule{
-    background:rgba(95,129,144,.30);
-    width:1px;
-    height:100%;
-  }
-
-  /* RIGHT — content panel */
-  .hero-content{
-    position:relative;
-    padding:0 clamp(40px, 6vw, 88px) clamp(80px, 10vh, 120px);
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-end;   /* content sits in lower portion */
-    align-items:flex-start;
-    gap:18px;
-    max-width:680px;
-  }
-
-  /* Eyebrow */
-  .hero-eyebrow{
-    font-family:var(--f-mono);
-    font-size:10px;
-    font-weight:500;
-    letter-spacing:.22em;
-    text-transform:uppercase;
-    color:var(--ocean);
-    margin:0;
-    display:flex;
-    align-items:center;
-    gap:14px;
-    line-height:1.6;
-  }
-  .hero-eyebrow-rule{
-    display:inline-block;
-    width:24px;
-    height:1px;
-    background:var(--ocean);
-    flex-shrink:0;
-  }
-
-  /* Headline */
-  .hero-hl{
-    font-family:var(--f-disp);
-    font-weight:700;
-    font-size:clamp(40px, 4.4vw, 56px);
-    letter-spacing:.005em;
-    line-height:1.06;
-    color:var(--midnight);
-    text-transform:uppercase;
-    margin:8px 0 12px;
-    max-width:560px;
-  }
-  .hero-hl > span{ display:block; }
-
-  /* Supporting paragraph */
-  .hero-sub{
-    font-family:var(--f-body);
-    font-weight:300;
-    font-size:14px;
-    line-height:1.75;
-    color:var(--ink-mut);
-    max-width:440px;
-    margin:0;
-  }
-
-  /* Horizontal compositional hairline above the CTA */
-  .hero-h-rule{
-    width:80px;
-    height:1px;
-    background:rgba(28,43,58,.12);
-    margin:18px 0 6px;
-  }
-
-  /* CTA — text + arrow only, no button chrome */
-  .hero-cta{
-    display:inline-flex;
-    align-items:center;
-    gap:14px;
-    font-family:var(--f-mono);
-    font-size:11px;
-    font-weight:600;
-    letter-spacing:.18em;
-    text-transform:uppercase;
-    color:var(--midnight);
-    text-decoration:none;
-    padding:6px 0;
-    border-bottom:1px solid transparent;
-    cursor:none;
-    transition:border-color .25s var(--ease), gap .35s var(--ease), color .25s var(--ease);
-  }
-  .hero-cta:hover,
-  .hero-cta:focus-visible{
-    border-bottom-color:var(--midnight);
-    gap:18px;
-    outline:none;
-  }
-  .hero-cta-arrow{
-    font-size:14px;
-    line-height:1;
-    transition:transform .35s var(--ease);
-  }
-  .hero-cta:hover .hero-cta-arrow{
-    transform:translate(3px, -3px);
-  }
-  /* Tablet + mobile breakpoints are added in Task 7 of the hero redesign plan. */
-
-  /* ============================================================
-     HERO — responsive
-     ============================================================ */
-
-  /* Tablet: nudge split ratio, scale headline down */
-  @media (max-width: 1024px){
-    .hero-grid{ grid-template-columns:38% 1px 1fr; }
-    .hero-hl{ font-size:clamp(32px, 4.5vw, 44px); }
-    .hero-photo-mark{ width:28px; height:35px; bottom:24px; left:24px; }
-    .hero-content{ padding:0 32px 80px; }
-  }
-
-  /* Mobile: stack vertically — photo on top, content below */
-  @media (max-width: 768px){
-    .hero{ height:auto; min-height:0; }
-    .hero-grid{
-      grid-template-columns:1fr;
-      grid-template-rows:45vh 1fr;
-      height:auto;
-    }
-    .hero-rule{ display:none; }     /* vertical hairline collapses on stack */
-    .hero-photo{ width:100%; height:45vh; }
-    .hero-content{
-      padding:48px 24px 56px;
-      max-width:none;
-      gap:14px;
-    }
-    .hero-eyebrow{ font-size:9px; gap:10px; }
-    .hero-eyebrow-rule{ width:18px; }
-    .hero-hl{
-      font-size:clamp(28px, 7vw, 36px);
-      margin:6px 0 10px;
-      max-width:none;
-    }
-    .hero-sub{ max-width:none; font-size:13.5px; }
-    .hero-h-rule{ margin:12px 0 4px; }
-    .hero-photo-mark{ bottom:20px; left:auto; right:20px; }
-  }
-
-  /* Small mobile: compress photograph further. Headline weight 700
-     is inherited from the desktop base rule on .hero-hl; the three
-     <span> children with display:block (Task 3) already act as line
-     breaks, equivalent to the spec's "<br> breaks" requirement. */
-  @media (max-width: 400px){
-    .hero-grid{ grid-template-rows:40vh 1fr; }
-    .hero-photo{ height:40vh; }
-    .hero-content{ padding:36px 20px 48px; }
-    .hero-hl{ font-weight:700; }  /* belt-and-suspenders: confirm spec literal */
-  }
-
-  /* ============================================================
-     HERO — initial reveal cascade
-     ============================================================
-     On first paint, each element animates in sequence. Total
-     reveal: ~1.2s from paint. After that the hero sits still. */
-@keyframes hero-fade-in{
-  from { opacity:0; }
-  to   { opacity:1; }
-}
-@keyframes hero-rise-in{
-  from { opacity:0; transform:translateY(12px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-@keyframes hero-rule-draw{
-  from { transform:scaleX(0); }
-  to   { transform:scaleX(1); }
-}
-
-/* Fade-only animations use ease-out; rise-in elements use a softer custom curve below. */
-.hero-photo-img{
-  opacity:0;
-  animation:hero-fade-in 600ms ease-out 0ms forwards;
-}
-.hero-eyebrow{
-  opacity:0;
-  transform:translateY(12px);
-  animation:hero-rise-in 500ms cubic-bezier(.2,.7,.2,1) 200ms forwards;
-}
-.hero-hl > span:nth-child(1){
-  opacity:0;
-  transform:translateY(12px);
-  animation:hero-rise-in 500ms cubic-bezier(.2,.7,.2,1) 320ms forwards;
-}
-.hero-hl > span:nth-child(2){
-  opacity:0;
-  transform:translateY(12px);
-  animation:hero-rise-in 500ms cubic-bezier(.2,.7,.2,1) 420ms forwards;
-}
-.hero-hl > span:nth-child(3){
-  opacity:0;
-  transform:translateY(12px);
-  animation:hero-rise-in 500ms cubic-bezier(.2,.7,.2,1) 520ms forwards;
-}
-.hero-sub{
-  opacity:0;
-  transform:translateY(12px);
-  animation:hero-rise-in 500ms cubic-bezier(.2,.7,.2,1) 640ms forwards;
-}
-.hero-h-rule{
-  transform:scaleX(0);
-  transform-origin:left;
-  animation:hero-rule-draw 400ms ease-out 760ms forwards;
-}
-.hero-cta{
-  opacity:0;
-  animation:hero-fade-in 400ms ease-out 880ms forwards;
-}
-
-/* prefers-reduced-motion — paint instantly at final state */
-@media (prefers-reduced-motion: reduce){
-  .hero-photo-img,
-  .hero-eyebrow,
-  .hero-hl > span,
-  .hero-sub,
-  .hero-h-rule,
-  .hero-cta{
-    animation:none;
-    opacity:1;
-    transform:none;
-  }
-}
   </style>
 
   <script src="images.config.js"></script>
@@ -2292,45 +2113,31 @@
      work without modification. -->
 <div class="page" id="page-home">
 
-<!-- HERO — Rowan-editorial asymmetric split. CSS is in the inline <style> block. -->
-<section class="hero" aria-label="HIMARK · founder-led growth">
-<div class="hero-grid">
-
-<!-- LEFT — B&W architectural photograph + brand mark -->
-<div class="hero-photo" aria-hidden="true">
-<div class="hero-photo-img"></div>
-<svg class="hero-photo-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 200" width="32" height="40" aria-hidden="true" focusable="false">
-<g fill="#ffffff">
-<rect x="14" y="14" width="38" height="170"/>
-<rect x="88" y="14" width="38" height="170"/>
-<rect x="52" y="85" width="16" height="30"/>
-<rect x="72" y="85" width="16" height="30"/>
-</g>
-<rect x="4" y="4" width="132" height="192" fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter"/>
-</svg>
+<!-- HERO — restored kinetic scrolling landing.
+     Grid overlay and mono coord captions removed per user request
+     for a cleaner, less editorial-debug look. -->
+<section class="hero snap-section">
+<!--<video class="hero-video" src="video/hero.mp4" autoplay loop muted playsinline preload="auto"></video>-->
+<canvas class="hero-canvas" aria-hidden="true"></canvas>
+<div class="hero-c">
+<p class="hero-eyebrow">Principal-led · By application</p>
+<h1 class="hero-hl">An institution for<span>founder-led growth.</span></h1>
+<div class="hero-meta-row">
+<p class="hero-meta-l">We design and operate the strategic infrastructure beneath founder-led businesses — brand, demand, AI, principal counsel. Built to compound, not to launch.</p>
+<div class="hero-meta-r">
+<a href="apply.html" class="home-hero-cta"><span>Apply for Engagement</span><span class="home-hero-cta-arrow" aria-hidden="true">→</span></a>
+<a href="https://wa.me/27691174120" target="_blank" rel="noopener noreferrer" class="home-hero-cta home-hero-cta-soft"><span>Message on WhatsApp</span><span class="home-hero-cta-arrow" aria-hidden="true">→</span></a>
 </div>
-
-<!-- VERTICAL HAIRLINE between photo and content -->
-<div class="hero-rule" aria-hidden="true"></div>
-
-<!-- RIGHT — content panel -->
-<div class="hero-content">
-<p class="hero-eyebrow"><span class="hero-eyebrow-rule" aria-hidden="true"></span>STRATEGIC GROWTH CONSULTANCY  ·  RANDBURG  ·  BY APPLICATION</p>
-<h1 class="hero-hl">
-<span>WHEN GROWTH STALLS,</span>
-<span>YOU NEED MORE THAN A CONSULTANT.</span>
-<span>YOU NEED A PARTNER.</span>
-</h1>
-<p class="hero-sub">HIMARK is a strategic growth consultancy for founder-led firms ready to compound. We design and operate the brand, demand, and AI infrastructure beneath your next chapter — anchored by a senior principal, by application only.</p>
-<div class="hero-h-rule" aria-hidden="true"></div>
-<a href="apply.html" class="hero-cta">
-<span class="hero-cta-l">BEGIN WITH ATLAS</span>
-<span class="hero-cta-arrow" aria-hidden="true">↗</span>
-</a>
 </div>
-
 </div>
 </section>
+
+<!-- 300vh scroll runway. The hero above is position:sticky and stays
+     pinned while the user scrolls through this spacer; meanwhile
+     main.js scrubs the canvas frame-sequence 0 → 299 against the
+     spacer's scroll progress. After the spacer ends, the marquee
+     scrolls up over the released hero. -->
+<div class="hero-spacer" aria-hidden="true"></div>
 
 
 <!-- DOCTRINE STAGE — sticky scroll-over.

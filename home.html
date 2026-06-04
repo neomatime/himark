@@ -2116,28 +2116,44 @@
 <!-- HERO — restored kinetic scrolling landing.
      Grid overlay and mono coord captions removed per user request
      for a cleaner, less editorial-debug look. -->
-<section class="hero snap-section">
-<!--<video class="hero-video" src="video/hero.mp4" autoplay loop muted playsinline preload="auto"></video>-->
-<canvas class="hero-canvas" aria-hidden="true"></canvas>
-<div class="hero-c">
-<p class="hero-eyebrow">Principal-led · By application</p>
-<h1 class="hero-hl">An institution for<span>founder-led growth.</span></h1>
-<div class="hero-meta-row">
-<p class="hero-meta-l">We design and operate the strategic infrastructure beneath founder-led businesses — brand, demand, AI, principal counsel. Built to compound, not to launch.</p>
-<div class="hero-meta-r">
-<a href="apply.html" class="home-hero-cta"><span>Apply for Engagement</span><span class="home-hero-cta-arrow" aria-hidden="true">→</span></a>
-<a href="https://wa.me/27691174120" target="_blank" rel="noopener noreferrer" class="home-hero-cta home-hero-cta-soft"><span>Message on WhatsApp</span><span class="home-hero-cta-arrow" aria-hidden="true">→</span></a>
+<section class="hero" aria-label="HIMARK · founder-led growth">
+<div class="hero-grid">
+
+<!-- LEFT — B&W architectural photograph + brand mark -->
+<div class="hero-photo" aria-hidden="true">
+<div class="hero-photo-img"></div>
+<svg class="hero-photo-mark" viewBox="0 0 140 200" width="32" height="40" aria-hidden="true" focusable="false">
+<g fill="#ffffff">
+<rect x="14" y="14" width="38" height="170"/>
+<rect x="88" y="14" width="38" height="170"/>
+<rect x="52" y="85" width="16" height="30"/>
+<rect x="72" y="85" width="16" height="30"/>
+</g>
+<rect x="4" y="4" width="132" height="192" fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter"/>
+</svg>
 </div>
+
+<!-- VERTICAL HAIRLINE between photo and content -->
+<div class="hero-rule" aria-hidden="true"></div>
+
+<!-- RIGHT — content panel -->
+<div class="hero-content">
+<p class="hero-eyebrow"><span class="hero-eyebrow-rule" aria-hidden="true"></span>STRATEGIC GROWTH CONSULTANCY  ·  RANDBURG  ·  BY APPLICATION</p>
+<h1 class="hero-hl">
+<span>WHEN GROWTH STALLS,</span>
+<span>YOU NEED MORE THAN A CONSULTANT.</span>
+<span>YOU NEED A PARTNER.</span>
+</h1>
+<p class="hero-sub">HIMARK is a strategic growth consultancy for founder-led firms ready to compound. We design and operate the brand, demand, and AI infrastructure beneath your next chapter — anchored by a senior principal, by application only.</p>
+<div class="hero-h-rule" aria-hidden="true"></div>
+<a href="apply.html" class="hero-cta">
+<span class="hero-cta-l">BEGIN WITH ATLAS</span>
+<span class="hero-cta-arrow" aria-hidden="true">↗</span>
+</a>
 </div>
+
 </div>
 </section>
-
-<!-- 300vh scroll runway. The hero above is position:sticky and stays
-     pinned while the user scrolls through this spacer; meanwhile
-     main.js scrubs the canvas frame-sequence 0 → 299 against the
-     spacer's scroll progress. After the spacer ends, the marquee
-     scrolls up over the released hero. -->
-<div class="hero-spacer" aria-hidden="true"></div>
 
 
 <!-- DOCTRINE STAGE — sticky scroll-over.

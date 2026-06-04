@@ -1313,7 +1313,12 @@ window.submitIntake=submitIntake;
   bind('page-security');
 })();
 
-/* HOME HERO — scroll-driven canvas frame-sequence playback.
+/* HOME HERO canvas IIFE retained but inert — it queries `.hero-canvas`
+   which no longer exists on the redesigned home, so the safety check
+   inside returns immediately on every load. Leaving the function in
+   place keeps the rollback story easy. Original comment follows:
+
+   HOME HERO — scroll-driven canvas frame-sequence playback.
    300 sequential JPEGs are preloaded; the user's scroll position through a
    300vh "spacer" below the sticky hero scrubs the canvas from frame 0 to
    frame 299. Result: a cinematic film sequence the visitor scrubs by hand.

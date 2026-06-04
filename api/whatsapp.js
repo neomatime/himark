@@ -51,7 +51,21 @@
 
 const SYSTEM_PROMPT = require('./atlas-knowledge');
 const { scoreLead, BUCKET_CLOSING_LINES, DEFAULT_SUBSTITUTION_TARGET, BUCKET_STANDARD } = require('./scoring');
-const { emailApplication } = require('../lib/mail-application');
+const { emailApplication, emailManualReview } = require('../lib/mail-application');
+
+/* Closing-phrase fingerprint — used by the manual-review safety net
+   below to detect "Atlas closed but Gemini dropped the <lead> block".
+   Mirrors the same fingerprints used in api/chat.js. */
+const CLOSING_FINGERPRINTS = [
+  'A principal will follow up directly within five working days',
+  'A principal will follow up within 24 hours',
+  'A principal will warm up over the next seven working days',
+  'we will be in touch only if circumstances change'
+];
+function containsClosingPhrase(text){
+  if (!text || typeof text !== 'string') return false;
+  return CLOSING_FINGERPRINTS.some(fp => text.includes(fp));
+}
 
 const GEMINI_MODEL = 'gemini-flash-lite-latest';
 /* Audio turns need the FULL Flash variant — gemini-flash-lite-latest is
@@ -1212,6 +1226,16 @@ async function handleMessage(message){
      bookings), and only if RESEND_API_KEY is set. Fire-and-forget so
      the reply to the visitor is never delayed by mail delivery. */
   if (lead)    emailApplication(lead, scoring, 'atlas-whatsapp').catch(e => console.error('[wa] email lead', e && e.message));
+  /* SAFETY NET — same pattern as api/chat.js. When Atlas closes
+     visibly but the <lead> block didn't survive Gemini's emission,
+     send a MANUAL REVIEW email so the team never silently loses an
+     application on WhatsApp either. */
+  if (!lead && containsClosingPhrase(visible)) {
+    console.warn('[wa] closing detected without <lead> block — firing manual review fallback');
+    const recoveryHistory = history.concat([{ role: 'assistant', content: raw }]);
+    emailManualReview(recoveryHistory, 'atlas-whatsapp')
+      .catch(e => console.error('[wa] manual review email exception', e && e.message));
+  }
   /* Persist the assistant turn. Await is intentional so the next
      inbound message (possibly on a different cold lambda) can
      read this turn back from Redis. */

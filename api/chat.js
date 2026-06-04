@@ -49,7 +49,23 @@ function splitIntoChunks(text){
    content. */
 const SYSTEM_PROMPT = require('./atlas-knowledge');
 const { scoreLead, BUCKET_CLOSING_LINES, DEFAULT_SUBSTITUTION_TARGET, BUCKET_STANDARD } = require('./scoring');
-const { emailApplication } = require('../lib/mail-application');
+const { emailApplication, emailManualReview } = require('../lib/mail-application');
+
+/* Closing-phrase fingerprint for the "Atlas closed but dropped the
+   <lead> block" recovery path. We check for the default 5-day closing
+   AND each bucket-adapted variant. If Atlas's visible reply contains
+   any of these AND extractLead returned null, we trigger the manual-
+   review fallback so the team never silently loses an application. */
+const CLOSING_FINGERPRINTS = [
+  'A principal will follow up directly within five working days',
+  'A principal will follow up within 24 hours',
+  'A principal will warm up over the next seven working days',
+  'we will be in touch only if circumstances change'
+];
+function containsClosingPhrase(text){
+  if (!text || typeof text !== 'string') return false;
+  return CLOSING_FINGERPRINTS.some(fp => text.includes(fp));
+}
 
 /* ============================================================
    LEAD + SESSION EXTRACTION
@@ -523,6 +539,18 @@ module.exports = async (req, res) => {
          mail delivery latency. If RESEND_API_KEY is missing the
          module logs and returns gracefully; nothing breaks. */
       emailApplication(lead, scoring, 'atlas-chat').catch(e => console.error('[atlas] email exception (lead)', e && e.message));
+    } else if (containsClosingPhrase(visibleReply)) {
+      /* SAFETY NET — Atlas wrote the closing phrase but Gemini dropped
+         the hidden <lead> block. Without recovery the application is
+         silently lost. Send a MANUAL REVIEW email to apply@himark.co.za
+         with the full conversation transcript so the team hand-enters
+         the contact in HubSpot. Fire-and-forget; visitor sees the
+         normal closing and has no idea anything went wrong server-
+         side. */
+      console.warn('[atlas] closing detected without <lead> block — firing manual review fallback');
+      const recoveryHistory = incoming.concat([{ role: 'assistant', content: rawReply }]);
+      emailManualReview(recoveryHistory, 'atlas-chat')
+        .catch(e => console.error('[atlas] manual review email exception', e && e.message));
     }
     if (session) {
       pushToHubSpot(session, 'session').catch(e => console.error('[atlas] hubspot push exception (session)', e && e.message));

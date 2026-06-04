@@ -916,6 +916,37 @@
     z-index: 2;
   }
 
+  /* ============================================================
+     HERO → DOCTRINE — scroll-mask transition
+     ============================================================
+     Soft glass plate at the very top of the doctrine stage.
+     As the user scrolls down, this pseudo-element rides the top
+     edge of .doctrine-stage and reads as a frosted leading edge
+     sliding up over whatever is behind it (hero, last section).
+     Pure CSS — no scroll JS. ::before / ::after on .home-doctrine
+     are already occupied by the decorative hairlines, so we
+     anchor the mask on .doctrine-stage::before instead.
+     .doctrine-stage already has position:relative, so absolute
+     positioning inside it works correctly. */
+  .doctrine-stage::before{
+    content: '';
+    position: absolute;
+    top: -32px;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: linear-gradient(
+      to bottom,
+      rgba(247,247,245,0) 0%,
+      rgba(247,247,245,.55) 50%,
+      rgba(247,247,245,.95) 100%
+    );
+    -webkit-backdrop-filter: blur(14px) saturate(125%);
+            backdrop-filter: blur(14px) saturate(125%);
+    pointer-events: none;
+    z-index: 3;
+  }
+
   /* ── DOCTRINE → ORBIT BRIDGE — editorial chapter break ────────
      Bold + thin rules sandwich an italic transitional line. Sits
      inside the doctrine-stage with the same z-index as orbit, so

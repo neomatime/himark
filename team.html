@@ -454,25 +454,39 @@
     padding: 24px;
   }
   .principal-modal.is-open{ display: flex; }
+  /* Backdrop — heavier blur so the glass card has a soft scene
+     behind it to blur, not a flat dark wash. The translucent dark
+     fill is unchanged; only the blur radius increased. */
   .principal-modal-backdrop{
     position: absolute; inset: 0;
-    background: rgba(6,12,18,.82);
-    -webkit-backdrop-filter: blur(8px);
-            backdrop-filter: blur(8px);
+    background: rgba(6,12,18,.70);
+    -webkit-backdrop-filter: blur(18px) saturate(125%);
+            backdrop-filter: blur(18px) saturate(125%);
     cursor: none;
     animation: pmFade .25s ease forwards;
   }
+  /* Glass modal card — dark-on-dark glass plate. Translucent
+     midnight gradient + heavy backdrop blur + white rim highlight
+     at the top edge + layered ambient shadow for depth. Matches
+     the established glass UI vocabulary (chat panel, tier cards,
+     orbit shortcut cards) so the modal reads as the same surface
+     language. */
   .principal-modal-card{
     position: relative;
-    background: #1C2B3A;
+    background: linear-gradient(180deg, rgba(28,43,58,.72) 0%, rgba(14,24,34,.78) 100%);
+    -webkit-backdrop-filter: blur(28px) saturate(140%);
+            backdrop-filter: blur(28px) saturate(140%);
     color: #F7F7F5;
     width: 100%; max-width: 880px;
     max-height: calc(100vh - 48px);
     overflow-y: auto;
-    border: 1px solid rgba(138,173,184,.22);
-    box-shadow: 0 30px 60px -10px rgba(0,0,0,.55), 0 0 0 1px rgba(95,129,144,.18);
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow:
+      0 30px 60px -10px rgba(0,0,0,.55),
+      0 1px 0 rgba(255,255,255,.10) inset,
+      0 -1px 0 rgba(0,0,0,.25) inset;
     padding: 40px;
-    border-radius: 2px;
+    border-radius: 8px;
     animation: pmRise .3s cubic-bezier(.2,.7,.15,1) forwards;
   }
   @keyframes pmFade{ from{opacity:0;} to{opacity:1;} }
@@ -503,9 +517,15 @@
   }
   .pm-img{
     width: 220px; height: 220px;
-    background: #1C2B3A;
-    border: 1px solid rgba(138,173,184,.18);
-    border-radius: 2px;
+    /* Subtle glass-on-glass treatment so the portrait container reads
+       as a second-tier surface within the glass modal card. White rim
+       at low opacity matches the modal card's rim language. */
+    background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.02) 100%);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 6px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.08) inset,
+      0 -1px 0 rgba(0,0,0,.20) inset;
     overflow: hidden;
     flex-shrink: 0;
   }
@@ -568,9 +588,19 @@
     color: rgba(226,240,240,.85);
     margin: 0;
   }
+  /* Doctrine quote block — ocean-tinted glass plate within the modal,
+     reads as a quiet pull-quote surface. Left rule kept for the
+     "this is a citation" cue. */
   .pm-doctrine{
-    background: rgba(95,129,144,.1);
+    background: linear-gradient(180deg, rgba(138,173,184,.14) 0%, rgba(95,129,144,.06) 100%);
+    -webkit-backdrop-filter: blur(10px) saturate(125%);
+            backdrop-filter: blur(10px) saturate(125%);
+    border: 1px solid rgba(138,173,184,.18);
     border-left: 2px solid #8AADB8;
+    border-radius: 6px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.08) inset,
+      0 8px 18px -10px rgba(0,0,0,.30);
     padding: 18px 20px;
   }
   .pm-doctrine-q{

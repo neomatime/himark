@@ -3,6 +3,11 @@
    In multi-page mode, [data-page] links resolve to the right URL
    based on the current document's location depth (data-location on <body>). */
 
+/* TODO: After the editorial-hero rollout settles, delete the
+   images/hero-scroll/ directory (300 frame JPEGs, ~5MB). Left
+   in place for a separate cleanup commit per the hero redesign
+   spec. */
+
 (function(){
 'use strict';
 
@@ -1744,8 +1749,8 @@ window.authSubmit=authSubmit;
    variable, so layout never re-flows. */
 (function(){
   // Each entry: { pageId, heroSelector, bgSelector }.
-  // page-home is driven by the canvas frame-sequence scrubber instead —
-  // the cinematic film *is* the motion, no extra zoom on the video layer.
+  // page-home now uses the static editorial hero photograph; no scroll
+  // scrubber to drive — the initial reveal cascade handles the entry motion.
   // page-doctrine kept its bespoke two-column split, so it uses .doc-split /
   // .doc-right-bg. Every other content page (mandates, method, airass,
   // principals, intake, plus the three new surfaces journal/engagements/

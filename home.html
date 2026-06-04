@@ -2141,11 +2141,15 @@
     .hero-photo-mark{ bottom:20px; left:auto; right:20px; }
   }
 
-  /* Small mobile: compress photograph further */
+  /* Small mobile: compress photograph further. Headline weight 700
+     is inherited from the desktop base rule on .hero-hl; the three
+     <span> children with display:block (Task 3) already act as line
+     breaks, equivalent to the spec's "<br> breaks" requirement. */
   @media (max-width: 400px){
     .hero-grid{ grid-template-rows:40vh 1fr; }
     .hero-photo{ height:40vh; }
     .hero-content{ padding:36px 20px 48px; }
+    .hero-hl{ font-weight:700; }  /* belt-and-suspenders: confirm spec literal */
   }
 
   /* ============================================================

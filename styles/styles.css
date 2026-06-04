@@ -3059,8 +3059,27 @@ body.auth-mode #ghost-trail{display:none;}
 }
 .lgl-callout p{font-size:14px;margin:0;}
 
-/* FOOTER */
-.footer{background:var(--ink-deep);padding:88px var(--gx) 44px;position:relative;overflow:hidden;}
+/* FOOTER — glass treatment.
+   Translucent dark gradient + backdrop-filter blur lets the content
+   above (last section of the page) soft-blur through the top edge
+   as the visitor scrolls. White rim border + inset highlight at the
+   top reads as "this is a glass plate, not the page edge". The
+   existing grid pattern overlay (::before) stays intact for the
+   editorial signature. Single edit at the base rule covers every
+   page — the per-page #page-* > .footer overrides only adjust
+   positioning, not background. */
+.footer{
+  background:linear-gradient(180deg, rgba(14,24,34,.68) 0%, rgba(14,24,34,.88) 100%);
+  -webkit-backdrop-filter:blur(24px) saturate(140%);
+          backdrop-filter:blur(24px) saturate(140%);
+  border-top:1px solid rgba(255,255,255,.08);
+  box-shadow:
+    0 -8px 24px -8px rgba(0,0,0,.30),
+    0 1px 0 rgba(255,255,255,.10) inset;
+  padding:88px var(--gx) 44px;
+  position:relative;
+  overflow:hidden;
+}
 .footer::before{content:'';position:absolute;inset:0;background-image:linear-gradient(to right,var(--grid-dk) 1px,transparent 1px);background-size:calc((100vw - 128px)/6) 100%;background-position:64px 0;pointer-events:none;opacity:.4;}
 .footer-coord-tl,.footer-coord-tr{position:absolute;top:32px;font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;color:rgba(95,129,144,.5);}
 .footer-coord-tl{left:var(--gx);} .footer-coord-tr{right:var(--gx);}

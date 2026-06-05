@@ -2862,15 +2862,22 @@ window.authSubmit=authSubmit;
     function update(){
       ticking = false;
       var rect = stage.getBoundingClientRect();
-      var stageHeight = stage.offsetHeight;
       var vh = window.innerHeight;
-      var runway = stageHeight - vh;
-      if (runway <= 0) return;
+      /* Animation runway = the empty .bridge-runway spacer that
+         follows the pin in flow. The full bridge-stage is much
+         taller (pin + runway + s-num-bar + orbit) so we can't use
+         stageHeight here — that would stretch the animation across
+         the whole cover phase too. Fixing the runway at 4×vh
+         (matches the .bridge-runway height in redesign.css; 3×vh
+         under the 768px mobile breakpoint) means animations
+         complete just as the orbit s-num-bar starts rising up to
+         cover the still-pinned video. */
+      var animationRunway = vh * (window.innerWidth <= 768 ? 3 : 4);
 
       var progress;
-      if (rect.top >= 0)              progress = 0;
-      else if (rect.top <= -runway)   progress = 1;
-      else                            progress = Math.abs(rect.top) / runway;
+      if (rect.top >= 0)                      progress = 0;
+      else if (rect.top <= -animationRunway)  progress = 1;
+      else                                    progress = Math.abs(rect.top) / animationRunway;
 
       /* ------- LINE BEATS ------- */
       var activeIdx = -1;

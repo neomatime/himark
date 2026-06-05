@@ -2224,7 +2224,6 @@
      internal animations are driven by scroll progress in main.js
      (no scroll-hijack — just scroll-tied animations). -->
 <section class="bridge-stage" aria-label="Three paths into HIMARK">
-<div class="bridge-track">
 <div class="bridge-pin">
 
 <!-- BACKGROUND STACK — image fades into video as the zoom completes. -->
@@ -2261,17 +2260,21 @@
 </div>
 
 </div><!-- /.bridge-pin -->
-</div><!-- /.bridge-track -->
-</section>
+
+<!-- Empty 400vh scroll runway — gives the bridge-pin's sticky
+     animations room to play (text reveals → zoom → image-to-video
+     crossfade) before the orbit s-num-bar + section start rising
+     up and covering the still-pinned, still-playing video. -->
+<div class="bridge-runway" aria-hidden="true"></div>
 
 <div class="s-num-bar"><span>01.C &middot; ORBIT</span><span>HOME / 02</span><span>03 &middot; PATHS</span></div>
 
-<!-- ORBIT — restored interactive three-paths section.
-     Sits INSIDE the doctrine-stage as the natural scroll runway:
-     the moment doctrine pins at the top, scrolling immediately
-     brings the orbit up over it. No overscroll spacer, no dead
-     time, no gap. The .doctrine-stage > .orbit-section rule
-     gives it z-index:2 so it covers the sticky doctrine (z-index:1). -->
+<!-- ORBIT — three-paths section. Now sits INSIDE .bridge-stage
+     as its scroll-runway tail: once the bridge-runway scrolls
+     past, this section and the s-num-bar above it scroll UP and
+     visually COVER the still-sticky .bridge-pin (z-index:1 over
+     z-index:0). The video underneath keeps looping but is occluded
+     once the orbit section fully covers the viewport. -->
 <section class="orbit-section">
 <span class="orbit-coord-l">[ 01.C.01 · ORBIT ]</span>
 <span class="orbit-coord-r">THREE PATHS · ONE FIRM</span>
@@ -2447,6 +2450,10 @@
 </aside>
 
 </section>
+
+</section><!-- /.bridge-stage — wraps the pin + 400vh runway + the
+     s-num-bar + orbit-section so the latter two scroll UP and cover
+     the still-sticky pin without nested sticky weirdness. -->
 
 <!-- (was: /.doctrine-stage close — moved up after .home-doctrine
      so the bridge-stage and orbit-section can be top-level siblings,

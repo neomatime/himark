@@ -1028,14 +1028,34 @@ body[data-page="home"] .bridge-stage{
   --bridge-progress: 0;
   --bridge-hint-opacity: 1;
 }
-body[data-page="home"] .bridge-track{
-  height: 500vh;
-}
 body[data-page="home"] .bridge-pin{
   position: sticky;
   top: 0;
   height: 100vh;
   overflow: hidden;
+  z-index: 0;
+}
+/* Empty 400vh runway that follows the pin in flow. Gives the
+   bridge-pin's sticky animations room to play through before the
+   orbit s-num-bar + section rise up and cover the pinned video. */
+body[data-page="home"] .bridge-runway{
+  height: 400vh;
+}
+/* Cover layer — the s-num-bar and orbit-section now live INSIDE
+   .bridge-stage (rather than as siblings). When the bridge-runway
+   has scrolled past, these two sit at z-index:1 and visually
+   occlude the still-pinned .bridge-pin (z-index:0) below. The
+   solid backgrounds ensure the cover is opaque even where the
+   sections themselves are transparent. */
+body[data-page="home"] .bridge-stage > .s-num-bar{
+  position: relative;
+  z-index: 1;
+  background: var(--off);
+}
+body[data-page="home"] .bridge-stage > .orbit-section{
+  position: relative;
+  z-index: 1;
+  background: var(--off);
 }
 
 /* Background stack — image and video layered, both object-fit:cover.
@@ -1176,7 +1196,7 @@ body[data-page="home"] .bridge-progress-fill{
 }
 
 @media (max-width: 768px){
-  body[data-page="home"] .bridge-track{ height: 400vh; }
+  body[data-page="home"] .bridge-runway{ height: 300vh; }
   body[data-page="home"] .bridge-coord-tl,
   body[data-page="home"] .bridge-coord-tr{ top: 20px; font-size: 9px; }
   body[data-page="home"] .bs-line{
@@ -1190,7 +1210,7 @@ body[data-page="home"] .bridge-progress-fill{
 /* Reduced motion — drop the pin runway. Show all four lines in a
    simple vertical stack with no zoom or video. */
 @media (prefers-reduced-motion: reduce){
-  body[data-page="home"] .bridge-track{ height: auto; }
+  body[data-page="home"] .bridge-runway{ height: 0; display: none; }
   body[data-page="home"] .bridge-pin{
     position: relative;
     top: auto;

@@ -807,10 +807,12 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
 .ap-session .ap-atlas-points{ margin-bottom: 16px; gap: 10px; }
 .ap-session .ap-atlas-points li{ font-size: 13px; line-height: 1.6; }
 .ap-session > div > .ap-atlas-text > img{
-  /* Inline style on the photo was margin:36px 0 36px — too generous
-     once everything else was tightened. Override to a compact 16px
-     above + 20px below the photo. */
-  margin-top: 16px !important;
+  /* Inline style on the photo was margin:36px 0 36px. After the
+     compaction pass that lived just above this rule, the 16px
+     top-margin felt cramped against the body / points above —
+     bumped to 40px to restore breathing room without putting
+     the whole block back over a single viewport's worth. */
+  margin-top: 40px !important;
   margin-bottom: 20px !important;
 }
 

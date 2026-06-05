@@ -2640,3 +2640,158 @@ window.authSubmit=authSubmit;
     stamp();
   }
 })();
+
+/* ============================================================
+   REDESIGN HELPERS
+   Two responsibilities, both shipped as a single self-contained
+   IIFE so main.js stays one file:
+
+   1. PILL-NAV INJECTION on the legal / utility pages (privacy,
+      terms, cookies, security, subscribe). The editorial pages
+      (home, doctrine, mandates, principals, direct, intake)
+      already carry the .pill-nav inline in their HTML; the rest
+      get it injected here so the chrome stays consistent
+      without each HTML file having to duplicate the markup.
+      Pairs with the body[data-page="…"] selectors in
+      styles/redesign.css that hide the legacy #brand-mark /
+      #menu-trigger / .topnav elements on these same pages.
+
+   2. HERO SCROLL-ZOOM. Updates the --hero-zoom CSS custom
+      property on each .hero-editorial as the user scrolls,
+      mapping scroll progress (0 → 60-80vh) to a transform-scale
+      that the ::before background image reads. Previously
+      attempted with CSS scroll-driven animations
+      (@supports animation-timeline: scroll()), but that's
+      Chrome-only — Safari and Firefox still need JS. This
+      replaces the CSS approach and works in every modern
+      browser.
+   ============================================================ */
+(function redesignHelpers(){
+  'use strict';
+
+  var SIMPLE_PAGES = ['privacy','terms','cookies','security','subscribe'];
+  var dataPage = (document.body && document.body.dataset && document.body.dataset.page) || '';
+
+  /* ---------- 1. PILL-NAV INJECTION ---------- */
+
+  function mkLink(label, href, activeHref){
+    var active = href === activeHref ? ' class="is-active"' : '';
+    return '<li><a href="' + href + '"' + active + '>' + label + '</a></li>';
+  }
+
+  function buildPillNav(activePage){
+    var activeMap = {
+      'home':'home.html', 'doctrine':'about.html', 'mandates':'services.html',
+      'principals':'team.html', 'direct':'contact.html', 'intake':'apply.html'
+    };
+    var activeHref = activeMap[activePage] || null;
+    var nav = document.createElement('nav');
+    nav.className = 'pill-nav';
+    nav.setAttribute('aria-label','Primary');
+    nav.innerHTML =
+      '<a class="pn-brand" href="home.html" aria-label="HIMARK · Home">' +
+        '<span class="pn-brand-mark" aria-hidden="true">' +
+          '<svg viewBox="0 0 140 200" xmlns="http://www.w3.org/2000/svg">' +
+            '<g fill="#1C2B3A">' +
+              '<rect x="14" y="14" width="38" height="170"/>' +
+              '<rect x="88" y="14" width="38" height="170"/>' +
+              '<rect x="52" y="85" width="16" height="30"/>' +
+              '<rect x="72" y="85" width="16" height="30"/>' +
+            '</g>' +
+            '<rect x="4" y="4" width="132" height="192" fill="none" stroke="#1C2B3A" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter"/>' +
+          '</svg>' +
+        '</span>' +
+        '<span class="pn-brand-imark" aria-label="HIMARK"></span>' +
+      '</a>' +
+      '<ul class="pn-links">' +
+        mkLink('Home','home.html',activeHref) +
+        mkLink('About','about.html',activeHref) +
+        mkLink('Services','services.html',activeHref) +
+        mkLink('Team','team.html',activeHref) +
+        mkLink('Contact','contact.html',activeHref) +
+        mkLink('Apply','apply.html',activeHref) +
+      '</ul>' +
+      '<a class="pn-cta" href="apply.html">Begin with Atlas →</a>';
+    return nav;
+  }
+
+  function injectPillNav(){
+    if (SIMPLE_PAGES.indexOf(dataPage) === -1) return;
+    if (document.querySelector('.pill-nav')) return;
+    var page = document.querySelector('.page');
+    if (!page) return;
+    /* Add .redesign so styles/redesign.css picks up the cosmetics
+       (background, margin:0, etc.) on these pages too. */
+    if (!page.classList.contains('redesign')) page.classList.add('redesign');
+    page.insertBefore(buildPillNav(dataPage), page.firstChild);
+  }
+
+  /* ---------- 2. HERO SCROLL-ZOOM ---------- */
+
+  function findScroller(el){
+    var n = el.parentElement;
+    while (n && n !== document.documentElement) {
+      var cs = getComputedStyle(n);
+      if (/(auto|scroll)/.test(cs.overflowY)) return n;
+      n = n.parentElement;
+    }
+    return window;
+  }
+
+  function setupHeroZoom(){
+    var heroes = document.querySelectorAll('.hero-editorial');
+    if (!heroes.length) return;
+    heroes.forEach(function(hero){
+      if (hero.dataset.zoomAttached) return;
+      hero.dataset.zoomAttached = '1';
+      var scroller = findScroller(hero);
+      var isFull = hero.classList.contains('full');
+      var baseScale = isFull ? 1.06 : 1.00;
+      var maxScale  = isFull ? 1.30 : 1.20;
+      var rangeVH   = isFull ? 0.80 : 0.60;
+      var ticking = false;
+
+      function compute(){
+        ticking = false;
+        var top = scroller === window
+          ? (window.pageYOffset || document.documentElement.scrollTop)
+          : scroller.scrollTop;
+        var range = window.innerHeight * rangeVH;
+        var progress = Math.max(0, Math.min(1, top / (range || 1)));
+        var scale = baseScale + (maxScale - baseScale) * progress;
+        hero.style.setProperty('--hero-zoom', scale.toFixed(4));
+      }
+      function onScroll(){
+        if (!ticking){
+          ticking = true;
+          requestAnimationFrame(compute);
+        }
+      }
+      var target = scroller === window ? window : scroller;
+      target.addEventListener('scroll', onScroll, { passive:true });
+      window.addEventListener('resize', onScroll, { passive:true });
+      compute();
+    });
+  }
+
+  /* ---------- BOOT ---------- */
+
+  function boot(){
+    injectPillNav();
+    setupHeroZoom();
+    /* Router toggles .active on different .page elements when
+       navigating. Re-run hero zoom setup so new heroes get wired. */
+    if (typeof MutationObserver === 'function'){
+      var mo = new MutationObserver(function(){ setupHeroZoom(); });
+      document.querySelectorAll('.page').forEach(function(p){
+        mo.observe(p, { attributes:true, attributeFilter:['class'] });
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+})();

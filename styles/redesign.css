@@ -3,44 +3,83 @@
    ====================================================================
    Applied per-page via the body[data-page="…"] selectors below. Pages
    that opt in get:
-     - the existing global .topnav hidden
+     - the existing global .topnav / legacy #brand-mark hidden
      - a floating glass pill nav, framed-H + IMARK lockup
      - a centered editorial hero pinned via position:sticky so the
        sections below scroll UP OVER it on scroll — same cinematic
        cover pattern the original .hero / .doc-split / .np-hero used
      - existing sections below the hero keep their original styling
        and z-index:1 layering so they occlude the sticky hero
+     - hero background images zoom progressively on scroll (driven
+       by JS in main.js updating the --hero-zoom CSS custom property)
 
    Pages opted in: home, doctrine (about), mandates (services),
-   principals (team), direct (contact), intake (apply).
+   principals (team), direct (contact), intake (apply), plus the
+   secondary legal/utility pages — privacy, terms, cookies, security,
+   subscribe — which receive the pill nav via main.js injection.
    ==================================================================== */
 
 
 /* ====================================================================
-   PAGE-LEVEL: leave .page untouched as the scroller, hide topnav.
-   The previous version of this file added `position:relative;
-   overflow:hidden` to .page.redesign which BROKE THE INTERNAL
-   SCROLLER — that in turn broke (a) the r3d reveal-on-scroll
-   observer (every section below the fold stayed opacity:0), (b)
-   the sticky-hero scroll-cover effect, and (c) the cap-cell /
-   dpl-cell hover lifts. We now ONLY override the cosmetics
-   (margin / border-radius / page bg) — scrolling is the original
-   .page (position:fixed; inset:0; overflow-y:auto) untouched.
+   PAGE-LEVEL: leave .page untouched as the scroller, hide every
+   legacy nav element. The previous version of this file added
+   `position:relative; overflow:hidden` to .page.redesign which
+   BROKE THE INTERNAL SCROLLER — that in turn broke (a) the r3d
+   reveal-on-scroll observer (every section below the fold stayed
+   opacity:0), (b) the sticky-hero scroll-cover effect, and (c) the
+   cap-cell / dpl-cell hover lifts. We now ONLY override the
+   cosmetics (margin / border-radius / page bg) — scrolling is the
+   original .page (position:fixed; inset:0; overflow-y:auto) intact.
    ==================================================================== */
 body[data-page="home"],
 body[data-page="doctrine"],
 body[data-page="mandates"],
 body[data-page="principals"],
 body[data-page="direct"],
-body[data-page="intake"]{
+body[data-page="intake"],
+body[data-page="privacy"],
+body[data-page="terms"],
+body[data-page="cookies"],
+body[data-page="security"],
+body[data-page="subscribe"]{
   background: #D8E3E8;        /* pastel sky around the card (visible during overscroll) */
 }
+
+/* Hide the global .topnav on every redesigned page. */
 body[data-page="home"] .topnav,
 body[data-page="doctrine"] .topnav,
 body[data-page="mandates"] .topnav,
 body[data-page="principals"] .topnav,
 body[data-page="direct"] .topnav,
-body[data-page="intake"] .topnav{
+body[data-page="intake"] .topnav,
+body[data-page="privacy"] .topnav,
+body[data-page="terms"] .topnav,
+body[data-page="cookies"] .topnav,
+body[data-page="security"] .topnav,
+body[data-page="subscribe"] .topnav{
+  display: none !important;
+}
+
+/* Hide the LEGACY navbar (centred #brand-mark + right-edge #menu-trigger
+   + slide-out #menu-panel + .menu-overlay) on the legal/utility pages
+   that still use it. The pill-nav is injected by main.js at the top
+   of these pages and replaces the legacy navigation entirely. */
+body[data-page="privacy"] #brand-mark,
+body[data-page="terms"] #brand-mark,
+body[data-page="cookies"] #brand-mark,
+body[data-page="security"] #brand-mark,
+body[data-page="privacy"] #menu-trigger,
+body[data-page="terms"] #menu-trigger,
+body[data-page="cookies"] #menu-trigger,
+body[data-page="security"] #menu-trigger,
+body[data-page="privacy"] #menu-panel,
+body[data-page="terms"] #menu-panel,
+body[data-page="cookies"] #menu-panel,
+body[data-page="security"] #menu-panel,
+body[data-page="privacy"] .menu-overlay,
+body[data-page="terms"] .menu-overlay,
+body[data-page="cookies"] .menu-overlay,
+body[data-page="security"] .menu-overlay{
   display: none !important;
 }
 
@@ -51,7 +90,12 @@ body[data-page="doctrine"] .page.redesign,
 body[data-page="mandates"] .page.redesign,
 body[data-page="principals"] .page.redesign,
 body[data-page="direct"] .page.redesign,
-body[data-page="intake"] .page.redesign{
+body[data-page="intake"] .page.redesign,
+body[data-page="privacy"] .page.redesign,
+body[data-page="terms"] .page.redesign,
+body[data-page="cookies"] .page.redesign,
+body[data-page="security"] .page.redesign,
+body[data-page="subscribe"] .page.redesign{
   background: var(--off);
   border-radius: 0;
   margin: 0;
@@ -67,19 +111,22 @@ body[data-page="intake"] .page.redesign{
    nearest SCROLL container (.page, which has overflow-y:auto), not
    the containing block, so it pins correctly at the top:20px offset.
 
-   margin-bottom: -64px collapses the pill's flow-space so the hero
+   margin-bottom: -56px collapses the pill's flow-space so the hero
    below starts at top:0 of .page (the pill visually overlays the
    top of the hero rather than pushing it down).
+
+   Max-width bumped to 1100px from 820px to accommodate the new
+   Apply link in the nav list (6 items instead of 5).
    ==================================================================== */
 .pill-nav{
   position: sticky;
   top: 20px;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: -64px;
+  margin-bottom: -56px;
   width: calc(100% - 56px);
-  max-width: 820px;
-  height: 64px;
+  max-width: 1100px;
+  height: 56px;
   background: linear-gradient(180deg, rgba(255,255,255,.42) 0%, rgba(255,255,255,.28) 100%);
   -webkit-backdrop-filter: blur(28px) saturate(150%);
           backdrop-filter: blur(28px) saturate(150%);
@@ -99,28 +146,25 @@ body[data-page="intake"] .page.redesign{
 .pn-links{ justify-self:center; }
 .pn-cta{   justify-self:end;   }
 
-/* Brand lockup — framed-H SVG + IMARK wordmark, EXACT proportions
-   from the index.html loading-page lockup (mirrored from the
-   .topnav-brand inline style block in home.html where the comment
-   describes them as "loading-page-style lockup"). The framed-H is
-   29×40, the IMARK mask is 110×28, with the mark's right margin
-   pulled in by -5px so the H and the I sit visually tight without
-   any explicit gap. */
+/* Brand lockup — framed-H SVG + IMARK wordmark. Sized at 23×32 +
+   92×22 (the mobile-tablet variant of the loading-page topnav-brand
+   lockup), tuned smaller than the desktop loading-page proportions
+   so it fits the slimmer pill silhouette without dominating it. */
 .pn-brand{
   display: inline-flex;
   align-items: center;
   gap: 0;
   color: var(--midnight);
   text-decoration: none;
-  height: 40px;
+  height: 32px;
   line-height: 1;
 }
 .pn-brand-mark{
-  width: 29px;
-  height: 40px;
+  width: 23px;
+  height: 32px;
   display: inline-block;
   flex-shrink: 0;
-  margin-right: -5px;
+  margin-right: -4px;
 }
 .pn-brand-mark svg{
   width: 100%;
@@ -130,8 +174,8 @@ body[data-page="intake"] .page.redesign{
 }
 .pn-brand-imark{
   display: inline-block;
-  width: 110px;
-  height: 28px;
+  width: 92px;
+  height: 22px;
   background-color: var(--midnight);
   -webkit-mask: url('../images/IMARK.png') no-repeat center / contain;
           mask: url('../images/IMARK.png') no-repeat center / contain;
@@ -144,7 +188,7 @@ body[data-page="intake"] .page.redesign{
 .pn-links{
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 24px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -163,7 +207,7 @@ body[data-page="intake"] .page.redesign{
 .pn-links a:hover, .pn-links a.is-active{ opacity: 1; }
 
 .pn-cta{
-  height: 38px;
+  height: 36px;
   padding: 0 18px;
   background: var(--midnight);
   color: var(--off);
@@ -185,14 +229,24 @@ body[data-page="intake"] .page.redesign{
 
 
 /* ====================================================================
-   EDITORIAL HERO — sticky-cover pattern.
+   EDITORIAL HERO — sticky-cover pattern + scroll-driven zoom.
      .hero-editorial         (any page)         — base
      .hero-editorial.full    (home only)        — 100vh sticky
      .hero-editorial.half    (secondary pages)  — ~50vh sticky
    The hero sits at z-index:0 and stays pinned (top:0) while every
-   following section, layered at z-index:1 via the rule below,
-   scrolls up and visually covers it. Same pattern the original
-   `.hero` / `.doc-split` / `.np-hero` used.
+   following section, layered at z-index:1, scrolls up and visually
+   covers it. Same pattern the original .hero / .doc-split / .np-hero
+   used.
+
+   Background image zoom: previously attempted with CSS scroll-driven
+   animations (@supports animation-timeline: scroll()), but those
+   only land in Chrome 115+ — Safari and Firefox still don't honour
+   the keyword. Now driven by a tiny scroll listener in main.js that
+   updates the --hero-zoom custom property on each .hero-editorial as
+   the user scrolls; the ::before transform reads that variable, so
+   the architectural background image scales progressively from its
+   base (1 for half, 1.06 for the blurred full hero) up to ~1.20-1.30.
+   Works in every modern browser.
    ==================================================================== */
 .hero-editorial{
   position: sticky;
@@ -215,12 +269,10 @@ body[data-page="intake"] .page.redesign{
   height: clamp(420px, 50vh, 560px);
   min-height: clamp(420px, 50vh, 560px);
 }
-/* Background image: full hero gets a soft blur (atmospheric landing);
-   half hero stays sharp (banner). Both zoom progressively as the
-   user scrolls — driven by a scroll-driven animation on the .page
-   scroller. Modern browsers (Chrome 115+, Edge 115+, Safari TP)
-   honour the animation-timeline directly; older browsers just
-   render the from-state (static scale), so the page still works. */
+/* Background image — both heroes share this layer. The transform
+   reads --hero-zoom which JS in main.js updates on scroll. Default
+   value matches the base scale, so without JS the hero still renders
+   correctly (no zoom). */
 .hero-editorial::before{
   content: '';
   position: absolute;
@@ -229,31 +281,18 @@ body[data-page="intake"] .page.redesign{
   background-size: cover;
   background-position: center;
   z-index: 0;
-  transform: scale(1);  /* fallback for non-scroll-timeline browsers */
+  transform: scale(var(--hero-zoom, 1));
+  transform-origin: center center;
+  will-change: transform;
+}
+.hero-editorial.full{
+  --hero-zoom: 1.06;          /* base scale for the blurred full hero */
+}
+.hero-editorial.half{
+  --hero-zoom: 1;             /* sharp base scale for the half hero */
 }
 .hero-editorial.full::before{
   filter: blur(10px);
-  transform: scale(1.06);  /* fallback static scale + blur padding */
-}
-@keyframes heroFullZoom{
-  from { transform: scale(1.06); }
-  to   { transform: scale(1.30); }
-}
-@keyframes heroHalfZoom{
-  from { transform: scale(1.00); }
-  to   { transform: scale(1.20); }
-}
-@supports (animation-timeline: scroll()){
-  .hero-editorial.full::before{
-    animation: heroFullZoom linear both;
-    animation-timeline: scroll(nearest);
-    animation-range: 0 80vh;
-  }
-  .hero-editorial.half::before{
-    animation: heroHalfZoom linear both;
-    animation-timeline: scroll(nearest);
-    animation-range: 0 60vh;
-  }
 }
 .hero-editorial::after{
   /* Soft white wash for text contrast. */
@@ -363,8 +402,7 @@ body[data-page="intake"] .page.redesign{
    to `var(--off)` so they all matched the page background. On
    the redesigned pages we want these standalone content sections
    on pure WHITE so the off-white `.s-num-bar` dividers between
-   them read as actual dividers (not as the same flat field). The
-   cells inside stay `--off` so they pop against the white section.
+   them read as actual dividers (not as the same flat field).
    ==================================================================== */
 body[data-page="mandates"] .svc-cats-section,
 body[data-page="mandates"] .cap-section,
@@ -373,18 +411,69 @@ body[data-page="direct"] .cap-section{
 }
 /* NOTE: .svc-tiers-brief is intentionally NOT in the white-override.
    The original services.html inline style sets it to var(--midnight)
-   (dark navy/blue) with cream text — that's the engagement-tiers
-   anchor section, kept on purpose. */
+   (dark navy/blue) with cream text — the engagement-tiers anchor. */
+
+
+/* ====================================================================
+   ABOUT (doctrine) + TEAM (principals) — flip the dark .quote-mono
+   monolith section to a soft LIGHT BLUE / mist field so the closing
+   editorial quote reads as a calm anchor at the foot of the page,
+   matching the rest of the redesigned palette. The original section
+   was solid var(--ink-deep) (very dark navy) with cream type — too
+   heavy beside the new light heroes and pastel page background.
+   We also flip the .s-num-bar.dk divider that precedes it from dark
+   to white-on-rule so the seam reads as a continuation, not a hard
+   light-to-dark cut.
+   ==================================================================== */
+body[data-page="doctrine"] .s-num-bar.dk,
+body[data-page="principals"] .s-num-bar.dk{
+  background: var(--white);
+  color: var(--ocean);
+  border-top-color: var(--rule);
+  border-bottom-color: var(--rule);
+}
+body[data-page="doctrine"] .quote-mono,
+body[data-page="principals"] .quote-mono{
+  background: linear-gradient(180deg, #E2F0F0 0%, #D8E3E8 100%);
+}
+body[data-page="doctrine"] .quote-mono::before,
+body[data-page="principals"] .quote-mono::before{
+  /* Soften the dark grid pattern so it reads against the light bg. */
+  background-image: linear-gradient(to right, rgba(95,129,144,.10) 1px, transparent 1px);
+  opacity: .8;
+}
+body[data-page="doctrine"] .quote-mono-coord-tl,
+body[data-page="doctrine"] .quote-mono-coord-tr,
+body[data-page="principals"] .quote-mono-coord-tl,
+body[data-page="principals"] .quote-mono-coord-tr{
+  color: rgba(46,74,90,.60);
+}
+body[data-page="doctrine"] .quote-mono .quote-mark,
+body[data-page="principals"] .quote-mono .quote-mark{
+  color: rgba(95,129,144,.30);
+}
+body[data-page="doctrine"] .quote-mono .quote-body,
+body[data-page="principals"] .quote-mono .quote-body{
+  color: var(--midnight);
+}
+body[data-page="doctrine"] .quote-mono .qa-line,
+body[data-page="principals"] .quote-mono .qa-line{
+  background: var(--ocean);
+}
+body[data-page="doctrine"] .quote-mono .qa-name,
+body[data-page="principals"] .quote-mono .qa-name{
+  color: var(--midnight);
+}
+body[data-page="doctrine"] .quote-mono .qa-role,
+body[data-page="principals"] .quote-mono .qa-role{
+  color: rgba(46,74,90,.75);
+}
 
 
 /* ====================================================================
    CONTACT PAGE — distribute cap-cell content vertically so the email
    / CTA / footer line sticks to the bottom of the cell, no matter
-   how tall the row is. Without this, shorter cells (D.02 / D.03)
-   stretched to match D.01's height and left empty whitespace at
-   the bottom. With margin-top:auto on the last paragraph, that
-   space becomes deliberate breathing room between the description
-   and the contact line.
+   how tall the row is.
    ==================================================================== */
 body[data-page="direct"] .cap-cell{
   display: flex;
@@ -397,10 +486,198 @@ body[data-page="direct"] .cap-cell > .cap-d:last-child{
 
 
 /* ====================================================================
+   FOOTER — glass / light variant for the redesigned pages.
+   The base .footer in styles.css is dark glass (midnight gradient +
+   blur), tuned for the original dark site palette. On the redesigned
+   pages the body and content are light, so the dark footer reads as
+   an abrupt slab. This override flips it to a LIGHT glass surface —
+   translucent off-white gradient with the same backdrop-filter blur
+   so the cream wash and pastel-sky body background diffuse through.
+   Type colours flip from cream-on-dark to midnight-on-light to match.
+   Logo glyph swaps from cream-fill to midnight-fill the same way the
+   pill-nav brand does.
+   ==================================================================== */
+body[data-page="home"] .footer,
+body[data-page="doctrine"] .footer,
+body[data-page="mandates"] .footer,
+body[data-page="principals"] .footer,
+body[data-page="direct"] .footer,
+body[data-page="intake"] .footer,
+body[data-page="privacy"] .footer,
+body[data-page="terms"] .footer,
+body[data-page="cookies"] .footer,
+body[data-page="security"] .footer,
+body[data-page="subscribe"] .footer{
+  background: linear-gradient(180deg, rgba(255,255,255,.42) 0%, rgba(255,255,255,.28) 100%);
+  -webkit-backdrop-filter: blur(28px) saturate(150%);
+          backdrop-filter: blur(28px) saturate(150%);
+  border-top: 1px solid rgba(255,255,255,.55);
+  box-shadow:
+    0 -8px 24px -8px rgba(28,43,58,.10),
+    0 1px 0 rgba(255,255,255,.70) inset;
+  color: var(--midnight);
+}
+/* Quieten the dark grid overlay the original .footer paints — it
+   was tuned for the dark bg. On the light footer we drop it to a
+   barely-there mist line. */
+body[data-page="home"] .footer::before,
+body[data-page="doctrine"] .footer::before,
+body[data-page="mandates"] .footer::before,
+body[data-page="principals"] .footer::before,
+body[data-page="direct"] .footer::before,
+body[data-page="intake"] .footer::before,
+body[data-page="privacy"] .footer::before,
+body[data-page="terms"] .footer::before,
+body[data-page="cookies"] .footer::before,
+body[data-page="security"] .footer::before,
+body[data-page="subscribe"] .footer::before{
+  background-image: linear-gradient(to right, rgba(95,129,144,.08) 1px, transparent 1px);
+  opacity: .6;
+}
+/* Footer text colours — cream on dark → midnight on light. */
+body[data-page="home"] .footer .footer-coord-tl,
+body[data-page="home"] .footer .footer-coord-tr,
+body[data-page="doctrine"] .footer .footer-coord-tl,
+body[data-page="doctrine"] .footer .footer-coord-tr,
+body[data-page="mandates"] .footer .footer-coord-tl,
+body[data-page="mandates"] .footer .footer-coord-tr,
+body[data-page="principals"] .footer .footer-coord-tl,
+body[data-page="principals"] .footer .footer-coord-tr,
+body[data-page="direct"] .footer .footer-coord-tl,
+body[data-page="direct"] .footer .footer-coord-tr,
+body[data-page="intake"] .footer .footer-coord-tl,
+body[data-page="intake"] .footer .footer-coord-tr,
+body[data-page="privacy"] .footer .footer-coord-tl,
+body[data-page="privacy"] .footer .footer-coord-tr,
+body[data-page="terms"] .footer .footer-coord-tl,
+body[data-page="terms"] .footer .footer-coord-tr,
+body[data-page="cookies"] .footer .footer-coord-tl,
+body[data-page="cookies"] .footer .footer-coord-tr,
+body[data-page="security"] .footer .footer-coord-tl,
+body[data-page="security"] .footer .footer-coord-tr,
+body[data-page="subscribe"] .footer .footer-coord-tl,
+body[data-page="subscribe"] .footer .footer-coord-tr{
+  color: rgba(46,74,90,.55);
+}
+body[data-page="home"] .footer .ft-wm,
+body[data-page="doctrine"] .footer .ft-wm,
+body[data-page="mandates"] .footer .ft-wm,
+body[data-page="principals"] .footer .ft-wm,
+body[data-page="direct"] .footer .ft-wm,
+body[data-page="intake"] .footer .ft-wm,
+body[data-page="privacy"] .footer .ft-wm,
+body[data-page="terms"] .footer .ft-wm,
+body[data-page="cookies"] .footer .ft-wm,
+body[data-page="security"] .footer .ft-wm,
+body[data-page="subscribe"] .footer .ft-wm{
+  color: var(--midnight);
+}
+body[data-page="home"] .footer .ft-blurb,
+body[data-page="doctrine"] .footer .ft-blurb,
+body[data-page="mandates"] .footer .ft-blurb,
+body[data-page="principals"] .footer .ft-blurb,
+body[data-page="direct"] .footer .ft-blurb,
+body[data-page="intake"] .footer .ft-blurb,
+body[data-page="privacy"] .footer .ft-blurb,
+body[data-page="terms"] .footer .ft-blurb,
+body[data-page="cookies"] .footer .ft-blurb,
+body[data-page="security"] .footer .ft-blurb,
+body[data-page="subscribe"] .footer .ft-blurb{
+  color: rgba(28,43,58,.62);
+}
+body[data-page="home"] .footer .ft-links a,
+body[data-page="doctrine"] .footer .ft-links a,
+body[data-page="mandates"] .footer .ft-links a,
+body[data-page="principals"] .footer .ft-links a,
+body[data-page="direct"] .footer .ft-links a,
+body[data-page="intake"] .footer .ft-links a,
+body[data-page="privacy"] .footer .ft-links a,
+body[data-page="terms"] .footer .ft-links a,
+body[data-page="cookies"] .footer .ft-links a,
+body[data-page="security"] .footer .ft-links a,
+body[data-page="subscribe"] .footer .ft-links a{
+  color: rgba(28,43,58,.78);
+}
+body[data-page="home"] .footer .ft-links a:hover,
+body[data-page="doctrine"] .footer .ft-links a:hover,
+body[data-page="mandates"] .footer .ft-links a:hover,
+body[data-page="principals"] .footer .ft-links a:hover,
+body[data-page="direct"] .footer .ft-links a:hover,
+body[data-page="intake"] .footer .ft-links a:hover,
+body[data-page="privacy"] .footer .ft-links a:hover,
+body[data-page="terms"] .footer .ft-links a:hover,
+body[data-page="cookies"] .footer .ft-links a:hover,
+body[data-page="security"] .footer .ft-links a:hover,
+body[data-page="subscribe"] .footer .ft-links a:hover{
+  color: var(--midnight);
+}
+body[data-page="home"] .footer-top,
+body[data-page="doctrine"] .footer-top,
+body[data-page="mandates"] .footer-top,
+body[data-page="principals"] .footer-top,
+body[data-page="direct"] .footer-top,
+body[data-page="intake"] .footer-top,
+body[data-page="privacy"] .footer-top,
+body[data-page="terms"] .footer-top,
+body[data-page="cookies"] .footer-top,
+body[data-page="security"] .footer-top,
+body[data-page="subscribe"] .footer-top{
+  border-bottom-color: rgba(95,129,144,.18);
+}
+/* Footer brand glyph — the SVG rects/strokes are inlined with
+   fill="#F7F7F5" (cream) for the dark footer. Flip to midnight so
+   the H reads on the light glass. The IMARK PNG is white-on-
+   transparent, so filter:brightness(0) collapses it to dark too. */
+body[data-page="home"] .footer .ft-wm-mark svg g rect,
+body[data-page="doctrine"] .footer .ft-wm-mark svg g rect,
+body[data-page="mandates"] .footer .ft-wm-mark svg g rect,
+body[data-page="principals"] .footer .ft-wm-mark svg g rect,
+body[data-page="direct"] .footer .ft-wm-mark svg g rect,
+body[data-page="intake"] .footer .ft-wm-mark svg g rect,
+body[data-page="privacy"] .footer .ft-wm-mark svg g rect,
+body[data-page="terms"] .footer .ft-wm-mark svg g rect,
+body[data-page="cookies"] .footer .ft-wm-mark svg g rect,
+body[data-page="security"] .footer .ft-wm-mark svg g rect,
+body[data-page="subscribe"] .footer .ft-wm-mark svg g rect{
+  fill: var(--midnight);
+}
+body[data-page="home"] .footer .ft-wm-mark svg > rect[fill="none"],
+body[data-page="doctrine"] .footer .ft-wm-mark svg > rect[fill="none"],
+body[data-page="mandates"] .footer .ft-wm-mark svg > rect[fill="none"],
+body[data-page="principals"] .footer .ft-wm-mark svg > rect[fill="none"],
+body[data-page="direct"] .footer .ft-wm-mark svg > rect[fill="none"],
+body[data-page="intake"] .footer .ft-wm-mark svg > rect[fill="none"],
+body[data-page="privacy"] .footer .ft-wm-mark svg > rect[fill="none"],
+body[data-page="terms"] .footer .ft-wm-mark svg > rect[fill="none"],
+body[data-page="cookies"] .footer .ft-wm-mark svg > rect[fill="none"],
+body[data-page="security"] .footer .ft-wm-mark svg > rect[fill="none"],
+body[data-page="subscribe"] .footer .ft-wm-mark svg > rect[fill="none"]{
+  stroke: var(--midnight);
+}
+body[data-page="home"] .footer .ft-wm-imark,
+body[data-page="doctrine"] .footer .ft-wm-imark,
+body[data-page="mandates"] .footer .ft-wm-imark,
+body[data-page="principals"] .footer .ft-wm-imark,
+body[data-page="direct"] .footer .ft-wm-imark,
+body[data-page="intake"] .footer .ft-wm-imark,
+body[data-page="privacy"] .footer .ft-wm-imark,
+body[data-page="terms"] .footer .ft-wm-imark,
+body[data-page="cookies"] .footer .ft-wm-imark,
+body[data-page="security"] .footer .ft-wm-imark,
+body[data-page="subscribe"] .footer .ft-wm-imark{
+  filter: brightness(0);
+}
+
+
+/* ====================================================================
    MOBILE — shrink the pill + stack things.
    ==================================================================== */
 @media (max-width: 1024px){
-  .pill-nav{ width: calc(100% - 32px); }
+  .pill-nav{
+    width: calc(100% - 32px);
+    max-width: 920px;
+  }
+  .pn-links{ gap: 18px; }
 }
 @media (max-width: 768px){
   .pill-nav{
@@ -411,9 +688,9 @@ body[data-page="direct"] .cap-cell > .cap-d:last-child{
     margin-bottom: -52px;
   }
   .pn-links{ display: none; }
-  .pn-brand{ height: 32px; }
-  .pn-brand-mark{ width: 22px; height: 32px; margin-right: -4px; }
-  .pn-brand-imark{ width: 84px; height: 22px; }
+  .pn-brand{ height: 28px; }
+  .pn-brand-mark{ width: 20px; height: 28px; margin-right: -3px; }
+  .pn-brand-imark{ width: 80px; height: 20px; }
   .pn-cta{ height: 32px; padding: 0 12px; font-size: 9px; }
   .hero-editorial{ padding: 80px 22px 40px; }
   .hero-editorial.full{ padding: 96px 22px; }
@@ -425,8 +702,7 @@ body[data-page="direct"] .cap-cell > .cap-d:last-child{
   .heroe-sub{ max-width: none; font-size: 14px; }
 }
 
-/* Reduced motion — drop sticky so the hero just scrolls normally.
-   Same pattern the original `.doc-split` rules used. */
+/* Reduced motion — drop sticky so the hero just scrolls normally. */
 @media (prefers-reduced-motion: reduce){
   .hero-editorial{ position: relative; }
 }

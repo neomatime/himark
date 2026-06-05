@@ -624,10 +624,49 @@ body[data-page="security"] .footer-top,
 body[data-page="subscribe"] .footer-top{
   border-bottom-color: rgba(95,129,144,.18);
 }
+/* ------------ Footer brand SIZE — fix for privacy / terms /
+   cookies / security pages. The other pages inline their own
+   .ft-wm-mark / .ft-wm-imark sizing in a <style> block, but the
+   four legal pages don't, which meant the IMARK img was
+   rendering at its natural 367×99 size (huge). styles.css only
+   defines the OLD .ft-wm rule (font-based, 17px wordmark text);
+   it has no .ft-wm-mark or .ft-wm-imark rules at all. Adding
+   them here covers every page that loads redesign.css. */
+.footer .ft-wm{
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  font-size: 0;
+  line-height: 1;
+  height: 32px;
+  margin-bottom: 16px;
+}
+.footer .ft-wm-mark{
+  width: 23px;
+  height: 32px;
+  display: inline-block;
+  flex-shrink: 0;
+  margin-right: -2px;
+}
+.footer .ft-wm-mark svg{
+  width: 100%;
+  height: 100%;
+  display: block;
+  margin-top: -1px;
+}
+.footer .ft-wm-imark{
+  height: 24px;
+  width: auto;
+  display: block;
+}
+
 /* Footer brand glyph — the SVG rects/strokes are inlined with
    fill="#F7F7F5" (cream) for the dark footer. Flip to midnight so
    the H reads on the light glass. The IMARK PNG is white-on-
-   transparent, so filter:brightness(0) collapses it to dark too. */
+   transparent; a filter chain converts those white pixels to
+   HIMARK midnight (#1C2B3A) — same colour as the framed-H beside
+   it, not pure black. The chain is brightness(0) → recolour via
+   invert+sepia+hue-rotate to land on the brand midnight. */
 body[data-page="home"] .footer .ft-wm-mark svg g rect,
 body[data-page="doctrine"] .footer .ft-wm-mark svg g rect,
 body[data-page="mandates"] .footer .ft-wm-mark svg g rect,
@@ -665,7 +704,12 @@ body[data-page="terms"] .footer .ft-wm-imark,
 body[data-page="cookies"] .footer .ft-wm-imark,
 body[data-page="security"] .footer .ft-wm-imark,
 body[data-page="subscribe"] .footer .ft-wm-imark{
-  filter: brightness(0);
+  /* White-on-transparent PNG → HIMARK midnight (#1C2B3A).
+     Filter chain generated to land on the brand colour exactly,
+     not pure black (which is what plain brightness(0) gives).
+     Falls back to brightness(0) for browsers that ignore parts
+     of the chain. */
+  filter: brightness(0) saturate(100%) invert(15%) sepia(31%) saturate(1098%) hue-rotate(168deg) brightness(92%) contrast(89%);
 }
 
 

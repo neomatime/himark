@@ -152,9 +152,10 @@ body::before{
 
 .hmark{
   flex-shrink:0;
-  /* Slightly narrower framed-H per latest reference — keeps the
-     ~0.7 aspect ratio but reduces overall display width ~12%. */
-  width:clamp(50px, 7.5vw, 88px);
+  /* Smaller framed-H to keep the loading wordmark proportional
+     to the navbar lockup (which renders at ~23x32). Was clamp
+     (50, 7.5vw, 88) which felt too dominant on the splash. */
+  width:clamp(38px, 5.5vw, 64px);
   /* Initial state: shifted right + faded + lifted.
      Uses transitions (not animations) so the transform isn't
      "locked" by animation-fill-mode when Scene 3 takes over. */
@@ -217,22 +218,25 @@ body::before{
 }
 .imark-image{
   display:block;
-  /* Height tuned to keep the new image's rendered WIDTH similar to
-     the previous version's, so the wordmark composition (H + gap +
-     IMARK) stays balanced. New aspect 367:99 ≈ 3.71, vs prior 6.08
-     — so height bumps up roughly 1.6× to compensate. */
-  height:clamp(36px, 7vw, 68px);
+  /* Height tuned to keep the wordmark width similar to the framed
+     H beside it; matches the navbar lockup proportions. Smaller
+     than the previous splash size (was 36-68) to fit the more
+     restrained light-mode wordmark. */
+  height:clamp(28px, 5vw, 48px);
   width:auto;
-  /* Lock rendered width before the image loads so measureAndPosition
-     (which positions the H) is stable. Transform/opacity don't
-     change layout box width, so the H positioning stays correct
-     throughout the animation. */
+  /* Lock rendered width via aspect-ratio so measureAndPosition
+     (which positions the H glyph against this element's box) is
+     stable from the moment the mask paints. */
   aspect-ratio:367 / 99;
-  /* Light-mode: the source PNG is a white-on-transparent IMARK.
-     brightness(0) collapses the white pixels to black so the
-     wordmark renders as a dark glyph on the cream field, matching
-     the now-midnight framed H beside it. Alpha is preserved. */
-  filter:brightness(0);
+  /* TRUE MIDNIGHT rendering via CSS mask. The source PNG is a
+     white-on-transparent IMARK glyph — using filter:brightness(0)
+     would only get pure black. We want HIMARK's brand midnight
+     (#1C2B3A) exactly, so the IMARK reads in the same colour as
+     the framed-H SVG fill beside it. The mask uses the PNG's
+     alpha; background-color paints the visible pixels in midnight. */
+  background-color: var(--midnight);
+  -webkit-mask: url('images/IMARK.png') no-repeat center / contain;
+          mask: url('images/IMARK.png') no-repeat center / contain;
   user-select:none;
   -webkit-user-drag:none;
   /* Hidden state — invisible, very lightly scaled down so the
@@ -537,10 +541,14 @@ body::before{
     </svg>
   </div>
 
-  <!-- IMARK wordmark — image (images/IMARK.png with inverted V baked in)
-       revealed with a soft fade + subtle scale settle. Non-directional,
-       editorial — no typewriter character. -->
-  <span class="imark" id="imark" aria-hidden="true"><img src="images/IMARK.png" alt="IMARK" class="imark-image" id="imarkImage"/><span class="caret" id="caret"></span></span>
+  <!-- IMARK wordmark — rendered as a CSS mask of images/IMARK.png
+       so the visible glyph can be painted in HIMARK midnight via
+       background-color (rather than the PNG's baked-in white).
+       Switched from <img> to <span> so the mask + background-color
+       approach is straightforward; the JS sequencer still references
+       the element by id and toggles .show / .style.transition the
+       same way it did when it was an <img>. -->
+  <span class="imark" id="imark" aria-hidden="true"><span class="imark-image" id="imarkImage" role="img" aria-label="IMARK"></span><span class="caret" id="caret"></span></span>
 
 </a>
 

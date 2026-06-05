@@ -132,7 +132,7 @@ body[data-page="subscribe"] .page.redesign{
           backdrop-filter: blur(28px) saturate(150%);
   border: 1px solid rgba(255,255,255,.55);
   border-radius: 999px;
-  padding: 0 10px 0 22px;
+  padding: 0 10px 0 36px;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -705,4 +705,252 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
 /* Reduced motion — drop sticky so the hero just scrolls normally. */
 @media (prefers-reduced-motion: reduce){
   .hero-editorial{ position: relative; }
+}
+
+
+/* ====================================================================
+   HOME — make the s-num-bar dividers INSIDE the doctrine-stage
+   layer above the sticky home-doctrine. Without this, my added
+   `01.C · ORBIT` divider was rendering at the default stacking
+   level, which is BELOW the sticky .home-doctrine (z-index:1)
+   that pins to the top of the viewport — so as the user scrolled
+   through the stage, the divider was hidden behind the pinned
+   doctrine cards. Match the z-index of the bridge + orbit
+   (z:2) so the divider scrolls UP over the pinned doctrine the
+   same way the orbit does.
+   ==================================================================== */
+.doctrine-stage > .s-num-bar{
+  position: relative;
+  z-index: 2;
+  background: var(--off);
+}
+
+
+/* ====================================================================
+   APPLY — make the new SESSION block visible. The base styles.css
+   sets `.ap-atlas-text { opacity:0; transform:translateX(-24px) }`
+   and only flips it to visible when its parent has `.ap-atlas.is-in`
+   (added by a scroll-reveal observer keyed on the original chat
+   ap-atlas section). My new SESSION block uses `.ap-session` as
+   its container, so the observer never reaches it and the .ap-
+   atlas-text inside stayed permanently invisible — the screenshot
+   showed the right-column "session arc" card alongside an empty
+   left column. Force the text reveal inside .ap-session.
+   ==================================================================== */
+.ap-session .ap-atlas-text{
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+
+/* ====================================================================
+   HOME HERO — staggered fade-up animation on the headline + sub +
+   CTA when the page loads, so the editorial reveal carries on
+   from the loading-page curtain into the home hero rather than
+   the text just being there cold.
+   ==================================================================== */
+@keyframes heroFadeUp{
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+body[data-page="home"] .hero-editorial.full .heroe-eyebrow,
+body[data-page="home"] .hero-editorial.full .heroe-hl,
+body[data-page="home"] .hero-editorial.full .heroe-sub,
+body[data-page="home"] .hero-editorial.full .heroe-cta{
+  opacity: 0;
+  animation: heroFadeUp .9s cubic-bezier(.16, 1, .3, 1) forwards;
+}
+body[data-page="home"] .hero-editorial.full .heroe-eyebrow{ animation-delay: .15s; }
+body[data-page="home"] .hero-editorial.full .heroe-hl{      animation-delay: .35s; }
+body[data-page="home"] .hero-editorial.full .heroe-sub{     animation-delay: .55s; }
+body[data-page="home"] .hero-editorial.full .heroe-cta{     animation-delay: .75s; }
+@media (prefers-reduced-motion: reduce){
+  body[data-page="home"] .hero-editorial.full .heroe-eyebrow,
+  body[data-page="home"] .hero-editorial.full .heroe-hl,
+  body[data-page="home"] .hero-editorial.full .heroe-sub,
+  body[data-page="home"] .hero-editorial.full .heroe-cta{
+    opacity: 1;
+    animation: none;
+  }
+}
+
+
+/* ====================================================================
+   FOOTER — text legibility overrides for the LIGHT glass variant.
+   The previous footer override flipped the surface but didn't
+   re-tint a handful of secondary text elements (.ft-tag, .ft-col-t,
+   .ft-copy, .ft-legal a, .footer-subscribe-*) — those were still
+   on their dark-mode palette (cream / ocean-light) and washed out
+   against the off-white glass. This block re-tints every text
+   surface in the footer so the section reads cleanly: primary
+   type sits at midnight, secondary tokens (column labels, eyebrow
+   markers) at ocean, and the small legal links at ocean-dark with
+   a midnight hover.
+   ==================================================================== */
+body[data-page="home"] .footer .ft-tag,
+body[data-page="doctrine"] .footer .ft-tag,
+body[data-page="mandates"] .footer .ft-tag,
+body[data-page="principals"] .footer .ft-tag,
+body[data-page="direct"] .footer .ft-tag,
+body[data-page="intake"] .footer .ft-tag,
+body[data-page="privacy"] .footer .ft-tag,
+body[data-page="terms"] .footer .ft-tag,
+body[data-page="cookies"] .footer .ft-tag,
+body[data-page="security"] .footer .ft-tag,
+body[data-page="subscribe"] .footer .ft-tag,
+body[data-page="home"] .footer .ft-col-t,
+body[data-page="doctrine"] .footer .ft-col-t,
+body[data-page="mandates"] .footer .ft-col-t,
+body[data-page="principals"] .footer .ft-col-t,
+body[data-page="direct"] .footer .ft-col-t,
+body[data-page="intake"] .footer .ft-col-t,
+body[data-page="privacy"] .footer .ft-col-t,
+body[data-page="terms"] .footer .ft-col-t,
+body[data-page="cookies"] .footer .ft-col-t,
+body[data-page="security"] .footer .ft-col-t,
+body[data-page="subscribe"] .footer .ft-col-t{
+  color: var(--ocean-dk);
+}
+/* Copyright line + year span — small but must remain legible. */
+body[data-page="home"] .footer .ft-copy,
+body[data-page="doctrine"] .footer .ft-copy,
+body[data-page="mandates"] .footer .ft-copy,
+body[data-page="principals"] .footer .ft-copy,
+body[data-page="direct"] .footer .ft-copy,
+body[data-page="intake"] .footer .ft-copy,
+body[data-page="privacy"] .footer .ft-copy,
+body[data-page="terms"] .footer .ft-copy,
+body[data-page="cookies"] .footer .ft-copy,
+body[data-page="security"] .footer .ft-copy,
+body[data-page="subscribe"] .footer .ft-copy,
+body[data-page="home"] .footer .ft-year,
+body[data-page="doctrine"] .footer .ft-year,
+body[data-page="mandates"] .footer .ft-year,
+body[data-page="principals"] .footer .ft-year,
+body[data-page="direct"] .footer .ft-year,
+body[data-page="intake"] .footer .ft-year,
+body[data-page="privacy"] .footer .ft-year,
+body[data-page="terms"] .footer .ft-year,
+body[data-page="cookies"] .footer .ft-year,
+body[data-page="security"] .footer .ft-year,
+body[data-page="subscribe"] .footer .ft-year{
+  color: rgba(28,43,58,.72);
+}
+/* Legal links (Privacy / Terms / Cookies / Security) — these were
+   the most washed-out elements on the light footer. Bump to a
+   strong ocean-dark with midnight on hover. */
+body[data-page="home"] .footer .ft-legal a,
+body[data-page="doctrine"] .footer .ft-legal a,
+body[data-page="mandates"] .footer .ft-legal a,
+body[data-page="principals"] .footer .ft-legal a,
+body[data-page="direct"] .footer .ft-legal a,
+body[data-page="intake"] .footer .ft-legal a,
+body[data-page="privacy"] .footer .ft-legal a,
+body[data-page="terms"] .footer .ft-legal a,
+body[data-page="cookies"] .footer .ft-legal a,
+body[data-page="security"] .footer .ft-legal a,
+body[data-page="subscribe"] .footer .ft-legal a{
+  color: var(--ocean-dk);
+  opacity: 1;
+}
+body[data-page="home"] .footer .ft-legal a:hover,
+body[data-page="doctrine"] .footer .ft-legal a:hover,
+body[data-page="mandates"] .footer .ft-legal a:hover,
+body[data-page="principals"] .footer .ft-legal a:hover,
+body[data-page="direct"] .footer .ft-legal a:hover,
+body[data-page="intake"] .footer .ft-legal a:hover,
+body[data-page="privacy"] .footer .ft-legal a:hover,
+body[data-page="terms"] .footer .ft-legal a:hover,
+body[data-page="cookies"] .footer .ft-legal a:hover,
+body[data-page="security"] .footer .ft-legal a:hover,
+body[data-page="subscribe"] .footer .ft-legal a:hover{
+  color: var(--midnight);
+}
+/* Subscribe block at the foot — the cream eyebrow and italic
+   title were tuned for the dark surface. Flip to midnight so the
+   "Stay close to the firm's quiet dossier" reads clearly. */
+body[data-page="home"] .footer .footer-subscribe-eyebrow,
+body[data-page="doctrine"] .footer .footer-subscribe-eyebrow,
+body[data-page="mandates"] .footer .footer-subscribe-eyebrow,
+body[data-page="principals"] .footer .footer-subscribe-eyebrow,
+body[data-page="direct"] .footer .footer-subscribe-eyebrow,
+body[data-page="intake"] .footer .footer-subscribe-eyebrow,
+body[data-page="privacy"] .footer .footer-subscribe-eyebrow,
+body[data-page="terms"] .footer .footer-subscribe-eyebrow,
+body[data-page="cookies"] .footer .footer-subscribe-eyebrow,
+body[data-page="security"] .footer .footer-subscribe-eyebrow,
+body[data-page="subscribe"] .footer .footer-subscribe-eyebrow{
+  color: var(--ocean-dk);
+}
+body[data-page="home"] .footer .footer-subscribe-title,
+body[data-page="doctrine"] .footer .footer-subscribe-title,
+body[data-page="mandates"] .footer .footer-subscribe-title,
+body[data-page="principals"] .footer .footer-subscribe-title,
+body[data-page="direct"] .footer .footer-subscribe-title,
+body[data-page="intake"] .footer .footer-subscribe-title,
+body[data-page="privacy"] .footer .footer-subscribe-title,
+body[data-page="terms"] .footer .footer-subscribe-title,
+body[data-page="cookies"] .footer .footer-subscribe-title,
+body[data-page="security"] .footer .footer-subscribe-title,
+body[data-page="subscribe"] .footer .footer-subscribe-title{
+  color: var(--midnight);
+}
+body[data-page="home"] .footer .footer-subscribe-title em,
+body[data-page="doctrine"] .footer .footer-subscribe-title em,
+body[data-page="mandates"] .footer .footer-subscribe-title em,
+body[data-page="principals"] .footer .footer-subscribe-title em,
+body[data-page="direct"] .footer .footer-subscribe-title em,
+body[data-page="intake"] .footer .footer-subscribe-title em,
+body[data-page="privacy"] .footer .footer-subscribe-title em,
+body[data-page="terms"] .footer .footer-subscribe-title em,
+body[data-page="cookies"] .footer .footer-subscribe-title em,
+body[data-page="security"] .footer .footer-subscribe-title em,
+body[data-page="subscribe"] .footer .footer-subscribe-title em{
+  color: var(--ocean);
+}
+/* Subscribe CTAs — Login (primary) + Subscribe (ghost). These
+   were on a dark surface previously; on the cream surface they
+   need to be clearly readable buttons. */
+body[data-page="home"] .footer .footer-subscribe-cta,
+body[data-page="doctrine"] .footer .footer-subscribe-cta,
+body[data-page="mandates"] .footer .footer-subscribe-cta,
+body[data-page="principals"] .footer .footer-subscribe-cta,
+body[data-page="direct"] .footer .footer-subscribe-cta,
+body[data-page="intake"] .footer .footer-subscribe-cta,
+body[data-page="privacy"] .footer .footer-subscribe-cta,
+body[data-page="terms"] .footer .footer-subscribe-cta,
+body[data-page="cookies"] .footer .footer-subscribe-cta,
+body[data-page="security"] .footer .footer-subscribe-cta,
+body[data-page="subscribe"] .footer .footer-subscribe-cta{
+  color: var(--midnight);
+  border-color: rgba(28,43,58,.30);
+}
+body[data-page="home"] .footer .footer-subscribe-cta-primary,
+body[data-page="doctrine"] .footer .footer-subscribe-cta-primary,
+body[data-page="mandates"] .footer .footer-subscribe-cta-primary,
+body[data-page="principals"] .footer .footer-subscribe-cta-primary,
+body[data-page="direct"] .footer .footer-subscribe-cta-primary,
+body[data-page="intake"] .footer .footer-subscribe-cta-primary,
+body[data-page="privacy"] .footer .footer-subscribe-cta-primary,
+body[data-page="terms"] .footer .footer-subscribe-cta-primary,
+body[data-page="cookies"] .footer .footer-subscribe-cta-primary,
+body[data-page="security"] .footer .footer-subscribe-cta-primary,
+body[data-page="subscribe"] .footer .footer-subscribe-cta-primary{
+  background: var(--midnight);
+  color: var(--off);
+  border-color: var(--midnight);
+}
+body[data-page="home"] .footer .footer-subscribe-cta-primary:hover,
+body[data-page="doctrine"] .footer .footer-subscribe-cta-primary:hover,
+body[data-page="mandates"] .footer .footer-subscribe-cta-primary:hover,
+body[data-page="principals"] .footer .footer-subscribe-cta-primary:hover,
+body[data-page="direct"] .footer .footer-subscribe-cta-primary:hover,
+body[data-page="intake"] .footer .footer-subscribe-cta-primary:hover,
+body[data-page="privacy"] .footer .footer-subscribe-cta-primary:hover,
+body[data-page="terms"] .footer .footer-subscribe-cta-primary:hover,
+body[data-page="cookies"] .footer .footer-subscribe-cta-primary:hover,
+body[data-page="security"] .footer .footer-subscribe-cta-primary:hover,
+body[data-page="subscribe"] .footer .footer-subscribe-cta-primary:hover{
+  background: var(--ink-deep);
+  color: var(--off);
 }

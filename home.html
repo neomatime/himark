@@ -2212,42 +2212,57 @@
 </div>
 </div>
 </section>
+</div><!-- /.doctrine-stage : doctrine pin only; bridge-stage moved out -->
 
-<!-- DOCTRINE → ORBIT BRIDGE — editorial chapter break.
-     Bold + thin horizontal rules sandwich a big italic transitional
-     line. Sits inside the doctrine-stage with z-index:2 (same as
-     orbit), so as the user scrolls past the sticky doctrine, this
-     bridge appears first — then the orbit follows. The whole thing
-     reads as one continuous scroll event from belief → architecture
-     with a brief editorial pause in between. -->
-<aside class="doctrine-orbit-bridge" aria-label="Chapter break: principle to architecture">
-<div class="dob-rule dob-rule-bold" aria-hidden="true"></div>
-<div class="dob-meta">
-<span class="dob-meta-l">[ 01.D.X · INTERLUDE ]</span>
-<span class="dob-meta-r">PRINCIPLE &rarr; ARCHITECTURE</span>
+<!-- BRIDGE-STAGE — pinned scroll-driven storytelling.
+     Replaces the static .doctrine-orbit-bridge with an immersive
+     sequence: four sentences fade-up one at a time as the user
+     scrolls, then the architectural background image zooms in,
+     then crossfades to a looping aerial video of the Sandton
+     skyline. The .bridge-track gives 500vh of scroll runway; the
+     pinned .bridge-pin (sticky top:0) stays in viewport while the
+     internal animations are driven by scroll progress in main.js
+     (no scroll-hijack — just scroll-tied animations). -->
+<section class="bridge-stage" aria-label="Three paths into HIMARK">
+<div class="bridge-track">
+<div class="bridge-pin">
+
+<!-- BACKGROUND STACK — image fades into video as the zoom completes. -->
+<div class="bridge-bg" aria-hidden="true">
+<img class="bridge-img" src="images/method-hero.jpg" alt=""/>
+<video class="bridge-video" muted loop playsinline preload="metadata" aria-hidden="true">
+<source src="video/sandton.mp4" type="video/mp4"/>
+</video>
+<div class="bridge-veil"></div>
 </div>
-<div class="dob-rule dob-rule-thin" aria-hidden="true"></div>
 
-<!-- Cinematic image strip with the italic transitional line
-     overlaid. The veil layers a subtle dark gradient so the white
-     italic copy stays readable regardless of which image lands
-     here. Swap the <img src> for any photo with editorial weight
-     (cityscape, blueprint, ledger, working desk). -->
-<figure class="dob-figure">
-<img src="images/method-hero.jpg" alt="" loading="lazy"/>
-<div class="dob-figure-veil" aria-hidden="true"></div>
-<figcaption class="dob-figure-text">
-<em>Three paths.<br/>Same firm.<br/>One engagement at a time.</em>
-</figcaption>
-</figure>
+<!-- Editorial coord stamps — anchor the section in the design
+     language already used on the rest of the page. -->
+<span class="bridge-coord-tl">[ 01.D.X &middot; INTERLUDE ]</span>
+<span class="bridge-coord-tr">PRINCIPLE &rarr; ARCHITECTURE</span>
 
-<div class="dob-rule dob-rule-thin" aria-hidden="true"></div>
-<div class="dob-meta dob-meta-foot">
-<span class="dob-meta-l">SCROLL TO ENTER</span>
-<span class="dob-meta-r">&darr;&nbsp;&nbsp;&nbsp;01 / 03</span>
+<!-- SEQUENTIAL TEXT LAYER — each line absolute-positioned at
+     viewport centre. main.js toggles .is-active / .is-past as
+     scroll progresses through the four beats. -->
+<div class="bridge-text">
+<span class="bs-line" data-i="0">Three paths.</span>
+<span class="bs-line" data-i="1">Same doctrine.</span>
+<span class="bs-line" data-i="2">Same firm.</span>
+<span class="bs-line" data-i="3">One engagement at a time.</span>
 </div>
-<div class="dob-rule dob-rule-bold" aria-hidden="true"></div>
-</aside>
+
+<!-- Progress indicator at the bottom — thin rail + label. Fades
+     after the first scroll so it doesn't compete with the text. -->
+<div class="bridge-progress" aria-hidden="true">
+<span class="bridge-progress-label">Scroll to continue</span>
+<div class="bridge-progress-track">
+<div class="bridge-progress-fill"></div>
+</div>
+</div>
+
+</div><!-- /.bridge-pin -->
+</div><!-- /.bridge-track -->
+</section>
 
 <div class="s-num-bar"><span>01.C &middot; ORBIT</span><span>HOME / 02</span><span>03 &middot; PATHS</span></div>
 
@@ -2433,7 +2448,9 @@
 
 </section>
 
-</div><!-- /.doctrine-stage : doctrine pinned while orbit scrolled over it -->
+<!-- (was: /.doctrine-stage close — moved up after .home-doctrine
+     so the bridge-stage and orbit-section can be top-level siblings,
+     each with their own pin / scroll behaviour, no nested sticky.) -->
 
 
 <!-- DEEP-DIVE — editorial spread on operating belief.

@@ -2795,3 +2795,153 @@ window.authSubmit=authSubmit;
     boot();
   }
 })();
+
+
+/* ============================================================
+   HOME BRIDGE-STAGE — scroll-tied storytelling
+   ============================================================
+   Wires the .bridge-stage section on home.html to scroll progress.
+   The section gives 500vh of runway via .bridge-track; .bridge-pin
+   stays sticky inside it for the full duration. As the user scrolls
+   through the runway:
+
+     0.00 - 0.20  line 1 "Three paths."           is-active
+     0.20 - 0.35  line 2 "Same doctrine."         line 1 → is-past
+     0.35 - 0.50  line 3 "Same firm."             line 2 → is-past
+     0.50 - 0.65  line 4 "One engagement…"        line 3 → is-past
+     0.65 - 0.85  bridge-img --bridge-zoom 1 → 1.6
+     0.85 - 1.00  --bridge-img-opacity 1 → 0
+                  --bridge-video-opacity 0 → 1
+                  video.play() at ~15% crossfade
+
+   No scroll-hijacking — the page scroll is left alone; the pinned
+   section is sticky-positioned and the animations are driven from
+   the scroll rect, so the sequence feels guided without ever
+   blocking input. Easing on the zoom and fade phases is an
+   in-out-quad so the transitions feel cinematic rather than linear.
+   ============================================================ */
+(function bridgeStage(){
+  'use strict';
+
+  function init(){
+    var stage = document.querySelector('.bridge-stage');
+    if (!stage) return;
+
+    var img = stage.querySelector('.bridge-img');
+    var video = stage.querySelector('.bridge-video');
+    var lines = stage.querySelectorAll('.bs-line');
+    if (!img || !video || !lines.length) return;
+
+    var ticking = false;
+    var videoStarted = false;
+
+    function findScroller(el){
+      var n = el.parentElement;
+      while (n && n !== document.documentElement) {
+        var cs = getComputedStyle(n);
+        if (/(auto|scroll)/.test(cs.overflowY)) return n;
+        n = n.parentElement;
+      }
+      return window;
+    }
+    var scroller = findScroller(stage);
+
+    function easeInOutQuad(t){
+      return t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
+    }
+
+    /* Phase boundaries — fractions of the stage's scroll lifetime
+       (0 = pin just engaged at top:0; 1 = pin about to release as
+       the runway scrolls past). */
+    var LINE_PHASES = [0.00, 0.20, 0.35, 0.50, 0.65];
+    var ZOOM_START = 0.65;
+    var ZOOM_END   = 0.85;
+    var FADE_START = 0.85;
+    var FADE_END   = 1.00;
+
+    function update(){
+      ticking = false;
+      var rect = stage.getBoundingClientRect();
+      var stageHeight = stage.offsetHeight;
+      var vh = window.innerHeight;
+      var runway = stageHeight - vh;
+      if (runway <= 0) return;
+
+      var progress;
+      if (rect.top >= 0)              progress = 0;
+      else if (rect.top <= -runway)   progress = 1;
+      else                            progress = Math.abs(rect.top) / runway;
+
+      /* ------- LINE BEATS ------- */
+      var activeIdx = -1;
+      for (var i = 0; i < LINE_PHASES.length - 1; i++) {
+        if (progress >= LINE_PHASES[i] && progress < LINE_PHASES[i+1]) {
+          activeIdx = i;
+          break;
+        }
+      }
+      if (progress >= LINE_PHASES[LINE_PHASES.length-1]) activeIdx = lines.length - 1;
+
+      for (var j = 0; j < lines.length; j++) {
+        lines[j].classList.remove('is-active','is-past');
+        if (j === activeIdx)     lines[j].classList.add('is-active');
+        else if (j < activeIdx)  lines[j].classList.add('is-past');
+      }
+
+      /* ------- BACKGROUND ZOOM ------- */
+      var zoom = 1;
+      if (progress >= ZOOM_START) {
+        var zp = Math.min(1, (progress - ZOOM_START) / (ZOOM_END - ZOOM_START));
+        zoom = 1 + easeInOutQuad(zp) * 0.6;   /* 1.0 → 1.6 */
+      }
+      stage.style.setProperty('--bridge-zoom', zoom.toFixed(4));
+
+      /* ------- IMAGE → VIDEO CROSSFADE ------- */
+      if (progress >= FADE_START) {
+        var fp = Math.min(1, (progress - FADE_START) / (FADE_END - FADE_START));
+        var eased = easeInOutQuad(fp);
+        stage.style.setProperty('--bridge-img-opacity',   (1 - eased).toFixed(4));
+        stage.style.setProperty('--bridge-video-opacity', eased.toFixed(4));
+        /* Kick off the video once it's ~15% faded in. The user has
+           been scrolling, so the play() promise should resolve
+           without an autoplay-blocked rejection. */
+        if (eased > 0.15 && !videoStarted) {
+          try {
+            var p = video.play();
+            if (p && p.catch) p.catch(function(){ /* swallow autoplay reject */ });
+          } catch(_){}
+          videoStarted = true;
+        }
+      } else {
+        stage.style.setProperty('--bridge-img-opacity',   '1');
+        stage.style.setProperty('--bridge-video-opacity', '0');
+        if (videoStarted) {
+          try { video.pause(); video.currentTime = 0; } catch(_){}
+          videoStarted = false;
+        }
+      }
+
+      /* ------- PROGRESS BAR + HINT FADE ------- */
+      stage.style.setProperty('--bridge-progress', progress.toFixed(4));
+      stage.style.setProperty('--bridge-hint-opacity', progress < 0.03 ? '1' : '0');
+    }
+
+    function onScroll(){
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    }
+
+    var target = scroller === window ? window : scroller;
+    target.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    update();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

@@ -852,6 +852,42 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
 
 
 /* ====================================================================
+   LEGAL PAGES (privacy / terms / cookies / security) — mobile
+   layout fix. The base styles.css .lgl-body is `display:grid;
+   grid-template-columns: 280px 1fr; gap: 96px` with no responsive
+   fallback. On a mobile viewport (≤ ~720px) the 280px TOC column
+   plus the 96px gap is wider than the available content area, which
+   squeezes the 1fr content column down to a few pixels — that's
+   why the prose was rendering word-per-line in the user's screenshot.
+   Collapse to a single column on small viewports so the content
+   reads as normal paragraphs.
+   ==================================================================== */
+@media (max-width: 900px){
+  body[data-page="privacy"] .lgl-body,
+  body[data-page="terms"] .lgl-body,
+  body[data-page="cookies"] .lgl-body,
+  body[data-page="security"] .lgl-body{
+    grid-template-columns: 1fr !important;
+    gap: 56px !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+  body[data-page="privacy"] .lgl-toc,
+  body[data-page="terms"] .lgl-toc,
+  body[data-page="cookies"] .lgl-toc,
+  body[data-page="security"] .lgl-toc{
+    position: static !important;   /* sticky doesn't help in a single column */
+  }
+  body[data-page="privacy"] .lgl-content,
+  body[data-page="terms"] .lgl-content,
+  body[data-page="cookies"] .lgl-content,
+  body[data-page="security"] .lgl-content{
+    max-width: none;
+  }
+}
+
+
+/* ====================================================================
    HOME — make the s-num-bar dividers INSIDE the doctrine-stage
    layer above the sticky home-doctrine. Without this, my added
    `01.C · ORBIT` divider was rendering at the default stacking
@@ -913,6 +949,17 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
      the whole block back over a single viewport's worth. */
   margin-top: 40px !important;
   margin-bottom: 20px !important;
+}
+/* Remove the default <a> underline on the SESSION CTA — styles.css's
+   .ap-atlas-cta is shared with the chat-version of the button, which
+   is a <button> element so it never showed the underline. My session
+   version is an <a href='sessions.html'> for actual navigation, which
+   picks up the browser's default text-decoration. */
+.ap-session .ap-atlas-cta{
+  text-decoration: none;
+}
+.ap-session .ap-atlas-cta:hover{
+  text-decoration: none;
 }
 
 
@@ -1308,27 +1355,33 @@ body[data-page="home"] .bs-line.is-cleared{
 }
 
 /* HERO STATEMENT — the climax line that follows the four sequential
-   beats. Bold, larger than the italic lines above it, with a strong
-   text-shadow so it reads cleanly over the looping Sandton video
-   underneath. The <strong> inside breaks to its own line as an
-   italic emphasis tail. */
+   beats. The OPENING phrase ('When growth stalls…') reads as italic
+   light type — quiet, observational. The <strong> tail ('You need a
+   partner.') is the strong, bold, upright payoff sentence underneath
+   it. Originally the weights were swapped; the user requested the
+   flip so the assertion lands harder than the setup.
+
+   Heavy text-shadow on both keeps the type readable over the looping
+   Sandton video. <strong> breaks to its own line for the punchline. */
 body[data-page="home"] .bs-line-hero{
   font-family: var(--f-disp);
-  font-style: normal;
-  font-weight: 800;
-  font-size: clamp(40px, 6vw, 88px);
-  line-height: 1.04;
-  letter-spacing: -.018em;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(34px, 5vw, 72px);
+  line-height: 1.08;
+  letter-spacing: -.012em;
   color: var(--off);
   max-width: 1180px;
   text-shadow: 0 4px 32px rgba(0,0,0,.55), 0 2px 8px rgba(0,0,0,.35);
 }
 body[data-page="home"] .bs-line-hero strong{
   display: block;
-  margin-top: .12em;
-  font-style: italic;
-  font-weight: 400;
-  color: var(--mist);
+  margin-top: .18em;
+  font-style: normal;
+  font-weight: 800;
+  font-size: clamp(40px, 6vw, 88px);
+  letter-spacing: -.018em;
+  color: var(--off);
 }
 
 /* Progress indicator at the bottom — thin rail + label. Fades

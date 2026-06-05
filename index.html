@@ -63,22 +63,22 @@ html,body{
   width:100%;height:100%;
   overflow:hidden;
   font-family:var(--f-disp);
-  /* Layered color "orbs" sit on the deep midnight base. These get
-     blurred by the frosted glass pane (body::before) below to give
-     the field a softly-lit pane-of-glass quality without flattening
-     the brand palette. */
+  /* LIGHT MODE — soft pastel orbs on an off-white base. The orbs
+     pick up the brand's ocean palette at low opacity so they
+     read as soft tinted hues rather than coloured fields; the
+     frosted-glass pane below diffuses them into the cream wash. */
   background:
-    radial-gradient(circle 520px at 15% 20%, rgba(95,129,144,.72) 0%, transparent 62%),
-    radial-gradient(circle 440px at 85% 80%, rgba(138,173,184,.62) 0%, transparent 62%),
-    radial-gradient(circle 360px at 50% 50%, rgba(226,240,240,.16) 0%, transparent 68%),
-    linear-gradient(135deg, #050a12 0%, #1C2B3A 50%, #07101a 100%);
-  color:var(--off);
+    radial-gradient(circle 520px at 15% 20%, rgba(138,173,184,.32) 0%, transparent 62%),
+    radial-gradient(circle 440px at 85% 80%, rgba(216,227,232,.40) 0%, transparent 62%),
+    radial-gradient(circle 360px at 50% 50%, rgba(255,255,255,.50) 0%, transparent 68%),
+    linear-gradient(135deg, #F7F7F5 0%, #ECF1F3 50%, #F7F7F5 100%);
+  color:var(--midnight);
   cursor:default;
 }
 
 /* ============================================================
    Frosted-glass pane — covers the full viewport and blurs the
-   color orbs painted on the body. Sits at z-index:0 so every
+   pastel orbs painted on the body. Sits at z-index:0 so every
    foreground element (coord stamps z:5, wordmark z:3, sweep
    lines / bracket z:2, progress bar z:6, skip hint z:7, curtain
    z:100) stays crisp and fully visible above it.
@@ -89,16 +89,17 @@ body::before{
   inset:0;
   z-index:0;
   pointer-events:none;
-  /* Faint midnight wash unifies the orbs into a single pane and
-     keeps the foreground type readable. */
-  background:rgba(28,43,58,.32);
-  backdrop-filter:blur(60px) saturate(140%);
-  -webkit-backdrop-filter:blur(60px) saturate(140%);
-  /* Lit edge along the top — the "highlight" of a real pane of
-     glass catching the light. */
+  /* Faint off-white wash unifies the orbs into a single pane
+     and keeps the dark foreground type fully readable on the
+     glassy surface. */
+  background:rgba(247,247,245,.40);
+  backdrop-filter:blur(60px) saturate(120%);
+  -webkit-backdrop-filter:blur(60px) saturate(120%);
+  /* Lit edge along the top + soft shadow at the bottom — the
+     "highlight" of a real pane of glass catching the light. */
   box-shadow:
-    inset 0 1px 0 rgba(247,247,245,.06),
-    inset 0 -1px 0 rgba(8,15,22,.4);
+    inset 0 1px 0 rgba(255,255,255,.70),
+    inset 0 -1px 0 rgba(28,43,58,.06);
 }
 
 /* ============================================================
@@ -110,7 +111,8 @@ body::before{
   font-size:10px;
   font-weight:500;
   letter-spacing:.18em;
-  color:rgba(138,173,184,.55);
+  /* Ocean-dark at low alpha for visibility on the off-white field */
+  color:rgba(46,74,90,.62);
   text-transform:uppercase;
   z-index:5;
   opacity:0;
@@ -226,6 +228,11 @@ body::before{
      change layout box width, so the H positioning stays correct
      throughout the animation. */
   aspect-ratio:367 / 99;
+  /* Light-mode: the source PNG is a white-on-transparent IMARK.
+     brightness(0) collapses the white pixels to black so the
+     wordmark renders as a dark glyph on the cream field, matching
+     the now-midnight framed H beside it. Alpha is preserved. */
+  filter:brightness(0);
   user-select:none;
   -webkit-user-drag:none;
   /* Hidden state — invisible, very lightly scaled down so the
@@ -280,7 +287,9 @@ body::before{
 
 .s5-sweeps .s5-line{
   fill:none;
-  stroke:rgba(138,173,184,.55);
+  /* Ocean at mid alpha — visible on the cream field without
+     competing with the dark wordmark. */
+  stroke:rgba(95,129,144,.55);
   stroke-width:1;
   /* pathLength="1" + dasharray=1 + dashoffset:1→0 draws the line
      proportionally regardless of how the line's geometry stretches
@@ -327,7 +336,9 @@ body::before{
 }
 .s5-bracket .s5-bracket-rect{
   fill:none;
-  stroke:rgba(138,173,184,.65);
+  /* Ocean — same family as the sweep lines, slightly stronger so
+     the bracket reads as the primary framing element. */
+  stroke:rgba(95,129,144,.65);
   stroke-width:1.25;
   pathLength:1;
   stroke-dasharray:1;
@@ -339,10 +350,11 @@ body::before{
 
 /* Four short corner accent lines that punch through the bracket
    corners — adds an architectural / "marker" feel rather than a
-   plain rectangle. */
+   plain rectangle. Was mist (rgba 226,240,240) for dark mode;
+   switched to ocean-dark so the accents pop against the cream. */
 .s5-bracket .s5-corner{
   fill:none;
-  stroke:rgba(226,240,240,.55);
+  stroke:rgba(46,74,90,.70);
   stroke-width:1.5;
   pathLength:1;
   stroke-dasharray:1;
@@ -359,14 +371,18 @@ body::before{
   position:absolute;
   bottom:0; left:0; right:0;
   height:2px;
-  background:rgba(138,173,184,.15);
+  /* Slightly stronger track tint so the rail is visible on the
+     cream background before the fill paints over it. */
+  background:rgba(46,74,90,.16);
   z-index:6;
   overflow:hidden;
 }
 .progress-fill{
   position:absolute;
   inset:0 100% 0 0;
-  background:var(--ocean-lt);
+  /* Midnight fill reads cleanly on the cream rail (was ocean-lt
+     which was tuned for the dark midnight rail). */
+  background:var(--midnight);
   /* Duration extended for Scene 5 — bar fills over full runtime
      before the curtain triggers at ~5.7s */
   transition:right 5.7s linear;
@@ -386,7 +402,8 @@ body::before{
   font-weight:500;
   letter-spacing:.22em;
   text-transform:uppercase;
-  color:rgba(138,173,184,.45);
+  /* Ocean-dark for legibility on the cream background. */
+  color:rgba(46,74,90,.55);
   opacity:0;
   animation:coordIn .8s var(--ease-out) 2.4s forwards;
   z-index:7;
@@ -397,7 +414,7 @@ body::before{
   content:'';
   display:inline-block;
   width:14px; height:1px;
-  background:rgba(138,173,184,.40);
+  background:rgba(46,74,90,.45);
   vertical-align:middle;
   margin:0 10px 2px;
 }
@@ -498,14 +515,14 @@ body::before{
     <svg viewBox="0 0 140 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <g class="h-glyph">
         <!-- Left vertical leg (full height) -->
-        <rect x="14" y="14" width="38" height="170" fill="#F7F7F5"/>
+        <rect x="14" y="14" width="38" height="170" fill="#1C2B3A"/>
         <!-- Right vertical leg (full height) -->
-        <rect x="88" y="14" width="38" height="170" fill="#F7F7F5"/>
+        <rect x="88" y="14" width="38" height="170" fill="#1C2B3A"/>
         <!-- Middle connector — LEFT half -->
-        <rect x="52" y="85" width="16" height="30" fill="#F7F7F5"/>
+        <rect x="52" y="85" width="16" height="30" fill="#1C2B3A"/>
         <!-- 4-unit VERTICAL split at x=68..72 — left empty -->
         <!-- Middle connector — RIGHT half -->
-        <rect x="72" y="85" width="16" height="30" fill="#F7F7F5"/>
+        <rect x="72" y="85" width="16" height="30" fill="#1C2B3A"/>
       </g>
       <!-- Frame: drawn by stroke-dashoffset transition in Scene 2.
            Stroke-width 10 for the heavy architectural border the
@@ -513,7 +530,7 @@ body::before{
       <rect class="frame"
             x="4" y="4" width="132" height="192"
             fill="none"
-            stroke="#F7F7F5"
+            stroke="#1C2B3A"
             stroke-width="10"
             stroke-linecap="square"
             stroke-linejoin="miter"/>

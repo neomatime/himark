@@ -852,6 +852,89 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
 
 
 /* ====================================================================
+   FOOTER SUBSCRIBE BLOCK — layout fallback for the LEGAL PAGES.
+   ====================================================================
+   The .footer-subscribe / .footer-subscribe-cta layout CSS lives in
+   inline <style> blocks on 11 of the project's HTML files (home,
+   about, services, team, contact, apply, subscribe, plus the four
+   legacy pages: insights/press/process/product). It was NEVER
+   inlined on privacy / terms / cookies / security — so those four
+   pages render the footer-subscribe markup with no layout, and
+   browsers stack everything at the start of the flow → the Login
+   and Subscribe buttons end up overlapping the copyright row.
+
+   Mirroring the inline block here so any page that loads
+   redesign.css picks up the layout. (The colour overrides for the
+   light-glass footer surface that live further up in this file
+   still take precedence over these defaults.)
+   ==================================================================== */
+.footer-subscribe{
+  margin-top: 56px;
+  padding: 36px 0 32px;
+  border-top: 1px solid rgba(95,129,144,.18);
+  border-bottom: 1px solid rgba(95,129,144,.18);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.footer-subscribe-text{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.footer-subscribe-eyebrow{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  margin: 0;
+}
+.footer-subscribe-title{
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: clamp(20px, 2.2vw, 28px);
+  font-weight: 300;
+  line-height: 1.2;
+  margin: 0;
+  letter-spacing: -.01em;
+}
+.footer-subscribe-title em{
+  font-style: italic;
+  font-weight: 300;
+}
+.footer-actions{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.footer-subscribe-cta{
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 28px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  transition: background .25s ease, color .25s ease, border-color .25s ease, transform .25s ease;
+  white-space: nowrap;
+}
+.footer-subscribe-cta:hover{ transform: translateX(2px); }
+.footer-subscribe-arrow{
+  font-size: 14px;
+  transition: transform .25s ease;
+}
+.footer-subscribe-cta:hover .footer-subscribe-arrow{ transform: translateX(4px); }
+
+
+/* ====================================================================
    LEGAL PAGES (privacy / terms / cookies / security) — mobile
    layout fix. The base styles.css .lgl-body is `display:grid;
    grid-template-columns: 280px 1fr; gap: 96px` with no responsive

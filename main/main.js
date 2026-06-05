@@ -2726,6 +2726,56 @@ window.authSubmit=authSubmit;
     page.insertBefore(buildPillNav(dataPage), page.firstChild);
   }
 
+  /* --------- HAMBURGER MENU (mobile) ---------
+     Injects a hamburger toggle into every .pill-nav (idempotent — re-
+     runs are no-ops). Click toggles .is-open on the nav, which the
+     CSS uses to slide the .pn-links dropdown panel down from below
+     the pill. Tapping any link closes the menu. */
+  function buildHamburger(){
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'pn-toggle';
+    btn.setAttribute('aria-label', 'Toggle menu');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.innerHTML = '<span class="pn-toggle-icon"><span></span><span></span><span></span></span>';
+    return btn;
+  }
+  function wireHamburger(nav){
+    if (nav.dataset.hbWired) return;
+    nav.dataset.hbWired = '1';
+    var btn = nav.querySelector('.pn-toggle');
+    if (!btn) {
+      btn = buildHamburger();
+      /* Insert BEFORE .pn-cta so the layout reads: brand · links ·
+         hamburger · CTA. Falls back to appending if no CTA exists. */
+      var cta = nav.querySelector('.pn-cta');
+      if (cta) nav.insertBefore(btn, cta);
+      else nav.appendChild(btn);
+    }
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var open = nav.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    /* Tapping a link closes the menu. */
+    nav.querySelectorAll('.pn-links a').forEach(function(a){
+      a.addEventListener('click', function(){
+        nav.classList.remove('is-open');
+        btn.setAttribute('aria-expanded', 'false');
+      });
+    });
+    /* Tapping outside closes the menu. */
+    document.addEventListener('click', function(e){
+      if (!nav.classList.contains('is-open')) return;
+      if (nav.contains(e.target)) return;
+      nav.classList.remove('is-open');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+  }
+  function setupHamburgers(){
+    document.querySelectorAll('.pill-nav').forEach(wireHamburger);
+  }
+
   /* ---------- 2. HERO SCROLL-ZOOM ---------- */
 
   function findScroller(el){
@@ -2778,11 +2828,16 @@ window.authSubmit=authSubmit;
 
   function boot(){
     injectPillNav();
+    setupHamburgers();
     setupHeroZoom();
     /* Router toggles .active on different .page elements when
-       navigating. Re-run hero zoom setup so new heroes get wired. */
+       navigating. Re-run hero zoom + hamburger setup so newly-
+       activated pages get wired. */
     if (typeof MutationObserver === 'function'){
-      var mo = new MutationObserver(function(){ setupHeroZoom(); });
+      var mo = new MutationObserver(function(){
+        setupHeroZoom();
+        setupHamburgers();
+      });
       document.querySelectorAll('.page').forEach(function(p){
         mo.observe(p, { attributes:true, attributeFilter:['class'] });
       });
@@ -2852,12 +2907,14 @@ window.authSubmit=authSubmit;
 
     /* Phase boundaries — fractions of the stage's scroll lifetime
        (0 = pin just engaged at top:0; 1 = pin about to release as
-       the runway scrolls past). */
-    var LINE_PHASES = [0.00, 0.20, 0.35, 0.50, 0.65];
-    var ZOOM_START = 0.65;
-    var ZOOM_END   = 0.85;
-    var FADE_START = 0.85;
-    var FADE_END   = 1.00;
+       the runway scrolls past). Now SIX beats: four sequential
+       lines, then the hero statement ('When growth stalls…'), then
+       the zoom and image→video crossfade. */
+    var LINE_PHASES = [0.00, 0.10, 0.20, 0.30, 0.40, 0.55];
+    var ZOOM_START = 0.55;
+    var ZOOM_END   = 0.78;
+    var FADE_START = 0.78;
+    var FADE_END   = 0.95;
 
     function update(){
       ticking = false;
@@ -2887,12 +2944,30 @@ window.authSubmit=authSubmit;
           break;
         }
       }
-      if (progress >= LINE_PHASES[LINE_PHASES.length-1]) activeIdx = lines.length - 1;
+      /* After the last line phase, the hero (last index) stays active
+         through the zoom. During the crossfade phase it clears so it
+         doesn't sit on top of the video. */
+      if (progress >= LINE_PHASES[LINE_PHASES.length-1] && progress < FADE_START) {
+        activeIdx = lines.length - 1;
+      }
+
+      var heroActive = (activeIdx === lines.length - 1);
+      var clearAll = (progress >= FADE_START);
 
       for (var j = 0; j < lines.length; j++) {
-        lines[j].classList.remove('is-active','is-past');
-        if (j === activeIdx)     lines[j].classList.add('is-active');
-        else if (j < activeIdx)  lines[j].classList.add('is-past');
+        lines[j].classList.remove('is-active','is-past','is-cleared');
+        if (clearAll) {
+          lines[j].classList.add('is-cleared');
+        } else if (j === activeIdx) {
+          lines[j].classList.add('is-active');
+        } else if (heroActive) {
+          /* Hero is the focal point — previous lines vanish entirely
+             so the user sees a clean canvas behind the hero statement,
+             not a trail of dim italic phrases. */
+          lines[j].classList.add('is-cleared');
+        } else if (j < activeIdx) {
+          lines[j].classList.add('is-past');
+        }
       }
 
       /* ------- BACKGROUND ZOOM ------- */

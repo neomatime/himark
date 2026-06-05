@@ -1,0 +1,593 @@
+  /* === ORBIT (restored) === */
+  .orbit-section{
+    background:var(--off);
+    padding:130px var(--gx) 110px;
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid var(--rule);
+  }
+  /* Subtle radial light at the center — pulls the eye to the orbit */
+  .orbit-section::before{
+    content:'';position:absolute;inset:0;
+    background:
+      radial-gradient(circle 480px at 50% 50%, rgba(95,129,144,.06), transparent 70%),
+      linear-gradient(to right, var(--grid) 1px, transparent 1px);
+    background-size:auto, calc((100vw - 128px)/6) 100%;
+    background-position:center, 64px 0;
+    pointer-events:none;
+    opacity:.85;
+  }
+  .orbit-section > *{position:relative;z-index:1;}
+
+  .orbit-coord-l{
+    position:absolute;top:48px;left:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:var(--ocean);z-index:2;
+  }
+  .orbit-coord-r{
+    position:absolute;top:48px;right:var(--gx);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:rgba(46,74,90,.68);z-index:2;
+  }
+
+  /* Intro — minimal copy, centred */
+  .orbit-intro{
+    text-align:center;
+    max-width:680px;
+    margin:0 auto 36px;
+  }
+  .orbit-eyebrow{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--ocean);
+    margin-bottom:18px;
+    display:flex;align-items:center;justify-content:center;gap:14px;
+  }
+  .orbit-eyebrow::before,
+  .orbit-eyebrow::after{
+    content:'';display:block;width:32px;height:1px;background:var(--ocean);
+  }
+  .orbit-hl{
+    font-family:var(--f-disp);font-size:clamp(32px,3.4vw,48px);
+    font-weight:800;line-height:1.05;color:var(--midnight);
+    letter-spacing:-.01em;margin-bottom:14px;
+  }
+  .orbit-hl em{font-style:italic;font-weight:300;color:var(--ocean);}
+  .orbit-sub{
+    font-family:var(--f-body);font-weight:400;font-size:14px;
+    color:var(--ink-mut);line-height:1.7;
+    max-width:520px;margin:0 auto;
+  }
+
+  /* Stage — SVG canvas wrapper */
+  .orbit-stage{
+    position:relative;
+    width:100%;
+    max-width:880px;
+    margin:0 auto;
+  }
+  .orbit-svg{
+    display:block;width:100%;height:auto;
+    user-select:none;-webkit-user-select:none;
+    overflow:visible;
+  }
+
+  /* Orbital ring — clearly visible against the off-white surface.
+     Previous opacity (.25) read as nearly transparent; bumped to .55
+     with slightly heavier stroke so the orbit reads as architecture. */
+  .orbit-ring{
+    fill:none;
+    stroke:rgba(46,74,90,.55);
+    stroke-width:1.5;
+    stroke-dasharray:3 5;
+    animation:orbit-ring-spin 90s linear infinite;
+    transform-origin:440px 270px;
+  }
+  @keyframes orbit-ring-spin{ to{ transform:rotate(360deg); } }
+
+  /* Orbital tick marks (decorative — show motion) */
+  .orbit-ticks{
+    transform-origin:440px 270px;
+    animation:orbit-ring-spin 120s linear infinite reverse;
+  }
+  .orbit-tick{fill:rgba(46,74,90,.75);}
+  .orbit-tick-sm{fill:rgba(46,74,90,.4);}
+
+  /* Connection lines from core to nodes — also bumped from .22 to .5 */
+  .orbit-link{
+    stroke:rgba(46,74,90,.5);
+    stroke-width:1.3;
+    stroke-dasharray:4 4;
+    transition:stroke .4s var(--ease), stroke-width .4s var(--ease);
+  }
+  .orbit-link.active{
+    stroke:var(--ocean);
+    stroke-width:1.5;
+    stroke-dasharray:none;
+  }
+
+  /* Orbit core — now a white tap-to-toggle circle. Click to
+     collapse the surrounding tier nodes; click again to expand. */
+  .orbit-core{
+    transform-origin:440px 270px;
+    animation:orbit-core-breathe 5s ease-in-out infinite;
+    cursor:none;outline:none;
+  }
+  @keyframes orbit-core-breathe{
+    0%, 100% { filter:drop-shadow(0 0 0 rgba(95,129,144,0)); }
+    50%      { filter:drop-shadow(0 0 14px rgba(95,129,144,.32)); }
+  }
+  .orbit-core-bg{
+    fill:var(--white);
+    stroke:rgba(28,43,58,.22);
+    stroke-width:1;
+    transition:stroke .35s var(--ease), stroke-width .35s var(--ease);
+  }
+  .orbit-core:hover .orbit-core-bg{
+    stroke:var(--midnight);
+    stroke-width:1.5;
+  }
+  .orbit-core:focus-visible .orbit-core-bg{
+    stroke:var(--ocean);
+    stroke-width:2;
+  }
+  /* Toggle icon — + (collapsed) rotates to × (expanded) on default */
+  .orbit-core-icon{
+    transform-origin:440px 262px;
+    transform:rotate(45deg);  /* default = expanded = × */
+    transition:transform .6s cubic-bezier(.65,0,.35,1);
+  }
+  .orbit-stage.collapsed .orbit-core-icon{
+    transform:rotate(0deg);   /* collapsed = + */
+  }
+  .orbit-core-line{
+    stroke:var(--midnight);
+    stroke-width:2.5;
+    stroke-linecap:round;
+    transition:stroke .35s var(--ease);
+  }
+  .orbit-core:hover .orbit-core-line{stroke:var(--ocean-dk);}
+  .orbit-core-label{
+    font-family:var(--f-mono);font-size:9px;font-weight:700;
+    letter-spacing:.28em;fill:rgba(46,74,90,.65);
+    transition:fill .35s var(--ease);
+  }
+  .orbit-core:hover .orbit-core-label{fill:var(--midnight);}
+
+  /* ============ COLLAPSED STATE ============ */
+  /* Tier nodes shrink toward the centre and fade */
+  .orbit-stage.collapsed .orbit-node{
+    opacity:0;
+    transform:scale(.15);
+    transform-box:fill-box;transform-origin:center;
+    pointer-events:none;
+    transition:
+      opacity .55s var(--ease),
+      transform .65s cubic-bezier(.65,0,.35,1);
+  }
+  /* Connecting links fade out */
+  .orbit-stage.collapsed .orbit-link,
+  .orbit-stage.collapsed .orbit-ticks{
+    opacity:0;
+    transition:opacity .4s var(--ease);
+  }
+  /* Detail panel below collapses cleanly */
+  .orbit-section .orbit-detail{
+    transition:
+      max-height .65s cubic-bezier(.65,0,.35,1),
+      opacity .4s var(--ease),
+      margin-top .5s var(--ease),
+      padding .5s var(--ease),
+      border-width .35s var(--ease);
+    max-height:800px;
+    overflow:hidden;
+  }
+  .orbit-stage.collapsed ~ .orbit-detail{
+    max-height:0 !important;
+    opacity:0 !important;
+    margin-top:0 !important;
+    padding-top:0 !important;
+    padding-bottom:0 !important;
+    border-width:0 !important;
+  }
+
+  /* ============ SHORTCUT PANEL ============
+     Appears in place of the detail panel when the orbit is collapsed.
+     Three editorial action cards mapping to the three real entry
+     paths into HIMARK. Pops in with a slight overshoot (back-out
+     curve) and staggered card delays for a tactile reveal. */
+  .orbit-shortcut{
+    max-width:920px;
+    margin:0 auto;
+    overflow:hidden;
+    opacity:0;
+    transform:translateY(20px) scale(.96);
+    max-height:0;
+    margin-top:0;
+    pointer-events:none;
+    transition:
+      transform .55s cubic-bezier(.34, 1.46, .64, 1) .25s,
+      opacity .4s var(--ease) .3s,
+      max-height .55s cubic-bezier(.22,1,.36,1) .25s,
+      margin-top .5s var(--ease) .25s;
+  }
+  .orbit-stage.collapsed ~ .orbit-shortcut{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    max-height:600px;
+    margin-top:60px;
+    pointer-events:auto;
+  }
+
+  .orbit-shortcut-eyebrow{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--ocean);
+    text-align:center;margin-bottom:28px;
+    display:flex;align-items:center;justify-content:center;gap:14px;
+  }
+  .orbit-shortcut-eyebrow::before,
+  .orbit-shortcut-eyebrow::after{
+    content:'';display:block;width:32px;height:1px;background:var(--ocean);
+  }
+  .orbit-shortcut-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:18px;
+  }
+  /* Staggered reveal — each card lands ~100ms after the previous */
+  .orbit-shortcut-card{
+    display:flex;flex-direction:column;
+    padding:30px 26px 26px;
+    background:var(--white);
+    border:1px solid var(--rule);
+    text-decoration:none;
+    cursor:none;
+    text-align:left;
+    font-family:inherit;
+    color:inherit;
+    position:relative;
+    opacity:0;
+    transform:translateY(12px);
+    transition:
+      opacity .45s var(--ease),
+      transform .55s cubic-bezier(.34, 1.46, .64, 1),
+      border-color .35s var(--ease),
+      box-shadow .35s var(--ease);
+  }
+  .orbit-stage.collapsed ~ .orbit-shortcut .orbit-shortcut-card{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .orbit-stage.collapsed ~ .orbit-shortcut .orbit-shortcut-card:nth-child(1){transition-delay:.4s, .4s, 0s, 0s;}
+  .orbit-stage.collapsed ~ .orbit-shortcut .orbit-shortcut-card:nth-child(2){transition-delay:.5s, .5s, 0s, 0s;}
+  .orbit-stage.collapsed ~ .orbit-shortcut .orbit-shortcut-card:nth-child(3){transition-delay:.6s, .6s, 0s, 0s;}
+
+  .orbit-shortcut-card:hover,
+  .orbit-shortcut-card:focus-visible{
+    transform:translateY(-4px);
+    border-color:var(--ocean);
+    box-shadow:0 24px 48px -24px rgba(28,43,58,.18);
+    outline:none;
+  }
+  .orbit-shortcut-card:focus-visible{
+    outline:2px solid var(--ocean);
+    outline-offset:2px;
+  }
+
+  .orbit-shortcut-card-top{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    margin-bottom:18px;
+  }
+  .orbit-shortcut-coord{
+    font-family:var(--f-mono);font-size:10px;font-weight:700;
+    letter-spacing:.22em;color:var(--ocean);
+  }
+  .orbit-shortcut-pill{
+    font-family:var(--f-mono);font-size:8.5px;font-weight:600;
+    letter-spacing:.16em;color:rgba(46,74,90,.68);
+    padding:3px 8px;
+    border:1px solid var(--rule);
+    border-radius:1px;
+    text-transform:uppercase;
+  }
+  .orbit-shortcut-name{
+    font-family:var(--f-disp);font-size:22px;font-weight:800;
+    color:var(--midnight);letter-spacing:-.005em;line-height:1.1;
+    margin-bottom:10px;
+  }
+  .orbit-shortcut-sub{
+    font-family:var(--f-body);font-weight:400;font-size:13px;
+    color:var(--ink-mut);line-height:1.6;
+    flex:1;margin-bottom:16px;
+  }
+  .orbit-shortcut-cta{
+    font-family:var(--f-mono);font-size:10px;font-weight:700;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--midnight);
+    display:inline-flex;align-items:center;gap:10px;
+    align-self:flex-start;
+    transition:gap .35s var(--ease), color .35s var(--ease);
+  }
+  .orbit-shortcut-card:hover .orbit-shortcut-cta{
+    color:var(--ocean-dk);
+    gap:14px;
+  }
+  .orbit-shortcut-arrow{font-size:14px;font-family:var(--f-mono);}
+
+  @media (max-width:768px){
+    .orbit-shortcut-grid{grid-template-columns:1fr;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .orbit-shortcut, .orbit-shortcut-card{transition:none;}
+  }
+
+  /* ============ SIDE IMAGES — appear when collapsed ============
+     Two tall vertical image panels that slide in from off-screen
+     when the orbit collapses. Each is a clickable navigation card
+     into a relevant page (Method on the left, Principals on the
+     right). Hidden on viewports below 1200px where the orbit
+     content already takes most of the width. */
+  .orbit-side{
+    position:absolute;
+    top:50%;
+    width:170px;
+    height:440px;
+    transform:translateY(-50%) translateX(var(--off));
+    opacity:0;
+    pointer-events:none;
+    z-index:5;
+    transition:
+      transform .75s cubic-bezier(.34, 1.46, .64, 1) .35s,
+      opacity .55s var(--ease) .4s;
+  }
+  .orbit-side-l{ left:32px;  --off:-260px; }
+  .orbit-side-r{ right:32px; --off:260px;  }
+  .orbit-stage.collapsed ~ .orbit-side{
+    --off:0px;
+    opacity:1;
+    pointer-events:auto;
+  }
+  .orbit-side-link{
+    display:block;
+    position:relative;
+    width:100%;height:100%;
+    text-decoration:none;
+    cursor:none;
+    overflow:hidden;
+    border:1px solid rgba(46,74,90,.18);
+    background:var(--midnight);
+    transition:border-color .35s var(--ease), transform .45s var(--ease), box-shadow .45s var(--ease);
+    box-shadow:0 30px 60px -30px rgba(28,43,58,.35);
+  }
+  .orbit-side-link:hover,
+  .orbit-side-link:focus-visible{
+    border-color:var(--ocean);
+    transform:translateY(-4px);
+    box-shadow:0 40px 70px -30px rgba(28,43,58,.45);
+  }
+  .orbit-side-link:focus-visible{
+    outline:2px solid var(--ocean-lt);
+    outline-offset:2px;
+  }
+  .orbit-side-coord{
+    position:absolute;
+    top:14px;left:14px;
+    font-family:var(--f-mono);font-size:9px;font-weight:700;
+    letter-spacing:.22em;color:var(--off);
+    background:rgba(14,24,34,.65);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    padding:5px 9px;
+    z-index:2;
+  }
+  .orbit-side-img{
+    position:absolute;
+    inset:0;
+    background-size:cover;
+    background-position:center;
+    filter:saturate(.85) brightness(.65) contrast(1.02);
+    transition:filter .55s var(--ease), transform .9s var(--ease);
+  }
+  .orbit-side-link:hover .orbit-side-img{
+    filter:saturate(1) brightness(.8) contrast(1.04);
+    transform:scale(1.05);
+  }
+  .orbit-side-caption{
+    position:absolute;
+    bottom:0;left:0;right:0;
+    padding:32px 16px 18px;
+    background:linear-gradient(to top,
+      rgba(14,24,34,.92) 0%,
+      rgba(14,24,34,.55) 55%,
+      transparent 100%);
+    z-index:1;
+  }
+  .orbit-side-tag{
+    display:block;
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ocean-lt);
+    margin-bottom:6px;
+  }
+  .orbit-side-name{
+    display:block;
+    font-family:var(--f-disp);font-size:18px;font-weight:800;
+    color:var(--off);letter-spacing:-.005em;line-height:1.1;
+  }
+  .orbit-side-arrow{
+    position:absolute;
+    bottom:18px;right:16px;
+    font-family:var(--f-mono);font-size:16px;font-weight:300;
+    color:var(--off);z-index:2;
+    transition:transform .35s var(--ease);
+  }
+  .orbit-side-link:hover .orbit-side-arrow{transform:translateX(4px);}
+
+  /* Hide on narrower viewports where there's no room beside the orbit */
+  @media (max-width:1200px){
+    .orbit-side{display:none;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .orbit-side{transition:none;}
+  }
+
+  /* Tier nodes */
+  .orbit-node{
+    cursor:none;outline:none;
+    transition:opacity .45s var(--ease);
+  }
+  .orbit-node-bg{
+    fill:var(--white);
+    stroke:rgba(28,43,58,.18);
+    stroke-width:1;
+    transition:fill .45s var(--ease), stroke .45s var(--ease), stroke-width .45s var(--ease);
+  }
+  .orbit-node-ring{
+    fill:none;
+    stroke:rgba(95,129,144,.25);
+    stroke-width:1;
+    transition:stroke .45s var(--ease), stroke-width .45s var(--ease);
+  }
+  .orbit-node-coord{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.14em;fill:var(--ocean);
+    pointer-events:none;
+    transition:fill .45s var(--ease);
+  }
+  .orbit-node-name{
+    font-family:var(--f-disp);font-size:14px;font-weight:800;
+    letter-spacing:.04em;fill:var(--midnight);
+    pointer-events:none;
+    transition:fill .45s var(--ease);
+  }
+  .orbit-node-pulse{
+    fill:none;stroke:var(--ocean);stroke-width:1;opacity:0;
+    transform-box:fill-box;transform-origin:center;
+  }
+
+  /* Hover state */
+  .orbit-node:hover .orbit-node-bg,
+  .orbit-node:focus-visible .orbit-node-bg{
+    stroke:var(--ocean);
+    stroke-width:1.5;
+  }
+  .orbit-node:hover .orbit-node-ring{
+    stroke:var(--ocean);
+    stroke-width:1.5;
+  }
+
+  /* Active state */
+  .orbit-node.active .orbit-node-bg{
+    fill:var(--midnight);
+    stroke:var(--midnight);
+    stroke-width:2;
+  }
+  .orbit-node.active .orbit-node-coord{fill:var(--ocean-lt);}
+  .orbit-node.active .orbit-node-name{fill:var(--off);}
+  .orbit-node.active .orbit-node-pulse{
+    animation:orbit-node-pulse 2.6s ease-out infinite;
+  }
+  @keyframes orbit-node-pulse{
+    0%   { opacity:.6; transform:scale(1); }
+    100% { opacity:0;  transform:scale(1.5); }
+  }
+
+  /* When one node is active, dim the others */
+  .orbit-stage.has-active .orbit-node:not(.active){opacity:.35;}
+
+  /* Detail panel — sits below the orbit */
+  .orbit-detail{
+    max-width:880px;
+    margin:48px auto 0;
+    background:var(--white);
+    border:1px solid var(--rule);
+    border-radius:4px;
+    padding:36px 40px 32px;
+    position:relative;
+    box-shadow:0 30px 60px -30px rgba(28,43,58,.15);
+  }
+  .orbit-detail-coord{
+    position:absolute;top:14px;right:20px;
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
+    color:var(--ocean);
+  }
+  .orbit-detail-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:48px;
+    align-items:start;
+  }
+  .orbit-detail-eyebrow{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--ocean);
+    margin-bottom:14px;
+  }
+  .orbit-detail-name{
+    font-family:var(--f-disp);font-size:clamp(28px,2.6vw,36px);
+    font-weight:800;color:var(--midnight);
+    letter-spacing:-.01em;line-height:1.05;
+    margin-bottom:8px;
+    transition:opacity .28s var(--ease);
+  }
+  .orbit-detail-class{
+    font-family:var(--f-mono);font-size:10px;font-weight:600;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--ocean);
+    margin-bottom:20px;padding-bottom:16px;
+    border-bottom:1px solid var(--rule);
+    transition:opacity .28s var(--ease);
+  }
+  .orbit-detail-desc{
+    font-family:var(--f-body);font-weight:400;font-size:14px;
+    line-height:1.75;color:var(--ink);
+    transition:opacity .28s var(--ease);
+  }
+  .orbit-detail-right{display:flex;flex-direction:column;}
+  .orbit-detail-row{
+    padding:14px 0 16px;
+    border-bottom:1px solid var(--rule);
+  }
+  .orbit-detail-row:first-child{padding-top:0;}
+  .orbit-detail-l{
+    font-family:var(--f-mono);font-size:9px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ocean);margin-bottom:6px;
+  }
+  .orbit-detail-v{
+    font-family:var(--f-body);font-weight:400;font-size:13.5px;
+    line-height:1.6;color:var(--ink);
+    transition:opacity .28s var(--ease);
+  }
+  .orbit-detail .fading{opacity:0;}
+  .orbit-detail-cta{
+    font-family:var(--f-nav);font-size:11px;font-weight:700;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--midnight);text-decoration:none;
+    align-self:flex-start;
+    padding:13px 22px;
+    border:1px solid var(--midnight);
+    margin-top:24px;
+    display:inline-flex;align-items:center;gap:12px;
+    transition:background .3s var(--ease), color .3s var(--ease), gap .3s var(--ease);
+    cursor:none;
+  }
+  .orbit-detail-cta:hover{
+    background:var(--midnight);color:var(--off);gap:18px;
+  }
+  .orbit-detail-arrow{font-size:14px;font-weight:300;}
+
+  @media (max-width:768px){
+    .orbit-section{padding:80px 22px 60px;}
+    .orbit-coord-l,.orbit-coord-r{top:24px;}
+    .orbit-coord-l{left:22px;}
+    .orbit-coord-r{right:22px;}
+    .orbit-intro{margin-bottom:24px;}
+    .orbit-detail{padding:28px 22px;margin-top:32px;}
+    .orbit-detail-grid{grid-template-columns:1fr;gap:24px;}
+  }
+
+  @media (max-width:560px){
+    .orbit-node-name{font-size:11px;}
+    .orbit-node-coord{font-size:8px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .orbit-ring,.orbit-ticks,
+    .orbit-core,.orbit-node-pulse{animation:none;}

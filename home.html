@@ -690,8 +690,9 @@
      italic-300 (matches the doctrine line typography) at display
      size; body copy uses Source Sans 3. ─────────────────────── */
   .home-deep-dive{
-    background: var(--midnight);
-    color: #fff;
+    /* LIGHT — was var(--midnight); now sits on white inside the bridge-stage cover. */
+    background: var(--white);
+    color: var(--midnight);
     padding: clamp(96px, 12vw, 160px) clamp(24px, 6vw, 96px);
     overflow: hidden;
     position: relative;
@@ -699,28 +700,17 @@
   /* Soft top edge — graduates the off-white above into the midnight
      here so the section change isn't a hard slab edge. Sits above
      the inner content; pointer-events:none keeps it click-through. */
-  .home-deep-dive::before{
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: clamp(72px, 9vw, 128px);
-    background: linear-gradient(to bottom,
-      var(--off) 0%,
-      rgba(247,247,245,.55) 35%,
-      rgba(247,247,245,0) 100%);
-    pointer-events: none;
-    z-index: 2;
-  }
+  .home-deep-dive::before{ content: none; /* gradient disabled — section sits on white now */ }
   /* Coord tags on the midnight background need light colors and
      enough breathing room above the soft gradient (z-index:3 puts
      them on top of the gradient so they read cleanly). */
   .home-deep-dive .hdd-coord-l,
   .home-deep-dive .hdd-coord-r{
     z-index: 3;
-    color: rgba(255,255,255,.62);
+    color: var(--ocean-dk);
   }
   .home-deep-dive .hdd-coord-r{
-    color: rgba(255,255,255,.45);
+    color: rgba(46,74,90,.55);
   }
   .home-deep-dive-inner{
     max-width: 1280px;
@@ -770,7 +760,7 @@
     font-size: 11px;
     letter-spacing: .22em;
     text-transform: uppercase;
-    color: rgba(255,255,255,.55);
+    color: var(--ocean);
     margin-top: 16px;
     text-align: right;
   }
@@ -791,7 +781,7 @@
     font-weight: 600;
     letter-spacing: .26em;
     text-transform: uppercase;
-    color: var(--ocean-lt);
+    color: var(--ocean);
     margin-bottom: clamp(24px, 3vw, 40px);
   }
   .hdd-headline{
@@ -801,14 +791,14 @@
     font-size: clamp(36px, 5.4vw, 72px);
     line-height: 1.05;
     letter-spacing: -.015em;
-    color: #fff;
+    color: var(--midnight);
     margin: 0 0 clamp(28px, 3.5vw, 44px) 0;
   }
   .hdd-body{
     font-family: 'Source Sans 3', sans-serif;
     font-size: clamp(15px, 1.1vw, 17px);
     line-height: 1.65;
-    color: rgba(255,255,255,.82);
+    color: rgba(28,43,58,.78);
     margin: 0 0 18px 0;
     max-width: 56ch;
   }
@@ -824,17 +814,17 @@
     font-weight: 600;
     letter-spacing: .18em;
     text-transform: uppercase;
-    color: #fff;
+    color: var(--midnight);
     text-decoration: none;
     padding: 14px 0;
-    border-top: 1px solid rgba(255,255,255,.22);
-    border-bottom: 1px solid rgba(255,255,255,.22);
+    border-top: 1px solid rgba(28,43,58,.18);
+    border-bottom: 1px solid rgba(28,43,58,.18);
     transition: color 240ms ease, border-color 240ms ease, gap 240ms ease;
   }
   .hdd-link:hover,
   .hdd-link:focus-visible{
-    color: var(--ocean-lt);
-    border-color: var(--ocean-lt);
+    color: var(--ocean-dk);
+    border-color: var(--ocean-dk);
     gap: 18px;
     outline: none;
   }
@@ -2248,6 +2238,11 @@
 <span class="bs-line" data-i="1">Same doctrine.</span>
 <span class="bs-line" data-i="2">Same firm.</span>
 <span class="bs-line" data-i="3">One engagement at a time.</span>
+<!-- Hero statement — appears AFTER the four sequential lines play + fade.
+     main.js phase boundaries treat this as data-i=4; when active, all
+     previous .bs-line nodes get .is-cleared so the lines vanish and the
+     hero becomes the focal point ahead of the image-zoom → video crossfade. -->
+<span class="bs-line bs-line-hero" data-i="4">When growth stalls, you need more than a consult. <strong>You need a partner.</strong></span>
 </div>
 
 <!-- Progress indicator at the bottom — thin rail + label. Fades
@@ -2267,198 +2262,7 @@
      up and covering the still-pinned, still-playing video. -->
 <div class="bridge-runway" aria-hidden="true"></div>
 
-<div class="s-num-bar"><span>01.C &middot; ORBIT</span><span>HOME / 02</span><span>03 &middot; PATHS</span></div>
-
-<!-- ORBIT — three-paths section. Now sits INSIDE .bridge-stage
-     as its scroll-runway tail: once the bridge-runway scrolls
-     past, this section and the s-num-bar above it scroll UP and
-     visually COVER the still-sticky .bridge-pin (z-index:1 over
-     z-index:0). The video underneath keeps looping but is occluded
-     once the orbit section fully covers the viewport. -->
-<section class="orbit-section">
-<span class="orbit-coord-l">[ 01.C.01 · ORBIT ]</span>
-<span class="orbit-coord-r">THREE PATHS · ONE FIRM</span>
-
-<div class="orbit-intro">
-<p class="orbit-eyebrow">Engagement architecture</p>
-<h2 class="orbit-hl">Three engagement paths<em>· orbiting a single firm.</em></h2>
-<p class="orbit-sub">Each path enters HIMARK at a different depth. Engagement terms are confirmed directly. Tap any node to read its scope.</p>
-</div>
-
-<div class="orbit-stage" id="orbit-stage">
-<svg class="orbit-svg" viewBox="0 0 880 540" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Three orbiting engagement tiers around the HIMARK core">
-
-<!-- Faint orbital ring -->
-<circle cx="440" cy="270" r="200" class="orbit-ring"/>
-
-<!-- Slow rotating tick marks on the orbital ring -->
-<g class="orbit-ticks">
-<circle cx="440" cy="70"  r="2" class="orbit-tick"/>
-<circle cx="613" cy="370" r="2" class="orbit-tick"/>
-<circle cx="267" cy="370" r="2" class="orbit-tick"/>
-<circle cx="640" cy="270" r="1.5" class="orbit-tick-sm"/>
-<circle cx="240" cy="270" r="1.5" class="orbit-tick-sm"/>
-<circle cx="540" cy="100" r="1.5" class="orbit-tick-sm"/>
-<circle cx="340" cy="100" r="1.5" class="orbit-tick-sm"/>
-<circle cx="540" cy="440" r="1.5" class="orbit-tick-sm"/>
-<circle cx="340" cy="440" r="1.5" class="orbit-tick-sm"/>
-</g>
-
-<!-- Connection lines from core to each node -->
-<line x1="440" y1="270" x2="440" y2="70"  class="orbit-link" data-tier="0"/>
-<line x1="440" y1="270" x2="613" y2="370" class="orbit-link" data-tier="1"/>
-<line x1="440" y1="270" x2="267" y2="370" class="orbit-link" data-tier="2"/>
-
-<!-- ORBIT CORE — white tap-to-toggle circle. Click to collapse the
-     surrounding tier nodes inward; click again to expand them back.
-     The + icon rotates 45deg to become × when expanded (default). -->
-<g class="orbit-core" id="orbit-core" tabindex="0" role="button" aria-label="Toggle engagement paths" aria-pressed="true">
-<circle cx="440" cy="270" r="64" class="orbit-core-bg"/>
-<g class="orbit-core-icon">
-<line class="orbit-core-line" x1="425" y1="262" x2="455" y2="262"/>
-<line class="orbit-core-line" x1="440" y1="247" x2="440" y2="277"/>
-</g>
-<text class="orbit-core-label" x="440" y="300" text-anchor="middle">TAP</text>
-</g>
-
-<!-- TIER 01 — SIGNATURE (top) -->
-<g class="orbit-node" data-tier="0" tabindex="0" role="button" aria-label="Tier 01 Signature Partner">
-<circle class="orbit-node-pulse" cx="440" cy="70" r="60"/>
-<circle class="orbit-node-bg"    cx="440" cy="70" r="54"/>
-<circle class="orbit-node-ring"  cx="440" cy="70" r="54"/>
-<text x="440" y="62" text-anchor="middle" class="orbit-node-coord">[ TIER.01 ]</text>
-<text x="440" y="83" text-anchor="middle" class="orbit-node-name">SIGNATURE</text>
-</g>
-
-<!-- TIER 02 — GROWTH (lower right) -->
-<g class="orbit-node" data-tier="1" tabindex="0" role="button" aria-label="Tier 02 Growth Partner">
-<circle class="orbit-node-pulse" cx="613" cy="370" r="60"/>
-<circle class="orbit-node-bg"    cx="613" cy="370" r="54"/>
-<circle class="orbit-node-ring"  cx="613" cy="370" r="54"/>
-<text x="613" y="362" text-anchor="middle" class="orbit-node-coord">[ TIER.02 ]</text>
-<text x="613" y="383" text-anchor="middle" class="orbit-node-name">GROWTH</text>
-</g>
-
-<!-- TIER 03 — PRIVATE (lower left) -->
-<g class="orbit-node" data-tier="2" tabindex="0" role="button" aria-label="Tier 03 Private Partner">
-<circle class="orbit-node-pulse" cx="267" cy="370" r="60"/>
-<circle class="orbit-node-bg"    cx="267" cy="370" r="54"/>
-<circle class="orbit-node-ring"  cx="267" cy="370" r="54"/>
-<text x="267" y="362" text-anchor="middle" class="orbit-node-coord">[ TIER.03 ]</text>
-<text x="267" y="383" text-anchor="middle" class="orbit-node-name">PRIVATE</text>
-</g>
-
-</svg>
-</div>
-
-<!-- Detail panel — updates on node activation -->
-<div class="orbit-detail" id="orbit-detail">
-<div class="orbit-detail-coord">[ <span id="orb-coord">TIER.01</span> · <span id="orb-tag">SIGNATURE PARTNER</span> ]</div>
-<div class="orbit-detail-grid">
-<div class="orbit-detail-left">
-<p class="orbit-detail-eyebrow">Engagement path</p>
-<h3 class="orbit-detail-name" id="orb-name">Signature Partner</h3>
-<p class="orbit-detail-class" id="orb-class">Foundation · Professionalisation</p>
-<p class="orbit-detail-desc" id="orb-desc">Foundational growth and brand infrastructure for startups, SMEs, and service businesses ready to formalise their market presence. The launch-pad tier.</p>
-</div>
-<div class="orbit-detail-right">
-<div class="orbit-detail-row">
-<p class="orbit-detail-l">Cadence</p>
-<p class="orbit-detail-v" id="orb-cadence">Monthly strategy · Atlas advisory · Quarterly reviews</p>
-</div>
-<div class="orbit-detail-row">
-<p class="orbit-detail-l">Term</p>
-<p class="orbit-detail-v" id="orb-term">Quarterly minimum · Reviewed every 90 days</p>
-</div>
-<div class="orbit-detail-row">
-<p class="orbit-detail-l">Best fit</p>
-<p class="orbit-detail-v" id="orb-fit">Startups, SMEs, professional service firms establishing market presence</p>
-</div>
-<a class="orbit-detail-cta" href="#" data-page="intake">Apply for Engagement <span class="orbit-detail-arrow">→</span></a>
-</div>
-</div>
-</div>
-
-<!-- SHORTCUT PANEL — pops up when the orbit is collapsed. Three
-     direct entry paths into HIMARK, mapped to the three real channels
-     a visitor would use (Apply, WhatsApp, Atlas). Sibling of
-     .orbit-stage so the CSS sibling selector reveals it on
-     .orbit-stage.collapsed. -->
-<div class="orbit-shortcut" id="orbit-shortcut">
-<p class="orbit-shortcut-eyebrow">Three ways to begin</p>
-<div class="orbit-shortcut-grid">
-
-<a href="#" data-page="intake" class="orbit-shortcut-card">
-<div class="orbit-shortcut-card-top">
-<span class="orbit-shortcut-coord">[ A ]</span>
-<span class="orbit-shortcut-pill">Retainer</span>
-</div>
-<h4 class="orbit-shortcut-name">Apply</h4>
-<p class="orbit-shortcut-sub">Formal engagement application for one of the three retainer tiers. Reviewed by a principal within five working days.</p>
-<span class="orbit-shortcut-cta">Apply for engagement <span class="orbit-shortcut-arrow">→</span></span>
-</a>
-
-<a href="https://wa.me/27691174120" target="_blank" rel="noopener" class="orbit-shortcut-card">
-<div class="orbit-shortcut-card-top">
-<span class="orbit-shortcut-coord">[ B ]</span>
-<span class="orbit-shortcut-pill">Direct</span>
-</div>
-<h4 class="orbit-shortcut-name">WhatsApp</h4>
-<p class="orbit-shortcut-sub">Message HIMARK Business directly. Atlas replies on WhatsApp the same way it does here — pre-qualification, mandate brief, and routing in one thread.</p>
-<span class="orbit-shortcut-cta">Open WhatsApp <span class="orbit-shortcut-arrow">→</span></span>
-</a>
-
-<button type="button" class="orbit-shortcut-card" id="orbit-shortcut-atlas">
-<div class="orbit-shortcut-card-top">
-<span class="orbit-shortcut-coord">[ C ]</span>
-<span class="orbit-shortcut-pill">Live</span>
-</div>
-<h4 class="orbit-shortcut-name">Atlas</h4>
-<p class="orbit-shortcut-sub">Talk to HIMARK's principal-trained assistant. Get clarity on tier alignment before committing to anything.</p>
-<span class="orbit-shortcut-cta">Open Atlas <span class="orbit-shortcut-arrow">→</span></span>
-</button>
-
-</div>
-</div>
-
-<!-- SIDE IMAGES — vertical editorial panels that slide in when the
-     orbit collapses. Each is a clickable link into a relevant page.
-     Hidden by default; revealed via the .orbit-stage.collapsed
-     sibling selector. Hidden on viewports below 1200px. -->
-<aside class="orbit-side orbit-side-l">
-<a href="#" data-page="method" class="orbit-side-link">
-<span class="orbit-side-coord">[ 03 ]</span>
-<div class="orbit-side-img" data-bg-key="orbit.side.left" style="background-image:url('images/method-hero.jpg')"></div>
-<div class="orbit-side-caption">
-<span class="orbit-side-tag">Process</span>
-<span class="orbit-side-name">The Method</span>
-</div>
-<span class="orbit-side-arrow">→</span>
-</a>
-</aside>
-
-<aside class="orbit-side orbit-side-r">
-<a href="#" data-page="principals" class="orbit-side-link">
-<span class="orbit-side-coord">[ 05 ]</span>
-<div class="orbit-side-img" data-bg-key="orbit.side.right" style="background-image:url('images/team-hero.jpg')"></div>
-<div class="orbit-side-caption">
-<span class="orbit-side-tag">Team</span>
-<span class="orbit-side-name">The Principals</span>
-</div>
-<span class="orbit-side-arrow">→</span>
-</a>
-</aside>
-
-</section>
-
-</section><!-- /.bridge-stage — wraps the pin + 400vh runway + the
-     s-num-bar + orbit-section so the latter two scroll UP and cover
-     the still-sticky pin without nested sticky weirdness. -->
-
-<!-- (was: /.doctrine-stage close — moved up after .home-doctrine
-     so the bridge-stage and orbit-section can be top-level siblings,
-     each with their own pin / scroll behaviour, no nested sticky.) -->
-
+<div class="s-num-bar"><span>01.C &middot; BELIEF</span><span>HOME / 02</span><span>04 &middot; TRUTHS</span></div>
 
 <!-- DEEP-DIVE — editorial spread on operating belief.
      Appears once the orbit has fully scrolled over the doctrine.
@@ -2491,6 +2295,15 @@
 </div>
 </div>
 </section>
+
+</section><!-- /.bridge-stage — wraps the pin + 400vh runway + the
+     s-num-bar + orbit-section so the latter two scroll UP and cover
+     the still-sticky pin without nested sticky weirdness. -->
+
+<!-- (was: /.doctrine-stage close — moved up after .home-doctrine
+     so the bridge-stage and orbit-section can be top-level siblings,
+     each with their own pin / scroll behaviour, no nested sticky.) -->
+
 
 
 <!-- CLIENT LOGO MARQUEE — uniform-sized cells.

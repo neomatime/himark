@@ -714,7 +714,54 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
 
 
 /* ====================================================================
-   MOBILE — shrink the pill + stack things.
+   MOBILE HAMBURGER MENU
+   ====================================================================
+   Desktop ≥ 1025px: hamburger hidden, .pn-links inline as before.
+   Mobile  ≤ 1024px: nav links collapse into a glass dropdown panel
+   that slides down from the pill on tap. The .pn-toggle hamburger
+   button is injected by main.js on every redesigned page so the
+   markup stays consistent. .pill-nav.is-open expands the panel.
+   ==================================================================== */
+.pn-toggle{
+  display: none;            /* hidden by default; flex on mobile */
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.pn-toggle-icon{
+  position: relative;
+  display: block;
+  width: 22px;
+  height: 14px;
+}
+.pn-toggle-icon span{
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background: var(--midnight);
+  border-radius: 1px;
+  transition: transform .25s cubic-bezier(.4,0,.2,1),
+              opacity .2s ease,
+              top .25s cubic-bezier(.4,0,.2,1);
+}
+.pn-toggle-icon span:nth-child(1){ top: 0; }
+.pn-toggle-icon span:nth-child(2){ top: 6px; }
+.pn-toggle-icon span:nth-child(3){ top: 12px; }
+.pill-nav.is-open .pn-toggle-icon span:nth-child(1){ top: 6px; transform: rotate(45deg); }
+.pill-nav.is-open .pn-toggle-icon span:nth-child(2){ opacity: 0; }
+.pill-nav.is-open .pn-toggle-icon span:nth-child(3){ top: 6px; transform: rotate(-45deg); }
+
+
+/* ====================================================================
+   MOBILE — shrink the pill + show the hamburger; .pn-links becomes
+   a dropdown panel that slides down from below the pill.
    ==================================================================== */
 @media (max-width: 1024px){
   .pill-nav{
@@ -731,11 +778,57 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
     top: 12px;
     margin-bottom: -52px;
   }
-  .pn-links{ display: none; }
   .pn-brand{ height: 28px; }
   .pn-brand-mark{ width: 20px; height: 28px; margin-right: -3px; }
   .pn-brand-imark{ width: 80px; height: 20px; }
-  .pn-cta{ height: 32px; padding: 0 12px; font-size: 9px; }
+  .pn-cta{ height: 32px; padding: 0 10px; font-size: 9px; }
+  .pn-toggle{ display: inline-flex; }
+
+  /* Links become a glass dropdown panel below the pill. Hidden by
+     default (opacity:0, translateY for slide-in). .is-open on the
+     parent .pill-nav reveals it. */
+  .pn-links{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,.78) 0%, rgba(255,255,255,.62) 100%);
+    -webkit-backdrop-filter: blur(32px) saturate(160%);
+            backdrop-filter: blur(32px) saturate(160%);
+    border: 1px solid rgba(255,255,255,.55);
+    border-radius: 18px;
+    padding: 16px 8px;
+    box-shadow:
+      0 14px 36px -12px rgba(28,43,58,.22),
+      0 1px 0 rgba(255,255,255,.70) inset;
+    opacity: 0;
+    transform: translateY(-8px);
+    pointer-events: none;
+    transition: opacity .28s cubic-bezier(.4,0,.2,1),
+                transform .28s cubic-bezier(.4,0,.2,1);
+    z-index: 51;
+  }
+  .pill-nav.is-open .pn-links{
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .pn-links li{ list-style: none; }
+  .pn-links a{
+    display: block;
+    padding: 10px 14px;
+    font-size: 11px;
+    letter-spacing: .16em;
+    opacity: 1;
+    border-radius: 8px;
+    transition: background .18s ease;
+  }
+  .pn-links a:hover,
+  .pn-links a.is-active{ background: rgba(95,129,144,.10); }
+
   .hero-editorial{ padding: 80px 22px 40px; }
   .hero-editorial.full{ padding: 96px 22px; }
   .hero-editorial.half{
@@ -744,6 +837,12 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
   }
   .heroe-hl{ font-size: clamp(28px, 7vw, 36px); }
   .heroe-sub{ max-width: none; font-size: 14px; }
+
+  /* Hero statement scales smaller for narrow screens */
+  body[data-page="home"] .bs-line-hero{
+    font-size: clamp(28px, 7vw, 48px);
+    max-width: 92%;
+  }
 }
 
 /* Reduced motion — drop sticky so the hero just scrolls normally. */
@@ -1082,10 +1181,21 @@ body[data-page="home"] .bridge-stage > .s-num-bar{
   z-index: 1;
   background: var(--off);
 }
-body[data-page="home"] .bridge-stage > .orbit-section{
+/* Cover section is now .home-deep-dive (the Belief block) — it
+   moved INSIDE the bridge-stage after the orbit was relocated to
+   services.html. Same z-index:1 over the sticky bridge-pin (z:0),
+   solid white background so it cleanly occludes the video. */
+body[data-page="home"] .bridge-stage > .home-deep-dive{
   position: relative;
   z-index: 1;
-  background: var(--off);
+  background: var(--white);
+  /* Soft top-edge shadow so the Belief slab lifts off the released
+     video cleanly — same 'rising up over the pinned hero' shadow
+     pattern the other redesign pages use on their first scroll-cover
+     section. */
+  box-shadow:
+    0 -24px 60px rgba(28,43,58,.18),
+    0 -1px 0 rgba(28,43,58,.08);
 }
 
 /* Background stack — image and video layered, both object-fit:cover.
@@ -1185,6 +1295,40 @@ body[data-page="home"] .bs-line.is-past{
   opacity: .18;
   transform: translateY(-22px) scale(.96);
   filter: blur(2px);
+}
+/* When the hero statement takes over (phase 5), all previous .bs-line
+   nodes get .is-cleared — fully invisible, not even a faint trail.
+   This is the "next scroll makes all previous text disappear including
+   the text layered behind it" beat the user spec'd for the new arc. */
+body[data-page="home"] .bs-line.is-cleared{
+  opacity: 0;
+  transform: translateY(-60px) scale(.94);
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+/* HERO STATEMENT — the climax line that follows the four sequential
+   beats. Bold, larger than the italic lines above it, with a strong
+   text-shadow so it reads cleanly over the looping Sandton video
+   underneath. The <strong> inside breaks to its own line as an
+   italic emphasis tail. */
+body[data-page="home"] .bs-line-hero{
+  font-family: var(--f-disp);
+  font-style: normal;
+  font-weight: 800;
+  font-size: clamp(40px, 6vw, 88px);
+  line-height: 1.04;
+  letter-spacing: -.018em;
+  color: var(--off);
+  max-width: 1180px;
+  text-shadow: 0 4px 32px rgba(0,0,0,.55), 0 2px 8px rgba(0,0,0,.35);
+}
+body[data-page="home"] .bs-line-hero strong{
+  display: block;
+  margin-top: .12em;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--mist);
 }
 
 /* Progress indicator at the bottom — thin rail + label. Fades

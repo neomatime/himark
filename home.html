@@ -1108,17 +1108,26 @@
     animation: home-img-marquee-scroll 90s linear infinite;
   }
   .ilm-cell{
-    width: 200px;
-    height: 80px;
+    /* Bumped from 200x80 to 320x160 — the Oak & Pixel mark is
+       roughly square (4 stacked squares + the OAK & PIXEL wordmark
+       + DIGITAL STUDIO tagline underneath), so it was being
+       height-limited at 80px and rendering small. Bigger cell +
+       tighter padding lets the logo breathe at a readable size. */
+    width: 320px;
+    height: 160px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     background: transparent;
-    padding: 14px 18px;
+    padding: 8px 14px;
     transition: opacity .35s ease, filter .35s ease;
-    opacity: .72;
-    filter: grayscale(1);
+    /* Featured client (only one for now) — show in full colour at
+       full opacity rather than the dimmed/grayscale 'browse list'
+       treatment. Add the dim back once there are 4+ logos to scroll
+       through. */
+    opacity: 1;
+    filter: none;
   }
   .ilm-cell img{
     max-width: 100%;

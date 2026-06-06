@@ -1071,7 +1071,6 @@ try{
      why a particular turn fell back. Open DevTools → Console
      while testing voice mode to see which branch fired. */
   function ttsLog(stage, info){
-    try{ console.log('[atlas tts]', stage, info||''); }catch(_){}
   }
 
   async function speak(text){

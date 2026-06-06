@@ -1107,6 +1107,14 @@
     width: max-content;
     animation: home-img-marquee-scroll 90s linear infinite;
   }
+  /* Single-client mode — pin the track centred + halt the loop.
+     With only one cell the -50% translate would scroll into empty
+     space, so until there are 4+ logos to cycle through we just
+     centre + hold. Drop the modifier to bring the marquee back. */
+  .home-img-marquee-track--single{
+    animation: none !important;
+    justify-content: center;
+  }
   .ilm-cell{
     /* Bumped from 200x80 to 320x160 — the Oak & Pixel mark is
        roughly square (4 stacked squares + the OAK & PIXEL wordmark
@@ -1697,10 +1705,9 @@
      object-fit:contain centres any aspect ratio without cropping. -->
 <section class="home-img-marquee" aria-label="Selected engagements — client logos">
 <span class="ilm-eyebrow">Engagements · select clients</span>
-<div class="home-img-marquee-track">
+<div class="home-img-marquee-track home-img-marquee-track--single">
 <a class="ilm-cell ilm-cell-link" href="https://oakandpixel.co.za" target="_blank" rel="noopener noreferrer" aria-label="Oak & Pixel — Digital Studio"><img src="images/oak-and-pixel.png" alt="Oak & Pixel — Digital Studio" loading="lazy"/></a>
-<!-- Duplicate cell — the marquee CSS translates -50% to loop seamlessly, so we need exactly one mirror copy. aria-hidden so screen readers don't announce it twice. -->
-<a class="ilm-cell ilm-cell-link" href="https://oakandpixel.co.za" target="_blank" rel="noopener noreferrer" aria-hidden="true" tabindex="-1"><img src="images/oak-and-pixel.png" alt="" loading="lazy"/></a>
+<!-- Single-client mode — no mirror duplicate, no scroll animation. Add more <a class="ilm-cell"> entries here as new clients land, then drop the --single modifier from the track to restart the marquee loop. -->
 </div>
 </section>
 

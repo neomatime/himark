@@ -1542,3 +1542,15 @@ body[data-page="home"] .bridge-progress-fill{
   }
   body[data-page="home"] .bridge-progress{ display: none; }
 }
+
+/* ====================================================================
+   404 ERROR PAGE — light redesign chrome. Inherits the same body
+   pastel + page off-white as the other redesigned pages; main.js
+   injects the pill-nav at the top of .page.redesign on data-page=error.
+   ==================================================================== */
+body[data-page="error"]{ background: #D8E3E8; }
+body[data-page="error"] .page.redesign{
+  background: var(--off);
+  border-radius: 0;
+  margin: 0;
+}

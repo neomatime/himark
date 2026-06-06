@@ -2668,7 +2668,7 @@ window.authSubmit=authSubmit;
 (function redesignHelpers(){
   'use strict';
 
-  var SIMPLE_PAGES = ['privacy','terms','cookies','security','subscribe'];
+  var SIMPLE_PAGES = ['privacy','terms','cookies','security','subscribe','error'];
   var dataPage = (document.body && document.body.dataset && document.body.dataset.page) || '';
 
   /* ---------- 1. PILL-NAV INJECTION ---------- */

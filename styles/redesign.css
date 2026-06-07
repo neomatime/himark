@@ -1096,7 +1096,16 @@ body[data-page="home"] .pill-nav{
   body[data-page="home"] .pill-nav{ --pill-ball-r: 26px; }  /* mobile pill is 52px */
 }
 @keyframes heroPillExpand{
-  to { clip-path: inset(0 0 0 0 round 999px); }
+  /* Hold the inset shape through 99% of the timeline so the visual
+     expansion is uninterrupted, then at 100% switch to clip-path:
+     none so the rule doesn't keep clipping children after the
+     animation ends. Critical on mobile: the .pn-links dropdown is
+     position:absolute; top: calc(100% + 8px) — it sits OUTSIDE the
+     pill's bounding box. A persistent inset(0 0 0 0) clip-path
+     clips it out of view even when .is-open sets opacity:1, which
+     was the reason the hamburger menu wouldn't drop down. */
+  99%  { clip-path: inset(0 0 0 0 round 999px); }
+  100% { clip-path: none; }
 }
 
 /* Pill-nav INSIDE elements fade in once the pill body has space

@@ -1099,14 +1099,26 @@ body[data-page="home"] .pill-nav{
   to { clip-path: inset(0 0 0 0 round 999px); }
 }
 
-/* Pill-nav INSIDE elements (brand + links + CTA) fade in once the
-   pill body has space to hold them. */
+/* Pill-nav INSIDE elements fade in once the pill body has space
+   to hold them. CAREFUL: .pn-links has its OWN opacity + pointer-
+   events lifecycle on mobile (controlled by .pill-nav.is-open from
+   the hamburger toggle). Applying the entrance animation to
+   .pn-links on mobile would force opacity:1 forever (via animation-
+   fill-mode: forwards) and the hamburger could no longer hide the
+   dropdown panel. So .pn-links is ONLY in the entrance animation
+   at ≥769px — on mobile the dropdown stays at its default opacity:0
+   and the .is-open class drives the reveal as designed. */
 body[data-page="home"] .pill-nav .pn-brand,
-body[data-page="home"] .pill-nav .pn-links,
 body[data-page="home"] .pill-nav .pn-cta,
 body[data-page="home"] .pill-nav .pn-toggle{
   opacity: 0;
   animation: heroFadeIn .55s ease-out .55s forwards;
+}
+@media (min-width: 769px){
+  body[data-page="home"] .pill-nav .pn-links{
+    opacity: 0;
+    animation: heroFadeIn .55s ease-out .55s forwards;
+  }
 }
 @keyframes heroFadeIn{
   to { opacity: 1; }

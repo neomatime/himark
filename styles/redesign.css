@@ -1047,33 +1047,193 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
 
 
 /* ====================================================================
-   HOME HERO — staggered fade-up animation on the headline + sub +
-   CTA when the page loads, so the editorial reveal carries on
-   from the loading-page curtain into the home hero rather than
-   the text just being there cold.
+   HOME HERO — Cinematic post-loader entrance sequence
+   ====================================================================
+   Plays once on home page load (CSS animation-delay handles timing
+   — there is no scroll trigger, so it never replays). Layered phases:
+
+     t  Phase                              Technique
+     ─  ─────                              ─────────
+     0  Pill-nav appears as a ~56px ball   clip-path inset(...
+        in its final position                                round 999px)
+     .1 Pill-nav expands horizontally      animate inset to 0 0 0 0
+     .5 Pill-nav brand + links + CTA       opacity 0 → 1
+        fade in (now there is something
+        to fade into)
+     .7 Eyebrow fades up
+     .9 Headline fades up
+    1.4 Paragraph reveals word-by-word     each .hero-word gets a
+        (main.js wraps each word in        per-word delay via the
+        a <span style='--i:N'>)            --i custom property
+    3.0 CTA: same clip-path trick —        clip-path expand + color
+        ball → button, text fades in       transparent → off
+    3.5 CTA performs ONE subtle pulse      animation-iteration-count:1
+                                            box-shadow ring expands
+                                            and fades to transparent
+    4.5 Background image starts unblurred  .bg-entering class drives
+        + slightly zoomed-out, zooms to    a heroBgEntrance animation
+        full focus, then gradually picks   that ends at the same
+        up the cinematic blur              transform + filter values
+                                            the static rule defaults to
+                                            (no jump on completion).
+                                            main.js removes the
+                                            .bg-entering class on
+                                            animationend so the
+                                            scroll-zoom JS regains
+                                            control of --hero-zoom.
+
+   Reduced-motion: everything jumps straight to the final state.
    ==================================================================== */
+
+/* ---------- Phase 1: Pill-nav ball → pill ---------- */
+body[data-page="home"] .pill-nav{
+  --pill-ball-r: 28px;  /* half of the 56px desktop height */
+  clip-path: inset(0 calc(50% - var(--pill-ball-r)) 0 calc(50% - var(--pill-ball-r)) round 999px);
+  animation: heroPillExpand .85s cubic-bezier(.65, 0, .35, 1) .15s forwards;
+  will-change: clip-path;
+}
+@media (max-width: 768px){
+  body[data-page="home"] .pill-nav{ --pill-ball-r: 26px; }  /* mobile pill is 52px */
+}
+@keyframes heroPillExpand{
+  to { clip-path: inset(0 0 0 0 round 999px); }
+}
+
+/* Pill-nav INSIDE elements (brand + links + CTA) fade in once the
+   pill body has space to hold them. */
+body[data-page="home"] .pill-nav .pn-brand,
+body[data-page="home"] .pill-nav .pn-links,
+body[data-page="home"] .pill-nav .pn-cta,
+body[data-page="home"] .pill-nav .pn-toggle{
+  opacity: 0;
+  animation: heroFadeIn .55s ease-out .55s forwards;
+}
+@keyframes heroFadeIn{
+  to { opacity: 1; }
+}
+
+/* ---------- Phase 2: Eyebrow + Headline fade-up ---------- */
 @keyframes heroFadeUp{
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-body[data-page="home"] .hero-editorial.full .heroe-eyebrow,
-body[data-page="home"] .hero-editorial.full .heroe-hl,
-body[data-page="home"] .hero-editorial.full .heroe-sub,
-body[data-page="home"] .hero-editorial.full .heroe-cta{
+body[data-page="home"] .hero-editorial.full .heroe-eyebrow{
   opacity: 0;
-  animation: heroFadeUp .9s cubic-bezier(.16, 1, .3, 1) forwards;
+  animation: heroFadeUp .75s cubic-bezier(.16, 1, .3, 1) .7s forwards;
 }
-body[data-page="home"] .hero-editorial.full .heroe-eyebrow{ animation-delay: .15s; }
-body[data-page="home"] .hero-editorial.full .heroe-hl{      animation-delay: .35s; }
-body[data-page="home"] .hero-editorial.full .heroe-sub{     animation-delay: .55s; }
-body[data-page="home"] .hero-editorial.full .heroe-cta{     animation-delay: .75s; }
+body[data-page="home"] .hero-editorial.full .heroe-hl{
+  opacity: 0;
+  animation: heroFadeUp .75s cubic-bezier(.16, 1, .3, 1) .9s forwards;
+}
+
+/* ---------- Phase 3: Paragraph typewriter (word-by-word) ----------
+   main.js splits the .heroe-sub into <span class='hero-word'
+   style='--i:N'> on DOMContentLoaded. The CSS reads --i and
+   staggers each word's reveal. Container stays at opacity:1 so
+   the line-height reserves the full layout (no shift as words
+   pop in). */
+body[data-page="home"] .hero-editorial.full .heroe-sub{
+  opacity: 1;
+  animation: none;
+}
+body[data-page="home"] .hero-editorial.full .heroe-sub .hero-word{
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(4px);
+  filter: blur(2px);
+  animation: heroWordIn .45s cubic-bezier(.16, 1, .3, 1)
+             calc(1.4s + (var(--i, 0) * .045s)) forwards;
+  will-change: opacity, transform, filter;
+}
+@keyframes heroWordIn{
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+/* ---------- Phase 4: CTA ball → button + single pulse ----------
+   Clip-path masks the button to a circle at its centre. As the
+   inset shrinks to 0, the full pill button is revealed. Text is
+   held at color:transparent during the expand and fades to the
+   final off colour right after so the visitor doesn't see a
+   text-bleed mid-expand. The pulse runs ONCE
+   (animation-iteration-count: 1) — a box-shadow ring that grows
+   outward and fades to fully transparent. */
+body[data-page="home"] .hero-editorial.full .heroe-cta{
+  --cta-ball-r: 22px;   /* half of 44px height */
+  color: transparent;
+  clip-path: inset(0 calc(50% - var(--cta-ball-r)) 0 calc(50% - var(--cta-ball-r)) round 999px);
+  animation:
+    heroCtaExpand   .7s  cubic-bezier(.65, 0, .35, 1) 3.0s forwards,
+    heroCtaTextFade .35s ease-out                     3.5s forwards,
+    heroCtaPulse    .9s  cubic-bezier(.22, 1, .36, 1) 4.0s 1 both;
+  will-change: clip-path, color, box-shadow;
+}
+@media (max-width: 768px){
+  body[data-page="home"] .hero-editorial.full .heroe-cta{
+    --cta-ball-r: 16px;  /* mobile CTA height = 32px */
+  }
+}
+@keyframes heroCtaExpand{
+  to { clip-path: inset(0 0 0 0 round 999px); }
+}
+@keyframes heroCtaTextFade{
+  to { color: var(--off); }
+}
+@keyframes heroCtaPulse{
+  0%   {
+    box-shadow:
+      0 12px 28px -10px rgba(28,43,58,.30),
+      0 0 0 0 rgba(28,43,58,.45);
+  }
+  100% {
+    box-shadow:
+      0 12px 28px -10px rgba(28,43,58,.30),
+      0 0 0 26px rgba(28,43,58,0);
+  }
+}
+
+/* ---------- Phase 5: Background image — unblurred → focus → blur ----------
+   .bg-entering on the hero section drives the animation; main.js
+   removes the class on animationend so the static
+   `.hero-editorial.full::before { transform: scale(var(--hero-zoom));
+   filter: blur(10px) }` rule (and the scroll-zoom JS that updates
+   --hero-zoom) take over without a visual jump (the keyframe ends
+   at the same scale + blur values the static rule defaults to). */
+body[data-page="home"] .hero-editorial.full.bg-entering::before{
+  animation: heroBgEntrance 2.6s cubic-bezier(.4, 0, .2, 1) 4.6s both;
+}
+@keyframes heroBgEntrance{
+  /* 0%  — slightly zoomed-out, perfectly sharp (no blur)
+     50% — fully zoomed in to the static base scale, still sharp
+     100% — held at base scale, the cinematic blur fades in */
+  0%   { transform: scale(0.94); filter: blur(0); }
+  50%  { transform: scale(1.06); filter: blur(0); }
+  100% { transform: scale(1.06); filter: blur(10px); }
+}
+
+/* ---------- Reduced motion — skip the whole choreography ---------- */
 @media (prefers-reduced-motion: reduce){
+  body[data-page="home"] .pill-nav,
+  body[data-page="home"] .pill-nav .pn-brand,
+  body[data-page="home"] .pill-nav .pn-links,
+  body[data-page="home"] .pill-nav .pn-cta,
+  body[data-page="home"] .pill-nav .pn-toggle,
   body[data-page="home"] .hero-editorial.full .heroe-eyebrow,
   body[data-page="home"] .hero-editorial.full .heroe-hl,
   body[data-page="home"] .hero-editorial.full .heroe-sub,
-  body[data-page="home"] .hero-editorial.full .heroe-cta{
-    opacity: 1;
-    animation: none;
+  body[data-page="home"] .hero-editorial.full .heroe-sub .hero-word,
+  body[data-page="home"] .hero-editorial.full .heroe-cta,
+  body[data-page="home"] .hero-editorial.full.bg-entering::before{
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: blur(10px) !important;
+    clip-path: none !important;
+    color: var(--off) !important;
+  }
+  /* But the bg ::before still wants its scale(1.06) — overwrite the
+     transform:none from the block above. */
+  body[data-page="home"] .hero-editorial.full.bg-entering::before{
+    transform: scale(1.06) !important;
   }
 }
 

@@ -1552,6 +1552,171 @@
     ]
   }
 }</script>
+<style>
+  /* FAQ section — pre-application Q&A. Editorial slab, off-white
+     surface, coord stamps, eyebrow + headline + accordion list. */
+  .faq-section{
+    background: var(--off);
+    padding: clamp(80px, 9vw, 140px) clamp(24px, 6vw, 96px);
+    position: relative;
+    border-bottom: 1px solid var(--rule);
+  }
+  .faq-coord-tl, .faq-coord-tr{
+    position: absolute;
+    top: 48px;
+    font-family: var(--f-mono);
+    font-size: 9px;
+    letter-spacing: .14em;
+    color: var(--ocean);
+    z-index: 2;
+  }
+  .faq-coord-tl{ left: clamp(24px, 6vw, 96px); }
+  .faq-coord-tr{ right: clamp(24px, 6vw, 96px); color: rgba(95,129,144,.5); }
+  .faq-inner{
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .faq-eyebrow{
+    font-family: var(--f-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--ocean);
+    margin: 0 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .faq-eyebrow::before{
+    content: ''; display: block; width: 24px; height: 1px; background: var(--ocean);
+  }
+  .faq-hl{
+    font-family: var(--f-disp);
+    font-size: clamp(28px, 3.4vw, 44px);
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--midnight);
+    letter-spacing: -.01em;
+    margin: 0 0 56px;
+    max-width: 720px;
+  }
+  .faq-list{ display: flex; flex-direction: column; gap: 0; }
+  .faq-item{
+    border-top: 1px solid var(--rule);
+    padding: 0;
+  }
+  .faq-item:last-child{ border-bottom: 1px solid var(--rule); }
+  .faq-q{
+    cursor: pointer;
+    list-style: none;
+    padding: 24px 48px 24px 0;
+    font-family: var(--f-disp);
+    font-size: clamp(16px, 1.5vw, 19px);
+    font-weight: 600;
+    color: var(--midnight);
+    position: relative;
+    transition: color .25s ease;
+  }
+  .faq-q::-webkit-details-marker{ display: none; }
+  .faq-q::after{
+    content: '+';
+    position: absolute;
+    right: 0; top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--f-mono);
+    font-size: 24px;
+    font-weight: 300;
+    color: var(--ocean);
+    transition: transform .35s cubic-bezier(.65,0,.35,1);
+  }
+  .faq-item[open] .faq-q::after{ transform: translateY(-50%) rotate(45deg); }
+  .faq-q:hover{ color: var(--ocean-dk); }
+  .faq-a{
+    padding: 0 48px 28px 0;
+    overflow: hidden;
+  }
+  .faq-a p{
+    font-family: var(--f-body);
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.75;
+    color: rgba(28,43,58,.78);
+    margin: 0;
+    max-width: 720px;
+  }
+  @media (max-width: 600px){
+    .faq-coord-tl, .faq-coord-tr{ top: 28px; font-size: 8px; }
+    .faq-q{ font-size: 16px; padding: 20px 40px 20px 0; }
+    .faq-a p{ font-size: 14px; }
+  }
+</style>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What does HIMARK do?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "HIMARK is a premium strategic growth consultancy. The firm designs and operates the brand, demand, and AI infrastructure beneath founder-led firms ready to compound. It works with the rigour of a management consultancy and the agility of a founder office."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where is HIMARK based?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "HIMARK is headquartered in Randburg, Gauteng, South Africa. The firm serves clients across South Africa, Sub-Saharan Africa, and remotely worldwide."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is HIMARK an agency or a consultancy?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A consultancy. HIMARK does not pitch on RFPs, does not bid on price, and does not take work that does not sharpen the firm edge. Engagements are scoped against the client trajectory, not a fixed menu."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much does HIMARK cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Engagements start at R 50,000 per month for Signature Partner, R 80,000 per month for Growth Partner, and R 150,000 per month for Private Partner (by invitation only). Standalone service mandates are quoted separately."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I work with HIMARK?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "By application. Applications run through Atlas, the firm principal-trained assistant, or via a scheduled 30-minute discovery session with a principal. Every application is reviewed by a principal within five working days."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Who runs my engagement?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A senior principal personally anchors every HIMARK engagement. There are no junior accounts. The principal who reads your application is the principal who runs your engagement."
+      }
+    }
+  ]
+}</script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://www.himark.co.za/"
+    }
+  ]
+}</script>
 </head>
 <body data-page="home" data-location="root">
 
@@ -1818,6 +1983,49 @@
 </section>
 
 <!-- FOOTER ─────────────────────────────────────────────────── -->
+
+<!-- ====================================================================
+     FAQ — pre-application Q&A. The FAQPage JSON-LD in <head> mirrors
+     these questions so Google rich results + LLM answer engines lift
+     them directly. Visible markup uses <details>/<summary> for
+     accessible accordion behaviour (no JS required).
+     ==================================================================== -->
+<section class="faq-section" aria-label="What founders ask before they apply.">
+<span class="faq-coord-tl">[ 01.Z · FAQ ]</span>
+<span class="faq-coord-tr">PRE-APPLICATION</span>
+<div class="faq-inner">
+<p class="faq-eyebrow">Frequently asked</p>
+<h2 class="faq-hl">What founders ask before they apply.</h2>
+<div class="faq-list">
+
+<details class="faq-item">
+  <summary class="faq-q">What does HIMARK do?</summary>
+  <div class="faq-a"><p>HIMARK is a premium strategic growth consultancy. The firm designs and operates the brand, demand, and AI infrastructure beneath founder-led firms ready to compound. It works with the rigour of a management consultancy and the agility of a founder office.</p></div>
+</details>
+<details class="faq-item">
+  <summary class="faq-q">Where is HIMARK based?</summary>
+  <div class="faq-a"><p>HIMARK is headquartered in Randburg, Gauteng, South Africa. The firm serves clients across South Africa, Sub-Saharan Africa, and remotely worldwide.</p></div>
+</details>
+<details class="faq-item">
+  <summary class="faq-q">Is HIMARK an agency or a consultancy?</summary>
+  <div class="faq-a"><p>A consultancy. HIMARK does not pitch on RFPs, does not bid on price, and does not take work that does not sharpen the firm edge. Engagements are scoped against the client trajectory, not a fixed menu.</p></div>
+</details>
+<details class="faq-item">
+  <summary class="faq-q">How much does HIMARK cost?</summary>
+  <div class="faq-a"><p>Engagements start at R 50,000 per month for Signature Partner, R 80,000 per month for Growth Partner, and R 150,000 per month for Private Partner (by invitation only). Standalone service mandates are quoted separately.</p></div>
+</details>
+<details class="faq-item">
+  <summary class="faq-q">How do I work with HIMARK?</summary>
+  <div class="faq-a"><p>By application. Applications run through Atlas, the firm principal-trained assistant, or via a scheduled 30-minute discovery session with a principal. Every application is reviewed by a principal within five working days.</p></div>
+</details>
+<details class="faq-item">
+  <summary class="faq-q">Who runs my engagement?</summary>
+  <div class="faq-a"><p>A senior principal personally anchors every HIMARK engagement. There are no junior accounts. The principal who reads your application is the principal who runs your engagement.</p></div>
+</details>
+</div>
+</div>
+</section>
+
 <footer class="footer">
 <span class="footer-coord-tl">[ END.DOCUMENT ]</span>
 <span class="footer-coord-tr">HIMARK / FOOTER</span>

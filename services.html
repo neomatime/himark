@@ -1497,6 +1497,297 @@
     ]
   }
 }</script>
+<style>
+  /* FAQ section — pre-application Q&A. Editorial slab, off-white
+     surface, coord stamps, eyebrow + headline + accordion list. */
+  .faq-section{
+    background: var(--off);
+    padding: clamp(80px, 9vw, 140px) clamp(24px, 6vw, 96px);
+    position: relative;
+    border-bottom: 1px solid var(--rule);
+  }
+  .faq-coord-tl, .faq-coord-tr{
+    position: absolute;
+    top: 48px;
+    font-family: var(--f-mono);
+    font-size: 9px;
+    letter-spacing: .14em;
+    color: var(--ocean);
+    z-index: 2;
+  }
+  .faq-coord-tl{ left: clamp(24px, 6vw, 96px); }
+  .faq-coord-tr{ right: clamp(24px, 6vw, 96px); color: rgba(95,129,144,.5); }
+  .faq-inner{
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .faq-eyebrow{
+    font-family: var(--f-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--ocean);
+    margin: 0 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .faq-eyebrow::before{
+    content: ''; display: block; width: 24px; height: 1px; background: var(--ocean);
+  }
+  .faq-hl{
+    font-family: var(--f-disp);
+    font-size: clamp(28px, 3.4vw, 44px);
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--midnight);
+    letter-spacing: -.01em;
+    margin: 0 0 56px;
+    max-width: 720px;
+  }
+  .faq-list{ display: flex; flex-direction: column; gap: 0; }
+  .faq-item{
+    border-top: 1px solid var(--rule);
+    padding: 0;
+  }
+  .faq-item:last-child{ border-bottom: 1px solid var(--rule); }
+  .faq-q{
+    cursor: pointer;
+    list-style: none;
+    padding: 24px 48px 24px 0;
+    font-family: var(--f-disp);
+    font-size: clamp(16px, 1.5vw, 19px);
+    font-weight: 600;
+    color: var(--midnight);
+    position: relative;
+    transition: color .25s ease;
+  }
+  .faq-q::-webkit-details-marker{ display: none; }
+  .faq-q::after{
+    content: '+';
+    position: absolute;
+    right: 0; top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--f-mono);
+    font-size: 24px;
+    font-weight: 300;
+    color: var(--ocean);
+    transition: transform .35s cubic-bezier(.65,0,.35,1);
+  }
+  .faq-item[open] .faq-q::after{ transform: translateY(-50%) rotate(45deg); }
+  .faq-q:hover{ color: var(--ocean-dk); }
+  .faq-a{
+    padding: 0 48px 28px 0;
+    overflow: hidden;
+  }
+  .faq-a p{
+    font-family: var(--f-body);
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.75;
+    color: rgba(28,43,58,.78);
+    margin: 0;
+    max-width: 720px;
+  }
+  @media (max-width: 600px){
+    .faq-coord-tl, .faq-coord-tr{ top: 28px; font-size: 8px; }
+    .faq-q{ font-size: 16px; padding: 20px 40px 20px 0; }
+    .faq-a p{ font-size: 14px; }
+  }
+</style>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What services does HIMARK offer?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Six service categories: Brand Architecture, Digital Infrastructure, Marketing and Demand, AI and Operational Systems, Strategic Advisory, and Executive and Transformation. Each is available standalone or built into a tier engagement."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the three HIMARK retainer tiers?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Signature Partner (foundational, from R 50,000/month, quarterly minimum), Growth Partner (core HIMARK tier, from R 80,000/month, six-month minimum), and Private Partner (executive transformation, from R 150,000/month, twelve-month minimum, by invitation only)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use a single HIMARK service standalone?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — five of the six categories are available as standalone commissions. Strategic Advisory is in-tier only because it requires continuous principal access."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between Signature, Growth, and Private Partner?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Cadence and depth. Signature is monthly principal strategy with quarterly reviews. Growth is weekly principal cadence with live direct-line access. Private is a dedicated principal embedded with leadership in real-time."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does HIMARK offer one-time projects?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Standalone commissions solve discrete problems — brand identity, website rebuild, AI deployment, M&A architecture. Tier engagements provide continuous principal access for businesses scaling through complexity."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is included in a Growth Partner engagement?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Scalable growth infrastructure: weekly principal cadence, full marketing systems, CRM optimisation, founder authority positioning, and live direct-line access to the engagement team. The core HIMARK tier where most engagements live."
+      }
+    }
+  ]
+}</script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Brand Architecture",
+  "description": "Identity systems, market positioning, and executive personal branding. Where most engagements begin.",
+  "serviceType": "Brand Architecture",
+  "areaServed": [
+    {
+      "@type": "Country",
+      "name": "South Africa"
+    },
+    {
+      "@type": "Place",
+      "name": "Worldwide remote"
+    }
+  ],
+  "provider": {
+    "@type": "Organization",
+    "@id": "https://www.himark.co.za/#organization",
+    "name": "HIMARK"
+  },
+  "category": "Strategic Growth Consulting"
+}</script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Digital Infrastructure",
+  "description": "Website, SEO, CRM, lead capture, automation and enterprise systems. The operational pipe everything else runs through.",
+  "serviceType": "Digital Infrastructure",
+  "areaServed": [
+    {
+      "@type": "Country",
+      "name": "South Africa"
+    },
+    {
+      "@type": "Place",
+      "name": "Worldwide remote"
+    }
+  ],
+  "provider": {
+    "@type": "Organization",
+    "@id": "https://www.himark.co.za/#organization",
+    "name": "HIMARK"
+  },
+  "category": "Strategic Growth Consulting"
+}</script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Marketing & Demand",
+  "description": "Demand strategy, lead generation, content systems and channel architecture. Built for sustained pipeline, not one-quarter spikes.",
+  "serviceType": "Marketing & Demand",
+  "areaServed": [
+    {
+      "@type": "Country",
+      "name": "South Africa"
+    },
+    {
+      "@type": "Place",
+      "name": "Worldwide remote"
+    }
+  ],
+  "provider": {
+    "@type": "Organization",
+    "@id": "https://www.himark.co.za/#organization",
+    "name": "HIMARK"
+  },
+  "category": "Strategic Growth Consulting"
+}</script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "AI & Operational Systems",
+  "description": "AIRaaS deployment, workflow automation, intelligent routing. AI as compounding leverage — not novelty.",
+  "serviceType": "AI & Operational Systems",
+  "areaServed": [
+    {
+      "@type": "Country",
+      "name": "South Africa"
+    },
+    {
+      "@type": "Place",
+      "name": "Worldwide remote"
+    }
+  ],
+  "provider": {
+    "@type": "Organization",
+    "@id": "https://www.himark.co.za/#organization",
+    "name": "HIMARK"
+  },
+  "category": "Strategic Growth Consulting"
+}</script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Strategic Advisory",
+  "description": "Principal-level advisory — workshops, weekly reviews, and continuous access. The thinking layer above all of the above.",
+  "serviceType": "Strategic Advisory",
+  "areaServed": [
+    {
+      "@type": "Country",
+      "name": "South Africa"
+    },
+    {
+      "@type": "Place",
+      "name": "Worldwide remote"
+    }
+  ],
+  "provider": {
+    "@type": "Organization",
+    "@id": "https://www.himark.co.za/#organization",
+    "name": "HIMARK"
+  },
+  "category": "Strategic Growth Consulting"
+}</script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Executive & Transformation",
+  "description": "M&A architecture, capital strategy, pricing design, and the work that reshapes a business rather than refines it.",
+  "serviceType": "Executive & Transformation",
+  "areaServed": [
+    {
+      "@type": "Country",
+      "name": "South Africa"
+    },
+    {
+      "@type": "Place",
+      "name": "Worldwide remote"
+    }
+  ],
+  "provider": {
+    "@type": "Organization",
+    "@id": "https://www.himark.co.za/#organization",
+    "name": "HIMARK"
+  },
+  "category": "Strategic Growth Consulting"
+}</script>
 </head>
 <body data-page="mandates" data-location="root">
 <!-- Custom cursor follower (dot + ring) — body has cursor:none -->
@@ -1979,6 +2270,49 @@
 <div class="cap-cell r3d d4" data-idx="[04]"><div class="cap-t">Executive Advisory</div><p class="cap-d">Principal-level strategic counsel for founders and C-suite leadership teams.</p></div>
 </div>
 </section>
+
+<!-- ====================================================================
+     FAQ — pre-application Q&A. The FAQPage JSON-LD in <head> mirrors
+     these questions so Google rich results + LLM answer engines lift
+     them directly. Visible markup uses <details>/<summary> for
+     accessible accordion behaviour (no JS required).
+     ==================================================================== -->
+<section class="faq-section" aria-label="On the mandates, the tiers, and standalone services.">
+<span class="faq-coord-tl">[ 02.Z · FAQ ]</span>
+<span class="faq-coord-tr">MANDATE · ARCHITECTURE</span>
+<div class="faq-inner">
+<p class="faq-eyebrow">Frequently asked</p>
+<h2 class="faq-hl">On the mandates, the tiers, and standalone services.</h2>
+<div class="faq-list">
+
+<details class="faq-item">
+  <summary class="faq-q">What services does HIMARK offer?</summary>
+  <div class="faq-a"><p>Six service categories: Brand Architecture, Digital Infrastructure, Marketing and Demand, AI and Operational Systems, Strategic Advisory, and Executive and Transformation. Each is available standalone or built into a tier engagement.</p></div>
+</details>
+<details class="faq-item">
+  <summary class="faq-q">What are the three HIMARK retainer tiers?</summary>
+  <div class="faq-a"><p>Signature Partner (foundational, from R 50,000/month, quarterly minimum), Growth Partner (core HIMARK tier, from R 80,000/month, six-month minimum), and Private Partner (executive transformation, from R 150,000/month, twelve-month minimum, by invitation only).</p></div>
+</details>
+<details class="faq-item">
+  <summary class="faq-q">Can I use a single HIMARK service standalone?</summary>
+  <div class="faq-a"><p>Yes — five of the six categories are available as standalone commissions. Strategic Advisory is in-tier only because it requires continuous principal access.</p></div>
+</details>
+<details class="faq-item">
+  <summary class="faq-q">What is the difference between Signature, Growth, and Private Partner?</summary>
+  <div class="faq-a"><p>Cadence and depth. Signature is monthly principal strategy with quarterly reviews. Growth is weekly principal cadence with live direct-line access. Private is a dedicated principal embedded with leadership in real-time.</p></div>
+</details>
+<details class="faq-item">
+  <summary class="faq-q">Does HIMARK offer one-time projects?</summary>
+  <div class="faq-a"><p>Standalone commissions solve discrete problems — brand identity, website rebuild, AI deployment, M&amp;A architecture. Tier engagements provide continuous principal access for businesses scaling through complexity.</p></div>
+</details>
+<details class="faq-item">
+  <summary class="faq-q">What is included in a Growth Partner engagement?</summary>
+  <div class="faq-a"><p>Scalable growth infrastructure: weekly principal cadence, full marketing systems, CRM optimisation, founder authority positioning, and live direct-line access to the engagement team. The core HIMARK tier where most engagements live.</p></div>
+</details>
+</div>
+</div>
+</section>
+
 <footer class="footer">
 <span class="footer-coord-tl">[ END.DOCUMENT ]</span>
 <span class="footer-coord-tr">HIMARK / FOOTER</span>

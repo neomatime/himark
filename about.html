@@ -775,6 +775,159 @@
     ]
   }
 }</script>
+<style>
+  /* FAQ section — pre-application Q&A. Editorial slab, off-white
+     surface, coord stamps, eyebrow + headline + accordion list. */
+  .faq-section{
+    background: var(--off);
+    padding: clamp(80px, 9vw, 140px) clamp(24px, 6vw, 96px);
+    position: relative;
+    border-bottom: 1px solid var(--rule);
+  }
+  .faq-coord-tl, .faq-coord-tr{
+    position: absolute;
+    top: 48px;
+    font-family: var(--f-mono);
+    font-size: 9px;
+    letter-spacing: .14em;
+    color: var(--ocean);
+    z-index: 2;
+  }
+  .faq-coord-tl{ left: clamp(24px, 6vw, 96px); }
+  .faq-coord-tr{ right: clamp(24px, 6vw, 96px); color: rgba(95,129,144,.5); }
+  .faq-inner{
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .faq-eyebrow{
+    font-family: var(--f-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--ocean);
+    margin: 0 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .faq-eyebrow::before{
+    content: ''; display: block; width: 24px; height: 1px; background: var(--ocean);
+  }
+  .faq-hl{
+    font-family: var(--f-disp);
+    font-size: clamp(28px, 3.4vw, 44px);
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--midnight);
+    letter-spacing: -.01em;
+    margin: 0 0 56px;
+    max-width: 720px;
+  }
+  .faq-list{ display: flex; flex-direction: column; gap: 0; }
+  .faq-item{
+    border-top: 1px solid var(--rule);
+    padding: 0;
+  }
+  .faq-item:last-child{ border-bottom: 1px solid var(--rule); }
+  .faq-q{
+    cursor: pointer;
+    list-style: none;
+    padding: 24px 48px 24px 0;
+    font-family: var(--f-disp);
+    font-size: clamp(16px, 1.5vw, 19px);
+    font-weight: 600;
+    color: var(--midnight);
+    position: relative;
+    transition: color .25s ease;
+  }
+  .faq-q::-webkit-details-marker{ display: none; }
+  .faq-q::after{
+    content: '+';
+    position: absolute;
+    right: 0; top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--f-mono);
+    font-size: 24px;
+    font-weight: 300;
+    color: var(--ocean);
+    transition: transform .35s cubic-bezier(.65,0,.35,1);
+  }
+  .faq-item[open] .faq-q::after{ transform: translateY(-50%) rotate(45deg); }
+  .faq-q:hover{ color: var(--ocean-dk); }
+  .faq-a{
+    padding: 0 48px 28px 0;
+    overflow: hidden;
+  }
+  .faq-a p{
+    font-family: var(--f-body);
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.75;
+    color: rgba(28,43,58,.78);
+    margin: 0;
+    max-width: 720px;
+  }
+  @media (max-width: 600px){
+    .faq-coord-tl, .faq-coord-tr{ top: 28px; font-size: 8px; }
+    .faq-q{ font-size: 16px; padding: 20px 40px 20px 0; }
+    .faq-a p{ font-size: 14px; }
+  }
+</style>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the HIMARK doctrine?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Four operating principles: Volume is a tax on quality; Precision, not volume; Operators, not advisors; On record. The doctrine is the published framework that governs every engagement."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does HIMARK only take limited mandates?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The firm scales by raising the bar, not adding clients. Fewer mandates means more of the principal team in each — the central trade HIMARK chooses on every reading of an application."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does \"operators, not advisors\" mean?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "HIMARK sits in the weekly loops with leadership. The firm drives initiatives past committee into measurable progress. Strategy without execution is fiction — operators do the work, advisors point at it."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does HIMARK accept all clients?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The firm operates by application only. Every brief is read by a principal before any commercial conversation. Mandates that do not sharpen the firm edge are declined."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is HIMARK a standalone consultancy?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. HIMARK (Pty) Ltd is a standalone advisory — no parent corporation, no portfolio diversification beyond growth consulting."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "When was HIMARK founded?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "HIMARK was founded in 2026, headquartered in Randburg, Gauteng, South Africa."
+      }
+    }
+  ]
+}</script>
 </head>
 <body data-page="doctrine" data-location="root">
 <!-- Custom cursor follower (dot + ring) — body has cursor:none -->
@@ -977,6 +1130,49 @@
 </div>
 </div>
 </section>
+
+<!-- ====================================================================
+     FAQ — pre-application Q&A. The FAQPage JSON-LD in <head> mirrors
+     these questions so Google rich results + LLM answer engines lift
+     them directly. Visible markup uses <details>/<summary> for
+     accessible accordion behaviour (no JS required).
+     ==================================================================== -->
+<section class="faq-section" aria-label="On the firm, the doctrine, and how it operates.">
+<span class="faq-coord-tl">[ 01.Y · FAQ ]</span>
+<span class="faq-coord-tr">ON.RECORD</span>
+<div class="faq-inner">
+<p class="faq-eyebrow">Frequently asked</p>
+<h2 class="faq-hl">On the firm, the doctrine, and how it operates.</h2>
+<div class="faq-list">
+
+<details class="faq-item">
+  <summary class="faq-q">What is the HIMARK doctrine?</summary>
+  <div class="faq-a"><p>Four operating principles: Volume is a tax on quality; Precision, not volume; Operators, not advisors; On record. The doctrine is the published framework that governs every engagement.</p></div>
+</details>
+<details class="faq-item">
+  <summary class="faq-q">Why does HIMARK only take limited mandates?</summary>
+  <div class="faq-a"><p>The firm scales by raising the bar, not adding clients. Fewer mandates means more of the principal team in each — the central trade HIMARK chooses on every reading of an application.</p></div>
+</details>
+<details class="faq-item">
+  <summary class="faq-q">What does &quot;operators, not advisors&quot; mean?</summary>
+  <div class="faq-a"><p>HIMARK sits in the weekly loops with leadership. The firm drives initiatives past committee into measurable progress. Strategy without execution is fiction — operators do the work, advisors point at it.</p></div>
+</details>
+<details class="faq-item">
+  <summary class="faq-q">Does HIMARK accept all clients?</summary>
+  <div class="faq-a"><p>No. The firm operates by application only. Every brief is read by a principal before any commercial conversation. Mandates that do not sharpen the firm edge are declined.</p></div>
+</details>
+<details class="faq-item">
+  <summary class="faq-q">Is HIMARK a standalone consultancy?</summary>
+  <div class="faq-a"><p>Yes. HIMARK (Pty) Ltd is a standalone advisory — no parent corporation, no portfolio diversification beyond growth consulting.</p></div>
+</details>
+<details class="faq-item">
+  <summary class="faq-q">When was HIMARK founded?</summary>
+  <div class="faq-a"><p>HIMARK was founded in 2026, headquartered in Randburg, Gauteng, South Africa.</p></div>
+</details>
+</div>
+</div>
+</section>
+
 <footer class="footer">
 <span class="footer-coord-tl">[ END.DOCUMENT ]</span>
 <span class="footer-coord-tr">HIMARK / FOOTER</span>

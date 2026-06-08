@@ -74,7 +74,7 @@
 
 <!-- HIMARK wordmark — top center, alone -->
 <a href="#" id="brand-mark" data-page="home" aria-label="HIMARK">
-<img src="../images/HIMARK.png" alt="HIMARK" class="brand-wm-img"/>
+<img src="../images/HIMARK.png" alt="HIMARK" class="brand-wm-img" width="465" height="122" decoding="async"/>
 </a>
 
 <!-- Right-edge menu trigger -->
@@ -239,11 +239,11 @@
 </div>
 </div>
 <!-- Floating widgets -->
-<button id="mute-btn" class="muted"><div class="aw"><span></span><span></span><span></span><span></span><span></span></div></button>
+<button id="mute-btn" class="muted" type="button" aria-label="Toggle ambient music"><div class="aw"><span></span><span></span><span></span><span></span><span></span></div></button>
 
 <!-- WhatsApp button moved to Intake page -->
 
-<button class="chat-toggle-btn" id="chatTgl">
+<button class="chat-toggle-btn" id="chatTgl" type="button" aria-label="Open Atlas chat">
 <svg class="ico-ch" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F7F7F5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
 <svg class="ico-cl" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#F7F7F5" stroke-width="1.8" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
 </button>
@@ -266,8 +266,8 @@
 <button class="qr" onclick="sQ(this)">Tell me about AIRaaS</button>
 </div>
 <div class="ch-inbar">
-<input class="ch-inp" id="chIn" type="text" placeholder="Ask us anything…" autocomplete="off"/>
-<button class="ch-send" onclick="sM()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+<input class="ch-inp" id="chIn" name="atlas_message" type="text" placeholder="Ask us anything…" autocomplete="off" aria-label="Message Atlas"/>
+<button class="ch-send" type="button" aria-label="Send message" onclick="sM()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
 </div>
 </div>
 <div class="vp" id="vpanel">

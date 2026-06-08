@@ -1942,8 +1942,8 @@
 
 <!-- BACKGROUND STACK — image fades into video as the zoom completes. -->
 <div class="bridge-bg" aria-hidden="true">
-<img class="bridge-img" src="images/method-hero.jpg" alt=""/>
-<video class="bridge-video" muted loop playsinline preload="metadata" aria-hidden="true">
+<img class="bridge-img" src="images/method-hero.jpg" alt="" width="2400" height="1798" decoding="async"/>
+<video class="bridge-video" muted loop playsinline preload="none" poster="images/method-hero.jpg" aria-hidden="true">
 <source src="video/sandton.mp4" type="video/mp4"/>
 </video>
 <div class="bridge-veil"></div>
@@ -2002,7 +2002,7 @@
 <div class="home-deep-dive-inner">
 <figure class="hdd-figure">
 <div class="hdd-image-wrap">
-<img src="images/mandates-hero.jpg" alt="A working desk inside a HIMARK strategy session" loading="lazy"/>
+<img src="images/mandates-hero.jpg" alt="A working desk inside a HIMARK strategy session" loading="lazy" width="2400" height="1604" decoding="async"/>
 <div class="hdd-image-veil" aria-hidden="true"></div>
 </div>
 <figcaption class="hdd-caption">Mandate room · Randburg HQ</figcaption>
@@ -2040,7 +2040,7 @@
 <section class="home-img-marquee" aria-label="Selected engagements — client logos">
 <span class="ilm-eyebrow">Engagements · select clients</span>
 <div class="home-img-marquee-track home-img-marquee-track--single">
-<a class="ilm-cell ilm-cell-link" href="https://oakandpixel.co.za" target="_blank" rel="noopener noreferrer" aria-label="Oak & Pixel — Digital Studio"><img src="images/oak-and-pixel.png" alt="Oak & Pixel — Digital Studio" loading="lazy"/></a>
+<a class="ilm-cell ilm-cell-link" href="https://oakandpixel.co.za" target="_blank" rel="noopener noreferrer" aria-label="Oak & Pixel — Digital Studio"><img src="images/oak-and-pixel.png" alt="Oak & Pixel — Digital Studio" loading="lazy" width="454" height="454" decoding="async"/></a>
 <!-- Single-client mode — no mirror duplicate, no scroll animation. Add more <a class="ilm-cell"> entries here as new clients land, then drop the --single modifier from the track to restart the marquee loop. -->
 </div>
 </section>
@@ -2123,7 +2123,7 @@
 </g>
 <rect x="4" y="4" width="132" height="192" fill="none" stroke="#F7F7F5" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter"/>
 </svg>
-</span><img src="images/IMARK.png" alt="IMARK" class="ft-wm-imark"/>
+</span><img src="images/IMARK.png" alt="IMARK" class="ft-wm-imark" width="367" height="99" decoding="async"/>
 </div>
 <p class="ft-tag">Strategic Growth Consultancy</p>
 <p class="ft-blurb">HIMARK (Pty) Ltd</p>
@@ -2162,10 +2162,10 @@
      Restored on home.html (was lost during the home redesign).
      Wired by main.js (mBtn) → mSetMuted toggles the Forest Zen
      ambient loop and persists the choice via sessionStorage. -->
-<button id="mute-btn" class="muted"><div class="aw"><span></span><span></span><span></span><span></span><span></span></div></button>
+<button id="mute-btn" class="muted" type="button" aria-label="Toggle ambient music"><div class="aw"><span></span><span></span><span></span><span></span><span></span></div></button>
 
 <!-- Floating Atlas chat widget (kept) ──────────────────────── -->
-<button class="chat-toggle-btn" id="chatTgl">
+<button class="chat-toggle-btn" id="chatTgl" type="button" aria-label="Open Atlas chat">
 <svg class="ico-ch" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F7F7F5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
 <svg class="ico-cl" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#F7F7F5" stroke-width="1.8" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
 </button>
@@ -2188,8 +2188,8 @@
 <button class="qr" onclick="sQ(this)">Tell me about AIRaaS</button>
 </div>
 <div class="ch-inbar">
-<input class="ch-inp" id="chIn" type="text" placeholder="Ask us anything…" autocomplete="off"/>
-<button class="ch-send" onclick="sM()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+<input class="ch-inp" id="chIn" name="atlas_message" type="text" placeholder="Ask us anything…" autocomplete="off" aria-label="Message Atlas"/>
+<button class="ch-send" type="button" aria-label="Send message" onclick="sM()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
 </div>
 </div>
 <div class="vp" id="vpanel">

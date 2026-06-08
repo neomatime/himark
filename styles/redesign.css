@@ -1594,3 +1594,27 @@ body[data-page="error"] .page.redesign{
   border-radius: 0;
   margin: 0;
 }
+
+/* Final legal-page guardrail. This sits at the end of the redesign
+   sheet so no earlier layout rule can squeeze legal copy into a narrow
+   column. */
+body[data-page="privacy"] .lgl-body,
+body[data-page="terms"] .lgl-body,
+body[data-page="cookies"] .lgl-body,
+body[data-page="security"] .lgl-body{
+  display:block !important;
+}
+body[data-page="privacy"] .lgl-toc,
+body[data-page="terms"] .lgl-toc,
+body[data-page="cookies"] .lgl-toc,
+body[data-page="security"] .lgl-toc,
+body[data-page="privacy"] .lgl-content,
+body[data-page="terms"] .lgl-content,
+body[data-page="cookies"] .lgl-content,
+body[data-page="security"] .lgl-content{
+  width:100% !important;
+  max-width:880px !important;
+  min-width:0 !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}

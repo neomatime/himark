@@ -295,11 +295,17 @@ body[data-page="subscribe"] .page.redesign{
   filter: blur(10px);
 }
 .hero-editorial::after{
-  /* Soft white wash for text contrast. */
+  /* White wash for text contrast. A radial halo pulls a brighter
+     veil right behind the headline block so the dark Midnight text
+     reads crisply against the drifting aura layers underneath.
+     A linear wash handles the edges. Aura motion still bleeds
+     through because the wash is partially transparent. */
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(247,247,245,.40) 0%, rgba(247,247,245,.12) 45%, rgba(247,247,245,.25) 100%);
+  background:
+    radial-gradient(ellipse 65% 55% at 50% 50%, rgba(247,247,245,.62) 0%, rgba(247,247,245,.18) 75%, transparent 100%),
+    linear-gradient(180deg, rgba(247,247,245,.45) 0%, rgba(247,247,245,.18) 45%, rgba(247,247,245,.30) 100%);
   z-index: 0;
   pointer-events: none;
 }
@@ -910,15 +916,18 @@ body[data-page="home"] .hero-aura-1{
   100% { transform: translate3d(26vw, 18vh, 0) scale(1.18); }
 }
 
-/* Cloud 2 — medium Midnight tint, right side, drifts up-left */
+/* Cloud 2 — medium Midnight tint, right side, drifts up-left.
+   Softened (was .90/.45/.80 → .60/.28/.55) so it doesn't darken
+   the headline zone — the headline text is also Midnight, so this
+   cloud needs to stay lighter than the others to preserve contrast. */
 body[data-page="home"] .hero-aura-2{
   width: 60vw;
   height: 60vw;
   top: 30%;
   right: -20%;
-  background: radial-gradient(circle, rgba(28, 43, 58, .90) 0%, rgba(28, 43, 58, .45) 40%, transparent 72%);
+  background: radial-gradient(circle, rgba(28, 43, 58, .60) 0%, rgba(28, 43, 58, .28) 40%, transparent 72%);
   animation: aura-drift-2 28s cubic-bezier(.45, 0, .55, 1) infinite alternate;
-  opacity: .80;
+  opacity: .55;
 }
 @keyframes aura-drift-2{
   0%   { transform: translate3d(0, 0, 0) scale(1); }
@@ -948,11 +957,11 @@ body[data-page="home"] .hero-aura-mesh{
   inset: -12%;
   background:
     radial-gradient(ellipse 65% 55% at 22% 30%, rgba(95, 129, 144, .40) 0%, transparent 58%),
-    radial-gradient(ellipse 58% 48% at 78% 70%, rgba(28, 43, 58, .42) 0%, transparent 58%),
+    radial-gradient(ellipse 58% 48% at 78% 70%, rgba(28, 43, 58, .28) 0%, transparent 58%),
     radial-gradient(ellipse 72% 62% at 50% 100%, rgba(14, 24, 34, .36) 0%, transparent 58%);
   animation: aura-mesh-shift 43s cubic-bezier(.45, 0, .55, 1) infinite alternate;
   will-change: transform;
-  opacity: .70;
+  opacity: .55;
 }
 @keyframes aura-mesh-shift{
   0%   { transform: translate3d(0, 0, 0); }

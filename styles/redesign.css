@@ -935,17 +935,31 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
 
 
 /* ====================================================================
-   LEGAL PAGES (privacy / terms / cookies / security) - responsive
-   body layout. Keep the desktop index/article composition while giving
-   the article column a real minimum. Collapse earlier on narrower
-   viewports so the prose never gets squeezed into word-per-line text.
+   LEGAL PAGES (privacy / terms / cookies / security) - document body.
+   Use a stable single-column reading layout so legal prose can never be
+   squeezed into word-per-line text by the contents/sidebar grid.
    ==================================================================== */
 body[data-page="privacy"] .lgl-body,
 body[data-page="terms"] .lgl-body,
 body[data-page="cookies"] .lgl-body,
 body[data-page="security"] .lgl-body{
-  grid-template-columns: minmax(220px, 280px) minmax(520px, 880px);
-  gap: clamp(48px, 5vw, 96px);
+  display: block;
+}
+body[data-page="privacy"] .lgl-toc,
+body[data-page="terms"] .lgl-toc,
+body[data-page="cookies"] .lgl-toc,
+body[data-page="security"] .lgl-toc{
+  position: static;
+  max-width: 880px;
+  margin: 0 auto 72px;
+}
+body[data-page="privacy"] .lgl-toc-list,
+body[data-page="terms"] .lgl-toc-list,
+body[data-page="cookies"] .lgl-toc-list,
+body[data-page="security"] .lgl-toc-list{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0 28px;
 }
 body[data-page="privacy"] .lgl-content,
 body[data-page="terms"] .lgl-content,
@@ -953,28 +967,77 @@ body[data-page="cookies"] .lgl-content,
 body[data-page="security"] .lgl-content{
   width: 100%;
   min-width: 0;
+  max-width: 880px;
+  margin: 0 auto;
+}
+body[data-page="privacy"] .lgl-section,
+body[data-page="terms"] .lgl-section,
+body[data-page="cookies"] .lgl-section,
+body[data-page="security"] .lgl-section{
+  min-width: 0;
+}
+body[data-page="privacy"] .lgl-section p,
+body[data-page="terms"] .lgl-section p,
+body[data-page="cookies"] .lgl-section p,
+body[data-page="security"] .lgl-section p,
+body[data-page="privacy"] .lgl-section li,
+body[data-page="terms"] .lgl-section li,
+body[data-page="cookies"] .lgl-section li,
+body[data-page="security"] .lgl-section li{
+  min-width: 0;
+  word-break: normal;
+  overflow-wrap: normal;
 }
 @media (max-width: 1200px){
+  body[data-page="privacy"] .lgl-hero,
+  body[data-page="terms"] .lgl-hero,
+  body[data-page="cookies"] .lgl-hero,
+  body[data-page="security"] .lgl-hero{
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  body[data-page="privacy"] .lgl-hero-content,
+  body[data-page="terms"] .lgl-hero-content,
+  body[data-page="cookies"] .lgl-hero-content,
+  body[data-page="security"] .lgl-hero-content{
+    padding-bottom: 0;
+  }
+  body[data-page="privacy"] .lgl-hero-image,
+  body[data-page="terms"] .lgl-hero-image,
+  body[data-page="cookies"] .lgl-hero-image,
+  body[data-page="security"] .lgl-hero-image{
+    margin: 48px -24px 0;
+    min-height: 360px;
+  }
+  body[data-page="privacy"] .lgl-meta,
+  body[data-page="terms"] .lgl-meta,
+  body[data-page="cookies"] .lgl-meta,
+  body[data-page="security"] .lgl-meta{
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 24px;
+  }
   body[data-page="privacy"] .lgl-body,
   body[data-page="terms"] .lgl-body,
   body[data-page="cookies"] .lgl-body,
   body[data-page="security"] .lgl-body{
-    grid-template-columns: 1fr !important;
-    gap: 56px !important;
     padding-left: 24px !important;
     padding-right: 24px !important;
   }
-  body[data-page="privacy"] .lgl-toc,
-  body[data-page="terms"] .lgl-toc,
-  body[data-page="cookies"] .lgl-toc,
-  body[data-page="security"] .lgl-toc{
-    position: static !important;
+}
+@media (max-width: 640px){
+  body[data-page="privacy"] .lgl-meta,
+  body[data-page="terms"] .lgl-meta,
+  body[data-page="cookies"] .lgl-meta,
+  body[data-page="security"] .lgl-meta{
+    grid-template-columns: 1fr;
   }
-  body[data-page="privacy"] .lgl-content,
-  body[data-page="terms"] .lgl-content,
-  body[data-page="cookies"] .lgl-content,
-  body[data-page="security"] .lgl-content{
-    max-width: none;
+  body[data-page="privacy"] .lgl-toc-list,
+  body[data-page="terms"] .lgl-toc-list,
+  body[data-page="cookies"] .lgl-toc-list,
+  body[data-page="security"] .lgl-toc-list{
+    grid-template-columns: 1fr;
   }
 }
 

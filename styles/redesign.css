@@ -883,81 +883,80 @@ body[data-page="home"] .hero-aura{
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  /* mix-blend-mode:screen makes the clouds add light to the bg
-     image instead of opaquely sitting on top — preserves the
-     architectural texture beneath while tinting it with the
-     brand palette. */
-  mix-blend-mode: screen;
 }
 
 body[data-page="home"] .hero-aura-layer{
   position: absolute;
   border-radius: 50%;
-  filter: blur(70px);
+  filter: blur(55px);
   will-change: transform;
   /* contain the layer to its own painting layer for GPU isolation */
   contain: layout paint;
 }
 
-/* Cloud 1 — large Ocean tint, top-left start, drifts down-right */
+/* Cloud 1 — large Ocean tint, top-left start, drifts down-right.
+   Brighter alpha + tighter 22s cycle so motion registers in 5-10s. */
 body[data-page="home"] .hero-aura-1{
-  width: 65vw;
-  height: 65vw;
-  top: -22%;
-  left: -12%;
-  background: radial-gradient(circle, rgba(95, 129, 144, .55) 0%, rgba(95, 129, 144, .22) 40%, transparent 70%);
-  animation: aura-drift-1 32s cubic-bezier(.45, 0, .55, 1) infinite alternate;
+  width: 70vw;
+  height: 70vw;
+  top: -25%;
+  left: -15%;
+  background: radial-gradient(circle, rgba(95, 129, 144, .85) 0%, rgba(95, 129, 144, .40) 40%, transparent 72%);
+  animation: aura-drift-1 22s cubic-bezier(.45, 0, .55, 1) infinite alternate;
+  opacity: .85;
 }
 @keyframes aura-drift-1{
   0%   { transform: translate3d(0, 0, 0) scale(1); }
-  100% { transform: translate3d(18vw, 14vh, 0) scale(1.15); }
+  100% { transform: translate3d(26vw, 18vh, 0) scale(1.18); }
 }
 
 /* Cloud 2 — medium Midnight tint, right side, drifts up-left */
 body[data-page="home"] .hero-aura-2{
-  width: 55vw;
-  height: 55vw;
-  top: 35%;
-  right: -18%;
-  background: radial-gradient(circle, rgba(28, 43, 58, .60) 0%, rgba(28, 43, 58, .28) 40%, transparent 70%);
-  animation: aura-drift-2 41s cubic-bezier(.45, 0, .55, 1) infinite alternate;
+  width: 60vw;
+  height: 60vw;
+  top: 30%;
+  right: -20%;
+  background: radial-gradient(circle, rgba(28, 43, 58, .90) 0%, rgba(28, 43, 58, .45) 40%, transparent 72%);
+  animation: aura-drift-2 28s cubic-bezier(.45, 0, .55, 1) infinite alternate;
+  opacity: .80;
 }
 @keyframes aura-drift-2{
   0%   { transform: translate3d(0, 0, 0) scale(1); }
-  100% { transform: translate3d(-22vw, -12vh, 0) scale(1.20); }
+  100% { transform: translate3d(-30vw, -16vh, 0) scale(1.22); }
 }
 
-/* Cloud 3 — large Ink Deep tint, bottom, drifts up-right (more contrast) */
+/* Cloud 3 — large Ink Deep tint, bottom, drifts up-right */
 body[data-page="home"] .hero-aura-3{
-  width: 75vw;
-  height: 75vw;
-  bottom: -28%;
-  left: 25%;
-  background: radial-gradient(circle, rgba(14, 24, 34, .50) 0%, rgba(14, 24, 34, .22) 40%, transparent 70%);
-  animation: aura-drift-3 53s cubic-bezier(.45, 0, .55, 1) infinite alternate;
+  width: 80vw;
+  height: 80vw;
+  bottom: -30%;
+  left: 22%;
+  background: radial-gradient(circle, rgba(14, 24, 34, .82) 0%, rgba(14, 24, 34, .38) 40%, transparent 72%);
+  animation: aura-drift-3 35s cubic-bezier(.45, 0, .55, 1) infinite alternate;
+  opacity: .75;
 }
 @keyframes aura-drift-3{
   0%   { transform: translate3d(0, 0, 0) scale(1); }
-  100% { transform: translate3d(14vw, -18vh, 0) scale(1.12); }
+  100% { transform: translate3d(20vw, -24vh, 0) scale(1.14); }
 }
 
 /* Mesh — a stationary multi-stop gradient field that slowly shifts
-   position. Carries the deliberate Midnight → Ink Deep → Ocean
-   palette ripple the spec asked for. Different speed (67s — coprime
-   to the cloud durations) so it never syncs with the clouds. */
+   position. Carries the Midnight → Ink Deep → Ocean palette ripple.
+   Coprime 43s cycle so it never syncs with the clouds. */
 body[data-page="home"] .hero-aura-mesh{
   position: absolute;
-  inset: -10%;
+  inset: -12%;
   background:
-    radial-gradient(ellipse 60% 50% at 22% 30%, rgba(95, 129, 144, .22) 0%, transparent 55%),
-    radial-gradient(ellipse 55% 45% at 78% 70%, rgba(28, 43, 58, .26) 0%, transparent 55%),
-    radial-gradient(ellipse 70% 60% at 50% 100%, rgba(14, 24, 34, .20) 0%, transparent 55%);
-  animation: aura-mesh-shift 67s cubic-bezier(.45, 0, .55, 1) infinite alternate;
+    radial-gradient(ellipse 65% 55% at 22% 30%, rgba(95, 129, 144, .40) 0%, transparent 58%),
+    radial-gradient(ellipse 58% 48% at 78% 70%, rgba(28, 43, 58, .42) 0%, transparent 58%),
+    radial-gradient(ellipse 72% 62% at 50% 100%, rgba(14, 24, 34, .36) 0%, transparent 58%);
+  animation: aura-mesh-shift 43s cubic-bezier(.45, 0, .55, 1) infinite alternate;
   will-change: transform;
+  opacity: .70;
 }
 @keyframes aura-mesh-shift{
   0%   { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(8vw, -6vh, 0); }
+  100% { transform: translate3d(12vw, -9vh, 0); }
 }
 
 /* Mobile — drop the 3rd cloud + tighten the blur radius so the

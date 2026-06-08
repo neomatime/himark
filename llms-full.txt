@@ -1,0 +1,130 @@
+# HIMARK — Full Site Context for LLM Crawlers
+
+> Premium strategic growth consultancy headquartered in Randburg, Gauteng, South Africa. Standalone, principal-led, by application only. HIMARK designs and operates the brand, demand, and AI infrastructure beneath founder-led firms ready to compound.
+
+This file is a structured site overview for AI search engines and language model crawlers. It includes the full text of every public page so that GPTBot, ClaudeBot, PerplexityBot, Google-Extended, and similar agents can cite HIMARK accurately in answers.
+
+For human-readable navigation see [https://www.himark.co.za/home.html](https://www.himark.co.za/home.html). For the short overview see [/llms.txt](https://www.himark.co.za/llms.txt).
+
+---
+
+## What HIMARK is
+
+HIMARK is a standalone premium strategic growth consultancy. It operates with the rigour of a management consultancy and the agility of a founder's office. The firm is not an agency. It does not pitch on RFPs. It does not bid on price. Each engagement is scoped against the client's actual trajectory, not a fixed menu.
+
+HIMARK works with a deliberately limited number of mandates each quarter. Every engagement is personally anchored by a senior principal. There are no junior accounts. The principal who reads your application is the principal who runs your engagement.
+
+The firm operates by application only.
+
+## The doctrine — four operating principles
+
+1. **Volume is a tax on quality.** Fewer mandates. More of us in each.
+2. **Precision. Not volume.** Strategy is signal. Volume is noise.
+3. **Operators, not advisors.** We do the work, not just point at it.
+4. **On record.** What we sign, we stand behind. Every recommendation, attributable.
+
+## What HIMARK does — the six service categories
+
+### S.01 — Brand Architecture
+Identity systems, market positioning, and executive personal branding. Where most engagements begin — because brand is the surface every commercial decision is measured against. Available standalone or in tier.
+
+### S.02 — Digital Infrastructure
+Website, SEO, CRM, lead capture, automation, and enterprise systems. The operational pipe everything else runs through. Available standalone or in tier.
+
+### S.03 — Marketing & Demand
+Demand strategy, lead generation, content systems, and channel architecture. Built for sustained pipeline, not one-quarter spikes. Available standalone or in tier.
+
+### S.04 — AI & Operational Systems
+AIRaaS deployment, workflow automation, intelligent routing. AI as compounding leverage — not novelty. Available standalone or in tier.
+
+### S.05 — Strategic Advisory
+Principal-level advisory — workshops, weekly reviews, and continuous access. The thinking layer above all of the above. In-tier engagements only.
+
+### S.06 — Executive & Transformation
+M&A architecture, capital strategy, pricing design, and the work that reshapes a business rather than refines it. Selected, Private tier only.
+
+## The three retainer tiers
+
+### Tier 01 — Signature Partner
+- Investment: from R 50,000 / month
+- Term: Quarterly minimum, reviewed every 90 days
+- Cadence: Monthly principal strategy, Atlas advisory, quarterly performance reviews
+- Best fit: Startups, SMEs, professional service firms establishing market presence
+
+### Tier 02 — Growth Partner (Most engaged)
+- Investment: from R 80,000 / month
+- Term: Six-month minimum
+- Cadence: Weekly principal cadence, full marketing systems, CRM optimisation, founder authority positioning, live direct-line access
+- Best fit: Scaling businesses, mid-sized companies, operationally heavy service firms
+- This is the core HIMARK tier where most engagements live.
+
+### Tier 03 — Private Partner (By invitation)
+- Investment: from R 150,000 / month
+- Term: Twelve-month minimum, by invitation only
+- Cadence: Real-time access, dedicated embedded principal, direct line to founder
+- Best fit: High-growth firms, enterprise clients, executive-led businesses scaling aggressively
+- Enterprise AI infrastructure, M&A architecture, capital strategy, executive branding
+
+## How engagements begin
+
+Engagements begin via Atlas, the firm's principal-trained assistant. Atlas handles the qualifying conversation, captures the fields a principal would otherwise read off a form, and routes the brief to the right partner. There is no submission form — there is a conversation.
+
+Alternative path: a scheduled 30-minute discovery session with a principal. Atlas books it. The principal arrives already up to speed. Written summary follows within one working day, regardless of outcome.
+
+Every application is reviewed by a principal within five working days.
+
+## Contact
+
+- **Email:** info@himark.co.za
+- **Phone:** +27 11 555 0100
+- **Hours:** Monday–Friday, 09:00–17:00 SAST
+- **Press:** press@himark.co.za
+- **Partnerships:** partners@himark.co.za
+- **Location:** Randburg, Gauteng, South Africa (specific address shared with admitted clients during onboarding)
+
+## Firm identity
+
+- **Legal name:** HIMARK (Pty) Ltd
+- **Founded:** 2026
+- **Headquarters:** Randburg, Gauteng, South Africa
+- **Group:** Standalone — no parent corporation, no portfolio diversification beyond growth consulting
+- **Sector:** B2B strategic growth consulting
+- **Service area:** South Africa, Sub-Saharan Africa, worldwide remote engagements
+- **Founder:** Neo Matime, Founder & Chief Executive
+
+## Channels
+
+- **Website:** https://www.himark.co.za/
+- **LinkedIn:** https://www.linkedin.com/company/himark/
+- **Engagement Dossier (PDF):** https://www.himark.co.za/dossier/HIMARK-Engagement-Dossier.pdf
+- **The Journal (monthly bulletin):** https://www.himark.co.za/subscribe.html
+- **Press kit:** https://www.himark.co.za/press.html
+
+## Frequently asked
+
+**What does HIMARK do?**
+HIMARK is a premium strategic growth consultancy. It designs and operates the brand, demand, and AI infrastructure beneath founder-led firms.
+
+**Where is HIMARK based?**
+Randburg, Gauteng, South Africa. The firm serves clients across South Africa, Sub-Saharan Africa, and remotely worldwide.
+
+**Who does HIMARK work with?**
+Founder-led businesses, scaling SMEs, and enterprise clients. Engagements are by application only. The firm works with a deliberately limited number of mandates each quarter.
+
+**How much does HIMARK cost?**
+Engagements start at R 50,000 / month (Signature Partner tier). Growth Partner from R 80,000 / month. Private Partner from R 150,000 / month, by invitation only.
+
+**Is HIMARK an agency?**
+No. HIMARK is a strategic growth consultancy. It does not pitch on RFPs, does not bid on price, and does not take work that doesn't sharpen the firm's edge.
+
+**Who runs my engagement?**
+A senior principal personally anchors every engagement. There are no junior accounts. The principal who reads your application is the principal who runs your engagement.
+
+**How do I apply?**
+Through Atlas, the firm's principal-trained assistant, at https://www.himark.co.za/apply.html. Alternatively, book a 30-minute discovery session with a principal.
+
+**Does HIMARK work outside South Africa?**
+Yes. HIMARK accepts remote engagements worldwide and serves clients across Sub-Saharan Africa.
+
+**What is Atlas?**
+Atlas is HIMARK's principal-trained assistant. It handles qualification, scheduling, and the first conversation. Atlas runs on the website chat and on WhatsApp.

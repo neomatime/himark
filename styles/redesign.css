@@ -935,17 +935,26 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
 
 
 /* ====================================================================
-   LEGAL PAGES (privacy / terms / cookies / security) — mobile
-   layout fix. The base styles.css .lgl-body is `display:grid;
-   grid-template-columns: 280px 1fr; gap: 96px` with no responsive
-   fallback. On a mobile viewport (≤ ~720px) the 280px TOC column
-   plus the 96px gap is wider than the available content area, which
-   squeezes the 1fr content column down to a few pixels — that's
-   why the prose was rendering word-per-line in the user's screenshot.
-   Collapse to a single column on small viewports so the content
-   reads as normal paragraphs.
+   LEGAL PAGES (privacy / terms / cookies / security) - responsive
+   body layout. Keep the desktop index/article composition while giving
+   the article column a real minimum. Collapse earlier on narrower
+   viewports so the prose never gets squeezed into word-per-line text.
    ==================================================================== */
-@media (max-width: 900px){
+body[data-page="privacy"] .lgl-body,
+body[data-page="terms"] .lgl-body,
+body[data-page="cookies"] .lgl-body,
+body[data-page="security"] .lgl-body{
+  grid-template-columns: minmax(220px, 280px) minmax(520px, 880px);
+  gap: clamp(48px, 5vw, 96px);
+}
+body[data-page="privacy"] .lgl-content,
+body[data-page="terms"] .lgl-content,
+body[data-page="cookies"] .lgl-content,
+body[data-page="security"] .lgl-content{
+  width: 100%;
+  min-width: 0;
+}
+@media (max-width: 1200px){
   body[data-page="privacy"] .lgl-body,
   body[data-page="terms"] .lgl-body,
   body[data-page="cookies"] .lgl-body,
@@ -959,7 +968,7 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
   body[data-page="terms"] .lgl-toc,
   body[data-page="cookies"] .lgl-toc,
   body[data-page="security"] .lgl-toc{
-    position: static !important;   /* sticky doesn't help in a single column */
+    position: static !important;
   }
   body[data-page="privacy"] .lgl-content,
   body[data-page="terms"] .lgl-content,

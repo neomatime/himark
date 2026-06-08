@@ -928,6 +928,66 @@
     }
   ]
 }</script>
+<style>
+  /* Definition slab — slim editorial frame on the off-white surface.
+     Sits between the hero and the first content section. Pure prose,
+     but the first sentence (wrapped in <strong>) reads as the direct
+     answer to "what does HIMARK do" — exactly what LLMs / Google rich
+     snippets lift. */
+  .firm-def{
+    background: var(--off);
+    padding: clamp(56px, 6vw, 88px) clamp(24px, 6vw, 96px) clamp(48px, 5vw, 72px);
+    position: relative;
+    border-bottom: 1px solid var(--rule);
+  }
+  .firm-def-coord-l,
+  .firm-def-coord-r{
+    position: absolute;
+    top: 36px;
+    font-family: var(--f-mono);
+    font-size: 9px;
+    letter-spacing: .14em;
+    color: var(--ocean);
+    z-index: 2;
+  }
+  .firm-def-coord-l{ left: clamp(24px, 6vw, 96px); }
+  .firm-def-coord-r{ right: clamp(24px, 6vw, 96px); color: rgba(95,129,144,.5); }
+  .firm-def-inner{
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .firm-def-eyebrow{
+    font-family: var(--f-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--ocean);
+    margin: 0 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .firm-def-eyebrow::before{
+    content: ''; display: block; width: 24px; height: 1px; background: var(--ocean);
+  }
+  .firm-def p{
+    font-family: var(--f-body);
+    font-weight: 300;
+    font-size: clamp(16px, 1.4vw, 18px);
+    line-height: 1.7;
+    color: rgba(28,43,58,.86);
+    margin: 0 0 20px;
+    max-width: 760px;
+  }
+  .firm-def p:last-child{ margin-bottom: 0; }
+  .firm-def p strong{ font-weight: 700; color: var(--midnight); }
+  .firm-def p em{ font-style: italic; font-weight: 400; color: var(--ocean); }
+  @media (max-width: 600px){
+    .firm-def-coord-l, .firm-def-coord-r{ top: 22px; font-size: 8px; }
+    .firm-def p{ font-size: 15px; }
+  }
+</style>
 </head>
 <body data-page="doctrine" data-location="root">
 <!-- Custom cursor follower (dot + ring) — body has cursor:none -->

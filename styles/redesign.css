@@ -384,6 +384,65 @@ body[data-page="subscribe"] .page.redesign{
   transform: translateY(-2px);
 }
 
+/* ====================================================================
+   HOME HERO SPLIT — two-column layout matching the hero-image.png
+   reference (left text, right glass device), real HIMARK content.
+   Scoped to body[data-page="home"] + min-width:769px only — every
+   other page's .half hero, and home itself on mobile, keeps the
+   original single-column centered composition (the fallback below
+   this breakpoint needs no override code: .heroe-split-grid simply
+   isn't declared as grid there, so it collapses to normal block
+   flow and the base centered .heroe-hl/.heroe-sub rules apply as-is).
+   ==================================================================== */
+@media (min-width: 769px){
+  body[data-page="home"] .heroe-split-grid{
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    align-items: center;
+    gap: clamp(32px, 5vw, 80px);
+    width: 100%;
+    max-width: 1280px;
+  }
+  body[data-page="home"] .heroe-col-text .heroe-eyebrow,
+  body[data-page="home"] .heroe-col-text .heroe-hl,
+  body[data-page="home"] .heroe-col-text .heroe-sub{
+    text-align: left;
+  }
+  body[data-page="home"] .heroe-col-text .heroe-hl,
+  body[data-page="home"] .heroe-col-text .heroe-sub{
+    max-width: none;
+  }
+  body[data-page="home"] .heroe-col-visual{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+body[data-page="home"] .heroe-cta-row{
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+/* Secondary CTA — plain text + underline, mirrors the reference's
+   "OUR APPROACH" link beside its filled primary button. */
+.heroe-cta-ghost{
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--midnight);
+  text-decoration: none;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(28,43,58,.32);
+  transition: border-color .2s, color .2s;
+}
+.heroe-cta-ghost:hover{
+  color: var(--ocean-dk);
+  border-color: var(--ocean-dk);
+}
+
 
 /* ====================================================================
    SECTION LAYERING — every direct child of .page.redesign except
@@ -1005,15 +1064,11 @@ body[data-page="home"] .hero-aura-mesh{
    HOME HERO GLASS MARK — the reinvented brand emblem
    ====================================================================
    A frosted-glass panel carrying the real HIMARK H geometry (the
-   exact rects used in .pn-brand-mark), reinterpreted as a soft
-   emblem living IN the hero atmosphere rather than a foreground
-   UI panel like a stock glassmorphism mockup would use.
-
-   Sits behind the text in DOM order (same z:1 stacking level as
-   .hero-aura, both painted before .heroe-eyebrow/hl/sub/cta), offset
-   right-of-centre so it reads as ambient brand presence beside the
-   headline rather than sitting directly underneath every line —
-   same "felt, not seen" principle as the aura clouds.
+   exact rects used in .pn-brand-mark), not a generic glyph. This is
+   the direct analogue of the reference image's glass 3D device —
+   now a genuine foreground visual living in its own grid column
+   (.heroe-col-visual) rather than a faint watermark behind text, so
+   it needed no low-opacity safety margin: nothing sits on top of it.
 
    Construction:
      - outer element  → the glass panel itself (gradient fill,
@@ -1025,34 +1080,31 @@ body[data-page="home"] .hero-aura-mesh{
        the light-beam moment in the reference image
 
    Static (no animation) — the aura already supplies motion; a
-   second moving element behind the headline would start competing
-   with it. Hidden on mobile (≤768px) alongside hero-aura-3 to keep
-   the composite light on mid-range phones.
+   moving panel this large would compete with it. Hidden on mobile
+   (≤768px) alongside hero-aura-3 (.heroe-split-grid also collapses
+   to a single column there, so the visual column simply doesn't
+   render) to keep the composite light on mid-range phones.
    ==================================================================== */
 body[data-page="home"] .hero-glass-mark{
-  position: absolute;
-  left: 62%;
-  top: 50%;
-  width: clamp(300px, 34vw, 520px);
+  position: relative;
+  width: clamp(260px, 92%, 460px);
   aspect-ratio: 140 / 200;
-  transform: translate(-50%, -50%);
   border-radius: clamp(20px, 2.4vw, 32px);
-  background: linear-gradient(155deg, rgba(255,255,255,.62) 0%, rgba(255,255,255,.22) 55%, rgba(143,173,184,.30) 100%);
-  border: 1px solid rgba(255,255,255,.80);
+  background: linear-gradient(155deg, rgba(255,255,255,.70) 0%, rgba(255,255,255,.30) 55%, rgba(143,173,184,.36) 100%);
+  border: 1px solid rgba(255,255,255,.85);
   box-shadow:
-    0 50px 90px -24px rgba(28,43,58,.20),
-    0 2px 0 rgba(255,255,255,.85) inset,
-    0 -24px 44px -22px rgba(95,129,144,.22) inset;
+    0 50px 90px -24px rgba(28,43,58,.24),
+    0 2px 0 rgba(255,255,255,.9) inset,
+    0 -24px 44px -22px rgba(95,129,144,.26) inset;
   -webkit-backdrop-filter: blur(18px) saturate(140%);
           backdrop-filter: blur(18px) saturate(140%);
-  opacity: .58;
   overflow: hidden;
 }
 body[data-page="home"] .hero-glass-mark::before{
   content: '';
   position: absolute;
   inset: 13% 11%;
-  background: linear-gradient(180deg, rgba(28,43,58,.20) 0%, rgba(28,43,58,.07) 100%);
+  background: linear-gradient(180deg, rgba(28,43,58,.22) 0%, rgba(28,43,58,.08) 100%);
   -webkit-mask: url('../images/himark-h-mask.svg') no-repeat center / contain;
           mask: url('../images/himark-h-mask.svg') no-repeat center / contain;
 }

@@ -858,6 +858,24 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
 
 
 /* ====================================================================
+   HOME HERO BACKGROUND — reinvented light atmosphere
+   ====================================================================
+   Replaces the dark blurred architectural photo with a native CSS
+   gradient in-palette (pastel sky #D8E3E8 → mist #E2F0F0 → off
+   #F7F7F5, deepening to ocean-lt #8AADB8 at the far edges). Scoped
+   to body[data-page="home"] .full only — every other page's .half
+   hero keeps the original architectural-photo treatment untouched.
+
+   Brighter light at 72%/25% (upper-right) is deliberate: that's
+   where .hero-glass-mark sits, so the gradient reads as if the
+   glass emblem is the light source the whole field is lit by.
+   ==================================================================== */
+body[data-page="home"] .hero-editorial.full::before{
+  background: radial-gradient(ellipse 100% 85% at 72% 25%, #F2F6F7 0%, #D8E3E8 42%, #B9CDD6 76%, #9FB8C4 100%);
+  filter: none;
+}
+
+/* ====================================================================
    HOME HERO AURA — atmospheric depth + drift
    ====================================================================
    Sits inside .hero-editorial.full between the bg image (::before)
@@ -901,15 +919,16 @@ body[data-page="home"] .hero-aura-layer{
 }
 
 /* Cloud 1 — large Ocean tint, top-left start, drifts down-right.
-   Brighter alpha + tighter 22s cycle so motion registers in 5-10s. */
+   Retuned for the light gradient bg (was .85/.40 alpha, opacity .85,
+   tuned for a dark photo) — now a soft tint, not a dark blotch. */
 body[data-page="home"] .hero-aura-1{
   width: 70vw;
   height: 70vw;
   top: -25%;
   left: -15%;
-  background: radial-gradient(circle, rgba(95, 129, 144, .85) 0%, rgba(95, 129, 144, .40) 40%, transparent 72%);
+  background: radial-gradient(circle, rgba(95, 129, 144, .40) 0%, rgba(95, 129, 144, .16) 40%, transparent 72%);
   animation: aura-drift-1 22s cubic-bezier(.45, 0, .55, 1) infinite alternate;
-  opacity: .85;
+  opacity: .60;
 }
 @keyframes aura-drift-1{
   0%   { transform: translate3d(0, 0, 0) scale(1); }
@@ -917,32 +936,35 @@ body[data-page="home"] .hero-aura-1{
 }
 
 /* Cloud 2 — medium Midnight tint, right side, drifts up-left.
-   Softened (was .90/.45/.80 → .60/.28/.55) so it doesn't darken
-   the headline zone — the headline text is also Midnight, so this
-   cloud needs to stay lighter than the others to preserve contrast. */
+   Lowest alpha of the three: Midnight is the darkest hue AND the
+   headline colour, so on the new light bg this one has to stay
+   quietest to keep the headline reading crisply through its whole
+   drift cycle. */
 body[data-page="home"] .hero-aura-2{
   width: 60vw;
   height: 60vw;
   top: 30%;
   right: -20%;
-  background: radial-gradient(circle, rgba(28, 43, 58, .60) 0%, rgba(28, 43, 58, .28) 40%, transparent 72%);
+  background: radial-gradient(circle, rgba(28, 43, 58, .22) 0%, rgba(28, 43, 58, .09) 40%, transparent 72%);
   animation: aura-drift-2 28s cubic-bezier(.45, 0, .55, 1) infinite alternate;
-  opacity: .55;
+  opacity: .40;
 }
 @keyframes aura-drift-2{
   0%   { transform: translate3d(0, 0, 0) scale(1); }
   100% { transform: translate3d(-30vw, -16vh, 0) scale(1.22); }
 }
 
-/* Cloud 3 — large Ink Deep tint, bottom, drifts up-right */
+/* Cloud 3 — large Ink Deep tint, bottom, drifts up-right.
+   Ink Deep is the darkest brand hue — kept soft here too so it
+   reads as a cool shadow pooling at the bottom edge, not a smudge. */
 body[data-page="home"] .hero-aura-3{
   width: 80vw;
   height: 80vw;
   bottom: -30%;
   left: 22%;
-  background: radial-gradient(circle, rgba(14, 24, 34, .82) 0%, rgba(14, 24, 34, .38) 40%, transparent 72%);
+  background: radial-gradient(circle, rgba(14, 24, 34, .26) 0%, rgba(14, 24, 34, .11) 40%, transparent 72%);
   animation: aura-drift-3 35s cubic-bezier(.45, 0, .55, 1) infinite alternate;
-  opacity: .75;
+  opacity: .45;
 }
 @keyframes aura-drift-3{
   0%   { transform: translate3d(0, 0, 0) scale(1); }
@@ -956,12 +978,12 @@ body[data-page="home"] .hero-aura-mesh{
   position: absolute;
   inset: -12%;
   background:
-    radial-gradient(ellipse 65% 55% at 22% 30%, rgba(95, 129, 144, .40) 0%, transparent 58%),
-    radial-gradient(ellipse 58% 48% at 78% 70%, rgba(28, 43, 58, .28) 0%, transparent 58%),
-    radial-gradient(ellipse 72% 62% at 50% 100%, rgba(14, 24, 34, .36) 0%, transparent 58%);
+    radial-gradient(ellipse 65% 55% at 22% 30%, rgba(95, 129, 144, .22) 0%, transparent 58%),
+    radial-gradient(ellipse 58% 48% at 78% 70%, rgba(28, 43, 58, .14) 0%, transparent 58%),
+    radial-gradient(ellipse 72% 62% at 50% 100%, rgba(14, 24, 34, .18) 0%, transparent 58%);
   animation: aura-mesh-shift 43s cubic-bezier(.45, 0, .55, 1) infinite alternate;
   will-change: transform;
-  opacity: .55;
+  opacity: .50;
 }
 @keyframes aura-mesh-shift{
   0%   { transform: translate3d(0, 0, 0); }
@@ -976,6 +998,71 @@ body[data-page="home"] .hero-aura-mesh{
     filter: blur(48px);
   }
   body[data-page="home"] .hero-aura-3{ display: none; }
+  body[data-page="home"] .hero-glass-mark{ display: none; }
+}
+
+/* ====================================================================
+   HOME HERO GLASS MARK — the reinvented brand emblem
+   ====================================================================
+   A frosted-glass panel carrying the real HIMARK H geometry (the
+   exact rects used in .pn-brand-mark), reinterpreted as a soft
+   emblem living IN the hero atmosphere rather than a foreground
+   UI panel like a stock glassmorphism mockup would use.
+
+   Sits behind the text in DOM order (same z:1 stacking level as
+   .hero-aura, both painted before .heroe-eyebrow/hl/sub/cta), offset
+   right-of-centre so it reads as ambient brand presence beside the
+   headline rather than sitting directly underneath every line —
+   same "felt, not seen" principle as the aura clouds.
+
+   Construction:
+     - outer element  → the glass panel itself (gradient fill,
+       backdrop-filter blur, soft outer shadow + inset bevel)
+     - ::before        → a darker inset gradient, masked to the H
+       shape via images/himark-h-mask.svg, giving a carved/engraved
+       look within the panel instead of a flat cutout
+     - ::after         → a diagonal light-sweep highlight, mirrors
+       the light-beam moment in the reference image
+
+   Static (no animation) — the aura already supplies motion; a
+   second moving element behind the headline would start competing
+   with it. Hidden on mobile (≤768px) alongside hero-aura-3 to keep
+   the composite light on mid-range phones.
+   ==================================================================== */
+body[data-page="home"] .hero-glass-mark{
+  position: absolute;
+  left: 62%;
+  top: 50%;
+  width: clamp(300px, 34vw, 520px);
+  aspect-ratio: 140 / 200;
+  transform: translate(-50%, -50%);
+  border-radius: clamp(20px, 2.4vw, 32px);
+  background: linear-gradient(155deg, rgba(255,255,255,.62) 0%, rgba(255,255,255,.22) 55%, rgba(143,173,184,.30) 100%);
+  border: 1px solid rgba(255,255,255,.80);
+  box-shadow:
+    0 50px 90px -24px rgba(28,43,58,.20),
+    0 2px 0 rgba(255,255,255,.85) inset,
+    0 -24px 44px -22px rgba(95,129,144,.22) inset;
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+          backdrop-filter: blur(18px) saturate(140%);
+  opacity: .58;
+  overflow: hidden;
+}
+body[data-page="home"] .hero-glass-mark::before{
+  content: '';
+  position: absolute;
+  inset: 13% 11%;
+  background: linear-gradient(180deg, rgba(28,43,58,.20) 0%, rgba(28,43,58,.07) 100%);
+  -webkit-mask: url('../images/himark-h-mask.svg') no-repeat center / contain;
+          mask: url('../images/himark-h-mask.svg') no-repeat center / contain;
+}
+body[data-page="home"] .hero-glass-mark::after{
+  content: '';
+  position: absolute;
+  inset: -20% -30%;
+  background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.30) 48%, rgba(255,255,255,.50) 52%, transparent 65%);
+  mix-blend-mode: screen;
+  pointer-events: none;
 }
 
 /* Reduced motion — freeze every layer. Static gradient stays so

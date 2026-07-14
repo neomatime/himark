@@ -73,7 +73,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Roboto:ital,wght@0,300;0,400;1,300&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="styles/styles.css"/><link rel="stylesheet" href="styles/redesign.css?v=1780955321449"/><link rel="stylesheet" href="styles/orbit.css"/>
+<link rel="stylesheet" href="styles/styles.css"/><link rel="stylesheet" href="styles/redesign.css?v=1784038736238"/><link rel="stylesheet" href="styles/orbit.css"/>
 
 <style>
   /* ============================================================
@@ -1851,6 +1851,15 @@
   <div class="hero-aura-layer hero-aura-2"></div>
   <div class="hero-aura-layer hero-aura-3"></div>
 </div>
+
+<!-- GLASS MARK — frosted-glass panel carrying the real HIMARK H
+     geometry (same rects as .pn-brand-mark), reinterpreted as a
+     soft emblem sitting IN the background atmosphere, not a
+     foreground UI panel. Sits behind the text (DOM order, same
+     z:1 stacking level as .hero-aura) at low opacity so it reads
+     as felt presence, not competing content. Styles + the H-cutout
+     mask in styles/redesign.css :: .hero-glass-mark. -->
+<div class="hero-glass-mark" aria-hidden="true"></div>
 
 <p class="heroe-eyebrow">Strategic Growth Consultancy · By application</p>
 <h1 class="heroe-hl">An institution for<br><em>founder-led growth.</em></h1>

@@ -385,75 +385,108 @@ body[data-page="subscribe"] .page.redesign{
 }
 
 /* ====================================================================
-   HOME HERO SPLIT — full-bleed photographic composition matching the
-   hero-image.png reference: one continuous gradient scene with the
-   text block and glass device positioned within it like a real photo
-   layout, not a boxed two-column UI grid (that was the previous,
-   still-too-generic attempt).
+   HOME HERO FEATURE — feature-list layout (supplied reference).
+   ====================================================================
+   LEFT column: triad badge, two-line headline, rule, sub, dual CTA.
+   RIGHT column: four value items (HIMARK's real Doctrine pillars)
+   with soft circular icon badges. Full-width trust bar at the bottom.
+   Flat light gradient background (no glass photo). HIMARK type system
+   throughout — Source Sans 3 display + JetBrains Mono labels — NOT
+   the reference's serif.
 
-   Scoped to body[data-page="home"] + min-width:769px only — below
-   that, .hero-split never gets its "display:block + absolute
-   children" override, so it stays the original flex column from
-   the base .hero-editorial rule and everything (text, rule, CTA
-   row, trust bar) centers via the existing flex/text-align
-   machinery exactly as it already did before this hero existed.
-   No separate mobile-specific centering code needed.
+   The section is a flex column: the two-column grid takes the centre
+   (flex:1, vertically centred), the trust bar sits at the bottom with
+   a hairline top border. Below 900px it collapses to a single column
+   and the feature list stacks under the text.
    ==================================================================== */
-@media (min-width: 769px){
-  body[data-page="home"] .hero-editorial.full.hero-split{
-    display: block;   /* opt out of base flex-centering; children below are absolutely positioned against this section as their containing block */
-  }
-  body[data-page="home"] .heroe-content{
-    position: absolute;
-    left: clamp(24px, 6vw, 96px);
-    top: 50%;
-    transform: translateY(-58%);   /* sits slightly above true centre, matching the reference's vertical weighting */
-    max-width: 620px;
-    z-index: 1;
-  }
-  body[data-page="home"] .heroe-content .heroe-eyebrow,
-  body[data-page="home"] .heroe-content .heroe-hl,
-  body[data-page="home"] .heroe-content .heroe-sub{
-    text-align: left;
-  }
-  body[data-page="home"] .heroe-content .heroe-hl,
-  body[data-page="home"] .heroe-content .heroe-sub{
-    max-width: none;
-  }
-  body[data-page="home"] .heroe-rule{
-    margin-left: 0;
-  }
-  body[data-page="home"] .heroe-trust{
-    position: absolute;
-    /* left starts past #mute-btn's fixed footprint (36-86px, sitewide,
-       styles.css :: #mute-btn) so the two never collide — verified
-       overlap at 900px viewport before this fix, 32x37px overlap. */
-    left: clamp(110px, 13vw, 170px);
-    bottom: clamp(40px, 7vh, 76px);
-    z-index: 1;
-  }
-  body[data-page="home"] .heroe-trust-label,
-  body[data-page="home"] .heroe-trust-logos{
-    text-align: left;
-    justify-content: flex-start;
-  }
+body[data-page="home"] .hero-editorial.full.hero-feature{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  padding: 132px clamp(22px, 5.5vw, 92px) 0;
+}
+body[data-page="home"] .heroe-feat-grid{
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.12fr 0.88fr;
+  align-items: center;
+  gap: clamp(36px, 6vw, 104px);
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
 }
 
-body[data-page="home"] .heroe-cta-row{
+/* LEFT column ------------------------------------------------------ */
+body[data-page="home"] .heroe-col-text{ max-width: 600px; }
+
+/* Triad badge — soft glass pill, dot before each token. */
+body[data-page="home"] .heroe-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  padding: 9px 20px;
+  margin: 0 0 30px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.50);
+  border: 1px solid rgba(28,43,58,.10);
+  -webkit-backdrop-filter: blur(8px);
+          backdrop-filter: blur(8px);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ocean-dk);
+}
+body[data-page="home"] .heroe-badge span{
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  white-space: nowrap;
+}
+body[data-page="home"] .heroe-badge span::before{
+  content: '';
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--ocean);
+}
+
+/* Headline / rule / sub — left-aligned in this layout (base rules
+   centre them; override here without touching the .half heroes). */
+body[data-page="home"] .hero-feature .heroe-hl{
+  text-align: left;
+  max-width: none;
+  margin: 0 0 24px;
+}
+body[data-page="home"] .hero-feature .heroe-rule{
+  width: 44px; height: 1px;
+  background: var(--midnight);
+  opacity: .35;
+  margin: 0 0 26px;
+}
+body[data-page="home"] .hero-feature .heroe-sub{
+  text-align: left;
+  max-width: 440px;
+  margin: 0 0 34px;
+}
+
+/* Dual CTA — filled primary + outlined secondary pill (reference
+   pairs a filled button with a bordered one). */
+body[data-page="home"] .hero-feature .heroe-cta-row{
   display: flex;
   align-items: center;
-  justify-content: center;   /* mobile default; overridden to flex-start at >=769px via .heroe-content's own left-align */
-  gap: 30px;
+  gap: 18px;
   flex-wrap: wrap;
 }
-@media (min-width: 769px){
-  body[data-page="home"] .heroe-content .heroe-cta-row{
-    justify-content: flex-start;
-  }
-}
-/* Secondary CTA — plain text + underline, mirrors the reference's
-   "OUR APPROACH" link beside its filled primary button. */
-.heroe-cta-ghost{
+body[data-page="home"] .hero-feature .heroe-cta-ghost{
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(28,43,58,.22);
+  background: transparent;
   font-family: var(--f-mono);
   font-size: 11px;
   font-weight: 600;
@@ -461,51 +494,99 @@ body[data-page="home"] .heroe-cta-row{
   text-transform: uppercase;
   color: var(--midnight);
   text-decoration: none;
-  padding-bottom: 4px;
-  border-bottom: 1px solid rgba(28,43,58,.32);
-  transition: border-color .2s, color .2s;
+  transition: border-color .2s, color .2s, background .2s;
 }
-.heroe-cta-ghost:hover{
+body[data-page="home"] .hero-feature .heroe-cta-ghost:hover{
+  border-color: var(--midnight);
+  background: rgba(28,43,58,.04);
+  color: var(--midnight);
+}
+
+/* RIGHT column — four value items -------------------------------- */
+body[data-page="home"] .heroe-features{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+body[data-page="home"] .heroe-feat{
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 22px 0;
+  border-top: 1px solid rgba(28,43,58,.10);
+}
+body[data-page="home"] .heroe-feat:first-child{ border-top: 0; padding-top: 0; }
+body[data-page="home"] .heroe-feat:last-child{ padding-bottom: 0; }
+/* Soft neumorphic circular icon badge. */
+body[data-page="home"] .heroe-feat-ic{
+  flex-shrink: 0;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
   color: var(--ocean-dk);
-  border-color: var(--ocean-dk);
+  background: linear-gradient(145deg, #ffffff 0%, #e4ecf0 100%);
+  box-shadow:
+    0 8px 18px -8px rgba(28,43,58,.28),
+    0 1px 0 rgba(255,255,255,.9) inset,
+    0 -6px 12px -8px rgba(95,129,144,.30) inset;
+}
+body[data-page="home"] .heroe-feat-ic svg{ width: 22px; height: 22px; }
+body[data-page="home"] .heroe-feat-tx h3{
+  font-family: var(--f-disp);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  color: var(--midnight);
+  margin: 4px 0 5px;
+}
+body[data-page="home"] .heroe-feat-tx p{
+  font-family: var(--f-body);
+  font-size: 13.5px;
+  line-height: 1.55;
+  font-weight: 300;
+  color: rgba(28,43,58,.68);
+  margin: 0;
+  max-width: 310px;
 }
 
-/* Rule — short divider between headline and sub-copy, matching the
-   reference's thin line in the same spot. Centred by default
-   (mobile); left-anchored at >=769px alongside the rest of .heroe-content. */
-.heroe-rule{
-  width: 44px;
+/* TRUST bar — full-width hairline top border (via ::before so it
+   stays full-bleed), content inset from the left so it clears the
+   site-wide fixed #mute-btn (36-86px, styles.css) that otherwise
+   overlapped the label by ~7px. */
+body[data-page="home"] .hero-feature .heroe-trust{
+  position: relative;
+  width: 100%;
+  max-width: 1300px;
+  margin: 22px auto 0;
+  padding: 20px 0 28px 72px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+body[data-page="home"] .hero-feature .heroe-trust::before{
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
   height: 1px;
-  background: var(--midnight);
-  opacity: .35;
-  margin: 0 auto 28px;
+  background: rgba(28,43,58,.12);
 }
-
-/* Trust credit — real client only. Same typographic register as
-   the reference's "TRUSTED BY AMBITIOUS BRANDS" row, but honest:
-   one name (Oak & Pixel) rather than five invented ones. Shown on
-   mobile too (it's just text, negligible cost) — only the glass
-   device is mobile-hidden for performance. */
-body[data-page="home"] .heroe-trust{
-  margin: 40px 0 0;
-}
-body[data-page="home"] .heroe-trust-label{
+body[data-page="home"] .hero-feature .heroe-trust-label{
   font-family: var(--f-mono);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: .2em;
   text-transform: uppercase;
   color: rgba(28,43,58,.55);
-  text-align: center;
-  margin: 0 0 14px;
+  margin: 0;
+  white-space: nowrap;
 }
-body[data-page="home"] .heroe-trust-logos{
+body[data-page="home"] .hero-feature .heroe-trust-logos{
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 24px;
 }
-body[data-page="home"] .heroe-trust-logo{
+body[data-page="home"] .hero-feature .heroe-trust-logo{
   font-family: var(--f-disp);
   font-size: 15px;
   font-weight: 600;
@@ -514,8 +595,25 @@ body[data-page="home"] .heroe-trust-logo{
   text-decoration: none;
   transition: color .2s;
 }
-body[data-page="home"] .heroe-trust-logo:hover{
-  color: var(--ocean-dk);
+body[data-page="home"] .hero-feature .heroe-trust-logo:hover{ color: var(--ocean-dk); }
+
+/* Mobile — single column: features stack under the text, trust bar
+   wraps. Applies below 900px where the two-column grid gets cramped. */
+@media (max-width: 900px){
+  body[data-page="home"] .hero-editorial.full.hero-feature{
+    justify-content: flex-start;
+    padding-top: 116px;
+    padding-bottom: 40px;
+    height: auto;
+    min-height: 100vh;
+  }
+  body[data-page="home"] .heroe-feat-grid{
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+  body[data-page="home"] .heroe-col-text{ max-width: none; }
+  body[data-page="home"] .hero-feature .heroe-trust{ flex-wrap: wrap; gap: 12px 20px; }
 }
 
 
@@ -992,28 +1090,31 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
 
 
 /* ====================================================================
-   HOME HERO BACKGROUND — the actual reference photo
+   HOME HERO BACKGROUND — flat light gradient (feature-list layout)
    ====================================================================
-   images/hero-image.png is the real thing: a soft blue-to-silver
-   gradient scene with a frosted glass H device already shot into
-   the right side, no baked-in text. Used directly as a literal
-   background-image — not approximated with CSS gradients/masks
-   (tried twice, looked nothing like the reference, produced a flat
-   cut-off box instead of glass). Scoped to body[data-page="home"]
-   .full only — every other page's .half hero keeps the
-   architectural-photo treatment.
-
-   background-position:right keeps the glass device anchored to the
-   right edge across viewport ratios — on a narrower-than-image
-   viewport, cover crops from the LEFT (into the empty gradient
-   zone) rather than cutting the device off.
+   The feature-list reference is a clean, near-flat pale-blue field
+   with a soft light bloom toward the upper area — no photo, no glass
+   device. Built as a layered CSS gradient: a white radial bloom over
+   a blue-to-off diagonal. Scoped to body[data-page="home"] .full;
+   the .half heroes on other pages keep their architectural photo.
    ==================================================================== */
 body[data-page="home"] .hero-editorial.full::before{
-  background-image: url('../images/hero-image.png');
+  background:
+    radial-gradient(120% 95% at 22% 8%, rgba(255,255,255,.60) 0%, rgba(255,255,255,0) 46%),
+    linear-gradient(152deg, #DCE7EF 0%, #E7EDF2 46%, #F1F4F6 100%);
   background-size: cover;
-  background-position: right center;
   filter: none;
 }
+/* Feature layout is high-contrast on its own (near-black navy text
+   on a pale field) — drop the heavy centre halo wash so the field
+   stays crisp and clean like the reference. */
+body[data-page="home"] .hero-feature::after{
+  background: linear-gradient(180deg, rgba(247,247,245,.16) 0%, rgba(247,247,245,0) 40%);
+}
+/* Keep the drifting aura barely-there on the flat field — enough to
+   feel alive (the earlier request), not enough to clutter the clean
+   reference look. */
+body[data-page="home"] .hero-feature .hero-aura{ opacity: .42; }
 
 /* ====================================================================
    HOME HERO AURA — atmospheric depth + drift

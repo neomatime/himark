@@ -73,7 +73,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Roboto:ital,wght@0,300;0,400;1,300&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="styles/styles.css?v=1784042320254"/><link rel="stylesheet" href="styles/redesign.css?v=1784041700200"/><link rel="stylesheet" href="styles/orbit.css"/>
+<link rel="stylesheet" href="styles/styles.css?v=1784042320254"/><link rel="stylesheet" href="styles/redesign.css?v=1784045522023"/><link rel="stylesheet" href="styles/orbit.css"/>
 
 <style>
   /* ============================================================
@@ -1837,18 +1837,20 @@
 <a class="pn-cta" href="apply.html">Begin with Atlas →</a>
 </nav>
 
-<!-- EDITORIAL HERO — background is the actual reference photo
-     (images/hero-image.png: gradient + glass H device, shot dead
-     centre-right, no baked-in text), used as a literal background-
-     image, not a CSS reconstruction. Real HIMARK copy sits in the
-     photo's own empty left zone; the glass device is the photo
-     itself, nothing built in CSS. Styles in redesign.css ::
-     .hero-editorial.full.hero-split. -->
-<section class="hero-editorial full hero-split" aria-label="HIMARK · founder-led growth">
+<!-- EDITORIAL HERO — feature-list layout matching the supplied
+     reference: LEFT column (triad badge, two-line headline, rule,
+     sub, dual CTA), RIGHT column (four value items with soft
+     circular icon badges), full-width trust bar pinned at the
+     bottom. Flat light gradient background — no glass photo. Uses
+     HIMARK's OWN type system (Source Sans 3 display + JetBrains
+     Mono labels), NOT the reference's serif. Content is all real:
+     the four items are HIMARK's actual Doctrine pillars; the badge
+     triad is HIMARK's real remit (brand / demand / AI infra).
+     Styles in redesign.css :: .hero-editorial.full.hero-feature. -->
+<section class="hero-editorial full hero-feature" aria-label="HIMARK · founder-led growth">
 
-<!-- HERO AURA — drifting atmospheric clouds (ocean, midnight, ink-deep)
-     plus a slow shifting gradient mesh. All CSS transforms, GPU-accelerated,
-     prefers-reduced-motion aware. Styles in styles/redesign.css under .hero-aura. -->
+<!-- Subtle atmospheric drift kept from the earlier "living
+     background" request, dialled low so the composition stays clean. -->
 <div class="hero-aura" aria-hidden="true">
   <div class="hero-aura-mesh"></div>
   <div class="hero-aura-layer hero-aura-1"></div>
@@ -1856,8 +1858,10 @@
   <div class="hero-aura-layer hero-aura-3"></div>
 </div>
 
-<div class="heroe-content">
-<p class="heroe-eyebrow">Strategic Growth Consultancy · By application</p>
+<div class="heroe-feat-grid">
+
+<div class="heroe-col-text">
+<div class="heroe-badge"><span>Brand</span><span>Demand</span><span>AI Infrastructure</span></div>
 <h1 class="heroe-hl">An institution for<br><em>founder-led growth.</em></h1>
 <div class="heroe-rule" aria-hidden="true"></div>
 <p class="heroe-sub">We design and operate the brand, demand, and AI infrastructure beneath founder-led firms ready to compound — anchored by a senior principal, by application only.</p>
@@ -1867,8 +1871,43 @@
 </div>
 </div>
 
+<!-- FOUR PILLARS — HIMARK's real Doctrine (see .home-doctrine below),
+     recast as the reference's four-item value list. -->
+<ul class="heroe-features">
+<li class="heroe-feat">
+<span class="heroe-feat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4.5h18l-7 8v6l-4 2.5v-8.5z"/></svg></span>
+<div class="heroe-feat-tx">
+<h3>Volume is a tax on quality</h3>
+<p>Fewer mandates. More of us in each.</p>
+</div>
+</li>
+<li class="heroe-feat">
+<span class="heroe-feat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.2"/><path d="M12 1.5V4M12 20v2.5M1.5 12H4M20 12h2.5"/></svg></span>
+<div class="heroe-feat-tx">
+<h3>Precision, not volume</h3>
+<p>Strategy is signal. Volume is noise.</p>
+</div>
+</li>
+<li class="heroe-feat">
+<span class="heroe-feat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12.5h5l3 7 4-15 3 8h5"/></svg></span>
+<div class="heroe-feat-tx">
+<h3>Operators, not advisors</h3>
+<p>We do the work — not just point at it.</p>
+</div>
+</li>
+<li class="heroe-feat">
+<span class="heroe-feat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.2l8 3v6c0 4.8-3.4 8.3-8 10.6-4.6-2.3-8-5.8-8-10.6v-6z"/><path d="M8.6 12l2.4 2.4 4.4-4.8"/></svg></span>
+<div class="heroe-feat-tx">
+<h3>On the record</h3>
+<p>What we sign, we stand behind. Every call attributable.</p>
+</div>
+</li>
+</ul>
+
+</div>
+
 <!-- TRUST CREDIT — real client only (Oak & Pixel). The reference
-     shows 5 wordmarks; we have one real client, so this shows one
+     shows 5 wordmarks; HIMARK has one real client, so this shows one
      rather than inventing four more to fill the row. -->
 <div class="heroe-trust">
 <p class="heroe-trust-label">In Partnership With</p>

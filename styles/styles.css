@@ -642,6 +642,22 @@ body.light-nav .mf-link:hover{
 .page.active{opacity:1;transform:none;pointer-events:all;z-index:11;}
 .page.exit{opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .35s var(--ease-in),transform .35s var(--ease-in);}
 
+/* Hide the scrollbar chrome site-wide while keeping scroll fully
+   functional. .page is the actual scroller (position:fixed;
+   overflow-y:auto); html/body are covered too as a safety net for
+   any page that scrolls the document instead. Cross-browser:
+   Firefox = scrollbar-width, legacy Edge/IE = -ms-overflow-style,
+   WebKit/Blink = ::-webkit-scrollbar. */
+html,body,.page{
+  scrollbar-width:none;        /* Firefox */
+  -ms-overflow-style:none;     /* legacy Edge / IE */
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.page::-webkit-scrollbar{
+  width:0;height:0;display:none;  /* Chrome / Safari / Edge Chromium */
+}
+
 /* SNAP-SCROLL on home */
 #page-home.snap-on{scroll-snap-type:y mandatory;}
 #page-home.snap-on .snap-section{scroll-snap-align:start;scroll-snap-stop:always;}

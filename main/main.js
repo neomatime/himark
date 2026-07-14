@@ -2634,28 +2634,73 @@ window.authSubmit=authSubmit;
       var baseScale = isFull ? 1.06 : 1.00;
       var maxScale  = isFull ? 1.30 : 1.20;
       var rangeVH   = isFull ? 0.80 : 0.60;
-      var ticking = false;
 
-      function compute(){
-        ticking = false;
+      /* Reduced motion — pin to base, no zoom, no rAF loop. */
+      var reduce = window.matchMedia &&
+                   window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+      if (reduce){ hero.style.setProperty('--hero-zoom', baseScale.toFixed(4)); return; }
+
+      /* CINEMATIC SCROLL-ZOOM
+         The previous version mapped scroll position straight to zoom
+         (linear, 1:1) — the scale snapped to the scrollbar with no
+         weight, which read as mechanical. This version separates the
+         scroll-driven TARGET from the rendered CURRENT value and eases
+         current toward target on a persistent rAF loop, so the zoom
+         trails the scroll and glides to a settle — the cinematic feel.
+
+           - target : where the scroll position says the zoom should be,
+                      with an easeOutCubic curve so it decelerates into
+                      the fully-zoomed state rather than ramping flatly.
+           - current: the smoothed value actually written to --hero-zoom.
+           - the loop parks itself once current settles onto target
+             (idle = zero rAF cost) and is re-kicked on the next scroll. */
+      var current = baseScale;
+      var target  = baseScale;
+      var rafId   = null;
+      var lastT   = 0;
+
+      function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
+
+      function readTarget(){
         var top = scroller === window
           ? (window.pageYOffset || document.documentElement.scrollTop)
           : scroller.scrollTop;
         var range = window.innerHeight * rangeVH;
         var progress = Math.max(0, Math.min(1, top / (range || 1)));
-        var scale = baseScale + (maxScale - baseScale) * progress;
-        hero.style.setProperty('--hero-zoom', scale.toFixed(4));
+        target = baseScale + (maxScale - baseScale) * easeOutCubic(progress);
       }
-      function onScroll(){
-        if (!ticking){
-          ticking = true;
-          requestAnimationFrame(compute);
+
+      function tick(now){
+        var dt = lastT ? (now - lastT) : 16.7;
+        lastT = now;
+        /* Cover ~12% of the remaining distance per 60Hz frame,
+           frame-rate-normalised so 120/144Hz displays ease at the
+           same real-time rate rather than 2-3x faster. */
+        var smooth = 1 - Math.pow(1 - 0.12, dt / 16.7);
+        current += (target - current) * smooth;
+        if (Math.abs(target - current) < 0.0002){
+          current = target;
+          hero.style.setProperty('--hero-zoom', current.toFixed(4));
+          rafId = null; lastT = 0;   /* settled — park the loop */
+          return;
         }
+        hero.style.setProperty('--hero-zoom', current.toFixed(4));
+        rafId = requestAnimationFrame(tick);
       }
-      var target = scroller === window ? window : scroller;
-      target.addEventListener('scroll', onScroll, { passive:true });
+      function kick(){
+        if (rafId == null){ lastT = 0; rafId = requestAnimationFrame(tick); }
+      }
+      function onScroll(){ readTarget(); kick(); }
+
+      var evtTarget = scroller === window ? window : scroller;
+      evtTarget.addEventListener('scroll', onScroll, { passive:true });
       window.addEventListener('resize', onScroll, { passive:true });
-      compute();
+
+      /* First paint — snap current straight to target so there's no
+         zoom-in lurch on load; the easing only kicks in on real scroll. */
+      readTarget();
+      current = target;
+      hero.style.setProperty('--hero-zoom', current.toFixed(4));
     });
   }
 

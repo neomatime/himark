@@ -2525,6 +2525,7 @@ window.authSubmit=authSubmit;
     nav.setAttribute('aria-label','Primary');
     nav.innerHTML =
       '<a class="pn-brand" href="home.html" aria-label="HIMARK · Home">' +
+        '<span class="pn-brand-lockup">' +
         '<span class="pn-brand-mark" aria-hidden="true">' +
           '<svg viewBox="0 0 140 200" xmlns="http://www.w3.org/2000/svg">' +
             '<g fill="#1C2B3A">' +
@@ -2537,6 +2538,8 @@ window.authSubmit=authSubmit;
           '</svg>' +
         '</span>' +
         '<span class="pn-brand-imark" aria-label="HIMARK"></span>' +
+        '</span>' +
+        '<span class="pn-brand-tag">Strategic Growth Consultancy</span>' +
       '</a>' +
       '<ul class="pn-links">' +
         mkLink('Home','home.html',activeHref) +
@@ -2704,19 +2707,46 @@ window.authSubmit=authSubmit;
     });
   }
 
+  /* NAV SCROLL STATE — the nav bar is transparent at the top (matching
+     the reference) and fades a flat light background in once the user
+     scrolls, so the dark navy text stays legible over the hero and any
+     darker section that scrolls under the sticky bar. */
+  function setupNavScroll(){
+    var nav = document.querySelector('.pill-nav');
+    if (!nav || nav.dataset.scrollAttached) return;
+    nav.dataset.scrollAttached = '1';
+    /* Only HOME has a light hero the transparent bar can sit on. Every
+       other page's hero is the darker architectural photo, so the bar
+       stays solid there (at the top too) to keep the navy text legible.
+       Home: transparent at top, solid once scrolled past ~24px. */
+    var isHome = document.body.getAttribute('data-page') === 'home';
+    var scroller = findScroller(nav);
+    var evtTarget = scroller === window ? window : scroller;
+    function onScroll(){
+      var top = scroller === window
+        ? (window.pageYOffset || document.documentElement.scrollTop)
+        : scroller.scrollTop;
+      nav.classList.toggle('is-solid', !isHome || top > 24);
+    }
+    evtTarget.addEventListener('scroll', onScroll, { passive:true });
+    onScroll();
+  }
+
   /* ---------- BOOT ---------- */
 
   function boot(){
     injectPillNav();
     setupHamburgers();
     setupHeroZoom();
+    setupNavScroll();
     /* Router toggles .active on different .page elements when
-       navigating. Re-run hero zoom + hamburger setup so newly-
-       activated pages get wired. */
+       navigating. Re-run hero zoom + hamburger + nav-scroll setup so
+       newly-activated pages get wired. */
     if (typeof MutationObserver === 'function'){
       var mo = new MutationObserver(function(){
         setupHeroZoom();
         setupHamburgers();
+        setupNavScroll();
       });
       document.querySelectorAll('.page').forEach(function(p){
         mo.observe(p, { attributes:true, attributeFilter:['class'] });

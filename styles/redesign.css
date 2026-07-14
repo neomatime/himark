@@ -103,94 +103,101 @@ body[data-page="subscribe"] .page.redesign{
 
 
 /* ====================================================================
-   PILL NAV — floating glass plate.
+   NAV BAR — flat, full-width, transparent (supplied reference).
+   Was a floating glass pill; now a clean bar sitting directly on the
+   hero: logo lockup far left, nav links + CTA grouped right.
+
    position:sticky (NOT fixed) because .page has will-change:transform,
-   which creates a containing block — that demotes position:fixed
-   children to behave like position:absolute relative to .page, so
-   they scroll with the content. Sticky positions relative to the
-   nearest SCROLL container (.page, which has overflow-y:auto), not
-   the containing block, so it pins correctly at the top:20px offset.
+   which would demote position:fixed to behave like absolute. Sticky
+   pins against the .page scroll container at top:0. margin-bottom
+   negative collapses its flow space so the hero starts beneath it
+   (the hero's own top padding clears the bar).
 
-   margin-bottom: -56px collapses the pill's flow-space so the hero
-   below starts at top:0 of .page (the pill visually overlays the
-   top of the hero rather than pushing it down).
-
-   Max-width bumped to 1100px from 820px to accommodate the new
-   Apply link in the nav list (6 items instead of 5).
+   Transparent at the top, matching the reference. .is-solid fades a
+   flat light background in on scroll (setupNavScroll in main.js) so
+   the dark navy text stays readable once the hero — and any darker
+   section below it — scrolls under the sticky bar.
    ==================================================================== */
 .pill-nav{
   position: sticky;
-  top: 20px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: -56px;
-  width: calc(100% - 56px);
-  max-width: 1100px;
-  height: 56px;
-  background: linear-gradient(180deg, rgba(255,255,255,.42) 0%, rgba(255,255,255,.28) 100%);
-  -webkit-backdrop-filter: blur(28px) saturate(150%);
-          backdrop-filter: blur(28px) saturate(150%);
-  border: 1px solid rgba(255,255,255,.55);
-  border-radius: 999px;
-  padding: 0 10px 0 36px;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  top: 0;
+  margin: 0 auto -76px;
+  width: 100%;
+  height: 76px;
+  padding: 0 clamp(22px, 5.5vw, 92px);
+  display: flex;
   align-items: center;
   z-index: 50;
-  box-shadow:
-    0 14px 36px -12px rgba(28,43,58,.18),
-    0 1px 0 rgba(255,255,255,.70) inset,
-    0 -1px 0 rgba(28,43,58,.06) inset;
+  transition: background .3s ease, box-shadow .3s ease,
+              -webkit-backdrop-filter .3s ease, backdrop-filter .3s ease;
 }
-.pn-brand{ justify-self:start; }
-.pn-links{ justify-self:center; }
-.pn-cta{   justify-self:end;   }
+.pill-nav.is-solid{
+  background: linear-gradient(180deg, rgba(247,248,249,.88) 0%, rgba(247,248,249,.74) 100%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+          backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: 0 1px 0 rgba(28,43,58,.08), 0 12px 30px -20px rgba(28,43,58,.22);
+}
 
-/* Brand lockup — framed-H SVG + IMARK wordmark. Sized at 23×32 +
-   92×22 (the mobile-tablet variant of the loading-page topnav-brand
-   lockup), tuned smaller than the desktop loading-page proportions
-   so it fits the slimmer pill silhouette without dominating it. */
+/* Brand lockup — framed-H + IMARK wordmark on top, tagline beneath
+   (reference shows HIMARK over "STRATEGIC GROWTH CONSULTING"; we use
+   HIMARK's own term, Consultancy). .pn-brand-lockup keeps the H tucked
+   into IMARK; the tag sits left-aligned under the whole wordmark. */
 .pn-brand{
   display: inline-flex;
-  align-items: center;
-  gap: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
   color: var(--midnight);
   text-decoration: none;
-  height: 32px;
   line-height: 1;
 }
+.pn-brand-lockup{
+  display: inline-flex;
+  align-items: center;
+}
 .pn-brand-mark{
-  width: 23px;
-  height: 32px;
+  width: 25px;
+  height: 34px;
   display: inline-block;
   flex-shrink: 0;
-  margin-right: -4px;
+  margin-right: -3px;
 }
 .pn-brand-mark svg{
   width: 100%;
   height: 100%;
   display: block;
-  margin-top: -1px;
 }
 .pn-brand-imark{
   display: inline-block;
-  width: 92px;
-  height: 22px;
+  width: 96px;
+  height: 21px;
   background-color: var(--midnight);
   -webkit-mask: url('../images/IMARK.png') no-repeat center / contain;
           mask: url('../images/IMARK.png') no-repeat center / contain;
+}
+.pn-brand-tag{
+  font-family: var(--f-mono);
+  font-size: 7.5px;
+  font-weight: 500;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(28,43,58,.52);
+  white-space: nowrap;
+  padding-left: 2px;
 }
 .pn-brand:hover .pn-brand-mark svg g rect,
 .pn-brand:hover .pn-brand-mark svg > rect{ fill: var(--ocean-dk); }
 .pn-brand:hover .pn-brand-mark svg > rect[fill="none"]{ stroke: var(--ocean-dk); }
 .pn-brand:hover .pn-brand-imark{ background-color: var(--ocean-dk); }
 
+/* Links + CTA grouped on the right (margin-left:auto on the list
+   pushes the whole group away from the left-anchored logo). */
 .pn-links{
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 30px;
   list-style: none;
-  margin: 0;
+  margin: 0 0 0 auto;
   padding: 0;
 }
 .pn-links a{
@@ -206,13 +213,16 @@ body[data-page="subscribe"] .page.redesign{
 }
 .pn-links a:hover, .pn-links a.is-active{ opacity: 1; }
 
+/* CTA — solid navy RECTANGLE (was a pill) with arrow, matching the
+   reference's filled "Book a Consultation" button. */
 .pn-cta{
-  height: 36px;
-  padding: 0 18px;
+  margin-left: 34px;
+  height: 46px;
+  padding: 0 24px;
   background: var(--midnight);
   color: var(--off);
   border: 0;
-  border-radius: 999px;
+  border-radius: 6px;
   font-family: var(--f-mono);
   font-size: 10px;
   font-weight: 600;
@@ -221,11 +231,11 @@ body[data-page="subscribe"] .page.redesign{
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   cursor: pointer;
-  transition: background .2s;
+  transition: background .2s, transform .2s;
 }
-.pn-cta:hover{ background: var(--ink-deep); }
+.pn-cta:hover{ background: var(--ink-deep); transform: translateY(-1px); }
 
 
 /* ====================================================================
@@ -359,13 +369,15 @@ body[data-page="subscribe"] .page.redesign{
   text-align: center;
   margin: 0 0 36px;
 }
+/* Hero primary CTA — solid navy RECTANGLE (was a pill) with arrow,
+   matching the reference's "Explore Our Services" button. */
 .heroe-cta{
-  height: 44px;
-  padding: 0 24px;
+  height: 50px;
+  padding: 0 26px;
   background: var(--midnight);
   color: var(--off);
   border: 0;
-  border-radius: 999px;
+  border-radius: 6px;
   font-family: var(--f-mono);
   font-size: 11px;
   font-weight: 600;
@@ -377,7 +389,7 @@ body[data-page="subscribe"] .page.redesign{
   gap: 10px;
   cursor: pointer;
   transition: background .2s, transform .2s;
-  box-shadow: 0 12px 28px -10px rgba(28,43,58,.30);
+  box-shadow: 0 10px 24px -12px rgba(28,43,58,.35);
 }
 .heroe-cta:hover{
   background: var(--ink-deep);
@@ -471,8 +483,8 @@ body[data-page="home"] .hero-feature .heroe-sub{
   margin: 0 0 34px;
 }
 
-/* Dual CTA — filled primary + outlined secondary pill (reference
-   pairs a filled button with a bordered one). */
+/* Dual CTA — filled primary + outlined secondary RECTANGLE (reference
+   pairs a filled navy button with a bordered one, both rectangular). */
 body[data-page="home"] .hero-feature .heroe-cta-row{
   display: flex;
   align-items: center;
@@ -482,9 +494,9 @@ body[data-page="home"] .hero-feature .heroe-cta-row{
 body[data-page="home"] .hero-feature .heroe-cta-ghost{
   display: inline-flex;
   align-items: center;
-  height: 44px;
-  padding: 0 24px;
-  border-radius: 999px;
+  height: 50px;
+  padding: 0 26px;
+  border-radius: 6px;
   border: 1px solid rgba(28,43,58,.22);
   background: transparent;
   font-family: var(--f-mono);
@@ -1002,25 +1014,23 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
    a dropdown panel that slides down from below the pill.
    ==================================================================== */
 @media (max-width: 1024px){
-  .pill-nav{
-    width: calc(100% - 32px);
-    max-width: 920px;
-  }
-  .pn-links{ gap: 18px; }
+  .pill-nav{ padding: 0 clamp(20px, 4vw, 48px); }
+  .pn-links{ gap: 22px; }
+  .pn-cta{ margin-left: 26px; }
 }
 @media (max-width: 768px){
   .pill-nav{
-    width: calc(100% - 16px);
-    height: 52px;
-    padding: 0 6px 0 14px;
-    top: 12px;
-    margin-bottom: -52px;
+    height: 64px;
+    padding: 0 16px;
+    margin-bottom: -64px;
   }
-  .pn-brand{ height: 28px; }
-  .pn-brand-mark{ width: 20px; height: 28px; margin-right: -3px; }
-  .pn-brand-imark{ width: 80px; height: 20px; }
-  .pn-cta{ height: 32px; padding: 0 10px; font-size: 9px; }
-  .pn-toggle{ display: inline-flex; }
+  .pn-brand-tag{ display: none; }        /* wordmark only on mobile */
+  .pn-brand-mark{ width: 22px; height: 30px; }
+  .pn-brand-imark{ width: 84px; height: 20px; }
+  /* margin-left:auto pushes the CTA + hamburger group to the right;
+     order:5 moves the injected toggle to sit after the CTA. */
+  .pn-cta{ margin-left: auto; height: 38px; padding: 0 14px; font-size: 9px; }
+  .pn-toggle{ display: inline-flex; order: 5; margin-left: 10px; }
 
   /* Links become a glass dropdown panel below the pill. Hidden by
      default (opacity:0, translateY for slide-in). .is-open on the

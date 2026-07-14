@@ -425,7 +425,10 @@ body[data-page="subscribe"] .page.redesign{
   }
   body[data-page="home"] .heroe-trust{
     position: absolute;
-    left: clamp(24px, 6vw, 96px);
+    /* left starts past #mute-btn's fixed footprint (36-86px, sitewide,
+       styles.css :: #mute-btn) so the two never collide — verified
+       overlap at 900px viewport before this fix, 32x37px overlap. */
+    left: clamp(110px, 13vw, 170px);
     bottom: clamp(40px, 7vh, 76px);
     z-index: 1;
   }
@@ -989,20 +992,26 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
 
 
 /* ====================================================================
-   HOME HERO BACKGROUND — reinvented light atmosphere
+   HOME HERO BACKGROUND — the actual reference photo
    ====================================================================
-   Replaces the dark blurred architectural photo with a native CSS
-   gradient in-palette (pastel sky #D8E3E8 → mist #E2F0F0 → off
-   #F7F7F5, deepening to ocean-lt #8AADB8 at the far edges). Scoped
-   to body[data-page="home"] .full only — every other page's .half
-   hero keeps the original architectural-photo treatment untouched.
+   images/hero-image.png is the real thing: a soft blue-to-silver
+   gradient scene with a frosted glass H device already shot into
+   the right side, no baked-in text. Used directly as a literal
+   background-image — not approximated with CSS gradients/masks
+   (tried twice, looked nothing like the reference, produced a flat
+   cut-off box instead of glass). Scoped to body[data-page="home"]
+   .full only — every other page's .half hero keeps the
+   architectural-photo treatment.
 
-   Brighter light at 72%/25% (upper-right) is deliberate: that's
-   where .hero-glass-mark sits, so the gradient reads as if the
-   glass emblem is the light source the whole field is lit by.
+   background-position:right keeps the glass device anchored to the
+   right edge across viewport ratios — on a narrower-than-image
+   viewport, cover crops from the LEFT (into the empty gradient
+   zone) rather than cutting the device off.
    ==================================================================== */
 body[data-page="home"] .hero-editorial.full::before{
-  background: radial-gradient(ellipse 100% 85% at 72% 25%, #F2F6F7 0%, #D8E3E8 42%, #B9CDD6 76%, #9FB8C4 100%);
+  background-image: url('../images/hero-image.png');
+  background-size: cover;
+  background-position: right center;
   filter: none;
 }
 
@@ -1129,70 +1138,6 @@ body[data-page="home"] .hero-aura-mesh{
     filter: blur(48px);
   }
   body[data-page="home"] .hero-aura-3{ display: none; }
-  body[data-page="home"] .hero-glass-mark{ display: none; }
-}
-
-/* ====================================================================
-   HOME HERO GLASS MARK — the reinvented brand emblem
-   ====================================================================
-   A frosted-glass panel carrying the real HIMARK H geometry (the
-   exact rects used in .pn-brand-mark), not a generic glyph. Direct
-   analogue of the reference image's glass 3D device — absolutely
-   positioned bottom-right against the hero section itself (its
-   sticky positioning already establishes the containing block), so
-   it reads as an object standing IN the photographic scene rather
-   than a UI card boxed into a grid column.
-
-   Construction:
-     - outer element  → the glass panel itself (gradient fill,
-       backdrop-filter blur, two-layer ground shadow + inset bevel —
-       a tight contact shadow plus a broader ambient one, the
-       standard trick for "object resting on a surface")
-     - ::before        → a darker inset gradient, masked to the H
-       shape via images/himark-h-mask.svg, giving a carved/engraved
-       look within the panel instead of a flat cutout
-     - ::after         → a diagonal light-sweep highlight, mirrors
-       the light-beam moment in the reference image
-
-   Static (no animation) — the aura already supplies motion; a
-   moving panel this large would compete with it. Hidden on mobile
-   (≤768px) alongside hero-aura-3 to keep the composite light on
-   mid-range phones.
-   ==================================================================== */
-body[data-page="home"] .hero-glass-mark{
-  position: absolute;
-  right: clamp(-16px, 1vw, 32px);
-  bottom: clamp(0px, 4vh, 36px);
-  width: clamp(320px, 32vw, 520px);
-  aspect-ratio: 140 / 200;
-  z-index: 1;
-  border-radius: clamp(20px, 2.4vw, 32px);
-  background: linear-gradient(155deg, rgba(255,255,255,.70) 0%, rgba(255,255,255,.30) 55%, rgba(143,173,184,.36) 100%);
-  border: 1px solid rgba(255,255,255,.85);
-  box-shadow:
-    0 24px 40px -16px rgba(28,43,58,.26),
-    0 90px 120px -50px rgba(28,43,58,.30),
-    0 2px 0 rgba(255,255,255,.9) inset,
-    0 -24px 44px -22px rgba(95,129,144,.26) inset;
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-          backdrop-filter: blur(18px) saturate(140%);
-  overflow: hidden;
-}
-body[data-page="home"] .hero-glass-mark::before{
-  content: '';
-  position: absolute;
-  inset: 13% 11%;
-  background: linear-gradient(180deg, rgba(28,43,58,.22) 0%, rgba(28,43,58,.08) 100%);
-  -webkit-mask: url('../images/himark-h-mask.svg') no-repeat center / contain;
-          mask: url('../images/himark-h-mask.svg') no-repeat center / contain;
-}
-body[data-page="home"] .hero-glass-mark::after{
-  content: '';
-  position: absolute;
-  inset: -20% -30%;
-  background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.30) 48%, rgba(255,255,255,.50) 52%, transparent 65%);
-  mix-blend-mode: screen;
-  pointer-events: none;
 }
 
 /* Reduced motion — freeze every layer. Static gradient stays so

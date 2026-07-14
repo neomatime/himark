@@ -73,7 +73,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Roboto:ital,wght@0,300;0,400;1,300&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="styles/styles.css"/><link rel="stylesheet" href="styles/redesign.css?v=1784041029040"/><link rel="stylesheet" href="styles/orbit.css"/>
+<link rel="stylesheet" href="styles/styles.css"/><link rel="stylesheet" href="styles/redesign.css?v=1784041700200"/><link rel="stylesheet" href="styles/orbit.css"/>
 
 <style>
   /* ============================================================
@@ -1837,12 +1837,13 @@
 <a class="pn-cta" href="apply.html">Begin with Atlas →</a>
 </nav>
 
-<!-- EDITORIAL HERO — full-bleed photographic composition matching
-     the hero-image.png reference: one continuous gradient scene, the
-     glass H device sitting bottom-right like a physical object in
-     frame (not a boxed UI card in a grid column), real HIMARK copy
-     upper-left, real trust credit lower-left. Styles in redesign.css
-     :: .hero-editorial.full.hero-split. -->
+<!-- EDITORIAL HERO — background is the actual reference photo
+     (images/hero-image.png: gradient + glass H device, shot dead
+     centre-right, no baked-in text), used as a literal background-
+     image, not a CSS reconstruction. Real HIMARK copy sits in the
+     photo's own empty left zone; the glass device is the photo
+     itself, nothing built in CSS. Styles in redesign.css ::
+     .hero-editorial.full.hero-split. -->
 <section class="hero-editorial full hero-split" aria-label="HIMARK · founder-led growth">
 
 <!-- HERO AURA — drifting atmospheric clouds (ocean, midnight, ink-deep)
@@ -1854,13 +1855,6 @@
   <div class="hero-aura-layer hero-aura-2"></div>
   <div class="hero-aura-layer hero-aura-3"></div>
 </div>
-
-<!-- GLASS MARK — frosted-glass panel carrying the real HIMARK H
-     geometry (same rects as .pn-brand-mark), not a generic glyph.
-     Sits bottom-right, anchored to the ground shadow beneath it, so
-     it reads as a physical object in the scene rather than a UI
-     card. Styles + the H-cutout mask in redesign.css :: .hero-glass-mark. -->
-<div class="hero-glass-mark" aria-hidden="true"></div>
 
 <div class="heroe-content">
 <p class="heroe-eyebrow">Strategic Growth Consultancy · By application</p>

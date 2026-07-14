@@ -73,7 +73,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Roboto:ital,wght@0,300;0,400;1,300&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="styles/styles.css"/><link rel="stylesheet" href="styles/redesign.css?v=1784039662037"/><link rel="stylesheet" href="styles/orbit.css"/>
+<link rel="stylesheet" href="styles/styles.css"/><link rel="stylesheet" href="styles/redesign.css?v=1784041029040"/><link rel="stylesheet" href="styles/orbit.css"/>
 
 <style>
   /* ============================================================
@@ -1837,11 +1837,12 @@
 <a class="pn-cta" href="apply.html">Begin with Atlas →</a>
 </nav>
 
-<!-- EDITORIAL HERO — reinvented as a two-column split matching the
-     hero-image.png reference: left text column, right glass-device
-     column, replacing the old single centered column over a dark
-     blurred photo. Background is now a native CSS gradient (styles
-     in styles/redesign.css :: .hero-editorial.full). -->
+<!-- EDITORIAL HERO — full-bleed photographic composition matching
+     the hero-image.png reference: one continuous gradient scene, the
+     glass H device sitting bottom-right like a physical object in
+     frame (not a boxed UI card in a grid column), real HIMARK copy
+     upper-left, real trust credit lower-left. Styles in redesign.css
+     :: .hero-editorial.full.hero-split. -->
 <section class="hero-editorial full hero-split" aria-label="HIMARK · founder-led growth">
 
 <!-- HERO AURA — drifting atmospheric clouds (ocean, midnight, ink-deep)
@@ -1854,15 +1855,17 @@
   <div class="hero-aura-layer hero-aura-3"></div>
 </div>
 
-<!-- SPLIT GRID — left: real HIMARK copy, left-aligned. right: the
-     glass H device as a full foreground visual (no longer a faint
-     background emblem — it now owns its own column, same as the
-     reference's glass panel). Styles in redesign.css :: .heroe-split-grid. -->
-<div class="heroe-split-grid">
+<!-- GLASS MARK — frosted-glass panel carrying the real HIMARK H
+     geometry (same rects as .pn-brand-mark), not a generic glyph.
+     Sits bottom-right, anchored to the ground shadow beneath it, so
+     it reads as a physical object in the scene rather than a UI
+     card. Styles + the H-cutout mask in redesign.css :: .hero-glass-mark. -->
+<div class="hero-glass-mark" aria-hidden="true"></div>
 
-<div class="heroe-col-text">
+<div class="heroe-content">
 <p class="heroe-eyebrow">Strategic Growth Consultancy · By application</p>
 <h1 class="heroe-hl">An institution for<br><em>founder-led growth.</em></h1>
+<div class="heroe-rule" aria-hidden="true"></div>
 <p class="heroe-sub">We design and operate the brand, demand, and AI infrastructure beneath founder-led firms ready to compound — anchored by a senior principal, by application only.</p>
 <div class="heroe-cta-row">
 <a class="heroe-cta" href="apply.html">Apply through Atlas →</a>
@@ -1870,14 +1873,16 @@
 </div>
 </div>
 
-<div class="heroe-col-visual">
-<!-- GLASS MARK — frosted-glass panel carrying the real HIMARK H
-     geometry (same rects as .pn-brand-mark), not a generic glyph.
-     Styles + the H-cutout mask in redesign.css :: .hero-glass-mark. -->
-<div class="hero-glass-mark" aria-hidden="true"></div>
+<!-- TRUST CREDIT — real client only (Oak & Pixel). The reference
+     shows 5 wordmarks; we have one real client, so this shows one
+     rather than inventing four more to fill the row. -->
+<div class="heroe-trust">
+<p class="heroe-trust-label">In Partnership With</p>
+<div class="heroe-trust-logos">
+<a class="heroe-trust-logo" href="https://oakandpixel.co.za" target="_blank" rel="noopener">Oak &amp; Pixel</a>
+</div>
 </div>
 
-</div>
 </section>
 
 <div class="s-num-bar"><span>01.B &middot; DOCTRINE</span><span>HOME / 01</span><span>04 &middot; PILLARS</span></div>

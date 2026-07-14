@@ -385,44 +385,68 @@ body[data-page="subscribe"] .page.redesign{
 }
 
 /* ====================================================================
-   HOME HERO SPLIT — two-column layout matching the hero-image.png
-   reference (left text, right glass device), real HIMARK content.
-   Scoped to body[data-page="home"] + min-width:769px only — every
-   other page's .half hero, and home itself on mobile, keeps the
-   original single-column centered composition (the fallback below
-   this breakpoint needs no override code: .heroe-split-grid simply
-   isn't declared as grid there, so it collapses to normal block
-   flow and the base centered .heroe-hl/.heroe-sub rules apply as-is).
+   HOME HERO SPLIT — full-bleed photographic composition matching the
+   hero-image.png reference: one continuous gradient scene with the
+   text block and glass device positioned within it like a real photo
+   layout, not a boxed two-column UI grid (that was the previous,
+   still-too-generic attempt).
+
+   Scoped to body[data-page="home"] + min-width:769px only — below
+   that, .hero-split never gets its "display:block + absolute
+   children" override, so it stays the original flex column from
+   the base .hero-editorial rule and everything (text, rule, CTA
+   row, trust bar) centers via the existing flex/text-align
+   machinery exactly as it already did before this hero existed.
+   No separate mobile-specific centering code needed.
    ==================================================================== */
 @media (min-width: 769px){
-  body[data-page="home"] .heroe-split-grid{
-    display: grid;
-    grid-template-columns: 1.05fr 1fr;
-    align-items: center;
-    gap: clamp(32px, 5vw, 80px);
-    width: 100%;
-    max-width: 1280px;
+  body[data-page="home"] .hero-editorial.full.hero-split{
+    display: block;   /* opt out of base flex-centering; children below are absolutely positioned against this section as their containing block */
   }
-  body[data-page="home"] .heroe-col-text .heroe-eyebrow,
-  body[data-page="home"] .heroe-col-text .heroe-hl,
-  body[data-page="home"] .heroe-col-text .heroe-sub{
+  body[data-page="home"] .heroe-content{
+    position: absolute;
+    left: clamp(24px, 6vw, 96px);
+    top: 50%;
+    transform: translateY(-58%);   /* sits slightly above true centre, matching the reference's vertical weighting */
+    max-width: 620px;
+    z-index: 1;
+  }
+  body[data-page="home"] .heroe-content .heroe-eyebrow,
+  body[data-page="home"] .heroe-content .heroe-hl,
+  body[data-page="home"] .heroe-content .heroe-sub{
     text-align: left;
   }
-  body[data-page="home"] .heroe-col-text .heroe-hl,
-  body[data-page="home"] .heroe-col-text .heroe-sub{
+  body[data-page="home"] .heroe-content .heroe-hl,
+  body[data-page="home"] .heroe-content .heroe-sub{
     max-width: none;
   }
-  body[data-page="home"] .heroe-col-visual{
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  body[data-page="home"] .heroe-rule{
+    margin-left: 0;
+  }
+  body[data-page="home"] .heroe-trust{
+    position: absolute;
+    left: clamp(24px, 6vw, 96px);
+    bottom: clamp(40px, 7vh, 76px);
+    z-index: 1;
+  }
+  body[data-page="home"] .heroe-trust-label,
+  body[data-page="home"] .heroe-trust-logos{
+    text-align: left;
+    justify-content: flex-start;
   }
 }
+
 body[data-page="home"] .heroe-cta-row{
   display: flex;
   align-items: center;
+  justify-content: center;   /* mobile default; overridden to flex-start at >=769px via .heroe-content's own left-align */
   gap: 30px;
   flex-wrap: wrap;
+}
+@media (min-width: 769px){
+  body[data-page="home"] .heroe-content .heroe-cta-row{
+    justify-content: flex-start;
+  }
 }
 /* Secondary CTA — plain text + underline, mirrors the reference's
    "OUR APPROACH" link beside its filled primary button. */
@@ -441,6 +465,54 @@ body[data-page="home"] .heroe-cta-row{
 .heroe-cta-ghost:hover{
   color: var(--ocean-dk);
   border-color: var(--ocean-dk);
+}
+
+/* Rule — short divider between headline and sub-copy, matching the
+   reference's thin line in the same spot. Centred by default
+   (mobile); left-anchored at >=769px alongside the rest of .heroe-content. */
+.heroe-rule{
+  width: 44px;
+  height: 1px;
+  background: var(--midnight);
+  opacity: .35;
+  margin: 0 auto 28px;
+}
+
+/* Trust credit — real client only. Same typographic register as
+   the reference's "TRUSTED BY AMBITIOUS BRANDS" row, but honest:
+   one name (Oak & Pixel) rather than five invented ones. Shown on
+   mobile too (it's just text, negligible cost) — only the glass
+   device is mobile-hidden for performance. */
+body[data-page="home"] .heroe-trust{
+  margin: 40px 0 0;
+}
+body[data-page="home"] .heroe-trust-label{
+  font-family: var(--f-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(28,43,58,.55);
+  text-align: center;
+  margin: 0 0 14px;
+}
+body[data-page="home"] .heroe-trust-logos{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+body[data-page="home"] .heroe-trust-logo{
+  font-family: var(--f-disp);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: .03em;
+  color: rgba(28,43,58,.55);
+  text-decoration: none;
+  transition: color .2s;
+}
+body[data-page="home"] .heroe-trust-logo:hover{
+  color: var(--ocean-dk);
 }
 
 
@@ -1064,15 +1136,18 @@ body[data-page="home"] .hero-aura-mesh{
    HOME HERO GLASS MARK — the reinvented brand emblem
    ====================================================================
    A frosted-glass panel carrying the real HIMARK H geometry (the
-   exact rects used in .pn-brand-mark), not a generic glyph. This is
-   the direct analogue of the reference image's glass 3D device —
-   now a genuine foreground visual living in its own grid column
-   (.heroe-col-visual) rather than a faint watermark behind text, so
-   it needed no low-opacity safety margin: nothing sits on top of it.
+   exact rects used in .pn-brand-mark), not a generic glyph. Direct
+   analogue of the reference image's glass 3D device — absolutely
+   positioned bottom-right against the hero section itself (its
+   sticky positioning already establishes the containing block), so
+   it reads as an object standing IN the photographic scene rather
+   than a UI card boxed into a grid column.
 
    Construction:
      - outer element  → the glass panel itself (gradient fill,
-       backdrop-filter blur, soft outer shadow + inset bevel)
+       backdrop-filter blur, two-layer ground shadow + inset bevel —
+       a tight contact shadow plus a broader ambient one, the
+       standard trick for "object resting on a surface")
      - ::before        → a darker inset gradient, masked to the H
        shape via images/himark-h-mask.svg, giving a carved/engraved
        look within the panel instead of a flat cutout
@@ -1081,19 +1156,22 @@ body[data-page="home"] .hero-aura-mesh{
 
    Static (no animation) — the aura already supplies motion; a
    moving panel this large would compete with it. Hidden on mobile
-   (≤768px) alongside hero-aura-3 (.heroe-split-grid also collapses
-   to a single column there, so the visual column simply doesn't
-   render) to keep the composite light on mid-range phones.
+   (≤768px) alongside hero-aura-3 to keep the composite light on
+   mid-range phones.
    ==================================================================== */
 body[data-page="home"] .hero-glass-mark{
-  position: relative;
-  width: clamp(260px, 92%, 460px);
+  position: absolute;
+  right: clamp(-16px, 1vw, 32px);
+  bottom: clamp(0px, 4vh, 36px);
+  width: clamp(320px, 32vw, 520px);
   aspect-ratio: 140 / 200;
+  z-index: 1;
   border-radius: clamp(20px, 2.4vw, 32px);
   background: linear-gradient(155deg, rgba(255,255,255,.70) 0%, rgba(255,255,255,.30) 55%, rgba(143,173,184,.36) 100%);
   border: 1px solid rgba(255,255,255,.85);
   box-shadow:
-    0 50px 90px -24px rgba(28,43,58,.24),
+    0 24px 40px -16px rgba(28,43,58,.26),
+    0 90px 120px -50px rgba(28,43,58,.30),
     0 2px 0 rgba(255,255,255,.9) inset,
     0 -24px 44px -22px rgba(95,129,144,.26) inset;
   -webkit-backdrop-filter: blur(18px) saturate(140%);

@@ -103,7 +103,7 @@ body[data-page="subscribe"] .page.redesign{
 
 
 /* ====================================================================
-   NAV BAR — flat, full-width, transparent (supplied reference).
+   NAV BAR — flat, full-width, permanent frosted glass.
    Was a floating glass pill; now a clean bar sitting directly on the
    hero: logo lockup far left, nav links + CTA grouped right.
 
@@ -113,10 +113,10 @@ body[data-page="subscribe"] .page.redesign{
    negative collapses its flow space so the hero starts beneath it
    (the hero's own top padding clears the bar).
 
-   Transparent at the top, matching the reference. .is-solid fades a
-   flat light background in on scroll (setupNavScroll in main.js) so
-   the dark navy text stays readable once the hero — and any darker
-   section below it — scrolls under the sticky bar.
+   Frosted background is always visible (previously transparent at
+   the very top of home, fading to solid only after ~24px of scroll,
+   via a JS-toggled .is-solid class — removed per a later request to
+   keep the bar visible at all times, on every page).
    ==================================================================== */
 .pill-nav{
   position: sticky;
@@ -128,10 +128,12 @@ body[data-page="subscribe"] .page.redesign{
   display: flex;
   align-items: center;
   z-index: 50;
-  transition: background .3s ease, box-shadow .3s ease,
-              -webkit-backdrop-filter .3s ease, backdrop-filter .3s ease;
-}
-.pill-nav.is-solid{
+  /* Frosted glass is now permanent (was conditional on scroll via a
+     JS-toggled .is-solid class — home was transparent at the very
+     top of the page, solid after ~24px of scroll). Always-visible
+     background requested, so the frosted styling moved into the
+     base rule and the scroll-toggle mechanism (setupNavScroll in
+     main.js) was removed as dead code. */
   background: linear-gradient(180deg, rgba(247,248,249,.88) 0%, rgba(247,248,249,.74) 100%);
   -webkit-backdrop-filter: blur(18px) saturate(140%);
           backdrop-filter: blur(18px) saturate(140%);

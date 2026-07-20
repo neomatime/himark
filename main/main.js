@@ -2707,46 +2707,21 @@ window.authSubmit=authSubmit;
     });
   }
 
-  /* NAV SCROLL STATE — the nav bar is transparent at the top (matching
-     the reference) and fades a flat light background in once the user
-     scrolls, so the dark navy text stays legible over the hero and any
-     darker section that scrolls under the sticky bar. */
-  function setupNavScroll(){
-    var nav = document.querySelector('.pill-nav');
-    if (!nav || nav.dataset.scrollAttached) return;
-    nav.dataset.scrollAttached = '1';
-    /* Only HOME has a light hero the transparent bar can sit on. Every
-       other page's hero is the darker architectural photo, so the bar
-       stays solid there (at the top too) to keep the navy text legible.
-       Home: transparent at top, solid once scrolled past ~24px. */
-    var isHome = document.body.getAttribute('data-page') === 'home';
-    var scroller = findScroller(nav);
-    var evtTarget = scroller === window ? window : scroller;
-    function onScroll(){
-      var top = scroller === window
-        ? (window.pageYOffset || document.documentElement.scrollTop)
-        : scroller.scrollTop;
-      nav.classList.toggle('is-solid', !isHome || top > 24);
-    }
-    evtTarget.addEventListener('scroll', onScroll, { passive:true });
-    onScroll();
-  }
-
   /* ---------- BOOT ---------- */
 
   function boot(){
     injectPillNav();
     setupHamburgers();
     setupHeroZoom();
-    setupNavScroll();
     /* Router toggles .active on different .page elements when
-       navigating. Re-run hero zoom + hamburger + nav-scroll setup so
-       newly-activated pages get wired. */
+       navigating. Re-run hero zoom + hamburger setup so newly-
+       activated pages get wired. (Nav frosted-glass styling used to
+       be scroll-toggled here too via setupNavScroll — removed, the
+       styling is now a permanent part of .pill-nav in redesign.css.) */
     if (typeof MutationObserver === 'function'){
       var mo = new MutationObserver(function(){
         setupHeroZoom();
         setupHamburgers();
-        setupNavScroll();
       });
       document.querySelectorAll('.page').forEach(function(p){
         mo.observe(p, { attributes:true, attributeFilter:['class'] });

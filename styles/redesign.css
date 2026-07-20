@@ -162,6 +162,16 @@ body[data-page="subscribe"] .page.redesign{
   height: 34px;
   display: inline-block;
   flex-shrink: 0;
+  /* -8px is deliberate, not a bug: .pn-brand-imark is a mask of only
+     "IMARK" (no H) — this icon supplies the H, so it must sit tight
+     against the wordmark for the pair to read as "HIMARK" rather than
+     "H" + a disconnected "IMARK". Tuned through several rounds earlier
+     this session (-3px too loose, -10px too tight/ate the I, -6px,
+     settled at -8px). Briefly changed to +10px chasing a supplied
+     reference's apparent icon-to-wordmark gap; reverted immediately
+     after a screenshot showed it actually breaking legibility into
+     "H  IMARK". Do not change this without visually confirming
+     "HIMARK" still reads as one word. */
   margin-right: -8px;
 }
 .pn-brand-mark svg{
@@ -182,10 +192,9 @@ body[data-page="subscribe"] .page.redesign{
      computed-style check: element renders, but too small/faint to
      read at normal viewing size). Bumped size + darkened per the
      supplied reference, and shifted right to start under the IMARK
-     wordmark rather than under the framed-H mark: the mark is 25px
-     wide with a -8px margin pulling the wordmark left, so the
-     wordmark's own visual start is ~17px in — matched here so the
-     tagline lines up under "HIMARK", not under the icon. */
+     wordmark rather than under the framed-H mark. Offset = mark
+     width (25px) minus the -8px overlap = 17px net; recalculate if
+     .pn-brand-mark's width/margin-right ever changes. */
   font-family: var(--f-mono);
   font-size: 10px;
   font-weight: 500;

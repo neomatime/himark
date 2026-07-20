@@ -178,14 +178,22 @@ body[data-page="subscribe"] .page.redesign{
           mask: url('../images/IMARK.png') no-repeat center / contain;
 }
 .pn-brand-tag{
+  /* Was 7.5px / 52% opacity — essentially illegible (confirmed via
+     computed-style check: element renders, but too small/faint to
+     read at normal viewing size). Bumped size + darkened per the
+     supplied reference, and shifted right to start under the IMARK
+     wordmark rather than under the framed-H mark: the mark is 25px
+     wide with a -8px margin pulling the wordmark left, so the
+     wordmark's own visual start is ~17px in — matched here so the
+     tagline lines up under "HIMARK", not under the icon. */
   font-family: var(--f-mono);
-  font-size: 7.5px;
+  font-size: 10px;
   font-weight: 500;
-  letter-spacing: .2em;
+  letter-spacing: .18em;
   text-transform: uppercase;
-  color: rgba(28,43,58,.52);
+  color: rgba(28,43,58,.72);
   white-space: nowrap;
-  padding-left: 2px;
+  margin-left: 17px;
 }
 .pn-brand:hover .pn-brand-mark svg g rect,
 .pn-brand:hover .pn-brand-mark svg > rect{ fill: var(--ocean-dk); }

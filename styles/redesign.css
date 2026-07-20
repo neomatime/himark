@@ -525,23 +525,26 @@ body[data-page="home"] .heroe-feat{
   align-items: flex-start;
   gap: 20px;
   padding: 22px 0;
-  border-top: 1px solid rgba(28,43,58,.10);
+  border-top: 1px solid rgba(255,255,255,.16);
 }
 body[data-page="home"] .heroe-feat:first-child{ border-top: 0; padding-top: 0; }
 body[data-page="home"] .heroe-feat:last-child{ padding-bottom: 0; }
-/* Soft neumorphic circular icon badge. */
+/* Glass circular icon badge — was a light neumorphic circle tuned
+   for a pale background; now a frosted-glass badge that reads
+   clearly against the photo (light fill + soft outer glow instead
+   of a dark drop shadow, which would vanish against a dark photo). */
 body[data-page="home"] .heroe-feat-ic{
   flex-shrink: 0;
   width: 52px; height: 52px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  color: var(--ocean-dk);
-  background: linear-gradient(145deg, #ffffff 0%, #e4ecf0 100%);
-  box-shadow:
-    0 8px 18px -8px rgba(28,43,58,.28),
-    0 1px 0 rgba(255,255,255,.9) inset,
-    0 -6px 12px -8px rgba(95,129,144,.30) inset;
+  color: #ffffff;
+  background: rgba(255,255,255,.14);
+  border: 1px solid rgba(255,255,255,.30);
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+  box-shadow: 0 4px 18px -6px rgba(0,0,0,.35);
 }
 body[data-page="home"] .heroe-feat-ic svg{ width: 22px; height: 22px; }
 body[data-page="home"] .heroe-feat-tx h3{
@@ -549,17 +552,69 @@ body[data-page="home"] .heroe-feat-tx h3{
   font-size: 16px;
   font-weight: 700;
   letter-spacing: -.005em;
-  color: var(--midnight);
+  color: #ffffff;
   margin: 4px 0 5px;
+  text-shadow: 0 1px 8px rgba(0,0,0,.25);
 }
 body[data-page="home"] .heroe-feat-tx p{
   font-family: var(--f-body);
   font-size: 13.5px;
   line-height: 1.55;
   font-weight: 300;
-  color: rgba(28,43,58,.68);
+  color: rgba(255,255,255,.78);
   margin: 0;
   max-width: 310px;
+  text-shadow: 0 1px 8px rgba(0,0,0,.20);
+}
+
+/* STATS BAR — three verifiable figures in a frosted dark glass panel
+   sitting directly on the photo (reference's bottom-left panel).
+   Real numbers only: team size (4 principals, team.html), the three
+   retainer tiers, and the R50k/month entry point — NOT the
+   reference's "100+ Systems built / 10+ Years of compounding", which
+   would be false for a firm founded in 2026. */
+body[data-page="home"] .heroe-stats{
+  display: flex;
+  gap: clamp(28px, 4vw, 48px);
+  align-self: flex-start;
+  /* Extra left margin clears the site-wide fixed #mute-btn (36-86px,
+     styles.css). Section padding alone isn't enough at narrower
+     desktop widths — confirmed 1770px² of real overlap at 920px
+     viewport before this fix. */
+  margin: 28px 0 0 50px;
+  padding: 20px clamp(20px, 3vw, 32px);
+  border-radius: 14px;
+  background: rgba(14,24,34,.46);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+          backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: 0 20px 40px -20px rgba(0,0,0,.45);
+}
+body[data-page="home"] .heroe-stat{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+body[data-page="home"] .heroe-stat-ic{
+  color: rgba(255,255,255,.60);
+  margin-bottom: 2px;
+}
+body[data-page="home"] .heroe-stat-ic svg{ width: 20px; height: 20px; }
+body[data-page="home"] .heroe-stat-num{
+  font-family: var(--f-disp);
+  font-size: 26px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}
+body[data-page="home"] .heroe-stat-label{
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.60);
+  white-space: nowrap;
 }
 
 /* TRUST bar — full-width hairline top border (via ::before so it
@@ -581,7 +636,7 @@ body[data-page="home"] .hero-feature .heroe-trust::before{
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 1px;
-  background: rgba(28,43,58,.12);
+  background: rgba(255,255,255,.22);
 }
 body[data-page="home"] .hero-feature .heroe-trust-label{
   font-family: var(--f-mono);
@@ -589,7 +644,7 @@ body[data-page="home"] .hero-feature .heroe-trust-label{
   font-weight: 600;
   letter-spacing: .2em;
   text-transform: uppercase;
-  color: rgba(28,43,58,.55);
+  color: rgba(255,255,255,.60);
   margin: 0;
   white-space: nowrap;
 }
@@ -603,16 +658,30 @@ body[data-page="home"] .hero-feature .heroe-trust-logo{
   font-size: 15px;
   font-weight: 600;
   letter-spacing: .03em;
-  color: rgba(28,43,58,.55);
+  color: rgba(255,255,255,.85);
   text-decoration: none;
   transition: color .2s;
 }
-body[data-page="home"] .hero-feature .heroe-trust-logo:hover{ color: var(--ocean-dk); }
+body[data-page="home"] .hero-feature .heroe-trust-logo:hover{ color: var(--ocean-lt); }
 
 /* Mobile — single column: features stack under the text, trust bar
-   wraps. Applies below 900px where the two-column grid gets cramped. */
+   wraps. Applies below 900px where the two-column grid gets cramped.
+
+   position:relative override is load-bearing, not cosmetic: the base
+   .hero-editorial rule is position:sticky, which works for the
+   desktop scroll-cover effect because the hero fits in one viewport
+   there. On mobile this stacked layout (badge+headline+sub+CTA+4
+   features+stats+trust) runs to ~1300px, well past a ~800px phone
+   viewport -- and a sticky element pins its top edge at scroll:0 for
+   as long as it's "stuck", so anything past the first viewport-height
+   of its own content sits permanently below the fold, unreachable by
+   scrolling (confirmed empirically: stats/trust bar bounding-rect top
+   was IDENTICAL at scrollTop 350 and 700 -- scrolling the page was
+   doing nothing to reveal them). Breaking out of sticky here lets the
+   full stack flow and scroll normally. */
 @media (max-width: 900px){
   body[data-page="home"] .hero-editorial.full.hero-feature{
+    position: relative;
     justify-content: flex-start;
     padding-top: 116px;
     padding-bottom: 40px;
@@ -626,6 +695,45 @@ body[data-page="home"] .hero-feature .heroe-trust-logo:hover{ color: var(--ocean
   }
   body[data-page="home"] .heroe-col-text{ max-width: none; }
   body[data-page="home"] .hero-feature .heroe-trust{ flex-wrap: wrap; gap: 12px 20px; }
+
+  /* The left-to-right wash only makes sense for the 2-column desktop
+     layout. Once everything stacks into one column on mobile, badge/
+     headline/sub sit in the same vertical flow as the (white-text)
+     feature list — so the wash becomes a uniform darker overlay and
+     the left-column text flips from dark-on-light to white-on-photo,
+     same treatment as the rest of the stack. */
+  body[data-page="home"] .hero-feature::after{
+    background: linear-gradient(180deg, rgba(14,24,34,.32) 0%, rgba(14,24,34,.52) 100%);
+  }
+  body[data-page="home"] .hero-feature .heroe-hl{
+    color: #ffffff;
+    text-shadow: 0 2px 10px rgba(0,0,0,.30);
+  }
+  body[data-page="home"] .hero-feature .heroe-hl em{ color: var(--ocean-lt); }
+  body[data-page="home"] .hero-feature .heroe-sub{
+    color: rgba(255,255,255,.82);
+    text-shadow: 0 1px 8px rgba(0,0,0,.25);
+  }
+  body[data-page="home"] .hero-feature .heroe-rule{ background: rgba(255,255,255,.5); }
+  body[data-page="home"] .hero-feature .heroe-cta-ghost{
+    border-color: rgba(255,255,255,.4);
+    color: #ffffff;
+  }
+  body[data-page="home"] .hero-feature .heroe-cta-ghost:hover{
+    border-color: #ffffff;
+    background: rgba(255,255,255,.10);
+    color: #ffffff;
+  }
+  body[data-page="home"] .heroe-stats{
+    flex-wrap: wrap;
+    row-gap: 16px;
+    align-self: stretch;
+    /* Desktop's 50px mute-btn clearance would look lopsided on a
+       full-width mobile stack; mobile content flows well past 100vh
+       so the panel rarely lands at the exact fixed bottom-corner
+       where #mute-btn floats anyway. */
+    margin-left: 0;
+  }
 }
 
 
@@ -1100,31 +1208,33 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
 
 
 /* ====================================================================
-   HOME HERO BACKGROUND — flat light gradient (feature-list layout)
+   HOME HERO BACKGROUND — real skyscraper photo (supplied reference)
    ====================================================================
-   The feature-list reference is a clean, near-flat pale-blue field
-   with a soft light bloom toward the upper area — no photo, no glass
-   device. Built as a layered CSS gradient: a white radial bloom over
-   a blue-to-off diagonal. Scoped to body[data-page="home"] .full;
-   the .half heroes on other pages keep their architectural photo.
+   images/hero-image-scrapers.jpg used directly as a literal
+   background-image (learned from the last hero rebuild: don't
+   reconstruct a photo in CSS when the actual file exists). Scoped to
+   body[data-page="home"] .full only; the .half heroes on other pages
+   keep the architectural photo they already had.
    ==================================================================== */
 body[data-page="home"] .hero-editorial.full::before{
-  background:
-    radial-gradient(120% 95% at 22% 8%, rgba(255,255,255,.60) 0%, rgba(255,255,255,0) 46%),
-    linear-gradient(152deg, #DCE7EF 0%, #E7EDF2 46%, #F1F4F6 100%);
+  background-image: url('../images/hero-image-scrapers.jpg');
   background-size: cover;
+  background-position: center 30%;
   filter: none;
 }
-/* Feature layout is high-contrast on its own (near-black navy text
-   on a pale field) — drop the heavy centre halo wash so the field
-   stays crisp and clean like the reference. */
+/* Two-toned wash: light on the left (dark navy text needs a pale
+   surface — badge/headline/sub/CTA all sit here), fading to nothing
+   by the horizontal centre so the right column and everything below
+   it (feature list, stats bar, trust bar) shows the photo directly,
+   with white text laid over it instead. Matches the reference's own
+   split — dark-on-light left, light-on-dark right. */
 body[data-page="home"] .hero-feature::after{
-  background: linear-gradient(180deg, rgba(247,247,245,.16) 0%, rgba(247,247,245,0) 40%);
+  background: linear-gradient(90deg, rgba(247,247,245,.82) 0%, rgba(247,247,245,.55) 32%, rgba(247,247,245,.08) 58%, transparent 68%);
 }
-/* Keep the drifting aura barely-there on the flat field — enough to
-   feel alive (the earlier request), not enough to clutter the clean
-   reference look. */
-body[data-page="home"] .hero-feature .hero-aura{ opacity: .42; }
+/* Aura reads as muddy on top of a real photo (it was tuned for a flat
+   gradient) — switch it off here; the photo already supplies texture
+   and depth on its own. */
+body[data-page="home"] .hero-feature .hero-aura{ display: none; }
 
 /* ====================================================================
    HOME HERO AURA — atmospheric depth + drift

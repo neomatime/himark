@@ -73,7 +73,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Roboto:ital,wght@0,300;0,400;1,300&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="styles/styles.css?v=1784042320254"/><link rel="stylesheet" href="styles/redesign.css?v=1784057866523"/><link rel="stylesheet" href="styles/orbit.css"/>
+<link rel="stylesheet" href="styles/styles.css?v=1784042320254"/><link rel="stylesheet" href="styles/redesign.css?v=1784567000396"/><link rel="stylesheet" href="styles/orbit.css"/>
 
 <style>
   /* ============================================================
@@ -1839,14 +1839,17 @@
 
 <!-- EDITORIAL HERO — feature-list layout matching the supplied
      reference: LEFT column (triad badge, two-line headline, rule,
-     sub, dual CTA), RIGHT column (four value items with soft
-     circular icon badges), full-width trust bar pinned at the
-     bottom. Flat light gradient background — no glass photo. Uses
+     sub, dual CTA) on a light wash, RIGHT column (four value items)
+     and a stats bar in white text directly on the photo, full-width
+     trust bar at the bottom. Background is the real skyscraper photo
+     (images/hero-image-scrapers.jpg), not a CSS gradient. Uses
      HIMARK's OWN type system (Source Sans 3 display + JetBrains
-     Mono labels), NOT the reference's serif. Content is all real:
-     the four items are HIMARK's actual Doctrine pillars; the badge
-     triad is HIMARK's real remit (brand / demand / AI infra).
-     Styles in redesign.css :: .hero-editorial.full.hero-feature. -->
+     Mono labels), NOT the reference's serif. Content is all real —
+     including the stats bar, which uses only verifiable figures
+     (team size, retainer tiers, entry price point) rather than the
+     reference's fabricated "100+ Systems built / 10+ Years of
+     compounding" (HIMARK was founded in 2026 — those claims would be
+     false). Styles in redesign.css :: .hero-editorial.full.hero-feature. -->
 <section class="hero-editorial full hero-feature" aria-label="HIMARK · founder-led growth">
 
 <!-- Subtle atmospheric drift kept from the earlier "living
@@ -1904,6 +1907,31 @@
 </li>
 </ul>
 
+</div>
+
+<!-- STATS BAR — three verifiable figures only. The reference showed
+     "100+ Systems built / 25+ Industries served / 10+ Years of
+     compounding" — HIMARK was founded in 2026, so "10+ years" would
+     be a false claim on a live site. Replaced with facts already
+     published elsewhere on the site: team size (team.html), the
+     three retainer tiers and the R50k entry point (both already on
+     this page's firm-def block below). -->
+<div class="heroe-stats">
+<div class="heroe-stat">
+<span class="heroe-stat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20v-1.5A4.5 4.5 0 0 1 8.5 14h3a4.5 4.5 0 0 1 4.5 4.5V20"/><circle cx="10" cy="7.5" r="3.5"/><path d="M16.5 14.3A4 4 0 0 1 20 18v2"/><path d="M15 4.3a3.5 3.5 0 0 1 0 6.7"/></svg></span>
+<strong class="heroe-stat-num">4</strong>
+<span class="heroe-stat-label">Senior Principals</span>
+</div>
+<div class="heroe-stat">
+<span class="heroe-stat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4.5" rx="1"/><rect x="3" y="10.7" width="18" height="4.5" rx="1"/><rect x="3" y="17.4" width="18" height="4.5" rx="1"/></svg></span>
+<strong class="heroe-stat-num">3</strong>
+<span class="heroe-stat-label">Retainer Tiers</span>
+</div>
+<div class="heroe-stat">
+<span class="heroe-stat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 6.5c0-1.9-2.2-3.5-5-3.5s-5 1.4-5 3.2c0 4 10 1.8 10 5.8 0 1.8-2.2 3.2-5 3.2s-5-1.6-5-3.5"/></svg></span>
+<strong class="heroe-stat-num">R50k+</strong>
+<span class="heroe-stat-label">Monthly Engagements</span>
+</div>
 </div>
 
 <!-- TRUST CREDIT — real client only (Oak & Pixel). The reference

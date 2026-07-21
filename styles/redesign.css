@@ -189,9 +189,19 @@ body[data-page="subscribe"] .page.redesign{
   align-items: center;
   text-decoration: none;
 }
-.pn-brand-logo-light,
 .pn-brand-logo-dark{
   height: 44px;
+  width: auto;
+  display: block;
+}
+/* Shorter than the dark variant — the footer logo it now shares has a
+   much wider aspect ratio (~5:1 vs ~2.9:1 for the dark logo), so
+   matching height would run ~222px wide and crowd the nav links/CTA
+   at narrower desktop widths (confirmed overlapping "Home" and
+   wrapping the CTA button at 800px). 32px keeps it closer to the dark
+   variant's footprint (~161px vs ~106px). */
+.pn-brand-logo-light{
+  height: 32px;
   width: auto;
   display: block;
 }
@@ -994,8 +1004,13 @@ body[data-page="subscribe"] .footer-top{
     padding: 0 16px;
     margin-bottom: -64px;
   }
-  .pn-brand-logo-light,
   .pn-brand-logo-dark{ height: 34px; }
+  /* Shorter than the dark variant — the footer logo it now shares has
+     a much wider aspect ratio (~5:1 vs ~2.9:1), so matching height
+     would make it nearly 60% wider than the dark logo and crowd the
+     CTA button into wrapping onto two lines. 20px keeps its rendered
+     width (~101px) close to the dark variant's (~98px). */
+  .pn-brand-logo-light{ height: 20px; }
   /* margin-left:auto pushes the CTA + hamburger group to the right;
      order:5 moves the injected toggle to sit after the CTA. */
   .pn-cta{ margin-left: auto; height: 38px; padding: 0 14px; font-size: 9px; }

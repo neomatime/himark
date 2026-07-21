@@ -2525,7 +2525,7 @@ window.authSubmit=authSubmit;
     nav.setAttribute('aria-label','Primary');
     nav.innerHTML =
       '<a class="pn-brand" href="home.html" aria-label="HIMARK · Home">' +
-        '<img class="pn-brand-logo-light" src="images/himark-navbar-logo-crop-light.png" alt="HIMARK — Strategic Growth Consultancy">' +
+        '<img class="pn-brand-logo-light" src="images/footer-logo-navy-crop.png" alt="HIMARK — Strategic Growth Consultancy">' +
         '<img class="pn-brand-logo-dark" src="images/himark-navbar-logo-crop.png" alt="" aria-hidden="true">' +
       '</a>' +
       '<ul class="pn-links">' +

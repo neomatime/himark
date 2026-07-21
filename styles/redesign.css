@@ -1029,7 +1029,7 @@ body[data-page="subscribe"] .footer-top{
      172px) without wrapping the CTA — confirmed via getClientRects()
      on the CTA's text node. 28px (~141px wide) is the largest height
      that holds a single line here. */
-  .pn-brand-logo-light{ height: 28px; }
+  .pn-brand-logo-light{ height: 34px; }
   /* margin-left:auto pushes the CTA + hamburger group to the right;
      order:5 moves the injected toggle to sit after the CTA. */
   .pn-cta{ margin-left: auto; height: 38px; padding: 0 14px; font-size: 9px; }

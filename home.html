@@ -73,7 +73,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Roboto:ital,wght@0,300;0,400;1,300&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="styles/styles.css?v=1784042320254"/><link rel="stylesheet" href="styles/redesign.css?v=1784641704510"/><link rel="stylesheet" href="styles/orbit.css"/>
+<link rel="stylesheet" href="styles/styles.css?v=1784649323379"/><link rel="stylesheet" href="styles/redesign.css?v=1784649323379"/><link rel="stylesheet" href="styles/orbit.css"/>
 
 <style>
   /* ============================================================
@@ -1258,38 +1258,14 @@
     max-width: 480px !important;
   }
 
-  /* ── Footer wordmark — full landing-page lockup: framed-H +
-     IMARK image flush together (gap:0, same as index.html). */
-  .footer .ft-wm{
-    align-items: center;
-    gap: 0;
-    font-size: 0;
-    line-height: 1;
-    display: inline-flex;
-    height: 32px;
-    margin-bottom: 16px;
-  }
-  .footer .ft-wm-mark{
-    width: 23px;
-    height: 32px;
-    display: inline-block;
-    flex-shrink: 0;
-    /* Pull the IMARK image hard against the H — matches the
-       landing-page lockup where they read as one word. */
-    margin-right: -2px;
-  }
-  .footer .ft-wm-mark svg{
-    width: 100%;
-    height: 100%;
-    display: block;
-    /* Same optical-centre nudge as index.html's .hmark svg */
-    margin-top: -1px;
-  }
-  .footer .ft-wm-imark{
-    height: 24px;
+  /* ── Footer logo — supplied image (icon + wordmark + tagline
+     flattened into one graphic), replacing the earlier CSS-built
+     framed-H SVG + IMARK image lockup + separate .ft-tag line. */
+  .footer .ft-logo{
+    height: 40px;
     width: auto;
     display: block;
-    filter: brightness(1.06);
+    margin-bottom: 16px;
   }
 
   /* ── Footer subscribe CTA — added per user request ─────────
@@ -2164,23 +2140,7 @@
 <span class="footer-coord-tr">HIMARK / FOOTER</span>
 <div class="footer-top">
 <div>
-<div class="ft-wm" aria-label="HIMARK">
-<!-- Full landing-page lockup: framed-H SVG + IMARK image.
-     Identical geometry to index.html. No literal HIMARK text —
-     the H mark and IMARK image together spell the wordmark. -->
-<span class="ft-wm-mark">
-<svg viewBox="0 0 140 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-<g fill="#F7F7F5">
-<rect x="14" y="14" width="38" height="170"/>
-<rect x="88" y="14" width="38" height="170"/>
-<rect x="52" y="85" width="16" height="30"/>
-<rect x="72" y="85" width="16" height="30"/>
-</g>
-<rect x="4" y="4" width="132" height="192" fill="none" stroke="#F7F7F5" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter"/>
-</svg>
-</span><img src="images/IMARK.png" alt="IMARK" class="ft-wm-imark" width="367" height="99" decoding="async"/>
-</div>
-<p class="ft-tag">Strategic Growth Consultancy</p>
+<img class="ft-logo" src="images/footer-logo-navy-crop.png" alt="HIMARK — Strategic Growth Consultancy">
 <p class="ft-blurb">HIMARK (Pty) Ltd</p>
 </div>
 <div><p class="ft-col-t">[ 01 ] Engagement</p><ul class="ft-links"><li><a href="services.html">Mandates</a></li><li><a href="apply.html">Apply</a></li></ul></div>
@@ -2268,7 +2228,7 @@
      no-op IIFE on pages without an #orbit-stage element. -->
 <script src="main/orbit.js?v=1779906181500"></script>
 
-<script src="main/main.js?v=1784641704510"></script>
+<script src="main/main.js?v=1784649323379"></script>
 
 <!-- ============================================================
      BOOKING MODAL — LeadSense + timing preferences in one form.

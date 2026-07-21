@@ -868,19 +868,6 @@ body[data-page="subscribe"] .footer .footer-coord-tl,
 body[data-page="subscribe"] .footer .footer-coord-tr{
   color: rgba(46,74,90,.55);
 }
-body[data-page="home"] .footer .ft-wm,
-body[data-page="doctrine"] .footer .ft-wm,
-body[data-page="mandates"] .footer .ft-wm,
-body[data-page="principals"] .footer .ft-wm,
-body[data-page="direct"] .footer .ft-wm,
-body[data-page="intake"] .footer .ft-wm,
-body[data-page="privacy"] .footer .ft-wm,
-body[data-page="terms"] .footer .ft-wm,
-body[data-page="cookies"] .footer .ft-wm,
-body[data-page="security"] .footer .ft-wm,
-body[data-page="subscribe"] .footer .ft-wm{
-  color: var(--midnight);
-}
 body[data-page="home"] .footer .ft-blurb,
 body[data-page="doctrine"] .footer .ft-blurb,
 body[data-page="mandates"] .footer .ft-blurb,
@@ -933,92 +920,16 @@ body[data-page="security"] .footer-top,
 body[data-page="subscribe"] .footer-top{
   border-bottom-color: rgba(95,129,144,.18);
 }
-/* ------------ Footer brand SIZE — fix for privacy / terms /
-   cookies / security pages. The other pages inline their own
-   .ft-wm-mark / .ft-wm-imark sizing in a <style> block, but the
-   four legal pages don't, which meant the IMARK img was
-   rendering at its natural 367×99 size (huge). styles.css only
-   defines the OLD .ft-wm rule (font-based, 17px wordmark text);
-   it has no .ft-wm-mark or .ft-wm-imark rules at all. Adding
-   them here covers every page that loads redesign.css. */
-.footer .ft-wm{
-  display: inline-flex;
-  align-items: center;
-  gap: 0;
-  font-size: 0;
-  line-height: 1;
-  height: 32px;
-  margin-bottom: 16px;
-}
-.footer .ft-wm-mark{
-  width: 23px;
-  height: 32px;
-  display: inline-block;
-  flex-shrink: 0;
-  margin-right: -2px;
-}
-.footer .ft-wm-mark svg{
-  width: 100%;
-  height: 100%;
-  display: block;
-  margin-top: -1px;
-}
-.footer .ft-wm-imark{
-  height: 24px;
+/* Footer logo — supplied image (icon + wordmark + tagline flattened
+   into one graphic), replacing the earlier CSS-built framed-H SVG +
+   IMARK image lockup + separate .ft-tag line. Most pages inline their
+   own copy of this same rule in a <style> block; this shared version
+   covers the pages that don't (privacy/terms/cookies/security/work). */
+.footer .ft-logo{
+  height: 40px;
   width: auto;
   display: block;
-}
-
-/* Footer brand glyph — the SVG rects/strokes are inlined with
-   fill="#F7F7F5" (cream) for the dark footer. Flip to midnight so
-   the H reads on the light glass. The IMARK PNG is white-on-
-   transparent; a filter chain converts those white pixels to
-   HIMARK midnight (#1C2B3A) — same colour as the framed-H beside
-   it, not pure black. The chain is brightness(0) → recolour via
-   invert+sepia+hue-rotate to land on the brand midnight. */
-body[data-page="home"] .footer .ft-wm-mark svg g rect,
-body[data-page="doctrine"] .footer .ft-wm-mark svg g rect,
-body[data-page="mandates"] .footer .ft-wm-mark svg g rect,
-body[data-page="principals"] .footer .ft-wm-mark svg g rect,
-body[data-page="direct"] .footer .ft-wm-mark svg g rect,
-body[data-page="intake"] .footer .ft-wm-mark svg g rect,
-body[data-page="privacy"] .footer .ft-wm-mark svg g rect,
-body[data-page="terms"] .footer .ft-wm-mark svg g rect,
-body[data-page="cookies"] .footer .ft-wm-mark svg g rect,
-body[data-page="security"] .footer .ft-wm-mark svg g rect,
-body[data-page="subscribe"] .footer .ft-wm-mark svg g rect{
-  fill: var(--midnight);
-}
-body[data-page="home"] .footer .ft-wm-mark svg > rect[fill="none"],
-body[data-page="doctrine"] .footer .ft-wm-mark svg > rect[fill="none"],
-body[data-page="mandates"] .footer .ft-wm-mark svg > rect[fill="none"],
-body[data-page="principals"] .footer .ft-wm-mark svg > rect[fill="none"],
-body[data-page="direct"] .footer .ft-wm-mark svg > rect[fill="none"],
-body[data-page="intake"] .footer .ft-wm-mark svg > rect[fill="none"],
-body[data-page="privacy"] .footer .ft-wm-mark svg > rect[fill="none"],
-body[data-page="terms"] .footer .ft-wm-mark svg > rect[fill="none"],
-body[data-page="cookies"] .footer .ft-wm-mark svg > rect[fill="none"],
-body[data-page="security"] .footer .ft-wm-mark svg > rect[fill="none"],
-body[data-page="subscribe"] .footer .ft-wm-mark svg > rect[fill="none"]{
-  stroke: var(--midnight);
-}
-body[data-page="home"] .footer .ft-wm-imark,
-body[data-page="doctrine"] .footer .ft-wm-imark,
-body[data-page="mandates"] .footer .ft-wm-imark,
-body[data-page="principals"] .footer .ft-wm-imark,
-body[data-page="direct"] .footer .ft-wm-imark,
-body[data-page="intake"] .footer .ft-wm-imark,
-body[data-page="privacy"] .footer .ft-wm-imark,
-body[data-page="terms"] .footer .ft-wm-imark,
-body[data-page="cookies"] .footer .ft-wm-imark,
-body[data-page="security"] .footer .ft-wm-imark,
-body[data-page="subscribe"] .footer .ft-wm-imark{
-  /* White-on-transparent PNG → HIMARK midnight (#1C2B3A).
-     Filter chain generated to land on the brand colour exactly,
-     not pure black (which is what plain brightness(0) gives).
-     Falls back to brightness(0) for browsers that ignore parts
-     of the chain. */
-  filter: brightness(0) saturate(100%) invert(15%) sepia(31%) saturate(1098%) hue-rotate(168deg) brightness(92%) contrast(89%);
+  margin-bottom: 16px;
 }
 
 
@@ -1497,26 +1408,14 @@ body[data-page="home"] .hero-aura-mesh{
 /* ====================================================================
    FOOTER — text legibility overrides for the LIGHT glass variant.
    The previous footer override flipped the surface but didn't
-   re-tint a handful of secondary text elements (.ft-tag, .ft-col-t,
-   .ft-copy, .ft-legal a, .footer-subscribe-*) — those were still
-   on their dark-mode palette (cream / ocean-light) and washed out
-   against the off-white glass. This block re-tints every text
-   surface in the footer so the section reads cleanly: primary
-   type sits at midnight, secondary tokens (column labels, eyebrow
-   markers) at ocean, and the small legal links at ocean-dark with
-   a midnight hover.
+   re-tint a handful of secondary text elements (.ft-col-t, .ft-copy,
+   .ft-legal a, .footer-subscribe-*) — those were still on their
+   dark-mode palette (cream / ocean-light) and washed out against the
+   off-white glass. This block re-tints every text surface in the
+   footer so the section reads cleanly: primary type sits at midnight,
+   secondary tokens (column labels, eyebrow markers) at ocean, and the
+   small legal links at ocean-dark with a midnight hover.
    ==================================================================== */
-body[data-page="home"] .footer .ft-tag,
-body[data-page="doctrine"] .footer .ft-tag,
-body[data-page="mandates"] .footer .ft-tag,
-body[data-page="principals"] .footer .ft-tag,
-body[data-page="direct"] .footer .ft-tag,
-body[data-page="intake"] .footer .ft-tag,
-body[data-page="privacy"] .footer .ft-tag,
-body[data-page="terms"] .footer .ft-tag,
-body[data-page="cookies"] .footer .ft-tag,
-body[data-page="security"] .footer .ft-tag,
-body[data-page="subscribe"] .footer .ft-tag,
 body[data-page="home"] .footer .ft-col-t,
 body[data-page="doctrine"] .footer .ft-col-t,
 body[data-page="mandates"] .footer .ft-col-t,

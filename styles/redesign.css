@@ -141,28 +141,21 @@ body[data-page="subscribe"] .page.redesign{
   transition: background .4s ease, box-shadow .4s ease, border-color .4s ease;
 }
 
-/* Dark-hero nav variant — home page only, while the dark hero photo
-   sits behind it. main.js (setupHeroNavContrast) toggles this class
-   off once the user scrolls past the hero's own rendered height, so
-   the nav reverts to the standard light bar for the rest of the page
-   (and every other page keeps the light bar always, unaffected). */
+/* Dark-hero nav variant — home page (and about/services/team/contact/
+   apply) while their dark hero photo sits behind the nav. main.js
+   (setupHeroNavContrast) toggles this class off once the user scrolls
+   past the hero's own rendered height, so the nav reverts to the
+   standard light bar for the rest of the page (and legal/subscribe/
+   404 pages, which never have this class, keep the light bar always,
+   unaffected). */
 .pill-nav.pn-on-hero{
   background: linear-gradient(180deg, rgba(10,17,24,.42) 0%, rgba(10,17,24,.24) 100%);
   box-shadow: 0 1px 0 rgba(255,255,255,.10);
   border-bottom: 0;
 }
-.pn-on-hero .pn-brand,
-.pn-on-hero .pn-brand-tag,
 .pn-on-hero .pn-links a{
   color: #ffffff;
 }
-.pn-on-hero .pn-brand-imark{ background-color: #ffffff; }
-/* Only the H-bars (inside <g>) get filled white. The outer frame rect
-   has fill="none" (hollow, stroke-only) — it must NOT get fill:#fff
-   too, or the solid white frame paints over the H-bars underneath it
-   in DOM order, turning the whole icon into a blank white square. */
-.pn-on-hero .pn-brand-mark svg g rect{ fill: #ffffff; }
-.pn-on-hero .pn-brand-mark svg > rect[fill="none"]{ stroke: #ffffff; }
 .pn-on-hero .pn-toggle-icon span{ background: #ffffff; }
 .pn-on-hero .pn-cta{
   background: transparent;
@@ -173,88 +166,38 @@ body[data-page="subscribe"] .page.redesign{
   background: rgba(255,255,255,.14);
   border-color: #ffffff;
 }
-.pn-brand, .pn-brand-imark, .pn-links a, .pn-cta, .pn-toggle-icon span{
+.pn-links a, .pn-cta, .pn-toggle-icon span{
   transition: color .35s ease, background .35s ease, border-color .35s ease;
 }
 
-/* Brand lockup — framed-H icon stands alone on the left as its own
-   column, beside a flush-left two-line text stack: IMARK on top,
-   tagline directly under IT (not under the H) below. .pn-brand is now
-   a ROW (icon + stack); .pn-brand-stack is the COLUMN holding IMARK +
-   tag so both share exactly the same left edge.
-
-   The icon still has to sit tight against IMARK (imark is a mask of
-   only "IMARK", no H — the icon supplies the missing letter) for the
-   pair to read as "HIMARK", but an earlier attempt at this same
-   side-by-side layout nested the tagline in the SAME row as the icon,
-   so the icon's 34px height spilled down into the tagline's row and
-   its fill visually painted over the tagline text (see git history:
-   "revert icon/wordmark gap experiment", "fix white framed-H
-   rendering solid"). Fixed this time with align-items:flex-start on
-   both the row and the stack (icon top-aligns with IMARK's own top,
-   never the stack's vertical centre) plus a stack gap (14px) tuned so
-   the icon's height ends just before the tagline's row begins:
-   imark height 21 + gap 14 = 35, vs icon's own 34 — 1px of clearance,
-   safe regardless of exact tagline line-height. */
+/* Brand lockup — two supplied logo images, swapped by nav state
+   (light nav vs dark hero-nav), rather than the earlier CSS-built
+   icon+wordmark+tagline (inline SVG icon, mask-image wordmark). Each
+   file is pre-colored and pre-composed as ONE flattened graphic:
+     .pn-brand-logo-light — solid dark navy, fully opaque throughout,
+       for the default light nav (and every page that never gets
+       pn-on-hero).
+     .pn-brand-logo-dark — off-white icon with a deliberately ghosted
+       (~20% opacity) wordmark+tagline baked into its own pixels, so
+       it only reads correctly against a dark background — shown only
+       while pn-on-hero is active.
+   Same height for both so swapping between them doesn't change the
+   nav's vertical rhythm; each image's own (slightly different)
+   aspect ratio sets its own width. */
 .pn-brand{
   display: inline-flex;
-  align-items: flex-start;
-  color: var(--midnight);
+  align-items: center;
   text-decoration: none;
-  line-height: 1;
 }
-.pn-brand-mark{
-  width: 25px;
-  height: 34px;
-  display: inline-block;
-  flex-shrink: 0;
-}
-.pn-brand-mark svg{
-  width: 100%;
-  height: 100%;
+.pn-brand-logo-light,
+.pn-brand-logo-dark{
+  height: 44px;
+  width: auto;
   display: block;
 }
-.pn-brand-stack{
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 14px;
-}
-.pn-brand-imark{
-  display: inline-block;
-  width: 96px;
-  height: 21px;
-  background-color: var(--midnight);
-  -webkit-mask: url('../images/IMARK.png') no-repeat center / contain;
-          mask: url('../images/IMARK.png') no-repeat center / contain;
-  /* -8px is deliberate, not a bug: tucks IMARK under the icon so the
-     pair reads as "HIMARK" rather than "H" + a disconnected "IMARK".
-     Tuned through several rounds earlier this session (-3px too
-     loose, -10px too tight/ate the I, -6px, settled at -8px — value
-     carries over unchanged from when this margin lived on
-     .pn-brand-mark instead, before the icon and IMARK were split into
-     separate rows). */
-  margin-left: -8px;
-}
-.pn-brand-tag{
-  /* Same -8px as .pn-brand-imark above, so the tagline is EXACTLY
-     flush with IMARK's own left edge (not the icon's) — directly
-     under "IMARK" per this request, not under the whole "HIMARK"
-     word (icon included) as a previous request had it. */
-  font-family: var(--f-mono);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: rgba(28,43,58,.72);
-  white-space: nowrap;
-  margin-left: -8px;
-}
-/* Same fill:none-frame caveat as the .pn-on-hero variant above —
-   only the H-bars get the hover fill, the frame only gets a stroke. */
-.pn-brand:hover .pn-brand-mark svg g rect{ fill: var(--ocean-dk); }
-.pn-brand:hover .pn-brand-mark svg > rect[fill="none"]{ stroke: var(--ocean-dk); }
-.pn-brand:hover .pn-brand-imark{ background-color: var(--ocean-dk); }
+.pn-brand-logo-dark{ display: none; }
+.pn-on-hero .pn-brand-logo-light{ display: none; }
+.pn-on-hero .pn-brand-logo-dark{ display: block; }
 
 /* Links + CTA grouped on the right (margin-left:auto on the list
    pushes the whole group away from the left-anchored logo). */
@@ -1140,9 +1083,8 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
     padding: 0 16px;
     margin-bottom: -64px;
   }
-  .pn-brand-tag{ display: none; }        /* wordmark only on mobile */
-  .pn-brand-mark{ width: 22px; height: 30px; }
-  .pn-brand-imark{ width: 84px; height: 20px; }
+  .pn-brand-logo-light,
+  .pn-brand-logo-dark{ height: 34px; }
   /* margin-left:auto pushes the CTA + hamburger group to the right;
      order:5 moves the injected toggle to sit after the CTA. */
   .pn-cta{ margin-left: auto; height: 38px; padding: 0 14px; font-size: 9px; }

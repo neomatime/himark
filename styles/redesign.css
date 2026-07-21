@@ -177,47 +177,48 @@ body[data-page="subscribe"] .page.redesign{
   transition: color .35s ease, background .35s ease, border-color .35s ease;
 }
 
-/* Brand lockup — framed-H + IMARK fused on one line (icon supplies
-   the H; see note on .pn-brand-mark), HIMARK sits directly on top of
-   the tagline, both flush against the icon's own left edge so the
-   whole thing reads as one column: HIMARK / STRATEGIC GROWTH
-   CONSULTANCY. Icon+imark share their own row (.pn-brand-lockup) so
-   the icon's height never spans into the tagline's row below it —
-   nesting the tagline inside that row instead caused the icon's dark
-   fill to visually collide with the tagline text (tried + reverted:
-   see git history "revert icon/wordmark gap experiment" era commits
-   for the earlier -8/+10 saga on this same lockup). */
+/* Brand lockup — framed-H icon stands alone on the left as its own
+   column, beside a flush-left two-line text stack: IMARK on top,
+   tagline directly under IT (not under the H) below. .pn-brand is now
+   a ROW (icon + stack); .pn-brand-stack is the COLUMN holding IMARK +
+   tag so both share exactly the same left edge.
+
+   The icon still has to sit tight against IMARK (imark is a mask of
+   only "IMARK", no H — the icon supplies the missing letter) for the
+   pair to read as "HIMARK", but an earlier attempt at this same
+   side-by-side layout nested the tagline in the SAME row as the icon,
+   so the icon's 34px height spilled down into the tagline's row and
+   its fill visually painted over the tagline text (see git history:
+   "revert icon/wordmark gap experiment", "fix white framed-H
+   rendering solid"). Fixed this time with align-items:flex-start on
+   both the row and the stack (icon top-aligns with IMARK's own top,
+   never the stack's vertical centre) plus a stack gap (14px) tuned so
+   the icon's height ends just before the tagline's row begins:
+   imark height 21 + gap 14 = 35, vs icon's own 34 — 1px of clearance,
+   safe regardless of exact tagline line-height. */
 .pn-brand{
   display: inline-flex;
-  flex-direction: column;
   align-items: flex-start;
-  gap: 4px;
   color: var(--midnight);
   text-decoration: none;
   line-height: 1;
-}
-.pn-brand-lockup{
-  display: inline-flex;
-  align-items: center;
 }
 .pn-brand-mark{
   width: 25px;
   height: 34px;
   display: inline-block;
   flex-shrink: 0;
-  /* -8px is deliberate, not a bug: .pn-brand-imark is a mask of only
-     "IMARK" (no H) — this icon supplies the H, so it must sit tight
-     against the wordmark for the pair to read as "HIMARK" rather than
-     "H" + a disconnected "IMARK". Tuned through several rounds earlier
-     this session (-3px too loose, -10px too tight/ate the I, -6px,
-     settled at -8px). Do not change this without visually confirming
-     "HIMARK" still reads as one word. */
-  margin-right: -8px;
 }
 .pn-brand-mark svg{
   width: 100%;
   height: 100%;
   display: block;
+}
+.pn-brand-stack{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
 }
 .pn-brand-imark{
   display: inline-block;
@@ -226,13 +227,20 @@ body[data-page="subscribe"] .page.redesign{
   background-color: var(--midnight);
   -webkit-mask: url('../images/IMARK.png') no-repeat center / contain;
           mask: url('../images/IMARK.png') no-repeat center / contain;
+  /* -8px is deliberate, not a bug: tucks IMARK under the icon so the
+     pair reads as "HIMARK" rather than "H" + a disconnected "IMARK".
+     Tuned through several rounds earlier this session (-3px too
+     loose, -10px too tight/ate the I, -6px, settled at -8px — value
+     carries over unchanged from when this margin lived on
+     .pn-brand-mark instead, before the icon and IMARK were split into
+     separate rows). */
+  margin-left: -8px;
 }
 .pn-brand-tag{
-  /* margin-left:0 (flush with .pn-brand's own left edge, i.e. with
-     the icon/H) so the tagline sits directly under the FULL "HIMARK"
-     word, not just under "IMARK". Previously offset +17px/+35px to
-     dodge the icon, back when the tag was believed to need to align
-     under the wordmark text only — superseded by this request. */
+  /* Same -8px as .pn-brand-imark above, so the tagline is EXACTLY
+     flush with IMARK's own left edge (not the icon's) — directly
+     under "IMARK" per this request, not under the whole "HIMARK"
+     word (icon included) as a previous request had it. */
   font-family: var(--f-mono);
   font-size: 10px;
   font-weight: 500;
@@ -240,7 +248,7 @@ body[data-page="subscribe"] .page.redesign{
   text-transform: uppercase;
   color: rgba(28,43,58,.72);
   white-space: nowrap;
-  margin-left: 0;
+  margin-left: -8px;
 }
 /* Same fill:none-frame caveat as the .pn-on-hero variant above —
    only the H-bars get the hover fill, the frame only gets a stroke. */

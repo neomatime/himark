@@ -2525,7 +2525,6 @@ window.authSubmit=authSubmit;
     nav.setAttribute('aria-label','Primary');
     nav.innerHTML =
       '<a class="pn-brand" href="home.html" aria-label="HIMARK · Home">' +
-        '<span class="pn-brand-lockup">' +
         '<span class="pn-brand-mark" aria-hidden="true">' +
           '<svg viewBox="0 0 140 200" xmlns="http://www.w3.org/2000/svg">' +
             '<g fill="#1C2B3A">' +
@@ -2537,9 +2536,10 @@ window.authSubmit=authSubmit;
             '<rect x="4" y="4" width="132" height="192" fill="none" stroke="#1C2B3A" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter"/>' +
           '</svg>' +
         '</span>' +
+        '<span class="pn-brand-stack">' +
         '<span class="pn-brand-imark" aria-label="HIMARK"></span>' +
-        '</span>' +
         '<span class="pn-brand-tag">Strategic Growth Consultancy</span>' +
+        '</span>' +
       '</a>' +
       '<ul class="pn-links">' +
         mkLink('Home','home.html',activeHref) +

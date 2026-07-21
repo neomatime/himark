@@ -604,11 +604,11 @@ body[data-page="home"] .heroe-stats{
   margin: 28px 0 0 50px;
   padding: 20px clamp(20px, 3vw, 32px);
   border-radius: 14px;
-  background: rgba(14,24,34,.46);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-          backdrop-filter: blur(16px) saturate(140%);
-  border: 1px solid rgba(255,255,255,.14);
-  box-shadow: 0 20px 40px -20px rgba(0,0,0,.45);
+  background: rgba(14,24,34,.26);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+          backdrop-filter: blur(12px) saturate(120%);
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 16px 32px -22px rgba(0,0,0,.30);
 }
 body[data-page="home"] .heroe-stat{
   display: flex;

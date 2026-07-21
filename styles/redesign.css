@@ -140,10 +140,16 @@ body[data-page="subscribe"] .page.redesign{
   box-shadow: 0 1px 0 rgba(28,43,58,.08), 0 12px 30px -20px rgba(28,43,58,.22);
 }
 
-/* Brand lockup — framed-H + IMARK wordmark on top, tagline beneath
-   (reference shows HIMARK over "STRATEGIC GROWTH CONSULTING"; we use
-   HIMARK's own term, Consultancy). .pn-brand-lockup keeps the H tucked
-   into IMARK; the tag sits left-aligned under the whole wordmark. */
+/* Brand lockup — framed-H + IMARK fused on one line (icon supplies
+   the H; see note on .pn-brand-mark), HIMARK sits directly on top of
+   the tagline, both flush against the icon's own left edge so the
+   whole thing reads as one column: HIMARK / STRATEGIC GROWTH
+   CONSULTANCY. Icon+imark share their own row (.pn-brand-lockup) so
+   the icon's height never spans into the tagline's row below it —
+   nesting the tagline inside that row instead caused the icon's dark
+   fill to visually collide with the tagline text (tried + reverted:
+   see git history "revert icon/wordmark gap experiment" era commits
+   for the earlier -8/+10 saga on this same lockup). */
 .pn-brand{
   display: inline-flex;
   flex-direction: column;
@@ -167,10 +173,7 @@ body[data-page="subscribe"] .page.redesign{
      against the wordmark for the pair to read as "HIMARK" rather than
      "H" + a disconnected "IMARK". Tuned through several rounds earlier
      this session (-3px too loose, -10px too tight/ate the I, -6px,
-     settled at -8px). Briefly changed to +10px chasing a supplied
-     reference's apparent icon-to-wordmark gap; reverted immediately
-     after a screenshot showed it actually breaking legibility into
-     "H  IMARK". Do not change this without visually confirming
+     settled at -8px). Do not change this without visually confirming
      "HIMARK" still reads as one word. */
   margin-right: -8px;
 }
@@ -188,13 +191,11 @@ body[data-page="subscribe"] .page.redesign{
           mask: url('../images/IMARK.png') no-repeat center / contain;
 }
 .pn-brand-tag{
-  /* Was 7.5px / 52% opacity — essentially illegible (confirmed via
-     computed-style check: element renders, but too small/faint to
-     read at normal viewing size). Bumped size + darkened per the
-     supplied reference, and shifted right to start under the IMARK
-     wordmark rather than under the framed-H mark. Offset = mark
-     width (25px) minus the -8px overlap = 17px net; recalculate if
-     .pn-brand-mark's width/margin-right ever changes. */
+  /* margin-left:0 (flush with .pn-brand's own left edge, i.e. with
+     the icon/H) so the tagline sits directly under the FULL "HIMARK"
+     word, not just under "IMARK". Previously offset +17px/+35px to
+     dodge the icon, back when the tag was believed to need to align
+     under the wordmark text only — superseded by this request. */
   font-family: var(--f-mono);
   font-size: 10px;
   font-weight: 500;
@@ -202,7 +203,7 @@ body[data-page="subscribe"] .page.redesign{
   text-transform: uppercase;
   color: rgba(28,43,58,.72);
   white-space: nowrap;
-  margin-left: 17px;
+  margin-left: 0;
 }
 .pn-brand:hover .pn-brand-mark svg g rect,
 .pn-brand:hover .pn-brand-mark svg > rect{ fill: var(--ocean-dk); }

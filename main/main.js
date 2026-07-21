@@ -2716,7 +2716,14 @@ window.authSubmit=authSubmit;
      the rest of the page, and re-adds it if they scroll back up. Every
      other page never gets the class at all, so is unaffected. */
   function setupHeroNavContrast(){
-    var hero = document.querySelector('.hero-editorial.full.hero-feature');
+    /* Generic .hero-editorial (not just home's .full.hero-feature) —
+       about/services/team/contact/apply now ship the same dark-hero
+       treatment (+ pn-on-hero hardcoded on their nav) as home, so
+       every page with a hero-editorial section wants this same
+       scroll-linked crossfade. Pages without one (privacy/terms/
+       subscribe/404 etc., which use different hero patterns entirely)
+       simply have no .hero-editorial to find, so this is a no-op there. */
+    var hero = document.querySelector('.hero-editorial');
     var nav = document.querySelector('.pill-nav');
     if (!hero || !nav || nav.dataset.heroContrastAttached) return;
     nav.dataset.heroContrastAttached = '1';

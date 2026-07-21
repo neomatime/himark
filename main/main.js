@@ -2707,12 +2707,47 @@ window.authSubmit=authSubmit;
     });
   }
 
+  /* ---------- 3. NAV CONTRAST OVER THE DARK HOME HERO ----------
+     Home ships with .pill-nav.pn-on-hero hardcoded in the HTML (dark/
+     transparent, white text — matches the dark hero photo at page
+     load with no flash-of-wrong-color before JS runs). This removes
+     that class once the user has scrolled past the hero's own
+     rendered height, so the nav reverts to the standard light bar for
+     the rest of the page, and re-adds it if they scroll back up. Every
+     other page never gets the class at all, so is unaffected. */
+  function setupHeroNavContrast(){
+    var hero = document.querySelector('.hero-editorial.full.hero-feature');
+    var nav = document.querySelector('.pill-nav');
+    if (!hero || !nav || nav.dataset.heroContrastAttached) return;
+    nav.dataset.heroContrastAttached = '1';
+
+    /* .page has overflow-y:auto and is the real scroll container
+       (window.scrollY stays 0 here) — same discovery setupHeroZoom's
+       findScroller() already made; reused as-is. */
+    var scroller = findScroller(hero);
+    function scrollTop(){
+      return scroller === window
+        ? (window.pageYOffset || document.documentElement.scrollTop)
+        : scroller.scrollTop;
+    }
+    function update(){
+      var navHeight = nav.offsetHeight || 76;
+      var threshold = Math.max(0, hero.offsetHeight - navHeight);
+      nav.classList.toggle('pn-on-hero', scrollTop() < threshold);
+    }
+    var evtTarget = scroller === window ? window : scroller;
+    evtTarget.addEventListener('scroll', update, { passive:true });
+    window.addEventListener('resize', update, { passive:true });
+    update();
+  }
+
   /* ---------- BOOT ---------- */
 
   function boot(){
     injectPillNav();
     setupHamburgers();
     setupHeroZoom();
+    setupHeroNavContrast();
     /* Router toggles .active on different .page elements when
        navigating. Re-run hero zoom + hamburger setup so newly-
        activated pages get wired. (Nav frosted-glass styling used to
@@ -2722,6 +2757,7 @@ window.authSubmit=authSubmit;
       var mo = new MutationObserver(function(){
         setupHeroZoom();
         setupHamburgers();
+        setupHeroNavContrast();
       });
       document.querySelectorAll('.page').forEach(function(p){
         mo.observe(p, { attributes:true, attributeFilter:['class'] });

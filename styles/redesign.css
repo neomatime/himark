@@ -138,6 +138,40 @@ body[data-page="subscribe"] .page.redesign{
   -webkit-backdrop-filter: blur(18px) saturate(140%);
           backdrop-filter: blur(18px) saturate(140%);
   box-shadow: 0 1px 0 rgba(28,43,58,.08), 0 12px 30px -20px rgba(28,43,58,.22);
+  transition: background .4s ease, box-shadow .4s ease, border-color .4s ease;
+}
+
+/* Dark-hero nav variant — home page only, while the dark hero photo
+   sits behind it. main.js (setupHeroNavContrast) toggles this class
+   off once the user scrolls past the hero's own rendered height, so
+   the nav reverts to the standard light bar for the rest of the page
+   (and every other page keeps the light bar always, unaffected). */
+.pill-nav.pn-on-hero{
+  background: linear-gradient(180deg, rgba(10,17,24,.42) 0%, rgba(10,17,24,.24) 100%);
+  box-shadow: 0 1px 0 rgba(255,255,255,.10);
+  border-bottom: 0;
+}
+.pn-on-hero .pn-brand,
+.pn-on-hero .pn-brand-tag,
+.pn-on-hero .pn-links a{
+  color: #ffffff;
+}
+.pn-on-hero .pn-brand-imark{ background-color: #ffffff; }
+.pn-on-hero .pn-brand-mark svg g rect,
+.pn-on-hero .pn-brand-mark svg > rect{ fill: #ffffff; }
+.pn-on-hero .pn-brand-mark svg > rect[fill="none"]{ stroke: #ffffff; }
+.pn-on-hero .pn-toggle-icon span{ background: #ffffff; }
+.pn-on-hero .pn-cta{
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.55);
+  color: #ffffff;
+}
+.pn-on-hero .pn-cta:hover{
+  background: rgba(255,255,255,.14);
+  border-color: #ffffff;
+}
+.pn-brand, .pn-brand-imark, .pn-links a, .pn-cta, .pn-toggle-icon span{
+  transition: color .35s ease, background .35s ease, border-color .35s ease;
 }
 
 /* Brand lockup — framed-H + IMARK fused on one line (icon supplies
@@ -417,19 +451,13 @@ body[data-page="subscribe"] .page.redesign{
 }
 
 /* ====================================================================
-   HOME HERO FEATURE — feature-list layout (supplied reference).
+   HOME HERO FEATURE — dark full-bleed photo hero (supplied reference).
    ====================================================================
-   LEFT column: triad badge, two-line headline, rule, sub, dual CTA.
-   RIGHT column: four value items (HIMARK's real Doctrine pillars)
-   with soft circular icon badges. Full-width trust bar at the bottom.
-   Flat light gradient background (no glass photo). HIMARK type system
-   throughout — Source Sans 3 display + JetBrains Mono labels — NOT
-   the reference's serif.
-
-   The section is a flex column: the two-column grid takes the centre
-   (flex:1, vertically centred), the trust bar sits at the bottom with
-   a hairline top border. Below 900px it collapses to a single column
-   and the feature list stacks under the text.
+   Single left-aligned text column (badge, two-line headline, rule,
+   sub, dual CTA) sitting on a uniformly darkened photo — the right
+   half of the frame is left as bare photo, matching the reference.
+   Stats bar + trust logos sit below. All copy is white/light against
+   the dark wash; see .hero-feature::after below for the wash itself.
    ==================================================================== */
 body[data-page="home"] .hero-editorial.full.hero-feature{
   display: flex;
@@ -440,16 +468,13 @@ body[data-page="home"] .hero-editorial.full.hero-feature{
 }
 body[data-page="home"] .heroe-feat-grid{
   flex: 1;
-  display: grid;
-  grid-template-columns: 1.12fr 0.88fr;
+  display: flex;
   align-items: center;
-  gap: clamp(36px, 6vw, 104px);
   width: 100%;
   max-width: 1300px;
   margin: 0 auto;
 }
 
-/* LEFT column ------------------------------------------------------ */
 body[data-page="home"] .heroe-col-text{ max-width: 600px; }
 
 /* Triad badge — soft glass pill, dot before each token. */
@@ -460,8 +485,8 @@ body[data-page="home"] .heroe-badge{
   padding: 9px 20px;
   margin: 0 0 30px;
   border-radius: 999px;
-  background: rgba(255,255,255,.50);
-  border: 1px solid rgba(28,43,58,.10);
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.35);
   -webkit-backdrop-filter: blur(8px);
           backdrop-filter: blur(8px);
   font-family: var(--f-mono);
@@ -469,7 +494,7 @@ body[data-page="home"] .heroe-badge{
   font-weight: 600;
   letter-spacing: .16em;
   text-transform: uppercase;
-  color: var(--ocean-dk);
+  color: #ffffff;
 }
 body[data-page="home"] .heroe-badge span{
   display: inline-flex;
@@ -481,110 +506,72 @@ body[data-page="home"] .heroe-badge span::before{
   content: '';
   width: 4px; height: 4px;
   border-radius: 50%;
-  background: var(--ocean);
+  background: #ffffff;
 }
 
-/* Headline / rule / sub — left-aligned in this layout (base rules
-   centre them; override here without touching the .half heroes). */
+/* Headline / rule / sub — left-aligned, white against the dark wash
+   (base rules centre + dark-navy them for the .half heroes elsewhere;
+   overridden here without touching those). */
 body[data-page="home"] .hero-feature .heroe-hl{
   text-align: left;
   max-width: none;
   margin: 0 0 24px;
+  color: #ffffff;
+  text-shadow: 0 2px 12px rgba(0,0,0,.30);
 }
+body[data-page="home"] .hero-feature .heroe-hl em{ color: var(--ocean-lt); }
 body[data-page="home"] .hero-feature .heroe-rule{
   width: 44px; height: 1px;
-  background: var(--midnight);
-  opacity: .35;
+  background: rgba(255,255,255,.5);
+  opacity: 1;
   margin: 0 0 26px;
 }
 body[data-page="home"] .hero-feature .heroe-sub{
   text-align: left;
   max-width: 440px;
   margin: 0 0 34px;
+  color: rgba(255,255,255,.82);
+  text-shadow: 0 1px 8px rgba(0,0,0,.25);
 }
 
-/* Dual CTA — filled primary + outlined secondary RECTANGLE (reference
-   pairs a filled navy button with a bordered one, both rectangular). */
+/* Dual CTA — solid white primary button (dark text) + a plain
+   underlined text link, matching the reference exactly. */
 body[data-page="home"] .hero-feature .heroe-cta-row{
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 30px;
   flex-wrap: wrap;
+}
+body[data-page="home"] .hero-feature .heroe-cta{
+  background: #ffffff;
+  color: var(--midnight);
+  box-shadow: 0 10px 24px -12px rgba(0,0,0,.40);
+}
+body[data-page="home"] .hero-feature .heroe-cta:hover{
+  background: rgba(255,255,255,.88);
+  transform: translateY(-2px);
 }
 body[data-page="home"] .hero-feature .heroe-cta-ghost{
   display: inline-flex;
   align-items: center;
-  height: 50px;
-  padding: 0 26px;
-  border-radius: 6px;
-  border: 1px solid rgba(28,43,58,.22);
+  height: auto;
+  padding: 0 0 3px;
+  border: 0;
+  border-radius: 0;
+  border-bottom: 1px solid rgba(255,255,255,.5);
   background: transparent;
   font-family: var(--f-mono);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: .16em;
   text-transform: uppercase;
-  color: var(--midnight);
+  color: #ffffff;
   text-decoration: none;
-  transition: border-color .2s, color .2s, background .2s;
+  transition: border-color .2s, color .2s;
 }
 body[data-page="home"] .hero-feature .heroe-cta-ghost:hover{
-  border-color: var(--midnight);
-  background: rgba(28,43,58,.04);
-  color: var(--midnight);
-}
-
-/* RIGHT column — four value items -------------------------------- */
-body[data-page="home"] .heroe-features{
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-body[data-page="home"] .heroe-feat{
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  padding: 22px 0;
-  border-top: 1px solid rgba(255,255,255,.16);
-}
-body[data-page="home"] .heroe-feat:first-child{ border-top: 0; padding-top: 0; }
-body[data-page="home"] .heroe-feat:last-child{ padding-bottom: 0; }
-/* Glass circular icon badge — was a light neumorphic circle tuned
-   for a pale background; now a frosted-glass badge that reads
-   clearly against the photo (light fill + soft outer glow instead
-   of a dark drop shadow, which would vanish against a dark photo). */
-body[data-page="home"] .heroe-feat-ic{
-  flex-shrink: 0;
-  width: 52px; height: 52px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
+  border-color: #ffffff;
   color: #ffffff;
-  background: rgba(255,255,255,.14);
-  border: 1px solid rgba(255,255,255,.30);
-  -webkit-backdrop-filter: blur(6px);
-          backdrop-filter: blur(6px);
-  box-shadow: 0 4px 18px -6px rgba(0,0,0,.35);
-}
-body[data-page="home"] .heroe-feat-ic svg{ width: 22px; height: 22px; }
-body[data-page="home"] .heroe-feat-tx h3{
-  font-family: var(--f-disp);
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: -.005em;
-  color: #ffffff;
-  margin: 4px 0 5px;
-  text-shadow: 0 1px 8px rgba(0,0,0,.25);
-}
-body[data-page="home"] .heroe-feat-tx p{
-  font-family: var(--f-body);
-  font-size: 13.5px;
-  line-height: 1.55;
-  font-weight: 300;
-  color: rgba(255,255,255,.78);
-  margin: 0;
-  max-width: 310px;
-  text-shadow: 0 1px 8px rgba(0,0,0,.20);
 }
 
 /* STATS BAR — three verifiable figures in a frosted dark glass panel
@@ -708,42 +695,8 @@ body[data-page="home"] .hero-feature .heroe-trust-logo:hover{ color: var(--ocean
     height: auto;
     min-height: 100vh;
   }
-  body[data-page="home"] .heroe-feat-grid{
-    grid-template-columns: 1fr;
-    gap: 40px;
-    align-items: start;
-  }
   body[data-page="home"] .heroe-col-text{ max-width: none; }
   body[data-page="home"] .hero-feature .heroe-trust{ flex-wrap: wrap; gap: 12px 20px; }
-
-  /* The left-to-right wash only makes sense for the 2-column desktop
-     layout. Once everything stacks into one column on mobile, badge/
-     headline/sub sit in the same vertical flow as the (white-text)
-     feature list — so the wash becomes a uniform darker overlay and
-     the left-column text flips from dark-on-light to white-on-photo,
-     same treatment as the rest of the stack. */
-  body[data-page="home"] .hero-feature::after{
-    background: linear-gradient(180deg, rgba(14,24,34,.32) 0%, rgba(14,24,34,.52) 100%);
-  }
-  body[data-page="home"] .hero-feature .heroe-hl{
-    color: #ffffff;
-    text-shadow: 0 2px 10px rgba(0,0,0,.30);
-  }
-  body[data-page="home"] .hero-feature .heroe-hl em{ color: var(--ocean-lt); }
-  body[data-page="home"] .hero-feature .heroe-sub{
-    color: rgba(255,255,255,.82);
-    text-shadow: 0 1px 8px rgba(0,0,0,.25);
-  }
-  body[data-page="home"] .hero-feature .heroe-rule{ background: rgba(255,255,255,.5); }
-  body[data-page="home"] .hero-feature .heroe-cta-ghost{
-    border-color: rgba(255,255,255,.4);
-    color: #ffffff;
-  }
-  body[data-page="home"] .hero-feature .heroe-cta-ghost:hover{
-    border-color: #ffffff;
-    background: rgba(255,255,255,.10);
-    color: #ffffff;
-  }
   body[data-page="home"] .heroe-stats{
     flex-wrap: wrap;
     row-gap: 16px;
@@ -1242,14 +1195,13 @@ body[data-page="home"] .hero-editorial.full::before{
   background-position: center 30%;
   filter: none;
 }
-/* Two-toned wash: light on the left (dark navy text needs a pale
-   surface — badge/headline/sub/CTA all sit here), fading to nothing
-   by the horizontal centre so the right column and everything below
-   it (feature list, stats bar, trust bar) shows the photo directly,
-   with white text laid over it instead. Matches the reference's own
-   split — dark-on-light left, light-on-dark right. */
+/* Uniform dark wash — darkens the whole photo evenly (top-to-bottom,
+   slightly heavier at the bottom where the stats panel sits) so the
+   all-white copy reads clearly wherever it lands, matching the
+   supplied reference (no light patch behind the text anymore — the
+   4-item feature list this used to split the wash for was removed). */
 body[data-page="home"] .hero-feature::after{
-  background: linear-gradient(90deg, rgba(247,247,245,.82) 0%, rgba(247,247,245,.55) 32%, rgba(247,247,245,.08) 58%, transparent 68%);
+  background: linear-gradient(180deg, rgba(10,17,24,.34) 0%, rgba(10,17,24,.58) 100%);
 }
 /* Aura reads as muddy on top of a real photo (it was tuned for a flat
    gradient) — switch it off here; the photo already supplies texture

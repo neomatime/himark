@@ -189,22 +189,23 @@ body[data-page="subscribe"] .page.redesign{
   align-items: center;
   text-decoration: none;
 }
+.pn-brand-logo-light,
 .pn-brand-logo-dark{
   height: 44px;
   width: auto;
+  flex-shrink: 0;
   display: block;
 }
-/* Shorter than the dark variant — the footer logo it now shares has a
-   much wider aspect ratio (~5:1 vs ~2.9:1 for the dark logo), so
-   matching height would run ~222px wide and crowd the nav links/CTA
-   at narrower desktop widths (confirmed overlapping "Home" and
-   wrapping the CTA button at 800px). 32px keeps it closer to the dark
-   variant's footprint (~161px vs ~106px). */
-.pn-brand-logo-light{
-  height: 32px;
-  width: auto;
-  display: block;
-}
+/* Both logo files' icons fill ~96-98% of their own crop's height
+   (measured directly), so matching height here is what makes the two
+   variants actually read as the same size — an earlier attempt
+   shrank .pn-brand-logo-light instead to dodge overflow at narrow
+   desktop widths, but that made it visibly smaller than the dark
+   variant, which was wrong. The light logo's wider aspect ratio
+   (~5:1 vs ~2.9:1, inherent to that source file's own text layout,
+   not a cropping artifact) means it needs more horizontal room at
+   this matched height — handled below via the nav's own breakpoint,
+   not by shrinking the logo out of proportion. */
 .pn-brand-logo-dark{ display: none; }
 .pn-on-hero .pn-brand-logo-light{ display: none; }
 .pn-on-hero .pn-brand-logo-dark{ display: block; }
@@ -998,6 +999,20 @@ body[data-page="subscribe"] .footer-top{
   .pn-links{ gap: 22px; }
   .pn-cta{ margin-left: 26px; }
 }
+/* The light-nav logo (matched height with the dark variant, see
+   .pn-brand-logo-light above) is ~222px wide — comfortable down to
+   ~900px, but starts crowding the links below that. Tighten link/CTA
+   spacing further here rather than shrinking the logo out of
+   proportion with the dark variant. Confirmed via getClientRects()
+   on the CTA's text node (its fixed 46px height absorbs a wrapped
+   2-line label without overflowing, so height alone doesn't detect
+   wrapping) — first pass (gap:14/margin:16) still wrapped at 790px;
+   this tighter pass holds a single line down to 769px, the mobile
+   cutover, where the logo switches to the dropdown-menu layout. */
+@media (max-width: 900px){
+  .pn-links{ gap: 8px; }
+  .pn-cta{ margin-left: 10px; }
+}
 @media (max-width: 768px){
   .pill-nav{
     height: 64px;
@@ -1005,12 +1020,16 @@ body[data-page="subscribe"] .footer-top{
     margin-bottom: -64px;
   }
   .pn-brand-logo-dark{ height: 34px; }
-  /* Shorter than the dark variant — the footer logo it now shares has
-     a much wider aspect ratio (~5:1 vs ~2.9:1), so matching height
-     would make it nearly 60% wider than the dark logo and crowd the
-     CTA button into wrapping onto two lines. 20px keeps its rendered
-     width (~101px) close to the dark variant's (~98px). */
-  .pn-brand-logo-light{ height: 20px; }
+  /* Mobile has no .pn-links to squeeze (they're in the hidden
+     dropdown here) — logo, CTA, and hamburger compete directly for
+     ~343px of usable width. At the dark variant's 34px/98px footprint
+     there's ~46px of slack; the light variant's wider aspect ratio
+     needs ≤144px to leave the CTA (149px unwrapped) and hamburger
+     (~50px) room, so it can't fully match 34px (which would need
+     172px) without wrapping the CTA — confirmed via getClientRects()
+     on the CTA's text node. 28px (~141px wide) is the largest height
+     that holds a single line here. */
+  .pn-brand-logo-light{ height: 28px; }
   /* margin-left:auto pushes the CTA + hamburger group to the right;
      order:5 moves the injected toggle to sit after the CTA. */
   .pn-cta{ margin-left: auto; height: 38px; padding: 0 14px; font-size: 9px; }

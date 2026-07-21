@@ -157,8 +157,11 @@ body[data-page="subscribe"] .page.redesign{
   color: #ffffff;
 }
 .pn-on-hero .pn-brand-imark{ background-color: #ffffff; }
-.pn-on-hero .pn-brand-mark svg g rect,
-.pn-on-hero .pn-brand-mark svg > rect{ fill: #ffffff; }
+/* Only the H-bars (inside <g>) get filled white. The outer frame rect
+   has fill="none" (hollow, stroke-only) — it must NOT get fill:#fff
+   too, or the solid white frame paints over the H-bars underneath it
+   in DOM order, turning the whole icon into a blank white square. */
+.pn-on-hero .pn-brand-mark svg g rect{ fill: #ffffff; }
 .pn-on-hero .pn-brand-mark svg > rect[fill="none"]{ stroke: #ffffff; }
 .pn-on-hero .pn-toggle-icon span{ background: #ffffff; }
 .pn-on-hero .pn-cta{
@@ -239,8 +242,9 @@ body[data-page="subscribe"] .page.redesign{
   white-space: nowrap;
   margin-left: 0;
 }
-.pn-brand:hover .pn-brand-mark svg g rect,
-.pn-brand:hover .pn-brand-mark svg > rect{ fill: var(--ocean-dk); }
+/* Same fill:none-frame caveat as the .pn-on-hero variant above —
+   only the H-bars get the hover fill, the frame only gets a stroke. */
+.pn-brand:hover .pn-brand-mark svg g rect{ fill: var(--ocean-dk); }
 .pn-brand:hover .pn-brand-mark svg > rect[fill="none"]{ stroke: var(--ocean-dk); }
 .pn-brand:hover .pn-brand-imark{ background-color: var(--ocean-dk); }
 
@@ -1157,6 +1161,21 @@ body[data-page="subscribe"] .footer .ft-wm-imark{
   }
   .pn-links a:hover,
   .pn-links a.is-active{ background: rgba(95,129,144,.10); }
+
+  /* Dark variant of the dropdown panel — pn-on-hero already turns the
+     link text white (see the rule earlier in this file), but the
+     panel itself was still the light glass background above, making
+     white-on-near-white text almost invisible. Dark glass here keeps
+     it legible while the nav sits on the dark hero. */
+  .pn-on-hero .pn-links{
+    background: linear-gradient(180deg, rgba(10,17,24,.85) 0%, rgba(10,17,24,.72) 100%);
+    border-color: rgba(255,255,255,.16);
+    box-shadow:
+      0 14px 36px -12px rgba(0,0,0,.45),
+      0 1px 0 rgba(255,255,255,.10) inset;
+  }
+  .pn-on-hero .pn-links a:hover,
+  .pn-on-hero .pn-links a.is-active{ background: rgba(255,255,255,.14); }
 
   .hero-editorial{ padding: 80px 22px 40px; }
   .hero-editorial.full{ padding: 96px 22px; }

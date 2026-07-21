@@ -408,22 +408,6 @@
     padding: clamp(80px, 10vw, 140px) clamp(24px, 5vw, 80px);
     overflow: hidden;
   }
-  /* Decorative top hairline that draws across when the section
-     enters the viewport. Pinned 5vw from the left so it doesn't
-     touch either edge. */
-  .home-doctrine::before{
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 5vw;
-    right: 5vw;
-    height: 1px;
-    background: var(--midnight);
-    transform-origin: left center;
-    transform: scaleX(0);
-    transition: transform 1200ms cubic-bezier(.2,.7,.2,1);
-  }
-  .home-doctrine.in-view::before{ transform: scaleX(1); }
   /* Quietly drifting background hairline — gives the section a
      pulse without competing with the type. Pure CSS, no JS. */
   .home-doctrine::after{
@@ -1734,7 +1718,6 @@
     background: var(--off);
     padding: clamp(56px, 6vw, 88px) clamp(24px, 6vw, 96px) clamp(48px, 5vw, 72px);
     position: relative;
-    border-bottom: 1px solid var(--rule);
   }
   .firm-def-coord-l,
   .firm-def-coord-r{

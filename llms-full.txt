@@ -46,20 +46,17 @@ M&A architecture, capital strategy, pricing design, and the work that reshapes a
 ## The three retainer tiers
 
 ### Tier 01 — Signature Partner
-- Investment: from R 50,000 / month
 - Term: Quarterly minimum, reviewed every 90 days
 - Cadence: Monthly principal strategy, Atlas advisory, quarterly performance reviews
 - Best fit: Startups, SMEs, professional service firms establishing market presence
 
 ### Tier 02 — Growth Partner (Most engaged)
-- Investment: from R 80,000 / month
 - Term: Six-month minimum
 - Cadence: Weekly principal cadence, full marketing systems, CRM optimisation, founder authority positioning, live direct-line access
 - Best fit: Scaling businesses, mid-sized companies, operationally heavy service firms
 - This is the core HIMARK tier where most engagements live.
 
 ### Tier 03 — Private Partner (By invitation)
-- Investment: from R 150,000 / month
 - Term: Twelve-month minimum, by invitation only
 - Cadence: Real-time access, dedicated embedded principal, direct line to founder
 - Best fit: High-growth firms, enterprise clients, executive-led businesses scaling aggressively
@@ -112,7 +109,7 @@ Randburg, Gauteng, South Africa. The firm serves clients across South Africa, Su
 Founder-led businesses, scaling SMEs, and enterprise clients. Engagements are by application only. The firm works with a deliberately limited number of mandates each quarter.
 
 **How much does HIMARK cost?**
-Engagements start at R 50,000 / month (Signature Partner tier). Growth Partner from R 80,000 / month. Private Partner from R 150,000 / month, by invitation only.
+The firm operates three retainer tiers — Signature Partner, Growth Partner, and Private Partner (by invitation only). Standalone service mandates are quoted separately. Exact pricing is shared after an Atlas intake.
 
 **Is HIMARK an agency?**
 No. HIMARK is a strategic growth consultancy. It does not pitch on RFPs, does not bid on price, and does not take work that doesn't sharpen the firm's edge.
